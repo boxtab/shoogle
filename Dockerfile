@@ -51,4 +51,4 @@ EXPOSE 9000
 
 #RUN chmod +x ./init.sh
 #CMD ["php-fpm"]
-ENTRYPOINT ["./init.sh"]
+#ENTRYPOINT ["./init.sh"]

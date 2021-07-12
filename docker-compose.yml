@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - "8081:80"
+      - "8080:80"
       - "8443:443"
     volumes:
       - ./:/var/www
@@ -45,7 +45,7 @@ services:
     restart: unless-stopped
     tty: true
     env_file:
-      - ./.env.db.prod
+      - ./.env
     ports:
       - "33061:3306"
     volumes:
