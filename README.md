@@ -232,3 +232,7 @@ docker-compose exec app php artisan config:cache
 docker-compose exec app php artisan route:cache
 docker-compose exec app php artisan view:clear
 docker-compose exec app php artisan optimize:clear
+
+Clear log file
+
+`docker-compose exec app echo "" > storage/logs/laravel-2021-06-09.log`

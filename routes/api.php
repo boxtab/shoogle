@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\V1\Auth\AuthController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // api/v1 routes
 Route::group(['prefix' => 'v1'], function () {
+
+    Route::post('login', [AuthController::class, 'login'])
+        ->name('api.v1.login');
 
     Route::match(['GET', 'POST'], 'test', [TestController::class, 'index'])
         ->name('api.v1.test');
