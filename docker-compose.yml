@@ -43,6 +43,8 @@ services:
     image: mysql:5.7.22
     container_name: db
     restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=123qwe+++
     tty: true
     env_file:
       - ./.env
