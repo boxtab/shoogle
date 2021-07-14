@@ -26,6 +26,16 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('login', [AuthController::class, 'login'])
         ->name('api.v1.login');
 
+    Route::post('logout', [AuthController::class, 'logout'])
+        ->name('api.v1.logout');
+
+    Route::post('signup', [AuthController::class, 'signup'])
+        ->name('api.v1.signup');
+
+
+
+
+
     Route::match(['GET', 'POST'], 'test', [TestController::class, 'index'])
         ->name('api.v1.test');
 

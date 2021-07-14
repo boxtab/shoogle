@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function login(Request $request)
     {
         $credentials = request()->validate([
@@ -25,25 +29,64 @@ class AuthController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
-            Log::info('Test Unauthorized');
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        Log::info('Test Authorized');
 
         $tokenResult = $user->createToken('Personal Access Token');
 
         $data = [
-            'token' => $tokenResult->accessToken,
-            'name' => "John Wick",
-            'role' => "super-admin",                                   // описание роле смотри ниже
-            'avatar' => "https://picsum.photos/200",
+            'token' => $tokenResult->plainTextToken,
+            'name' => $user->name,
+            'role' => $user->getRoleNames()[0],
+            'avatar' => $user->avatar,
         ];
 
         return response()->json([
             'success' => true,
             'data' => $data,
+        ])->header('Authorization', 'Bearer ' . $tokenResult->plainTextToken);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function logout()
+    {
+        auth()->user()->tokens()->delete();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'message' => 'Tokens Revoked'
+            ],
         ]);
-//        return $this->respondWithToken($user->createAccessToken('Personal Access Token'), ["user" => $user]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function signup(Request $request)
+    {
+        $credentials = request()->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+            'password2' => 'required',
+        ]);
+
+        $user = User::create([
+            'name' => $credentials['email'],
+            'password' => Hash::make($credentials['password']),
+            'email' => $credentials['email']
+        ]);
+
+        $data = [
+            'token' => $user->createToken('API Token')->plainTextToken,
+        ];
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ]);
     }
 
 
