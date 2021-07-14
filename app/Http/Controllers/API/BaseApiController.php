@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 
 /**
@@ -14,31 +15,19 @@ use phpDocumentor\Reflection\DocBlock\Tags\Param;
  */
 class BaseApiController extends Controller
 {
-    /**
-     * Successful answer.
-     *
-     * @param array $data
-     * @return JsonResponse
-     */
-    protected function getResponseSuccess(array $data)
-    {
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
-    }
-
-    /**
-     * Wrong answer.
-     *
-     * @param array $data
-     * @return JsonResponse
-     */
-    protected function getResponseError(array $data)
+    protected function validatorFails( $validatorErrors )
     {
         return response()->json([
             'success' => false,
-            'data' => $data,
-        ]);
+            'errors' => $validatorErrors,
+        ], 422);
+    }
+
+    protected function globalError( $exceptionMessage )
+    {
+        return response()->json([
+            'success' => false,
+            'globalError' => $exceptionMessage,
+        ], 500);
     }
 }

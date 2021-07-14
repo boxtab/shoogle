@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
-//use Validator;
 
 class AuthController extends BaseApiController
 {
@@ -23,22 +22,33 @@ class AuthController extends BaseApiController
      */
     public function login(Request $request)
     {
-        $credentials = request()->validate([
+        $validator =  Validator::make($request->all(),[
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $credentials['email'])->first();
-
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+        if ( $validator->fails() ) {
+            return $this->validatorFails( $validator->errors() );
         }
 
-        $tokenResult = $user->createToken('Personal Access Token');
-        $userResource = new UserResource($user);
+        $credentials = $request->only(['email','password']);
+        if ( ! Auth::attempt( $credentials ) ) {
+            return response()->json([
+                'success' => false,
+                'globalError' => 'Unauthorized',
+            ], 401);
+        }
 
-        return $userResource->setToken($tokenResult->plainTextToken)
-            ->response($tokenResult->plainTextToken);
+        try {
+            $user = User::where('email', $credentials['email'])->first();
+            $token = $user->createToken('Personal Access Token')->plainTextToken;
+            $userResource = new UserResource($user);
+        } catch (\Exception $e) {
+            return $this->globalError( $e->getMessage() );
+        }
+
+        return $userResource->setToken($token)
+            ->response($token);
     }
 
     /**
@@ -62,24 +72,31 @@ class AuthController extends BaseApiController
      */
     public function signup(Request $request)
     {
-        $credentials = request()->validate([
+        $validator =  Validator::make($request->all(),[
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required_with:password2|same:password2',
             'password2' => 'required',
         ]);
 
-        $user = User::create([
-            'name' => $credentials['email'],
-            'password' => Hash::make($credentials['password']),
-            'email' => $credentials['email']
-        ]);
+        if ( $validator->fails() ) {
+            return $this->validatorFails( $validator->errors() );
+        }
 
-        $data = [
-            'token' => $user->createToken('API Token')->plainTextToken,
-        ];
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
+        $credentials = $request->only(['email','password']);
+        try {
+            $user = User::create([
+                'name' => $credentials['email'],
+                'password' => bcrypt($credentials['password']),
+                'email' => $credentials['email']
+            ]);
+
+            $token = $user->createToken('Personal Access Token')->plainTextToken;
+            $userResource = new UserResource($user);
+        } catch (\Exception $e) {
+            return $this->globalError( $e->getMessage() );
+        }
+
+        return $userResource->setToken($token)
+            ->response($token);
     }
 }
