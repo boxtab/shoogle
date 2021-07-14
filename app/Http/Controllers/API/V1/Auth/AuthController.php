@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\API\V1\Auth;
 
+use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -13,7 +15,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 //use Validator;
 
-class AuthController extends Controller
+class AuthController extends BaseApiController
 {
     /**
      * @param Request $request
@@ -25,9 +27,7 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        $tmp = (array)$request->all();
 
-        Log::info($tmp);
         $user = User::where('email', $credentials['email'])->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
@@ -35,20 +35,10 @@ class AuthController extends Controller
         }
 
         $tokenResult = $user->createToken('Personal Access Token');
+        $userResource = new UserResource($user);
 
-        $role = count( $user->getRoleNames() ) !== 0 ? $user->getRoleNames()[0] : null;
-
-        $data = [
-            'token' => $tokenResult->plainTextToken,
-            'name_test' => $user->name,
-            'rolecheck' => $role,
-            'avatar_get' => $user->avatar,
-        ];
-
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ])->header('Authorization', 'Bearer ' . $tokenResult->plainTextToken);
+        return $userResource->setToken($tokenResult->plainTextToken)
+            ->response($tokenResult->plainTextToken);
     }
 
     /**
