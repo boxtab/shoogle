@@ -22,16 +22,28 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        Log::info( $credentials['password'] );
-
         $user = User::where('email', $credentials['email'])->first();
-//        $user = $user = $request->user();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+            Log::info('Test Unauthorized');
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+        Log::info('Test Authorized');
 
-        return $this->respondWithToken($user->createAccessToken('Personal Access Token'), ["user" => $user]);
+        $tokenResult = $user->createToken('Personal Access Token');
+
+        $data = [
+            'token' => $tokenResult->accessToken,
+            'name' => "John Wick",
+            'role' => "super-admin",                                   // описание роле смотри ниже
+            'avatar' => "https://picsum.photos/200",
+        ];
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ]);
+//        return $this->respondWithToken($user->createAccessToken('Personal Access Token'), ["user" => $user]);
     }
 
 

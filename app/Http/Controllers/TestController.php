@@ -3,9 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
 
 class TestController extends Controller
 {
+    public function test()
+    {
+        $user = User::first();
+        $roles = $user->getRoleNames();
+        dd($roles[0]);
+        return 'test';
+    }
+
     /**
      * Display a listing of the resource.
      *

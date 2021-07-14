@@ -15,10 +15,12 @@ class TestUserSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->insert([
+        $rows = DB::table('users')->insertOrIgnore([
             'name' => 'testuser',
             'email' => 'testuser@gmail.com',
             'password' => Hash::make('secret'),
         ]);
+
+        echo "Rows: $rows" . PHP_EOL;
     }
 }
