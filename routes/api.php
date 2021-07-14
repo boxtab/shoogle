@@ -16,8 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+Route::group(['middleware' => ['auth:api']], function () {
+
+    Route::post('logout', [AuthController::class, 'logout'])
+        ->name('api.v1.logout');
+
 });
 
 // api/v1 routes
@@ -26,9 +33,6 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('login', [AuthController::class, 'login'])
         ->name('api.v1.login');
 
-    Route::post('logout', [AuthController::class, 'logout'])
-        ->name('api.v1.logout');
-
     Route::post('signup', [AuthController::class, 'signup'])
         ->name('api.v1.signup');
 
@@ -36,10 +40,10 @@ Route::group(['prefix' => 'v1'], function () {
 
 
 
-    Route::match(['GET', 'POST'], 'test', [TestController::class, 'index'])
-        ->name('api.v1.test');
-
-    Route::post('create', [TestController::class, 'create'])
-        ->name('api.v1.create');
+//    Route::match(['GET', 'POST'], 'test', [TestController::class, 'index'])
+//        ->name('api.v1.test');
+//
+//    Route::post('create', [TestController::class, 'create'])
+//        ->name('api.v1.create');
 
 });

@@ -25,7 +25,9 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+        $tmp = (array)$request->all();
 
+        Log::info($tmp);
         $user = User::where('email', $credentials['email'])->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
@@ -34,11 +36,13 @@ class AuthController extends Controller
 
         $tokenResult = $user->createToken('Personal Access Token');
 
+        $role = count( $user->getRoleNames() ) !== 0 ? $user->getRoleNames()[0] : null;
+
         $data = [
             'token' => $tokenResult->plainTextToken,
-            'name' => $user->name,
-            'role' => $user->getRoleNames()[0],
-            'avatar' => $user->avatar,
+            'name_test' => $user->name,
+            'rolecheck' => $role,
+            'avatar_get' => $user->avatar,
         ];
 
         return response()->json([
@@ -83,49 +87,6 @@ class AuthController extends Controller
         $data = [
             'token' => $user->createToken('API Token')->plainTextToken,
         ];
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
-    }
-
-
-    public function login2(Request $request)
-    {
-        // Validate request fields
-        $validator = Validator::make($request->all(), [
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
-        ]);
-
-        // Show validation errors
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-
-        $credentials = request(['email', 'password']);
-
-        if ( ! Auth::attempt( $credentials ) ) {
-            return new JsonResponse(
-                [
-                    'success' => false,
-                    'errors' => ['password' => 'Authentication error'],
-                ],
-                401
-            );
-        }
-
-        $user = $request->user();
-        $tokenResult = $user->createToken('Personal Access Token');
-
-        $data = [
-//            'token' => $tokenResult->accessToken,
-            'token' => "268|DH9naQwjUpUHRwqRB2m12tILAegINCylHHlP1RYy", // токен, который будет использоваться при запросах, требующих авторизации
-            'name' => "John Wick",
-            'role' => "super-admin",                                   // описание роле смотри ниже
-            'avatar' => "https://picsum.photos/200",
-        ];
-
         return response()->json([
             'success' => true,
             'data' => $data,
