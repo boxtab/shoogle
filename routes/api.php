@@ -39,7 +39,7 @@ Route::group(['prefix' => 'v1'], function () {
 
 });
 
-Route::group(['prefix' => 'v1/company'], function () {
+Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api']], function () {
 
     // Get a list of companies (no pagination yet)
     // POST /api/v1/company/list
