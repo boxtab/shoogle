@@ -36,7 +36,7 @@ class AuthController extends BaseApiController
             return response()->json([
                 'success' => false,
                 'globalError' => 'Unauthorized',
-            ], 401);
+            ], 422);
         }
 
         try {

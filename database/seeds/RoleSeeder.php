@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Constants\TestUserConstant;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use App\Constants\RoleConstant;
@@ -19,11 +20,19 @@ class RoleSeeder extends Seeder
         //Reset cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
 
-        Role::create(['name' => RoleConstant::SUPER_ADMIN]);
-        Role::create(['name' => RoleConstant::COMPANY_ADMIN]);
-        Role::create(['name' => RoleConstant::USER]);
+        if ( ! Role::findByName(RoleConstant::SUPER_ADMIN) ) {
+            Role::create(['name' => RoleConstant::SUPER_ADMIN]);
+        }
 
-        $user = User::first();
-        $user->assignRole(RoleConstant::SUPER_ADMIN);
+        if ( ! Role::findByName(RoleConstant::COMPANY_ADMIN) ) {
+            Role::create(['name' => RoleConstant::COMPANY_ADMIN]);
+        }
+
+        if ( ! Role::findByName(RoleConstant::USER) ) {
+            Role::create(['name' => RoleConstant::USER]);
+        }
+
+        $user = User::where('email', TestUserConstant::EMAIL)->first();
+        $user->assignRole(RoleConstant::USER);
     }
 }

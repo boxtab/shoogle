@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Constants\RoleConstant;
+use Spatie\Permission\Models\Role;
 
 class TestController extends Controller
 {
     public function test()
     {
-        $user = User::first();
-        $roles = $user->getRoleNames();
-        dd($roles[0]);
-        return 'test';
+        return Role::findByName(RoleConstant::SUPER_ADMIN) ? 'yes' : 'no';
+//        $user = User::first();
+//        $roles = $user->getRoleNames();
+//        dd($roles[0]);
+//        return 'test';
     }
 
     /**

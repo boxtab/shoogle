@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Constants\TestUserConstant;
 
 class TestUserSeeder extends Seeder
 {
@@ -16,9 +17,9 @@ class TestUserSeeder extends Seeder
     public function run()
     {
         $rows = DB::table('users')->insertOrIgnore([
-            'name' => 'testuser',
-            'email' => 'testuser@gmail.com',
-            'password' => Hash::make('secret'),
+            'name' => TestUserConstant::NAME,
+            'email' => TestUserConstant::EMAIL,
+            'password' => Hash::make(TestUserConstant::PASSWORD),
         ]);
 
         echo "Rows: $rows" . PHP_EOL;
