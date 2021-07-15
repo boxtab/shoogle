@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\V1\Auth\AuthController;
+use App\Http\Controllers\API\V1\CompanyController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::group(['middleware' => ['auth:api']], function () {
+Route::group(['prefix' => 'v1', 'middleware' => ['auth:api']], function () {
 
     Route::post('logout', [AuthController::class, 'logout'])
         ->name('api.v1.logout');
@@ -36,14 +37,29 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('signup', [AuthController::class, 'signup'])
         ->name('api.v1.signup');
 
+});
 
+Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api']], function () {
 
+    // Get a list of companies (no pagination yet)
+    // POST /api/v1/company/list
+    // {order: 'DESC/ASC'}
+    Route::get('/', [CompanyController::class, 'index']);
 
+    // Get company data by ID
+    // GET /api/v1/company/:id
+    Route::get('{id}', [CompanyController::class, 'show']);
 
-//    Route::match(['GET', 'POST'], 'test', [TestController::class, 'index'])
-//        ->name('api.v1.test');
-//
-//    Route::post('create', [TestController::class, 'create'])
-//        ->name('api.v1.create');
+    // Create a new company
+    // POST /api/v1/company
+    Route::post('', [CompanyController::class, 'create']);
+
+    // Edit new company
+    // POST /api/v1/company/:id
+    Route::post('{id}', [CompanyController::class, 'update']);
+
+    // Delete company
+    // DELETE /api/v1/company/:id
+    Route::delete('{id}', [CompanyController::class, 'destroy']);
 
 });
