@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\API\V1\Auth;
 
+use App\Constants\RoleConstant;
+use App\Constants\TestUserConstant;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -73,7 +76,8 @@ class AuthController extends BaseApiController
     public function signup(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'email' => 'required|email',
+            'name' => 'required|min:2|max:255',
+            'email' => 'required|email|max:255',
             'password' => 'required_with:password2|same:password2',
             'password2' => 'required',
         ]);
@@ -82,13 +86,21 @@ class AuthController extends BaseApiController
             return $this->validatorFails( $validator->errors() );
         }
 
-        $credentials = $request->only(['email','password']);
         try {
-            $user = User::create([
-                'name' => $credentials['email'],
-                'password' => bcrypt($credentials['password']),
-                'email' => $credentials['email']
-            ]);
+            $credentials = $request->only(['name', 'email','password']);
+
+            $user = DB::transaction( function () use ( $credentials ) {
+
+                $user = User::create([
+                    'name' => $credentials['name'],
+                    'password' => bcrypt($credentials['password']),
+                    'email' => $credentials['email'],
+                ]);
+
+                $user->assignRole(RoleConstant::USER);
+
+                return $user;
+            });
 
             $token = $user->createToken('Personal Access Token')->plainTextToken;
             $userResource = new UserResource($user);

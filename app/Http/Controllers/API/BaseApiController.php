@@ -28,6 +28,6 @@ class BaseApiController extends Controller
         return response()->json([
             'success' => false,
             'globalError' => $exceptionMessage,
-        ], 500);
+        ], 422);
     }
 }
