@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +17,8 @@ class TestUserSeeder extends Seeder
      */
     public function run()
     {
-        $rows = DB::table('users')->insertOrIgnore([
+        $rows = User::updateOrCreate(['email' => TestUserConstant::EMAIL],
+            [
             'name' => TestUserConstant::NAME,
             'email' => TestUserConstant::EMAIL,
             'password' => Hash::make(TestUserConstant::PASSWORD),
