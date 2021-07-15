@@ -97,6 +97,7 @@ class AuthController extends BaseApiController
         }
 
         return $userResource->setToken($token)
-            ->response($token);
+            ->response($token)
+            ->setStatusCode(200);
     }
 }
