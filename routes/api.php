@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\Auth\AuthController;
 use App\Http\Controllers\API\V1\CompanyController;
+use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -61,5 +62,30 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api']], function 
     // Delete company
     // DELETE /api/v1/company/:id
     Route::delete('{id}', [CompanyController::class, 'destroy']);
+
+});
+
+Route::group(['prefix' => 'v1/shoogle', 'middleware' => ['auth:api']], function () {
+
+    // list request:
+    // POST api/v1/shoogle/list
+    //{query: 'abc'}
+    Route::post('list', [ShooglesController::class, 'index']);
+
+    // shoogle fetch request:
+    // GET /api/v1/shoogle/:id
+
+
+    // Delete request:
+    // DELETE /api/v1/shoogle/:id
+    Route::delete('{id}', [ShooglesController::class, 'destroy']);
+
+    // Create new chat
+    // POST /api/v1/shoogle
+    Route::post('', [ShooglesController::class, 'create']);
+
+
+    // Edit chat
+    // POST /api/v1/shoogle/:id
 
 });

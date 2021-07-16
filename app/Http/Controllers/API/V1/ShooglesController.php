@@ -1,32 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\V1;
 
+use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\Shoogle;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\User;
-use App\Constants\RoleConstant;
-use Spatie\Permission\Models\Role;
+use App\Http\Controllers\API\BaseApiController;
 
-class TestController extends Controller
+class ShooglesController extends BaseApiController
 {
-    public function test()
-    {
-//        Shoogle::create([
-//            'owner_id' => 5,
-//            'wellbeing_category_id' => 5,
-//            'active' => 1,
-//            'title' => 'shoogle title 5',
-//            'reminder' => Carbon::now(),
-//            'description' => 'shoogle description 5',
-//            'cover_image' => 'shoogle cover_image 5',
-//            'accept_buddies' => 1,
-//        ]);
-
-        return Role::findByName(RoleConstant::SUPER_ADMIN)->name;
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -34,9 +18,11 @@ class TestController extends Controller
      */
     public function index()
     {
+        $data = Shoogle::get(['id', 'title'])->toArray();
+
         return response()->json([
             'success' => true,
-            'data' => [],
+            'data' => $data,
         ]);
     }
 
@@ -45,14 +31,28 @@ class TestController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(Request $request)
+    public function create()
     {
-        $data = [
-            'user_name' => $request->user,
-        ];
+        try {
+            Shoogle::create([
+                'owner_id' => 6,
+                'wellbeing_category_id' => 6,
+                'active' => 1,
+                'title' => 'shoogle title 6',
+                'reminder' => Carbon::now(),
+                'description' => 'shoogle description 6',
+                'cover_image' => 'shoogle cover_image 6',
+                'accept_buddies' => 1,
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            return $this->globalError( $e->errorInfo );
+        }
+
         return response()->json([
             'success' => true,
-            'data' => $data,
+            'data' => [
+                'message' => 'The shoogle was created successfully',
+            ],
         ]);
     }
 
@@ -104,11 +104,23 @@ class TestController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        //
+        try {
+            $shoogle = Shoogle::find($id);
+            $shoogle->delete();
+        } catch (\Exception $e) {
+            return $this->globalError( $e->getMessage() );
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'message' => 'Shoogle successfully deleted',
+            ],
+        ]);
     }
 }
