@@ -4,16 +4,12 @@ namespace App\Http\Controllers\API\V1\Auth;
 
 use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends BaseApiController
@@ -75,10 +71,10 @@ class AuthController extends BaseApiController
     public function signup(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'name' => 'required|min:2|max:255',
-            'email' => 'required|email|max:255',
-            'password' => 'required_with:password2|same:password2',
-            'password2' => 'required',
+            'name' => 'required|string|unique:users|min:4|max:255|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
+            'email' => 'required|email|min:6|max:255',
+            'password' => 'min:6|max:64|required_with:password2|same:password2',
+            'password2' => 'min:6|max:64|required',
         ]);
 
         if ( $validator->fails() ) {
