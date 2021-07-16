@@ -11,7 +11,7 @@ class TestController extends Controller
 {
     public function test()
     {
-        return ( env('DB_DATABASE') !== null ) ? true : false;
+        return Role::findByName(RoleConstant::SUPER_ADMIN)->name;
     }
 
     /**
