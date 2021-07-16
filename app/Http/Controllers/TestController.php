@@ -11,11 +11,7 @@ class TestController extends Controller
 {
     public function test()
     {
-        return Role::findByName(RoleConstant::SUPER_ADMIN) ? 'yes' : 'no';
-//        $user = User::first();
-//        $roles = $user->getRoleNames();
-//        dd($roles[0]);
-//        return 'test';
+        return ( env('DB_DATABASE') !== null ) ? true : false;
     }
 
     /**

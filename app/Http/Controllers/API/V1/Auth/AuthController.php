@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API\V1\Auth;
 
 use App\Constants\RoleConstant;
-use App\Constants\TestUserConstant;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
@@ -51,7 +50,7 @@ class AuthController extends BaseApiController
         }
 
         return $userResource->setToken($token)
-            ->response($token);
+            ->response();
     }
 
     /**

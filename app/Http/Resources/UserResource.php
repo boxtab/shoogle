@@ -44,10 +44,10 @@ class UserResource extends JsonResource
      * @param  \Illuminate\Http\Response  $response
      * @return void
      */
-    public function withResponse($request, $response)
-    {
-        $response->header('Authorization', 'Bearer ' . $request);
-    }
+//    public function withResponse($request, $response)
+//    {
+//        $response->header('Authorization', 'Bearer ' . $request);
+//    }
 
     /**
      * Get additional data that should be returned with the resource array.

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Constants\TestUserConstant;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use App\Constants\RoleConstant;
@@ -17,7 +16,7 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        //Reset cached roles and permissions
+        // Reset cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
 
         if ( ! Role::findByName(RoleConstant::SUPER_ADMIN) ) {
@@ -32,7 +31,11 @@ class RoleSeeder extends Seeder
             Role::create(['name' => RoleConstant::USER]);
         }
 
-        $user = User::where('email', TestUserConstant::EMAIL)->first();
-        $user->assignRole(RoleConstant::USER);
+        if ( env('TEST_USER_EMAIL') !== null ) {
+            $user = User::where('email', env('TEST_USER_EMAIL'))->first();
+            $user->assignRole(RoleConstant::USER);
+        } else {
+            echo 'Error: No email set for test user in .env file' . PHP_EOL;
+        }
     }
 }
