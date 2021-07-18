@@ -8,6 +8,7 @@ use App\Models\Shoogle;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
+use Illuminate\Support\Facades\Validator;
 
 class ShooglesController extends BaseApiController
 {
@@ -31,18 +32,32 @@ class ShooglesController extends BaseApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create()
+    public function create(Request $request)
     {
+        $validator =  Validator::make($request->all(),[
+            'owner_id' => ['required', 'integer', 'exists:users,id'],
+            'wellbeing_category_id' => ['required', 'integer', 'exists:wellbeing_categories,id'],
+            'active' => ['required', 'boolean'],
+            'title' => ['nullable', 'min:2', 'max:45'],
+            'description' => ['nullable', 'min:2', 'max:9086'],
+            'cover_image' => ['required', 'min:2', 'max:256'],
+            'accept_buddies' => ['required', 'boolean'],
+        ]);
+
+        if ( $validator->fails() ) {
+            return $this->validatorFails( $validator->errors() );
+        }
+
         try {
             Shoogle::create([
-                'owner_id' => 6,
-                'wellbeing_category_id' => 6,
-                'active' => 1,
-                'title' => 'shoogle title 6',
+                'owner_id' => $request->owner_id,
+                'wellbeing_category_id' => $request->wellbeing_category_id,
+                'active' => $request->active,
+                'title' => $request->title,
                 'reminder' => Carbon::now(),
-                'description' => 'shoogle description 6',
-                'cover_image' => 'shoogle cover_image 6',
-                'accept_buddies' => 1,
+                'description' => $request->description,
+                'cover_image' => $request->cover_image,
+                'accept_buddies' => $request->request,
             ]);
         } catch (\Illuminate\Database\QueryException $e) {
             return $this->globalError( $e->errorInfo );

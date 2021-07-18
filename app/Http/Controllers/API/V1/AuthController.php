@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Auth;
+namespace App\Http\Controllers\API\V1;
 
 use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;

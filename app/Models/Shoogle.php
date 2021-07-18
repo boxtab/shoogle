@@ -46,4 +46,10 @@ class Shoogle extends Model
         return $this->belongsTo(User::class, 'owner_id', 'id')
             ->withDefault();
     }
+
+    public function wellbeingCategory(): BelongsTo
+    {
+        return $this->belongsTo(WellbeingCategory::class, 'wellbeing_category_id', 'id')
+            ->withDefault();
+    }
 }
