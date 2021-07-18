@@ -24,6 +24,7 @@ class TestController extends Controller
 //            'accept_buddies' => 1,
 //        ]);
 
+        phpinfo();
         return Role::findByName(RoleConstant::SUPER_ADMIN)->name;
     }
 
