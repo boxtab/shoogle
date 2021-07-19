@@ -43,6 +43,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $guard_name = 'api';
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'company_id', 'id')
