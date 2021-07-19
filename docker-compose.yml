@@ -10,7 +10,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: digitalocean.com/php
-    container_name: app
+    container_name: shoogle_app
     restart: unless-stopped
     tty: true
     command: php-fpm
@@ -26,7 +26,7 @@ services:
   #Nginx Service
   webserver:
     image: nginx:alpine
-    container_name: webserver
+    container_name: shoogle_webserver
     restart: unless-stopped
     tty: true
     ports:
@@ -41,7 +41,7 @@ services:
   #MySQL Service
   db:
     image: mysql:5.7.22
-    container_name: db
+    container_name: shoogle_db
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
