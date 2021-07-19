@@ -2,12 +2,15 @@
 
 namespace App;
 
+use App\Models\Company;
+use App\Models\Role;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
@@ -19,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'avatar',
+        'company_id', 'name', 'email', 'password', 'avatar',
     ];
 
     /**
@@ -39,4 +42,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'id')
+            ->withDefault();
+    }
 }

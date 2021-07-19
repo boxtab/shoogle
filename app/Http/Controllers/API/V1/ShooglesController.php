@@ -102,8 +102,7 @@ class ShooglesController extends BaseApiController
                         'created_at' => $item->created_at,
                         'creator' => [
                             'email' => User::where('id', $item->owner_id)->first()->email,
-                            'team' => 1,
-//                            'team' => User::where('id', $item->owner_id)->first()->,
+                            'team' => User::where('id', $item->owner_id)->first()->company->name,
                             'role' => ModelHasRole::where('model_id', $item->owner_id)->first()->role->name,
                         ],
                         'shooglers_count' => Shoogle::count(),
