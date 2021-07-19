@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\ModelHasRole;
 use App\Models\Shoogle;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
@@ -35,7 +37,6 @@ class ShooglesController extends BaseApiController
     public function create(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'owner_id' => ['required', 'integer', 'exists:users,id'],
             'wellbeing_category_id' => ['required', 'integer', 'exists:wellbeing_categories,id'],
             'active' => ['required', 'boolean'],
             'title' => ['nullable', 'min:2', 'max:45'],
@@ -50,14 +51,14 @@ class ShooglesController extends BaseApiController
 
         try {
             Shoogle::create([
-                'owner_id' => $request->owner_id,
+                'owner_id' => Auth()->user()->id,
                 'wellbeing_category_id' => $request->wellbeing_category_id,
                 'active' => $request->active,
                 'title' => $request->title,
                 'reminder' => Carbon::now(),
                 'description' => $request->description,
                 'cover_image' => $request->cover_image,
-                'accept_buddies' => $request->request,
+                'accept_buddies' => $request->accept_buddies,
             ]);
         } catch (\Illuminate\Database\QueryException $e) {
             return $this->globalError( $e->errorInfo );
@@ -85,12 +86,40 @@ class ShooglesController extends BaseApiController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        //
+        try {
+            $data = Shoogle::where('id', $id)
+                ->firstOrFail()
+                ->get(['id', 'title', 'created_at', 'owner_id'])
+                ->map( function ( $item ) {
+                    return [
+                        'id' => $item->id,
+                        'title' => $item->title,
+                        'created_at' => $item->created_at,
+                        'creator' => [
+                            'email' => User::where('id', $item->owner_id)->first()->email,
+                            'team' => 1,
+//                            'team' => User::where('id', $item->owner_id)->first()->,
+                            'role' => ModelHasRole::where('model_id', $item->owner_id)->first()->role->name,
+                        ],
+                        'shooglers_count' => Shoogle::count(),
+                    ];
+                })->toArray();;
+
+        } catch (\Exception $e) {
+            return $this->globalError( $e->getMessage() );
+        }
+
+        // { id, title, creator: { email, team, role }, wellbeing_category, created_at, shooglers_count, buddies_count }}
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ]);
     }
 
     /**
