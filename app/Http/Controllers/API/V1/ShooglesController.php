@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Buddie;
 use App\Models\Company;
 use App\Models\ModelHasRole;
 use App\Models\Shoogle;
@@ -106,6 +107,7 @@ class ShooglesController extends BaseApiController
                             'role' => ModelHasRole::where('model_id', $item->owner_id)->first()->role->name,
                         ],
                         'shooglers_count' => Shoogle::count(),
+                        'buddies_count' => Buddie::where('shoogle_id', $item->id)->count(),
                     ];
                 })->toArray();;
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,5 +35,21 @@ class Buddie extends Model
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
 
+    public function user1(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user1_id', 'id')
+            ->withDefault();
+    }
 
+    public function user2(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user2_id', 'id')
+            ->withDefault();
+    }
+
+    public function shoogle(): BelongsTo
+    {
+        return $this->belongsTo(Shoogle::class, 'shoogle_id', 'id')
+            ->withDefault();
+    }
 }
