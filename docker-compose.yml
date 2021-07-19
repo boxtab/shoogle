@@ -44,7 +44,7 @@ services:
     container_name: db
     restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=123qwe+++
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     tty: true
     env_file:
       - ./.env
