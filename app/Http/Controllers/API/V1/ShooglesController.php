@@ -12,6 +12,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ShooglesController extends BaseApiController
@@ -91,7 +92,7 @@ class ShooglesController extends BaseApiController
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show($id = null)
     {
         try {
             $data = Shoogle::where('id', $id)

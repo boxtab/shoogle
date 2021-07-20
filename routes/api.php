@@ -111,7 +111,7 @@ Route::group(['prefix' => 'v1/shoogle', 'middleware' => ['auth:api']], function 
 
     // shoogle fetch request:
     // GET /api/v1/shoogle/:id
-    Route::get('{id}', [ShooglesController::class, 'show']);
+    Route::get('{id?}', [ShooglesController::class, 'show']);
 
 
     // Delete request:
