@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ShoogleCreateUpdate;
 use App\Models\Buddie;
 use App\Models\Company;
 use App\Models\ModelHasRole;
@@ -125,9 +126,8 @@ class ShooglesController extends BaseApiController
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit($id)
     {
@@ -137,13 +137,34 @@ class ShooglesController extends BaseApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(ShoogleCreateUpdate $request, $id)
     {
-        //
+//        if ( $validator->fails() ) {
+//            return $this->validatorFails( $validator->errors() );
+//        }
+
+        try {
+            $shoogle = Shoogle::where('id', $id)->firstOrFail();
+            $shoogle->update([
+                'wellbeing_category_id' => $request->wellbeing_category_id,
+                'active' => $request->active,
+                'title' => $request->title,
+                'description' => $request->description,
+                'cover_image' => $request->cover_image,
+                'accept_buddies' => $request->accept_buddies,
+            ]);
+        } catch (\Exception $e) {
+            return $this->globalError( $e->getMessage() );
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $shoogle,
+        ]);
     }
 
     /**

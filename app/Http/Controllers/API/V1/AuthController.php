@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
+use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\User;
 use Illuminate\Http\Request;
@@ -14,16 +15,26 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends BaseApiController
 {
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
+    private function rules($data)
+    {
+        $messages = [
+            'email.required'    => 'Please enter email.',
+            'email.exists'      => 'Email not registered.',
+            'email.email'       => 'Please enter valid email.',
+            'password.required' => 'Enter your password.',
+        ];
+
+        $validator = Validator::make($data, [
+            'email'     => 'required|email|exists:users',
+            'password'  => 'required',
+        ], $messages);
+
+        return $validator;
+    }
+
     public function login(Request $request)
     {
-        $validator =  Validator::make($request->all(),[
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $validator = $this->rules($request->all());
 
         if ( $validator->fails() ) {
             return $this->validatorFails( $validator->errors() );
@@ -33,7 +44,7 @@ class AuthController extends BaseApiController
         if ( ! Auth::attempt( $credentials ) ) {
             return response()->json([
                 'success' => false,
-                'globalError' => 'Unauthorized',
+                'errors' => ['Invalid password'],
             ], 422);
         }
 

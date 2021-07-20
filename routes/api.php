@@ -125,5 +125,5 @@ Route::group(['prefix' => 'v1/shoogle', 'middleware' => ['auth:api']], function 
 
     // Edit chat
     // POST /api/v1/shoogle/:id
-
+    Route::post('{id}', [ShooglesController::class, 'update']);
 });
