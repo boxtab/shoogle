@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'v1', 'middleware' => ['auth:api']], function () {
 
     Route::post('logout', [AuthController::class, 'logout'])
-        ->name('api.v1.logout');
+        ->name('logout');
 
 });
 
@@ -36,10 +36,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:api']], function () {
 Route::group(['prefix' => 'v1'], function () {
 
     Route::post('login', [AuthController::class, 'login'])
-        ->name('api.v1.login');
+        ->name('login');
 
     Route::post('signup', [AuthController::class, 'signup'])
-        ->name('api.v1.signup');
+        ->name('signup');
 
 });
 
