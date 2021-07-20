@@ -52,7 +52,7 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api']], function 
     // Get a list of companies (no pagination yet)
     // POST /api/v1/company/list
     // {order: 'DESC/ASC'}
-    Route::get('list', [CompanyController::class, 'index']);
+    Route::post('list', [CompanyController::class, 'index']);
 
     // Get company data by ID
     // GET /api/v1/company/:id
