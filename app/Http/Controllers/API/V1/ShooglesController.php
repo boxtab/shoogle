@@ -144,10 +144,6 @@ class ShooglesController extends BaseApiController
      */
     public function update(ShoogleCreateUpdate $request, $id)
     {
-//        if ( $validator->fails() ) {
-//            return $this->validatorFails( $validator->errors() );
-//        }
-
         try {
             $shoogle = Shoogle::where('id', $id)->firstOrFail();
             $shoogle->update([

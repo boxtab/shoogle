@@ -16,7 +16,7 @@ class UserController extends BaseApiController
      */
     public function index()
     {
-        $data = User::get(['id', 'name', 'email'])->toArray();
+        $data = User::get(['id', 'first_name', 'email'])->toArray();
 
         return response()->json([
             'success' => true,

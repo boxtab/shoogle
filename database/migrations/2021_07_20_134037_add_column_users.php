@@ -14,7 +14,9 @@ class AddColumnUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->string('last_name')->after('name')->nullable();
+            $table->text('about')->after('last_name')->nullable();
+            $table->string('profile_image')->after('avatar')->nullable();
         });
     }
 
@@ -25,8 +27,22 @@ class AddColumnUsers extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('users', 'last_name')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('last_name');
+            });
+        }
+
+        if (Schema::hasColumn('users', 'about')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('about');
+            });
+        }
+
+        if (Schema::hasColumn('users', 'profile_image')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('profile_image');
+            });
+        }
     }
 }

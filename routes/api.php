@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\CompanyController;
+use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\WellbeingCategoru;
@@ -126,4 +127,18 @@ Route::group(['prefix' => 'v1/shoogle', 'middleware' => ['auth:api']], function 
     // Edit chat
     // POST /api/v1/shoogle/:id
     Route::post('{id}', [ShooglesController::class, 'update']);
+});
+
+/**
+ * Entity: Profile
+ * Table: users
+ */
+Route::group(['prefix' => 'v1/profile', 'middleware' => ['auth:api']], function () {
+
+    // Saving a user profile
+    Route::put('', [ProfileController::class, 'store']);
+
+    // Retrieving data from a user profile
+    Route::get('', [ProfileController::class, 'show']);
+
 });

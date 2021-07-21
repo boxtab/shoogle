@@ -100,7 +100,7 @@ class AuthController extends BaseApiController
             $user = DB::transaction( function () use ( $credentials ) {
 
                 $user = User::create([
-                    'name' => $credentials['name'],
+                    'first_name' => $credentials['name'],
                     'password' => bcrypt($credentials['password']),
                     'email' => $credentials['email'],
                 ]);
