@@ -20,14 +20,6 @@ class CompanyController extends BaseApiController
      */
     public function index(Request $request)
     {
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'message' => 'Hello, world!'
-            ],
-        ]);
-
-        /*
         $validator =  Validator::make($request->all(),[
             'order' => [
                 'required',
@@ -54,7 +46,6 @@ class CompanyController extends BaseApiController
             'success' => true,
             'data' => $data,
         ]);
-        */
     }
 
     /**
