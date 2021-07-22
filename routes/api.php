@@ -79,9 +79,6 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api']], function 
  */
 Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api']], function () {
 
-    // Get a list of companies (no pagination yet)
-    // POST /api/v1/user/list
-    // {order: 'DESC/ASC'}
     Route::get('list', [UserController::class, 'index']);
 
 });

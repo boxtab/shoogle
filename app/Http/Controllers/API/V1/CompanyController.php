@@ -20,6 +20,14 @@ class CompanyController extends BaseApiController
      */
     public function index(Request $request)
     {
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'message' => 'Hello, world!'
+            ],
+        ]);
+
+        /*
         $validator =  Validator::make($request->all(),[
             'order' => [
                 'required',
@@ -46,6 +54,7 @@ class CompanyController extends BaseApiController
             'success' => true,
             'data' => $data,
         ]);
+        */
     }
 
     /**
@@ -85,7 +94,7 @@ class CompanyController extends BaseApiController
         }
 
         try {
-            Company::create([
+            $company = Company::create([
                 'name' => $request->name,
             ]);
         } catch (\Illuminate\Database\QueryException $e) {
@@ -95,7 +104,8 @@ class CompanyController extends BaseApiController
         return response()->json([
             'success' => true,
             'data' => [
-                'message' => 'The company was created successfully',
+                'id' => $company->id,
+                'name' => $company->name,
             ],
         ]);
     }
@@ -110,7 +120,7 @@ class CompanyController extends BaseApiController
     public function update(Request $request, $id)
     {
         $validator =  Validator::make($request->all(),[
-            'name' => 'required|unique:companies,name|min:2|max:45'
+            'name' => 'required|min:2|max:45'
         ]);
 
         if ( $validator->fails() ) {
@@ -128,7 +138,10 @@ class CompanyController extends BaseApiController
 
         return response()->json([
             'success' => true,
-            'data' => $company,
+            'data' => [
+                'id' => $company->id,
+                'name' => $company->name,
+            ],
         ]);
     }
 
