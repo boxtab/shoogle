@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\CompanyController;
+use App\Http\Controllers\API\V1\InviteController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
@@ -80,6 +81,7 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api']], function 
 Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api']], function () {
 
     Route::get('list', [UserController::class, 'index']);
+    Route::post('csv', [InviteController::class, 'store']);
 
 });
 
