@@ -53,7 +53,7 @@ class AdminSeeder extends Seeder
             DB::transaction( function () {
                 $user = User::updateOrCreate(['email' => env('ADMIN_EMAIL')],
                     [
-                        'name' => env('ADMIN_NAME'),
+                        'first_name' => env('ADMIN_NAME'),
                         'email' => env('ADMIN_EMAIL'),
                         'password' => bcrypt(env('ADMIN_PASSWORD')),
                     ]);
