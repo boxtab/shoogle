@@ -53,7 +53,7 @@ class SuperAdminSeeder extends Seeder
             DB::transaction( function () {
                 $user = User::updateOrCreate(['email' => env('SUPER_ADMIN_EMAIL')],
                     [
-                        'name' => env('SUPER_ADMIN_NAME'),
+                        'first_name' => env('SUPER_ADMIN_NAME'),
                         'email' => env('SUPER_ADMIN_EMAIL'),
                         'password' => bcrypt(env('SUPER_ADMIN_PASSWORD')),
                     ]);
