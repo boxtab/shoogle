@@ -44,7 +44,7 @@ class TestUserSeeder extends Seeder
         if ( $countCredentials === self::QUANTITY_CREDENTIALS ) {
             User::updateOrCreate(['email' => env('TEST_USER_EMAIL')],
                 [
-                    'name' => env('TEST_USER_NAME'),
+                    'first_name' => env('TEST_USER_NAME'),
                     'email' => env('TEST_USER_EMAIL'),
                     'password' => bcrypt( env('TEST_USER_PASSWORD') ),
 //                    'password' => Hash::make( env('TEST_USER_PASSWORD') ),

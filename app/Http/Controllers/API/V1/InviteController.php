@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
+use App\Models\Invite;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -13,6 +16,7 @@ use App\Repositories\InviteRepository;
 
 class InviteController extends BaseApiController
 {
+    const COUNT_FIELD = 2;
     /**
      * @var InviteRepositoryInterface
      */
@@ -45,15 +49,63 @@ class InviteController extends BaseApiController
         }
 
         $path = $request->file('file')->getRealPath();
-        $data = array_map('str_getcsv', file($path));
-//        $csv_data = array_slice($data, 0, 4);
+        $fileCSV = array_map('str_getcsv', file($path));
 
-        $test = null;
-//        $test = $this->inviteRepository->upload();
+        foreach ( $fileCSV as $invite ) {
+            if ( count( $invite ) === self::COUNT_FIELD ) {
+                continue;
+            }
+
+            if ( ! filter_var($invite[0], FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
+
+            if ( ! filter_var($invite[1], FILTER_VALIDATE_INT)) {
+                continue;
+            }
+
+            if ( Invite::on()->where('email', $invite[0])->count() > 0 ) {
+                continue;
+            }
+
+            if ( Company::on()->where('id', $invite[1])->count() === 0 ) {
+                continue;
+            }
+
+            $company = Company::on()->where('email', $invite[0])->first();
+
+            if ( $company !== null ) {
+                $company->update([
+                    'is_used' => 0,
+                    'created_by' => Auth::id(),
+                    'companies_id' => $invite[1],
+                ]);
+            } else {
+                $company = Company::on()->create([
+                    'email' => $invite[0],
+                    'is_used' => 1,
+                    'created_by' => Auth::id(),
+                    'companies_id' => $invite[1],
+                ]);
+            }
+
+//            Invite::on()->updateOrCreate(
+//                [
+//                    'email' =>  $invite[0]
+//                ],
+//                [
+//                    'is_used' => 0,
+//                    'created_by' => Auth::id(),
+//                    'companies_id' => $invite[1]
+//                ]
+//            );
+
+        }
+
 
         return response()->json([
             'success' => true,
-            'data' => $test//$data,
+            'data' => $fileCSV,
         ]);
     }
 }
