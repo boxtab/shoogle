@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\API\V1\InviteMail;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Invite;
@@ -50,44 +52,52 @@ class InviteController extends BaseApiController
 
         $path = $request->file('file')->getRealPath();
         $fileCSV = array_map('str_getcsv', file($path));
+        $listEmail = [];
 
-        foreach ( $fileCSV as $invite ) {
-            if ( count( $invite ) === self::COUNT_FIELD ) {
+        foreach ( $fileCSV as $inviteRow ) {
+
+            Log::info($inviteRow[0]);
+
+            if ( count( $inviteRow ) !== self::COUNT_FIELD ) {
                 continue;
             }
 
-            if ( ! filter_var($invite[0], FILTER_VALIDATE_EMAIL)) {
+            if ( ! filter_var($inviteRow[0], FILTER_VALIDATE_EMAIL)) {
                 continue;
             }
 
-            if ( ! filter_var($invite[1], FILTER_VALIDATE_INT)) {
+            if ( ! filter_var($inviteRow[1], FILTER_VALIDATE_INT)) {
                 continue;
             }
 
-            if ( Invite::on()->where('email', $invite[0])->count() > 0 ) {
+            if ( Invite::on()->where('email', $inviteRow[0])->count() > 0 ) {
                 continue;
             }
 
-            if ( Company::on()->where('id', $invite[1])->count() === 0 ) {
+            if ( Company::on()->where('id', $inviteRow[1])->count() === 0 ) {
                 continue;
             }
 
-            $company = Company::on()->where('email', $invite[0])->first();
 
-            if ( $company !== null ) {
-                $company->update([
+            $invite = Invite::on()->where('email', $inviteRow[0])->first();
+
+            if ( $invite !== null ) {
+                $invite->update([
                     'is_used' => 0,
                     'created_by' => Auth::id(),
-                    'companies_id' => $invite[1],
+                    'companies_id' => $inviteRow[1],
                 ]);
             } else {
-                $company = Company::on()->create([
-                    'email' => $invite[0],
-                    'is_used' => 1,
-                    'created_by' => Auth::id(),
-                    'companies_id' => $invite[1],
-                ]);
+
+                $invite = new Invite();
+                $invite->email = $inviteRow[0];
+                $invite->is_used = 1;
+                $invite->created_by = Auth::id();
+                $invite->companies_id = $inviteRow[1];
+                $invite->save();
             }
+
+            $listEmail[] = $inviteRow[0];
 
 //            Invite::on()->updateOrCreate(
 //                [
@@ -102,10 +112,17 @@ class InviteController extends BaseApiController
 
         }
 
+        if ( ! empty( $listEmail ) ) {
+            $inviteMail = new InviteMail();
+            foreach ( $listEmail as $email ) {
+                $inviteMail->to($email);
+                Mail::send( $inviteMail );
+            }
+        }
 
         return response()->json([
             'success' => true,
-            'data' => $fileCSV,
+            'data' => $listEmail,
         ]);
     }
 }

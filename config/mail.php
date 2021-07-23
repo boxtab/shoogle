@@ -107,4 +107,16 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Addresses for sending invitations
+    |--------------------------------------------------------------------------
+    | Please edit these parameters in the environment file.
+    |
+    */
+
+    'invite' => [
+        'email_from' => env('INVITE_EMAIL_FROM', 'support@shoogle.com'),
+        'subject' => env('INVITE_SUBJECT', 'We invite you to the system shoogle.'),
+    ],
 ];
