@@ -30,6 +30,6 @@ class InviteMail extends Mailable
     {
         return $this->from( config('mail.invite.email_from') )
             ->subject( config('mail.invite.subject') )
-            ->view('emails.email');
+            ->view('emails.invite');
     }
 }
