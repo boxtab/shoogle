@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class AuthController extends BaseApiController
 {
@@ -45,15 +46,15 @@ class AuthController extends BaseApiController
         if ( ! Auth::attempt( $credentials ) ) {
             return response()->json([
                 'success' => false,
-                'errors' => ['Invalid password'],
+                'errors' => (object)(['password' => 'Wrong password']),
             ], 422);
         }
 
         try {
-            $user = User::where('email', $credentials['email'])->first();
+            $user = User::where('email', $credentials['email'])->firstOrFail();
             $token = $user->createToken('Personal Access Token')->plainTextToken;
             $userResource = new UserResource($user);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->globalError( $e->getMessage() );
         }
 
@@ -66,7 +67,6 @@ class AuthController extends BaseApiController
      */
     public function logout()
     {
-        Log::info('test logout');
         auth()->user()->tokens()->delete();
 
         return response()->json([
@@ -112,7 +112,7 @@ class AuthController extends BaseApiController
 
             $token = $user->createToken('Personal Access Token')->plainTextToken;
             $userResource = new UserResource($user);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->globalError( $e->getMessage() );
         }
 

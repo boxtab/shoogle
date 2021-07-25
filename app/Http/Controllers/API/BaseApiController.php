@@ -5,8 +5,14 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
+use stdClass;
+
+class Foo{
+
+}
 
 /**
  * Base controller for returning success and failure responses.
@@ -15,11 +21,11 @@ use phpDocumentor\Reflection\DocBlock\Tags\Param;
  */
 class BaseApiController extends Controller
 {
-    protected function validatorFails( $validatorErrors )
+    protected function validatorFails( object $validatorErrors )
     {
         return response()->json([
             'success' => false,
-            'errors' => $validatorErrors,
+            'errors' => replaceArraysOnStrings($validatorErrors),
         ], 422);
     }
 
