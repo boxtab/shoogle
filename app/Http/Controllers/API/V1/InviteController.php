@@ -15,10 +15,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Repositories\InviteRepositoryInterface;
 use App\Repositories\InviteRepository;
+use Exception;
 
 class InviteController extends BaseApiController
 {
-    const COUNT_FIELD = 2;
+    const COUNT_FIELD = 1;
     /**
      * @var InviteRepositoryInterface
      */
@@ -44,10 +45,17 @@ class InviteController extends BaseApiController
     {
         $validator =  Validator::make($request->all(),[
             'file' => 'required|mimes:csv,txt',
+            'companyId' => 'required|integer'
         ]);
 
         if ( $validator->fails() ) {
             return $this->validatorFails( $validator->errors() );
+        }
+
+        try {
+            Company::on()->where('id', $request->companyId)->firstOrFail();
+        } catch (Exception $e) {
+            return $this->globalError( $e->getMessage() );
         }
 
         $path = $request->file('file')->getRealPath();
@@ -55,8 +63,6 @@ class InviteController extends BaseApiController
         $listEmail = [];
 
         foreach ( $fileCSV as $inviteRow ) {
-
-            Log::info($inviteRow[0]);
 
             if ( count( $inviteRow ) !== self::COUNT_FIELD ) {
                 continue;
@@ -66,18 +72,9 @@ class InviteController extends BaseApiController
                 continue;
             }
 
-            if ( ! filter_var($inviteRow[1], FILTER_VALIDATE_INT)) {
-                continue;
-            }
-
             if ( Invite::on()->where('email', $inviteRow[0])->count() > 0 ) {
                 continue;
             }
-
-            if ( Company::on()->where('id', $inviteRow[1])->count() === 0 ) {
-                continue;
-            }
-
 
             $invite = Invite::on()->where('email', $inviteRow[0])->first();
 
@@ -85,7 +82,7 @@ class InviteController extends BaseApiController
                 $invite->update([
                     'is_used' => 0,
                     'created_by' => Auth::id(),
-                    'companies_id' => $inviteRow[1],
+                    'companies_id' => $request->companyId,
                 ]);
             } else {
 
@@ -93,7 +90,7 @@ class InviteController extends BaseApiController
                 $invite->email = $inviteRow[0];
                 $invite->is_used = 1;
                 $invite->created_by = Auth::id();
-                $invite->companies_id = $inviteRow[1];
+                $invite->companies_id = $request->companyId;
                 $invite->save();
             }
 
