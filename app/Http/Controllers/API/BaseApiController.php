@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Validator;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use stdClass;
 
-class Foo{
-
-}
-
 /**
  * Base controller for returning success and failure responses.
  *

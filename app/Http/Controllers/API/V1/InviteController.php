@@ -122,7 +122,7 @@ class InviteController extends BaseApiController
 
         return response()->json([
             'success' => true,
-            'data' => $listEmail,
+            'data' => [],
         ]);
     }
 }
