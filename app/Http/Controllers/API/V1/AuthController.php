@@ -6,6 +6,7 @@ use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Invite;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -84,28 +85,41 @@ class AuthController extends BaseApiController
     public function signup(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'name' => 'required|string|min:4|max:255|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
             'email' => 'required|email||unique:users,email|min:6|max:255',
-            'password' => 'min:6|max:64|required_with:password2|same:password2',
-            'password2' => 'min:6|max:64|required',
+            'password' => 'min:6|max:64|required',
         ]);
 
         if ( $validator->fails() ) {
+            Log::info( gettype( $validator->errors() ));
             return $this->validatorFails( $validator->errors() );
+        }
+
+        try {
+            $invite = Invite::where('email', $request->email)->firstorFail();
+        } catch (Exception $e) {
+            return $this->getCustomValidatorErrors( ['email' => 'Email is not in the invite list'] );
+        }
+
+        if ( (int) $invite->is_used === 1 ) {
+            return $this->getCustomValidatorErrors( ['email' => 'The invitation for this email has already been used.'] );
         }
 
         try {
             $credentials = $request->only(['name', 'email','password']);
 
-            $user = DB::transaction( function () use ( $credentials ) {
+            $user = DB::transaction( function () use ( $credentials, $invite ) {
 
                 $user = User::create([
-                    'first_name' => $credentials['name'],
+                    'company_id' => $invite->companies_id,
                     'password' => bcrypt($credentials['password']),
                     'email' => $credentials['email'],
                 ]);
 
                 $user->assignRole(RoleConstant::USER);
+
+                DB::table('invites')
+                    ->where('id', $invite->id)
+                    ->update(['is_used' => 1]);
 
                 return $user;
             });

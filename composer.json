@@ -19,7 +19,8 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "spatie/laravel-medialibrary": "^7.0.0",
-        "spatie/laravel-permission": "^4.2"
+        "spatie/laravel-permission": "^4.2",
+        "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",

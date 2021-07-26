@@ -32,4 +32,12 @@ class BaseApiController extends Controller
             'globalError' => $exceptionMessage,
         ]);
     }
+
+    protected function getCustomValidatorErrors( array $listErrors )
+    {
+        return response()->json([
+            'success' => false,
+            'errors' => $listErrors,
+        ], 422);
+    }
 }

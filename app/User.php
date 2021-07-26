@@ -13,8 +13,9 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User  extends Authenticatable implements HasMedia
+class User  extends Authenticatable implements JWTSubject, HasMedia
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, HasMediaTrait;
 
@@ -58,5 +59,15 @@ class User  extends Authenticatable implements HasMedia
     {
         return $this->belongsTo(Company::class, 'company_id', 'id')
             ->withDefault();
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

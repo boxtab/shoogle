@@ -88,7 +88,7 @@ class InviteController extends BaseApiController
 
                 $invite = new Invite();
                 $invite->email = $inviteRow[0];
-                $invite->is_used = 1;
+                $invite->is_used = 0;
                 $invite->created_by = Auth::id();
                 $invite->companies_id = $request->companyId;
                 $invite->save();
