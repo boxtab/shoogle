@@ -19,9 +19,9 @@ class RoleSeeder extends Seeder
         // Reset cached roles and permissions
         app()['cache']->forget('spatie.permission.cache');
 
-        Role::firstOrCreate(['name' => RoleConstant::SUPER_ADMIN, 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => RoleConstant::COMPANY_ADMIN, 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => RoleConstant::USER, 'guard_name' => 'web']);
+        Role::updateOrCreate(['name' => RoleConstant::SUPER_ADMIN, 'guard_name' => 'api']);
+        Role::updateOrCreate(['name' => RoleConstant::COMPANY_ADMIN, 'guard_name' => 'api']);
+        Role::updateOrCreate(['name' => RoleConstant::USER, 'guard_name' => 'api']);
 
         /*
         if ( ! Role::findByName(RoleConstant::SUPER_ADMIN) ) {

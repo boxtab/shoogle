@@ -53,7 +53,7 @@ class User  extends Authenticatable implements JWTSubject, HasMedia
         'email_verified_at' => 'datetime',
     ];
 
-    protected $guard_name = 'web';
+    protected $guard_name = 'api';
 
     public function company(): BelongsTo
     {
@@ -61,13 +61,21 @@ class User  extends Authenticatable implements JWTSubject, HasMedia
             ->withDefault();
     }
 
-    public function getJWTIdentifier()
-    {
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier() {
         return $this->getKey();
     }
 
-    public function getJWTCustomClaims()
-    {
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims() {
         return [];
     }
 }

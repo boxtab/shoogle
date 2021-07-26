@@ -20,6 +20,16 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends BaseApiController
 {
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login', 'signup']]);
+    }
+
     private function rules($data)
     {
         $messages = [
@@ -37,6 +47,12 @@ class AuthController extends BaseApiController
         return $validator;
     }
 
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function login(Request $request)
     {
         $validator = $this->rules($request->all());
@@ -45,30 +61,8 @@ class AuthController extends BaseApiController
             return $this->validatorFails( $validator->errors() );
         }
 
-        $credentials = $request->only('email', 'password');
-
-        try {
-            if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => (object)(['password' => 'Wrong password']),
-                ], 422);
-            }
-
-            $user = User::where('email', $credentials['email'])->firstOrFail();
-//            $token = $user->createToken('Personal Access Token')->plainTextToken;
-            $userResource = new UserResource($user);
-        } catch (JWTException $e) {
-            return $this->globalError( $e->getMessage() );
-//            return response()->json(['error' => 'could_not_create_token'], 500);
-        }
-
-        return $userResource->setToken($token)
-            ->response();
-
-        /*
         $credentials = $request->only(['email','password']);
-        if ( ! Auth::attempt( $credentials ) ) {
+        if ( ! $token = Auth::attempt( $credentials ) ) {
             return response()->json([
                 'success' => false,
                 'errors' => (object)(['password' => 'Wrong password']),
@@ -77,7 +71,7 @@ class AuthController extends BaseApiController
 
         try {
             $user = User::where('email', $credentials['email'])->firstOrFail();
-            $token = $user->createToken('Personal Access Token')->plainTextToken;
+//            $token = $user->createToken('Personal Access Token')->plainTextToken;
             $userResource = new UserResource($user);
         } catch (Exception $e) {
             return $this->globalError( $e->getMessage() );
@@ -85,22 +79,6 @@ class AuthController extends BaseApiController
 
         return $userResource->setToken($token)
             ->response();
-        */
-    }
-
-    /**
-     * @return JsonResponse
-     */
-    public function logout()
-    {
-        auth()->user()->tokens()->delete();
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'message' => 'Tokens Revoked'
-            ],
-        ]);
     }
 
     /**
@@ -159,5 +137,23 @@ class AuthController extends BaseApiController
         return $userResource->setToken($token)
             ->response($token)
             ->setStatusCode(200);
+    }
+
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return JsonResponse
+     */
+    public function logout()
+    {
+        auth()->logout();
+//        auth()->user()->tokens()->delete();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'message' => 'User successfully signed out'
+            ],
+        ]);
     }
 }
