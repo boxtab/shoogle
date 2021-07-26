@@ -21,11 +21,11 @@ class InviteRepository extends Repositories implements InviteRepositoryInterface
     /**
      * InviteRepository constructor.
      *
-     * @param Invite $invite
+     * @param Invite $model
      */
-    public function __construct(Invite $invite)
+    public function __construct(Invite $model)
     {
-        parent::__construct($invite);
+        parent::__construct($model);
     }
 
     /**
