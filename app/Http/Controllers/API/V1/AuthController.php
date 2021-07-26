@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends BaseApiController
 {
@@ -43,6 +45,28 @@ class AuthController extends BaseApiController
             return $this->validatorFails( $validator->errors() );
         }
 
+        $credentials = $request->only('email', 'password');
+
+        try {
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => (object)(['password' => 'Wrong password']),
+                ], 422);
+            }
+
+            $user = User::where('email', $credentials['email'])->firstOrFail();
+//            $token = $user->createToken('Personal Access Token')->plainTextToken;
+            $userResource = new UserResource($user);
+        } catch (JWTException $e) {
+            return $this->globalError( $e->getMessage() );
+//            return response()->json(['error' => 'could_not_create_token'], 500);
+        }
+
+        return $userResource->setToken($token)
+            ->response();
+
+        /*
         $credentials = $request->only(['email','password']);
         if ( ! Auth::attempt( $credentials ) ) {
             return response()->json([
@@ -61,6 +85,7 @@ class AuthController extends BaseApiController
 
         return $userResource->setToken($token)
             ->response();
+        */
     }
 
     /**
@@ -121,10 +146,11 @@ class AuthController extends BaseApiController
                     ->where('id', $invite->id)
                     ->update(['is_used' => 1]);
 
+
                 return $user;
             });
-
-            $token = $user->createToken('Personal Access Token')->plainTextToken;
+            $token = JWTAuth::fromUser($user);
+//            $token = $user->createToken('Personal Access Token')->plainTextToken;
             $userResource = new UserResource($user);
         } catch (Exception $e) {
             return $this->globalError( $e->getMessage() );
