@@ -226,11 +226,11 @@ App version
 
 Clear config artisan
 
-docker-compose exec app php artisan config:clear
-docker-compose exec app php artisan cache:clear
-docker-compose exec app php artisan view:clear
-docker-compose exec app php artisan route:clear
-docker-compose exec app php artisan optimize:clear
+`docker-compose exec app php artisan config:clear`
+`docker-compose exec app php artisan cache:clear`
+`docker-compose exec app php artisan view:clear`
+`docker-compose exec app php artisan route:clear`
+`docker-compose exec app php artisan optimize:clear`
 
 
 
@@ -239,3 +239,13 @@ docker-compose exec app php artisan optimize:clear
 Clear log file
 
 `docker-compose exec app echo "" > storage/logs/laravel-2021-06-09.log`
+
+### Create a user with super-admin rights.
+
+`docker-compose exec app php artisan shoogle:superadmin`
+
+Answer the questions:
+
+First Name?
+Email?
+Password ?

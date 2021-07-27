@@ -6,16 +6,25 @@ use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends BaseApiController
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
+        $payload = JWTAuth::parseToken()->getPayload();
+        $test = $payload->get('company_id');
+        Log::info($test);
+
+
+
         $data = User::get(['id', 'first_name', 'email'])->toArray();
 
         return response()->json([

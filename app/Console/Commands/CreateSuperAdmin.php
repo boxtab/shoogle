@@ -43,7 +43,7 @@ class CreateSuperAdmin extends Command
     public function handle()
     {
         $firstName = $this->ask('First Name?');
-        $email = $this->ask('Email ?');
+        $email = $this->ask('Email?');
         $password = $this->secret('Password ?');
 
         $validator = Validator::make([

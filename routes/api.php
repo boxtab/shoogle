@@ -67,6 +67,9 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin
     // DELETE /api/v1/company/:id
     Route::delete('{id}', [CompanyController::class, 'destroy']);
 
+    // Entry company
+    // GET /api/v1/company/entry/:id
+    Route::get('entry/{id}', [CompanyController::class, 'entry']);
 });
 
 /**

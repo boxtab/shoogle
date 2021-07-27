@@ -8,6 +8,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Invite;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -62,7 +63,10 @@ class AuthController extends BaseApiController
         }
 
         $credentials = $request->only(['email','password']);
-        if ( ! $token = Auth::attempt( $credentials ) ) {
+        $expirationTime = ['exp' => Carbon::now()->addDays(7)->timestamp];
+
+        if ( ! $token = JWTAuth::attempt($credentials, $expirationTime) ) {
+//        if ( ! $token = Auth::attempt( $credentials ) ) {
             return response()->json([
                 'success' => false,
                 'errors' => (object)(['password' => 'Wrong password']),

@@ -6,6 +6,7 @@ use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Constants\RoleConstant;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Facades\JWTFactory;
 
 class CompanyController extends BaseApiController
 {
@@ -183,6 +186,42 @@ class CompanyController extends BaseApiController
             'success' => true,
             'data' => [
                 'message' => 'Company successfully deleted',
+            ],
+        ]);
+    }
+
+    /**
+     * Entry company.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function entry(Request $request, int $id)
+    {
+        try {
+            Company::findOrFail($id);
+        } catch (Exception $e) {
+            return $this->globalError( $e->getMessage() );
+        }
+
+        Log::info($id);
+        $user = Auth::user();
+        $customClaims = ['company_id' => $id];
+        $token = JWTAuth::fromUser($user, $customClaims);
+
+        // add a custom claim with a key of `foo` and a value of ['bar' => 'baz']
+//        $user = Auth::user();
+//        $payload = JWTFactory::sub(123)->aud('foo')->foo(['bar' => 'baz'])->make();
+//        $token = JWTAuth::fromUser($user, $payload)
+
+
+//        $token = $request->bearerToken();
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'message' => 'You have entered the company.',
+                'token' => $token,
             ],
         ]);
     }

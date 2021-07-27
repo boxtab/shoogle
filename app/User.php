@@ -15,7 +15,7 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User  extends Authenticatable implements JWTSubject, HasMedia
+class User extends Authenticatable implements JWTSubject, HasMedia
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, HasMediaTrait;
 
@@ -66,7 +66,8 @@ class User  extends Authenticatable implements JWTSubject, HasMedia
      *
      * @return mixed
      */
-    public function getJWTIdentifier() {
+    public function getJWTIdentifier()
+    {
         return $this->getKey();
     }
 
@@ -75,7 +76,8 @@ class User  extends Authenticatable implements JWTSubject, HasMedia
      *
      * @return array
      */
-    public function getJWTCustomClaims() {
+    public function getJWTCustomClaims()
+    {
         return [];
     }
 }
