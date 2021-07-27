@@ -5,11 +5,14 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use App\Constants\RoleConstant;
 
 class CompanyController extends BaseApiController
 {
@@ -78,7 +81,10 @@ class CompanyController extends BaseApiController
     public function create(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'name' => 'required|unique:companies,name|min:2|max:45'
+            'name_company' => 'required|unique:companies,name|min:2|max:45',
+            'first_name' => 'required|min:2|max:255',
+            'email' => 'required|email|unique:users,email|min:6|max:255',
+            'password' => 'required|min:6|max:64',
         ]);
 
         if ( $validator->fails() ) {
@@ -86,9 +92,23 @@ class CompanyController extends BaseApiController
         }
 
         try {
-            $company = Company::create([
-                'name' => $request->name,
-            ]);
+            DB::transaction( function () use ($request) {
+
+                $company = Company::create([
+                    'name' => $request->name_company,
+                ]);
+
+                $user = User::create([
+                    'company_id' => $company->id,
+                    'first_name' => $request->first_name,
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password),
+                ]);
+
+                $user->assignRole(RoleConstant::COMPANY_ADMIN);
+
+            });
+
         } catch (\Illuminate\Database\QueryException $e) {
             return $this->globalError( $e->errorInfo );
         }
@@ -96,8 +116,7 @@ class CompanyController extends BaseApiController
         return response()->json([
             'success' => true,
             'data' => [
-                'id' => $company->id,
-                'name' => $company->name,
+                'message' => 'Company and administrator created successfully',
             ],
         ]);
     }
@@ -147,7 +166,15 @@ class CompanyController extends BaseApiController
     {
         try {
             $company = Company::findOrFail($id);
-            $company->delete();
+
+            DB::transaction( function () use ($company) {
+                $user = User::where('company_id', $company->id)->first();
+                $user->roles()->detach();
+
+                User::where('company_id', $company->id)->delete();
+                Company::where('id', $company->id)->delete();
+            });
+
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );
         }
