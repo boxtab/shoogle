@@ -44,7 +44,7 @@ Route::group(['prefix' => 'v1'], function () {
  * Entity: Company
  * Table: companies
  */
-Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api']], function () {
+Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin']], function () {
 
     // Get a list of companies (no pagination yet)
     // POST /api/v1/company/list
