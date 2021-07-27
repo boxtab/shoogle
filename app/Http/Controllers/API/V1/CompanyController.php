@@ -205,18 +205,9 @@ class CompanyController extends BaseApiController
             return $this->globalError( $e->getMessage() );
         }
 
-        Log::info($id);
         $user = Auth::user();
-        $customClaims = ['company_id' => $id];
-        $token = JWTAuth::fromUser($user, $customClaims);
+        $token = JWTAuth::customClaims(['company_id' => $id])->fromUser($user);
 
-        // add a custom claim with a key of `foo` and a value of ['bar' => 'baz']
-//        $user = Auth::user();
-//        $payload = JWTFactory::sub(123)->aud('foo')->foo(['bar' => 'baz'])->make();
-//        $token = JWTAuth::fromUser($user, $payload)
-
-
-//        $token = $request->bearerToken();
         return response()->json([
             'success' => true,
             'data' => [

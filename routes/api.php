@@ -78,7 +78,7 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin
  */
 Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api']], function () {
 
-    Route::get('list', [UserController::class, 'index']);
+    Route::get('list', [UserController::class, 'index'])->middleware(['admin.superadmin']);
     Route::post('csv', [InviteController::class, 'store']);
 
 });

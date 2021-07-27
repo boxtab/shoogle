@@ -2,13 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Constants\RoleConstant;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use App\Constants\RoleConstant;
 
-class CheckRoleSuperAdmin
+class CheckRoleAdmin
 {
     /**
      * Handle an incoming request.
@@ -19,10 +18,10 @@ class CheckRoleSuperAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if ( Auth::user()->roles()->first()->name !== RoleConstant::SUPER_ADMIN ) {
+        if ( Auth::user()->roles()->first()->name !== RoleConstant::COMPANY_ADMIN ) {
             return response()->json([
                 'success' => false,
-                'data' => ['message' => 'The route is available only for users with the SUPER ADMIN role.'],
+                'data' => ['message' => 'The route is available only for users with the ADMIN role.'],
             ]);
         }
 

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -19,13 +21,25 @@ class UserController extends BaseApiController
      */
     public function index(Request $request)
     {
-        $payload = JWTAuth::parseToken()->getPayload();
-        $test = $payload->get('company_id');
-        Log::info($test);
+        $companyId = null;
+        $roleName = Auth::user()->roles()->first()->name;
 
+        switch ( $roleName ) {
+            case RoleConstant::SUPER_ADMIN:
+                $payload = JWTAuth::parseToken()->getPayload();
+                $companyId = $payload->get('company_id');
+                break;
+            case RoleConstant::COMPANY_ADMIN:
+                $companyId = Auth::user()->company_id;
+                break;
+        }
 
-
-        $data = User::get(['id', 'first_name', 'email'])->toArray();
+        $data = User::on()
+            ->when( ! is_null( $companyId ) , function ($query) use ($companyId) {
+                return $query->where('company_id', $companyId);
+            })
+            ->get(['id', 'first_name', 'email'])
+            ->toArray();
 
         return response()->json([
             'success' => true,

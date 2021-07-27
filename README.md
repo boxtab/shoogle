@@ -94,6 +94,14 @@ Also, you need to install passport with:
 
 `docker-compose exec app  php artisan passport:install`
 
+For handling the token encryption, generate a secret key by executing the following command
+
+`docker-compose exec app php artisan jwt:secret`
+
+We have successfully generated the JWT Secret key, and you can check this key inside the .env file.
+
+`JWT_SECRET=secret_jwt_string_key`
+
 #### 10. NPM Run '*'
 Now that you have the database tables and default rows, you need to build the styles and scripts.
 
