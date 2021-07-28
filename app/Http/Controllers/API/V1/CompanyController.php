@@ -107,10 +107,11 @@ class CompanyController extends BaseApiController
     public function create(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'name_company' => 'required|unique:companies,name|min:2|max:45',
-            'first_name' => 'required|min:2|max:255',
-            'email' => 'required|email|unique:users,email|min:6|max:255',
-            'password' => 'required|min:6|max:64',
+            'name_company'  => 'required|unique:companies,name|min:2|max:45',
+            'first_name'    => 'required|min:2|max:255',
+            'last_name'     => 'min:2|max:255',
+            'email'         => 'required|email|unique:users,email|min:6|max:255',
+            'password'      => 'required|min:6|max:64',
         ]);
 
         if ( $validator->fails() ) {
@@ -125,10 +126,11 @@ class CompanyController extends BaseApiController
                 ]);
 
                 $user = User::create([
-                    'company_id' => $company->id,
-                    'first_name' => $request->first_name,
-                    'email' => $request->email,
-                    'password' => bcrypt($request->password),
+                    'company_id'    => $company->id,
+                    'first_name'    => $request->first_name,
+                    'last_name'     => $request->last_name,
+                    'email'         => $request->email,
+                    'password'      => bcrypt($request->password),
                 ]);
 
                 $user->assignRole(RoleConstant::COMPANY_ADMIN);

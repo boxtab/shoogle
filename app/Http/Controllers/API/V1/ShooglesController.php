@@ -28,12 +28,12 @@ class ShooglesController extends BaseApiController
         try {
             $search = $request->has('search') ? $request->search : null;
 
-        $data = Shoogle::on()
-            ->when( ! is_null( $search ) , function ($query) use ($search) {
-                return $query->where('title', 'like', '%' . $search .'%');
-            })
-            ->get(['id', 'title'])
-            ->toArray();
+            $data = Shoogle::on()
+                ->when( ! is_null( $search ) , function ($query) use ($search) {
+                    return $query->where('title', 'like', '%' . $search .'%');
+                })
+                ->get(['id', 'title'])
+                ->toArray();
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );
         }
