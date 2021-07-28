@@ -154,9 +154,7 @@ class CompanyController extends BaseApiController
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'message' => 'Company and administrator created successfully',
-            ],
+            'data' => [],
         ]);
     }
 
@@ -170,10 +168,10 @@ class CompanyController extends BaseApiController
     public function update(Request $request, $id)
     {
         $validator =  Validator::make($request->all(),[
-            'name_company'  => 'required|unique:companies,name|min:2|max:45',
+            'name_company'  => 'required|min:2|max:45',
             'first_name'    => 'required|min:2|max:255',
             'last_name'     => 'min:2|max:255',
-            'email'         => 'required|email|unique:users,email|min:6|max:255',
+            'email'         => 'required|email|min:6|max:255',
             'password'      => 'required|min:6|max:64',
         ]);
 
@@ -182,18 +180,26 @@ class CompanyController extends BaseApiController
         }
 
         try {
-            null;
-            /*
-            $company = Company::where('id', $id)->firstOrFail();
+            Company::where('id', $id)->firstOrFail();
 
-            DB::transaction( function () use ($request) {
+            DB::transaction( function () use ($request, $id) {
 
-                $company = Company::where([
+                Company::where('id', $id)->update([
                     'name' => $request->name_company,
                 ]);
 
-                $user = User::create([
-                    'company_id'    => $company->id,
+                $userAdminCompany = User::on()->
+                    leftJoin('model_has_roles', function($join) {
+                        $join->on('users.id', '=', 'model_has_roles.model_id');
+                    })->leftJoin('roles', function($join) {
+                        $join->on('roles.id', '=', 'model_has_roles.role_id');
+                    })
+                    ->where('users.company_id', $id)
+                    ->where('roles.name', RoleConstant::COMPANY_ADMIN)
+                    ->first(['users.id']);
+
+                User::where('id', $userAdminCompany->id)->update([
+                    'company_id'    => $id,
                     'first_name'    => $request->first_name,
                     'last_name'     => $request->last_name,
                     'email'         => $request->email,
@@ -201,7 +207,7 @@ class CompanyController extends BaseApiController
                 ]);
 
             });
-*/
+
         } catch (\Illuminate\Database\QueryException $e) {
             return $this->globalError( $e->errorInfo );
         }
