@@ -62,8 +62,8 @@ class CompanyController extends BaseApiController
                         where un.company_id = c.id
                           and r.name = "company-admin"
                         limit 1
-                    ) as email,
-                    (select count(uc.id) from users as uc where uc.company_id = c.id) as count_user
+                    ) as contact_person_email,
+                    (select count(uc.id) from users as uc where uc.company_id = c.id) as users_count
                 from companies as c
                 order by c.id
             '));
