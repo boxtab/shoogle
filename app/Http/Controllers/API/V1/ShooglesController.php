@@ -106,9 +106,10 @@ class ShooglesController extends BaseApiController
     public function show($id = null)
     {
         try {
-            $data = Shoogle::where('id', $id)
+            $data = Shoogle::on()
                 ->firstOrFail()
                 ->get(['id', 'title', 'created_at', 'owner_id'])
+                ->where('id', '=', $id)
                 ->map( function ( $item ) {
                     return [
                         'id' => $item->id,
