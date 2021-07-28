@@ -118,7 +118,7 @@ class CompanyController extends BaseApiController
     public function create(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'name_company'  => 'required|unique:companies,name|min:2|max:45',
+            'company_name'  => 'required|unique:companies,name|min:2|max:45',
             'first_name'    => 'required|min:2|max:255',
             'last_name'     => 'min:2|max:255',
             'email'         => 'required|email|unique:users,email|min:6|max:255',
@@ -168,7 +168,7 @@ class CompanyController extends BaseApiController
     public function update(Request $request, $id)
     {
         $validator =  Validator::make($request->all(),[
-            'name_company'  => 'required|min:2|max:45',
+            'company_name'  => 'required|min:2|max:45',
             'first_name'    => 'required|min:2|max:255',
             'last_name'     => 'min:2|max:255',
             'email'         => 'required|email|min:6|max:255',
@@ -196,7 +196,7 @@ class CompanyController extends BaseApiController
                     })
                     ->where('users.company_id', $id)
                     ->where('roles.name', RoleConstant::COMPANY_ADMIN)
-                    ->first(['users.id']);
+                    ->firstOrFail(['users.id']);
 
                 User::where('id', $userAdminCompany->id)->update([
                     'company_id'    => $id,
