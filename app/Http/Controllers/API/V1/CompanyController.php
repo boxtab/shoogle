@@ -42,7 +42,7 @@ class CompanyController extends BaseApiController
             $data = DB::select(DB::raw('
                 select
                     c.id as id,
-                    c.name as name_company,
+                    c.name as company_name,
                     (
                         select
                             un.first_name
@@ -52,7 +52,7 @@ class CompanyController extends BaseApiController
                         where un.company_id = c.id
                           and r.name = "company-admin"
                         limit 1
-                    ) as first_name,
+                    ) as contact_person_name,
                     (
                         select
                             un.email
@@ -67,12 +67,6 @@ class CompanyController extends BaseApiController
                 from companies as c
                 order by c.id
             '));
-
-//            $data = Company::orderBy('name', $request->order)
-//                ->get()
-//                ->map( function ( $item ) {
-//                    return [ 'id' => $item->id, 'name' => $item->name ];
-//                })->toArray();
 
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );
