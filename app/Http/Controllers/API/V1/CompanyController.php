@@ -133,7 +133,7 @@ class CompanyController extends BaseApiController
             DB::transaction( function () use ($request) {
 
                 $company = Company::create([
-                    'name' => $request->name_company,
+                    'name' => $request->company_name,
                 ]);
 
                 $user = User::create([
@@ -185,7 +185,7 @@ class CompanyController extends BaseApiController
             DB::transaction( function () use ($request, $id) {
 
                 Company::where('id', $id)->update([
-                    'name' => $request->name_company,
+                    'name' => $request->company_name,
                 ]);
 
                 $userAdminCompany = User::on()->
@@ -211,7 +211,6 @@ class CompanyController extends BaseApiController
         } catch (\Illuminate\Database\QueryException $e) {
             return $this->globalError( $e->errorInfo );
         }
-
 
         return response()->json([
             'success' => true,
