@@ -36,8 +36,8 @@ class RoleSeeder extends Seeder
             Role::create(['name' => RoleConstant::USER]);
         }
         */
-        if ( env('TEST_USER_EMAIL') !== null ) {
-            $user = User::where('email', env('TEST_USER_EMAIL'))->first();
+        if ( config('app.TEST_USER_EMAIL') !== null ) {
+            $user = User::where('email', config('app.TEST_USER_EMAIL'))->first();
             $user->assignRole(RoleConstant::USER);
         } else {
             echo 'Error: No email set for test user in .env file' . PHP_EOL;

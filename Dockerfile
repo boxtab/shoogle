@@ -41,7 +41,8 @@ RUN groupadd -g $UID $USER
 RUN useradd -u $UID -ms /bin/bash -g $USER $USER
 
 # Copy existing application directory permissions
-COPY --chown=$USER:$USER . .
+COPY . .
+RUN chown -R $USER:$USER .
 
 # Change current user
 USER $USER

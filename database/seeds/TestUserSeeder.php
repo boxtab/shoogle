@@ -23,31 +23,31 @@ class TestUserSeeder extends Seeder
     {
         $countCredentials = 0;
 
-        if ( env('TEST_USER_NAME') === null ) {
+        if ( config('app.TEST_USER_NAME') === null ) {
             echo 'Warning: The .env file does not have a name for the test user' . PHP_EOL;
         } else {
             $countCredentials++;
         }
 
-        if ( env('TEST_USER_EMAIL') === null ) {
+        if ( config('app.TEST_USER_EMAIL') === null ) {
             echo 'Warning: No email set for test user in .env file' . PHP_EOL;
         } else {
             $countCredentials++;
         }
 
-        if ( env('TEST_USER_PASSWORD') === null ) {
+        if ( config('app.TEST_USER_PASSWORD') === null ) {
             echo 'Warning: There is no password in the environment file for the test user.' . PHP_EOL;
         } else {
             $countCredentials++;
         }
 
         if ( $countCredentials === self::QUANTITY_CREDENTIALS ) {
-            User::updateOrCreate(['email' => env('TEST_USER_EMAIL')],
+            User::updateOrCreate(['email' => config('app.TEST_USER_EMAIL')],
                 [
-                    'first_name' => env('TEST_USER_NAME'),
-                    'email' => env('TEST_USER_EMAIL'),
-                    'password' => bcrypt( env('TEST_USER_PASSWORD') ),
-//                    'password' => Hash::make( env('TEST_USER_PASSWORD') ),
+                    'first_name' => config('app.TEST_USER_NAME'),
+                    'email' => config('app.TEST_USER_EMAIL'),
+                    'password' => bcrypt( config('app.TEST_USER_PASSWORD') ),
+//                    'password' => Hash::make( config('app.TEST_USER_PASSWORD') ),
                 ]);
             echo 'Test user created successfully!' . PHP_EOL;
         } else {

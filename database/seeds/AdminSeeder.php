@@ -24,19 +24,19 @@ class AdminSeeder extends Seeder
     {
         $countCredentials = 0;
 
-        if ( env('ADMIN_NAME') === null ) {
+        if ( config('app.ADMIN_NAME') === null ) {
             echo 'Warning: There is no username in the .env file for the admin user.' . PHP_EOL;
         } else {
             $countCredentials++;
         }
 
-        if ( env('ADMIN_EMAIL') === null ) {
+        if ( config('app.ADMIN_EMAIL') === null ) {
             echo 'Warning: In the .env file, the email address is not specified for the admin user.' . PHP_EOL;
         } else {
             $countCredentials++;
         }
 
-        if ( env('ADMIN_PASSWORD') === null ) {
+        if ( config('app.ADMIN_PASSWORD') === null ) {
             echo 'Warning: There is no password in the environment file for the admin user.' . PHP_EOL;
         } else {
             $countCredentials++;
@@ -51,11 +51,11 @@ class AdminSeeder extends Seeder
         if ( $countCredentials === self::QUANTITY_ADMIN_CREDENTIALS ) {
 
             DB::transaction( function () {
-                $user = User::updateOrCreate(['email' => env('ADMIN_EMAIL')],
+                $user = User::updateOrCreate(['email' => config('app.ADMIN_EMAIL')],
                     [
-                        'first_name' => env('ADMIN_NAME'),
-                        'email' => env('ADMIN_EMAIL'),
-                        'password' => bcrypt(env('ADMIN_PASSWORD')),
+                        'first_name' => config('app.ADMIN_NAME'),
+                        'email' => config('app.ADMIN_EMAIL'),
+                        'password' => bcrypt(config('app.ADMIN_PASSWORD')),
                     ]);
 
                 $user->assignRole(RoleConstant::COMPANY_ADMIN);
