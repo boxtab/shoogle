@@ -68,8 +68,8 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin
     Route::delete('{id}', [CompanyController::class, 'destroy']);
 
     // Entry company
-    // GET /api/v1/company/entry/:id
-    Route::get('entry/{id}', [CompanyController::class, 'entry']);
+    // GET v1/company/:id/get-access-token
+    Route::get('{id}/get-access-token', [CompanyController::class, 'entry']);
 });
 
 /**

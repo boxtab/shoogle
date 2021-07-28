@@ -234,7 +234,6 @@ class CompanyController extends BaseApiController
         return response()->json([
             'success' => true,
             'data' => [
-                'message' => 'You have entered the company.',
                 'token' => $token,
             ],
         ]);
