@@ -55,7 +55,7 @@ class CreateSuperAdmin extends Command
         ], [
             'first_name'    => ['required', 'min:2', 'max:255'],
             'last_name'     => ['min:2', 'max:255'],
-            'email'         => ['required', 'email', 'unique:users,email', 'min:6', 'max:255'],
+            'email'         => ['required', 'email', 'min:6', 'max:255'],
             'password'      => ['required', 'min:6', 'max:64'],
         ]);
 
@@ -79,7 +79,7 @@ class CreateSuperAdmin extends Command
 
             $user->assignRole(RoleConstant::SUPER_ADMIN);
 
-            $this->info('SuperAdmin account created.');
+            $this->info('Superadmin account successfully created or updated.');
         });
 
         return 0;

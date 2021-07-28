@@ -119,7 +119,7 @@ class ShooglesController extends BaseApiController
                         'shooglers_count' => Shoogle::count(),
                         'buddies_count' => Buddie::where('shoogle_id', $item->id)->count(),
                     ];
-                })->toArray();;
+                })->toArray();
 
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );
