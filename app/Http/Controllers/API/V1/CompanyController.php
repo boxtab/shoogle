@@ -55,11 +55,11 @@ class CompanyController extends BaseApiController
                     ) as contact_person_first_name,
                     (
                         select
-                            un.last_name
-                        from users as un
-                        left outer join model_has_roles as mhr on un.id = mhr.model_id
-                        left outer join roles as r on r.id = mhr.role_id
-                        where un.company_id = c.id
+                            ul.last_name
+                        from users as ul
+                        left outer join model_has_roles as mhrl on ul.id = mhrl.model_id
+                        left outer join roles as r on r.id = mhrl.role_id
+                        where ul.company_id = c.id
                           and r.name = "company-admin"
                         limit 1
                     ) as contact_person_last_name,
@@ -77,6 +77,7 @@ class CompanyController extends BaseApiController
                 from companies as c
                 order by c.id
             '));
+
 
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );
@@ -169,7 +170,11 @@ class CompanyController extends BaseApiController
     public function update(Request $request, $id)
     {
         $validator =  Validator::make($request->all(),[
-            'name' => 'required|min:2|max:45'
+            'name_company'  => 'required|unique:companies,name|min:2|max:45',
+            'first_name'    => 'required|min:2|max:255',
+            'last_name'     => 'min:2|max:255',
+            'email'         => 'required|email|unique:users,email|min:6|max:255',
+            'password'      => 'required|min:6|max:64',
         ]);
 
         if ( $validator->fails() ) {
@@ -177,20 +182,34 @@ class CompanyController extends BaseApiController
         }
 
         try {
+            null;
+            /*
             $company = Company::where('id', $id)->firstOrFail();
-            $company->update([
-                'name' => $request->name,
-            ]);
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
+
+            DB::transaction( function () use ($request) {
+
+                $company = Company::where([
+                    'name' => $request->name_company,
+                ]);
+
+                $user = User::create([
+                    'company_id'    => $company->id,
+                    'first_name'    => $request->first_name,
+                    'last_name'     => $request->last_name,
+                    'email'         => $request->email,
+                    'password'      => bcrypt($request->password),
+                ]);
+
+            });
+*/
+        } catch (\Illuminate\Database\QueryException $e) {
+            return $this->globalError( $e->errorInfo );
         }
+
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'id' => $company->id,
-                'name' => $company->name,
-            ],
+            'data' => [],
         ]);
     }
 
