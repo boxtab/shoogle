@@ -43,17 +43,20 @@ class CreateSuperAdmin extends Command
     public function handle()
     {
         $firstName = $this->ask('First Name?');
+        $lastName = $this->ask('Last Name?');
         $email = $this->ask('Email?');
         $password = $this->secret('Password ?');
 
         $validator = Validator::make([
-            'first_name' => $firstName,
-            'email' => $email,
-            'password' => $password,
+            'first_name'    => $firstName,
+            'last_name'     => $lastName,
+            'email'         => $email,
+            'password'      => $password,
         ], [
-            'first_name' => ['required', 'min:2', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email', 'min:6', 'max:255'],
-            'password' => ['required', 'min:6', 'max:64'],
+            'first_name'    => ['required', 'min:2', 'max:255'],
+            'last_name'     => ['min:2', 'max:255'],
+            'email'         => ['required', 'email', 'unique:users,email', 'min:6', 'max:255'],
+            'password'      => ['required', 'min:6', 'max:64'],
         ]);
 
         if ($validator->fails()) {
@@ -65,10 +68,11 @@ class CreateSuperAdmin extends Command
             return 1;
         }
 
-        DB::transaction( function () use ($firstName, $email, $password) {
+        DB::transaction( function () use ($firstName, $lastName, $email, $password) {
             $user = User::on()->updateOrCreate(['email' => $email],
                 [
                     'first_name' => $firstName,
+                    'last_name' => $lastName,
                     'email' => $email,
                     'password' => bcrypt($password),
                 ]);
