@@ -52,7 +52,17 @@ class CompanyController extends BaseApiController
                         where un.company_id = c.id
                           and r.name = "company-admin"
                         limit 1
-                    ) as contact_person_name,
+                    ) as contact_person_first_name,
+                    (
+                        select
+                            un.last_name
+                        from users as un
+                        left outer join model_has_roles as mhr on un.id = mhr.model_id
+                        left outer join roles as r on r.id = mhr.role_id
+                        where un.company_id = c.id
+                          and r.name = "company-admin"
+                        limit 1
+                    ) as contact_person_last_name,
                     (
                         select
                             un.email
