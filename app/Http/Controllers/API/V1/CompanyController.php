@@ -97,8 +97,30 @@ class CompanyController extends BaseApiController
      */
     public function show($id)
     {
+        $data = [
+            'company_name' => null,
+            'first_name' => null,
+            'last_name' => null,
+            'email' => null,
+        ];
+
         try {
-            $data = Company::where('id', $id)->firstOrFail();
+            $company = Company::where('id', $id)->firstOrFail();
+            $data['company_name'] = $company->name;
+
+            $userAdminCompany = User::on()->
+            leftJoin('model_has_roles', function($join) {
+                $join->on('users.id', '=', 'model_has_roles.model_id');
+            })->leftJoin('roles', function($join) {
+                $join->on('roles.id', '=', 'model_has_roles.role_id');
+            })
+                ->where('users.company_id', $id)
+                ->where('roles.name', RoleConstant::COMPANY_ADMIN)
+                ->firstOrFail();
+            $data['first_name'] = $userAdminCompany->first_name;
+            $data['last_name'] = $userAdminCompany->last_name;
+            $data['email'] = $userAdminCompany->email;
+
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );
         }
