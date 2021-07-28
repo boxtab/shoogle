@@ -30,7 +30,7 @@ class UserResource extends JsonResource
     {
         return [
             'token' => $this->token,
-            'name' => $this->name,
+            'name' => $this->first_name,
             'email' => $this->email,
             'role' => count( $this->getRoleNames() ) !== 0 ? $this->getRoleNames()[0] : null,
             'avatar' => $this->avatar,
