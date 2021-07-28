@@ -39,11 +39,40 @@ class CompanyController extends BaseApiController
         }
 
         try {
-            $data = Company::orderBy('name', $request->order)
-                ->get()
-                ->map( function ( $item ) {
-                    return [ 'id' => $item->id, 'name' => $item->name ];
-                })->toArray();
+            $data = DB::select(DB::raw('
+                select
+                    c.id as id,
+                    c.name as name_company,
+                    (
+                        select
+                            un.first_name
+                        from users as un
+                        left outer join model_has_roles as mhr on un.id = mhr.model_id
+                        left outer join roles as r on r.id = mhr.role_id
+                        where un.company_id = c.id
+                          and r.name = "company-admin"
+                        limit 1
+                    ) as first_name,
+                    (
+                        select
+                            un.email
+                        from users as un
+                        left outer join model_has_roles as mhr on un.id = mhr.model_id
+                        left outer join roles as r on r.id = mhr.role_id
+                        where un.company_id = c.id
+                          and r.name = "company-admin"
+                        limit 1
+                    ) as email,
+                    (select count(uc.id) from users as uc where uc.company_id = c.id) as count_user
+                from companies as c
+                order by c.id
+            '));
+
+//            $data = Company::orderBy('name', $request->order)
+//                ->get()
+//                ->map( function ( $item ) {
+//                    return [ 'id' => $item->id, 'name' => $item->name ];
+//                })->toArray();
 
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );

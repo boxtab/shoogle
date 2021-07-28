@@ -88,7 +88,6 @@ Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api']], function () 
  * Table: wellbeing_categories
  */
 Route::group(['prefix' => 'v1/wellbeing-category', 'middleware' => ['auth:api']], function () {
-
     Route::get('list', [WellbeingCategoryController::class, 'index']);
     Route::get('{id}', [WellbeingCategoryController::class, 'show']);
     Route::post('', [WellbeingCategoryController::class, 'create']);
@@ -100,12 +99,12 @@ Route::group(['prefix' => 'v1/wellbeing-category', 'middleware' => ['auth:api']]
  * Entity: Shoogle
  * Table: shoogles
  */
-Route::group(['prefix' => 'v1/shoogle', 'middleware' => ['auth:api']], function () {
+Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api']], function () {
 
     // list request:
     // POST api/v1/shoogle/list
-    //{query: 'abc'}
-    Route::post('list', [ShooglesController::class, 'index']);
+    // {query: 'abc'}
+    Route::post('list', [ShooglesController::class, 'index'])->middleware(['admin.superadmin']);
 
     // shoogle fetch request:
     // GET /api/v1/shoogle/:id

@@ -20,11 +20,19 @@ class ShooglesController extends BaseApiController
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Shoogle::get(['id', 'title'])->toArray();
+        Log::info($request->query);
+
+        $data = Shoogle::on()
+//            ->when( ! is_null( $request->query ) , function ($query) use ($request) {
+//                return $query->where('title', 'like', '%' . (string)$request->query . '%');
+//            })
+            ->get(['id', 'title'])
+            ->toArray();
 
         return response()->json([
             'success' => true,

@@ -24,14 +24,24 @@ class UserController extends BaseApiController
         $companyId = null;
         $roleName = Auth::user()->roles()->first()->name;
 
-        switch ( $roleName ) {
-            case RoleConstant::SUPER_ADMIN:
-                $payload = JWTAuth::parseToken()->getPayload();
-                $companyId = $payload->get('company_id');
-                break;
-            case RoleConstant::COMPANY_ADMIN:
-                $companyId = Auth::user()->company_id;
-                break;
+        try {
+            switch ($roleName) {
+                case RoleConstant::SUPER_ADMIN:
+                    $payload = JWTAuth::parseToken()->getPayload();
+                    $companyId = $payload->get('company_id');
+                    if ( is_null( $companyId ) ) {
+                        throw new \Exception('No company selected.');
+                    }
+                    break;
+                case RoleConstant::COMPANY_ADMIN:
+                    $companyId = Auth::user()->company_id;
+                    break;
+            }
+        } catch ( \Exception $e ) {
+            return response()->json([
+                'success' => false,
+                'data' => $e->getMessage(),
+            ]);
         }
 
         $data = User::on()
