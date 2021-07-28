@@ -25,15 +25,18 @@ class ShooglesController extends BaseApiController
      */
     public function index(Request $request)
     {
-        Log::info($request->query);
+        try {
+            $search = $request->has('search') ? $request->search : null;
 
         $data = Shoogle::on()
-//            ->when( ! is_null( $request->query ) , function ($query) use ($request) {
-//                return $query->where('title', 'like', '%' . (string)$request->query . '%');
-//            })
+            ->when( ! is_null( $search ) , function ($query) use ($search) {
+                return $query->where('title', 'like', '%' . $search .'%');
+            })
             ->get(['id', 'title'])
             ->toArray();
-
+        } catch (\Exception $e) {
+            return $this->globalError( $e->getMessage() );
+        }
         return response()->json([
             'success' => true,
             'data' => $data,
