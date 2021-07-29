@@ -108,7 +108,7 @@ class InviteController extends BaseApiController
 
         }
 
-        if (!empty($listEmail)) {
+        if ( ! empty( $listEmail ) ) {
             $inviteMail = new InviteMail();
             foreach ($listEmail as $email) {
                 $inviteMail->to($email);

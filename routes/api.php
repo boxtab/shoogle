@@ -81,6 +81,13 @@ Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_
     Route::get('list', [UserController::class, 'index'])->middleware(['admin.superadmin']);
     Route::post('csv', [InviteController::class, 'store']);
 
+    // Get user data by ID
+    // GET /api/v1/user/:id
+    Route::get('{id}', [UserController::class, 'show']);
+    // Edit user
+    // POST /api/v1/user/:id
+    Route::post('{id}', [UserController::class, 'update']);
+
 });
 
 /**

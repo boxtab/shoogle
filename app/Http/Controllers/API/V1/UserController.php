@@ -5,11 +5,14 @@ namespace App\Http\Controllers\API\V1;
 use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserProfileResource;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Exception;
 
 class UserController extends BaseApiController
 {
@@ -81,12 +84,15 @@ class UserController extends BaseApiController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        //
+        $user = User::where('id', $id)->firstOrFail();
+        $userProfileResource = new UserProfileResource($user);
+
+        return $userProfileResource->response();
     }
 
     /**
@@ -105,11 +111,30 @@ class UserController extends BaseApiController
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator =  Validator::make($request->all(),[
+            'firstName'     => 'required|min:2|max:255',
+            'lastName'      => 'nullable|min:2|max:255',
+        ]);
+
+        if ( $validator->fails() ) {
+            return $this->validatorFails( $validator->errors() );
+        }
+
+        User::where('id', $id)
+            ->firstorFail()
+            ->update([
+                'first_name' => $request->firstName,
+                'last_name' => $request->lastName
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => [],
+        ]);
     }
 
     /**
