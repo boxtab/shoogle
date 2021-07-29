@@ -102,26 +102,26 @@ Route::group(['prefix' => 'v1/wellbeing-category', 'middleware' => ['auth:api', 
 Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api', 'user_already_logged_in']], function () {
 
     // list request:
-    // POST api/v1/shoogle/list
+    // POST api/v1/shoogles/list
     // {query: 'abc'}
     Route::post('list', [ShooglesController::class, 'index'])->middleware(['admin.superadmin']);
 
-    // shoogle fetch request:
-    // GET /api/v1/shoogle/:id
+    // shoogles fetch request:
+    // GET /api/v1/shoogles/:id
     Route::get('{id?}', [ShooglesController::class, 'show']);
 
 
     // Delete request:
-    // DELETE /api/v1/shoogle/:id
+    // DELETE /api/v1/shoogles/:id
     Route::delete('{id}', [ShooglesController::class, 'destroy']);
 
     // Create new chat
-    // POST /api/v1/shoogle
+    // POST /api/v1/shoogles
     Route::post('', [ShooglesController::class, 'create']);
 
 
     // Edit chat
-    // POST /api/v1/shoogle/:id
+    // POST /api/v1/shoogles/:id
     Route::post('{id}', [ShooglesController::class, 'update']);
 });
 

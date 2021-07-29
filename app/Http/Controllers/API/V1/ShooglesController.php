@@ -132,7 +132,7 @@ class ShooglesController extends BaseApiController
 
         return response()->json([
             'success' => true,
-            'data' => $data,
+            'data' => $data[0],
         ]);
     }
 
