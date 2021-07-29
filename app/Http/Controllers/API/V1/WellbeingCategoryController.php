@@ -20,6 +20,7 @@ class WellbeingCategoryController extends BaseApiController
     public function index()
     {
         try {
+
             $data = WellbeingCategory::get()
                 ->map( function ( $item ) {
                     return [ 'id' => $item->id, 'name' => $item->name ];
@@ -170,9 +171,7 @@ class WellbeingCategoryController extends BaseApiController
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'message' => 'Wellbeing category successfully deleted',
-            ],
+            'data' => [],
         ]);
     }
 }

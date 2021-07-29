@@ -24,12 +24,12 @@ class ShoogleCreateUpdate extends FormRequest
     public function rules()
     {
         return [
-            'wellbeing_category_id' => ['required', 'integer', 'exists:wellbeing_categories,id'],
+            'wellbeingCategoryId' => ['required', 'integer', 'exists:wellbeing_categories,id'],
             'active' => ['required', 'boolean'],
             'title' => ['nullable', 'min:2', 'max:45'],
             'description' => ['nullable', 'min:2', 'max:9086'],
-            'cover_image' => ['required', 'min:2', 'max:256'],
-            'accept_buddies' => ['required', 'boolean'],
+            'coverImage' => ['required', 'min:2', 'max:256'],
+            'acceptBuddies' => ['required', 'boolean'],
         ];
     }
 }

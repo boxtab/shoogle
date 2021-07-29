@@ -34,6 +34,7 @@ class ShooglesController extends BaseApiController
                 })
                 ->get(['id', 'title'])
                 ->toArray();
+
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );
         }
@@ -51,12 +52,12 @@ class ShooglesController extends BaseApiController
     public function create(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'wellbeing_category_id' => ['required', 'integer', 'exists:wellbeing_categories,id'],
-            'active' => ['required', 'boolean'],
-            'title' => ['nullable', 'min:2', 'max:45'],
-            'description' => ['nullable', 'min:2', 'max:9086'],
-            'cover_image' => ['required', 'min:2', 'max:256'],
-            'accept_buddies' => ['required', 'boolean'],
+            'wellbeingCategoryId'   => ['required', 'integer', 'exists:wellbeing_categories,id'],
+            'active'                => ['required', 'boolean'],
+            'title'                 => ['nullable', 'min:2', 'max:45'],
+            'description'           => ['nullable', 'min:2', 'max:9086'],
+            'coverImage'            => ['required', 'min:2', 'max:256'],
+            'acceptBuddies'         => ['required', 'boolean'],
         ]);
 
         if ( $validator->fails() ) {
@@ -64,25 +65,25 @@ class ShooglesController extends BaseApiController
         }
 
         try {
+
             Shoogle::create([
                 'owner_id' => Auth()->user()->id,
-                'wellbeing_category_id' => $request->wellbeing_category_id,
+                'wellbeing_category_id' => $request->wellbeingCategoryId,
                 'active' => $request->active,
                 'title' => $request->title,
                 'reminder' => Carbon::now(),
                 'description' => $request->description,
-                'cover_image' => $request->cover_image,
-                'accept_buddies' => $request->accept_buddies,
+                'cover_image' => $request->coverImage,
+                'accept_buddies' => $request->acceptBuddies,
             ]);
+
         } catch (\Illuminate\Database\QueryException $e) {
             return $this->globalError( $e->errorInfo );
         }
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'message' => 'The shoogle was created successfully',
-            ],
+            'data' => [],
         ]);
     }
 
@@ -129,8 +130,6 @@ class ShooglesController extends BaseApiController
             return $this->globalError( $e->getMessage() );
         }
 
-        // { id, title, creator: { email, team, role }, wellbeing_category, created_at, shooglers_count, buddies_count }}
-
         return response()->json([
             'success' => true,
             'data' => $data,
@@ -159,12 +158,12 @@ class ShooglesController extends BaseApiController
         try {
             $shoogle = Shoogle::where('id', $id)->firstOrFail();
             $shoogle->update([
-                'wellbeing_category_id' => $request->wellbeing_category_id,
+                'wellbeing_category_id' => $request->wellbeingCategoryId,
                 'active' => $request->active,
                 'title' => $request->title,
                 'description' => $request->description,
-                'cover_image' => $request->cover_image,
-                'accept_buddies' => $request->accept_buddies,
+                'cover_image' => $request->coverImage,
+                'accept_buddies' => $request->acceptBuddies,
             ]);
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );
@@ -185,17 +184,17 @@ class ShooglesController extends BaseApiController
     public function destroy($id)
     {
         try {
+
             $shoogle = Shoogle::find($id);
             $shoogle->delete();
+
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );
         }
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'message' => 'Shoogle successfully deleted',
-            ],
+            'data' => [],
         ]);
     }
 }

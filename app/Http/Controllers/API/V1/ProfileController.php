@@ -25,10 +25,10 @@ class ProfileController extends BaseApiController
     public function store(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'first_name' => 'required|min:2|max:255|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
-            'last_name' => 'nullable|min:2|max:255',
-            'about' => 'nullable|min:2|max:16384',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2048 Kb
+            'firstName'     => 'required|min:2|max:255|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
+            'lastName'      => 'nullable|min:2|max:255',
+            'about'         => 'nullable|min:2|max:16384',
+            'profileImage'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2048 Kb
         ]);
 
         if ( $validator->fails() ) {
@@ -38,16 +38,16 @@ class ProfileController extends BaseApiController
         try {
             $profile = User::where('id', Auth::id())->firstOrFail();
             $profile->update([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
+                'first_name' => $request->firstName,
+                'last_name' => $request->lastName,
                 'about' => $request->about,
             ]);
 
-            if ( $request->has('profile_image') ) {
-                $uniqueFilename = Str::uuid()->toString() . '.' . $request->file('profile_image')->extension();
+            if ( $request->has('profileImage') ) {
+                $uniqueFilename = Str::uuid()->toString() . '.' . $request->file('profileImage')->extension();
 
                 $profile->clearMediaCollection($profile->id);
-                $profile->addMediaFromRequest('profile_image')
+                $profile->addMediaFromRequest('profileImage')
                     ->usingFileName($uniqueFilename)
                     ->toMediaCollection($profile->id);
 
@@ -63,9 +63,7 @@ class ProfileController extends BaseApiController
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'message' => 'Saving a user profile',
-            ],
+            'data' => [],
         ]);
     }
 

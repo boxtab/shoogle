@@ -140,9 +140,9 @@ class CompanyController extends BaseApiController
     public function create(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'company_name'  => 'required|unique:companies,name|min:2|max:45',
-            'first_name'    => 'required|min:2|max:255',
-            'last_name'     => 'min:2|max:255',
+            'companyName'  => 'required|unique:companies,name|min:2|max:45',
+            'firstName'    => 'required|min:2|max:255',
+            'lastName'     => 'min:2|max:255',
             'email'         => 'required|email|unique:users,email|min:6|max:255',
             'password'      => 'required|min:6|max:64',
         ]);
@@ -155,13 +155,13 @@ class CompanyController extends BaseApiController
             DB::transaction( function () use ($request) {
 
                 $company = Company::create([
-                    'name' => $request->company_name,
+                    'name' => $request->companyName,
                 ]);
 
                 $user = User::create([
                     'company_id'    => $company->id,
-                    'first_name'    => $request->first_name,
-                    'last_name'     => $request->last_name,
+                    'first_name'    => $request->firstName,
+                    'last_name'     => $request->lastName,
                     'email'         => $request->email,
                     'password'      => bcrypt($request->password),
                 ]);
@@ -190,9 +190,9 @@ class CompanyController extends BaseApiController
     public function update(Request $request, $id)
     {
         $validator =  Validator::make($request->all(),[
-            'company_name'  => 'required|min:2|max:45',
-            'first_name'    => 'required|min:2|max:255',
-            'last_name'     => 'min:2|max:255',
+            'companyName'   => 'required|min:2|max:45',
+            'firstName'     => 'required|min:2|max:255',
+            'lastName'      => 'min:2|max:255',
             'email'         => 'required|email|min:6|max:255',
             'password'      => 'required|min:6|max:64',
         ]);
@@ -207,7 +207,7 @@ class CompanyController extends BaseApiController
             DB::transaction( function () use ($request, $id) {
 
                 Company::where('id', $id)->update([
-                    'name' => $request->company_name,
+                    'name' => $request->companyName,
                 ]);
 
                 $userAdminCompany = User::on()->
@@ -222,8 +222,8 @@ class CompanyController extends BaseApiController
 
                 User::where('id', $userAdminCompany->id)->update([
                     'company_id'    => $id,
-                    'first_name'    => $request->first_name,
-                    'last_name'     => $request->last_name,
+                    'first_name'    => $request->firstName,
+                    'last_name'     => $request->lastName,
                     'email'         => $request->email,
                     'password'      => bcrypt($request->password),
                 ]);
@@ -265,9 +265,7 @@ class CompanyController extends BaseApiController
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'message' => 'Company successfully deleted',
-            ],
+            'data' =>[],
         ]);
     }
 

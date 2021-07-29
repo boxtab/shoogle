@@ -151,7 +151,6 @@ class AuthController extends BaseApiController
     public function logout()
     {
         auth()->logout();
-//        auth()->user()->tokens()->delete();
 
         return response()->json([
             'success' => true,
