@@ -194,7 +194,7 @@ class CompanyController extends BaseApiController
             'firstName'     => 'required|min:2|max:255',
             'lastName'      => 'min:2|max:255',
             'email'         => 'required|email|min:6|max:255',
-            'password'      => 'required|min:6|max:64',
+            'password'      => 'nullable|min:6|max:64',
         ]);
 
         if ( $validator->fails() ) {
