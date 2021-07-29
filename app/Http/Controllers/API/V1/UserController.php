@@ -118,6 +118,7 @@ class UserController extends BaseApiController
         $validator =  Validator::make($request->all(),[
             'firstName'     => 'required|min:2|max:255',
             'lastName'      => 'nullable|min:2|max:255',
+            'department'    => 'nullable|min:2|max:255',
         ]);
 
         if ( $validator->fails() ) {
