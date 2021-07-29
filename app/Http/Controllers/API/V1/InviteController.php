@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\API\V1\InviteMail;
 use App\Http\Controllers\Controller;
@@ -44,41 +45,39 @@ class InviteController extends BaseApiController
     public function store(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'file' => 'required|mimes:csv,txt',
-            'companyId' => 'required|integer'
+            'files' => 'required|mimes:csv,txt',
+            'companyId' => 'integer'
         ]);
 
         if ( $validator->fails() ) {
             return $this->validatorFails( $validator->errors() );
         }
 
-        try {
-            Company::on()->where('id', $request->companyId)->firstOrFail();
-        } catch (Exception $e) {
-            return $this->globalError( $e->getMessage() );
-        }
-
-        $path = $request->file('file')->getRealPath();
+        $path = $request->file('files')->getRealPath();
         $fileCSV = array_map('str_getcsv', file($path));
         $listEmail = [];
 
-        foreach ( $fileCSV as $inviteRow ) {
+        foreach ($fileCSV as $inviteRow) {
 
-            if ( count( $inviteRow ) !== self::COUNT_FIELD ) {
+            if (count($inviteRow) !== self::COUNT_FIELD) {
                 continue;
             }
 
-            if ( ! filter_var($inviteRow[0], FILTER_VALIDATE_EMAIL)) {
+            if (!filter_var($inviteRow[0], FILTER_VALIDATE_EMAIL)) {
                 continue;
             }
 
-            if ( Invite::on()->where('email', $inviteRow[0])->count() > 0 ) {
+            if (Invite::on()->where('email', $inviteRow[0])->count() > 0) {
+                continue;
+            }
+
+            if (User::on()->where('email', $inviteRow[0])->count() > 0) {
                 continue;
             }
 
             $invite = Invite::on()->where('email', $inviteRow[0])->first();
 
-            if ( $invite !== null ) {
+            if ($invite !== null) {
                 $invite->update([
                     'is_used' => 0,
                     'created_by' => Auth::id(),
@@ -109,11 +108,11 @@ class InviteController extends BaseApiController
 
         }
 
-        if ( ! empty( $listEmail ) ) {
+        if (!empty($listEmail)) {
             $inviteMail = new InviteMail();
-            foreach ( $listEmail as $email ) {
+            foreach ($listEmail as $email) {
                 $inviteMail->to($email);
-                Mail::send( $inviteMail );
+                Mail::send($inviteMail);
             }
         }
 
