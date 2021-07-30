@@ -87,8 +87,9 @@ Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_
     // Edit user
     // POST /api/v1/user/:id
     Route::post('{id}', [UserController::class, 'update']);
-
-});
+    // Create user
+    // POST /api/v1/user/
+    Route::post('', [UserController::class, 'create']);});
 
 /**
  * Entity: WellbeingCategory

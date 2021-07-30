@@ -9,6 +9,7 @@ use App\Http\Resources\UserProfileResource;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -63,11 +64,39 @@ class UserController extends BaseApiController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        Log::info('create user');
+        $validator =  Validator::make($request->all(),[
+            'email'         => 'required|email',
+            'companyId'     => 'required|integer',
+            'firstName'     => 'required|min:2|max:255',
+            'lastName'      => 'nullable|min:2|max:255',
+            'department'    => 'nullable|min:2|max:255',
+        ]);
+
+        if ( $validator->fails() ) {
+            return $this->validatorFails( $validator->errors() );
+        }
+
+        DB::transaction( function () use($request) {
+            $user = new User();
+            $user->email = $request->email;
+            $user->company_id = $request->companyId;
+            $user->first_name = $request->firstName;
+            $user->last_name = $request->lastName;
+            $user->save();
+
+            $user->assignRole(RoleConstant::USER);
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => [],
+        ]);
     }
 
     /**
