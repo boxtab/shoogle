@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserListResource;
 use App\Http\Resources\UserProfileResource;
 use App\User;
 use Illuminate\Http\Request;
@@ -60,17 +61,27 @@ class UserController extends BaseApiController
     {
         $companyId = $this->getCompanyId();
 
-        $data = User::on()
+//        $data = User::on()
+//            ->when( ! is_null( $companyId ) , function ($query) use ($companyId) {
+//                return $query->where('company_id', $companyId);
+//            })
+//            ->get(['id', 'first_name', 'last_name'])
+//            ->toArray();
+
+        $users = User::on()
             ->when( ! is_null( $companyId ) , function ($query) use ($companyId) {
                 return $query->where('company_id', $companyId);
             })
-            ->get(['id', 'first_name', 'email'])
-            ->toArray();
+            ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
+        $userListResource = new UserListResource($users);
+
+        return $userListResource->response();
+
+//        return response()->json([
+//            'success' => true,
+//            'data' => $data,
+//        ]);
     }
 
     /**
