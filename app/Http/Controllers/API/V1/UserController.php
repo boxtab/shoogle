@@ -18,12 +18,11 @@ use Exception;
 class UserController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * Returns the company ID.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse | int | null
      */
-    public function index(Request $request)
+    private function getCompanyId()
     {
         $companyId = null;
         $roleName = Auth::user()->roles()->first()->name;
@@ -47,6 +46,19 @@ class UserController extends BaseApiController
                 'data' => $e->getMessage(),
             ]);
         }
+
+        return $companyId;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request)
+    {
+        $companyId = $this->getCompanyId();
 
         $data = User::on()
             ->when( ! is_null( $companyId ) , function ($query) use ($companyId) {
@@ -72,7 +84,6 @@ class UserController extends BaseApiController
         Log::info('create user');
         $validator =  Validator::make($request->all(),[
             'email'         => 'required|email',
-            'companyId'     => 'required|integer',
             'firstName'     => 'required|min:2|max:255',
             'lastName'      => 'nullable|min:2|max:255',
             'department'    => 'nullable|min:2|max:255',
@@ -82,10 +93,12 @@ class UserController extends BaseApiController
             return $this->validatorFails( $validator->errors() );
         }
 
-        DB::transaction( function () use($request) {
+        $companyId = $this->getCompanyId();
+
+        DB::transaction( function () use($request, $companyId) {
             $user = new User();
             $user->email = $request->email;
-            $user->company_id = $request->companyId;
+            $user->company_id = $companyId;
             $user->first_name = $request->firstName;
             $user->last_name = $request->lastName;
             $user->save();
