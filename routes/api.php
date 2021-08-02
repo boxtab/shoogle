@@ -6,7 +6,6 @@ use App\Http\Controllers\API\V1\InviteController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
-use App\Http\Controllers\API\V1\WellbeingCategoru;
 use App\Http\Controllers\API\V1\WellbeingCategoryController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
@@ -44,7 +43,7 @@ Route::group(['prefix' => 'v1'], function () {
  * Entity: Company
  * Table: companies
  */
-Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin', 'user_already_logged_in']], function () {
+Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin', 'user_already_logged_in', 'cors']], function () {
 
     // Get a list of companies (no pagination yet)
     // POST /api/v1/company/list
@@ -76,7 +75,7 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin
  * Entity: User
  * Table: users
  */
-Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_logged_in']], function () {
+Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
 
     Route::get('list', [UserController::class, 'index'])->middleware(['admin.superadmin']);
     Route::post('csv', [InviteController::class, 'store']);
@@ -95,7 +94,7 @@ Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_
  * Entity: WellbeingCategory
  * Table: wellbeing_categories
  */
-Route::group(['prefix' => 'v1/wellbeing-category', 'middleware' => ['auth:api', 'user_already_logged_in']], function () {
+Route::group(['prefix' => 'v1/wellbeing-category', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
     Route::get('list', [WellbeingCategoryController::class, 'index']);
     Route::get('{id}', [WellbeingCategoryController::class, 'show']);
     Route::post('', [WellbeingCategoryController::class, 'create']);
@@ -107,7 +106,7 @@ Route::group(['prefix' => 'v1/wellbeing-category', 'middleware' => ['auth:api', 
  * Entity: Shoogle
  * Table: shoogles
  */
-Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api', 'user_already_logged_in']], function () {
+Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
 
     // list request:
     // POST api/v1/shoogles/list
@@ -137,7 +136,7 @@ Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api', 'user_alre
  * Entity: Profile
  * Table: users
  */
-Route::group(['prefix' => 'v1/profile', 'middleware' => ['auth:api', 'user_already_logged_in']], function () {
+Route::group(['prefix' => 'v1/profile', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
 
     // Saving a user profile
     Route::put('', [ProfileController::class, 'store']);

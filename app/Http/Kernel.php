@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\CheckRoleAdmin::class,
         'admin.superadmin' => \App\Http\Middleware\CheckRoleAdminAndSuperAdmin::class,
         'user_already_logged_in' => \App\Http\Middleware\UserAlreadyLoggedIn::class,
+        'cors' => 'App\Http\Middleware\CORS',
     ];
 }
