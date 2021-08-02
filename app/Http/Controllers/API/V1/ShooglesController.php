@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShoogleCreateUpdate;
+use App\Http\Resources\ShooglesListResource;
 use App\Models\Buddie;
 use App\Models\Company;
 use App\Models\ModelHasRole;
@@ -25,6 +26,19 @@ class ShooglesController extends BaseApiController
      */
     public function index(Request $request)
     {
+        $search = $request->has('search') ? $request->search : null;
+
+        $shoogles = Shoogle::on()->has('owner')
+            ->when( ! is_null( $search ) , function ($query) use ($search) {
+                return $query->where('title', 'like', '%' . $search .'%');
+            })
+            ->get();
+
+        $shooglesListResource = new ShooglesListResource($shoogles);
+
+        return $shooglesListResource->response();
+
+        /*
         try {
             $search = $request->has('search') ? $request->search : null;
 
@@ -38,10 +52,12 @@ class ShooglesController extends BaseApiController
         } catch (\Exception $e) {
             return $this->globalError( $e->getMessage() );
         }
+
         return response()->json([
             'success' => true,
             'data' => $data,
         ]);
+        */
     }
 
     /**

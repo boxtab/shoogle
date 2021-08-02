@@ -41,6 +41,23 @@ class Shoogle extends Model
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
 
+    /**
+     * The storage format of the model's date columns.
+     *
+     * @var string
+     */
+    protected $dateFormat = 'U';
+
+    public function getCreatedAttribute()
+    {
+        return $this->created_at->format('Y-m-d H:i:s');
+    }
+
+    public function getUpdatedAttribute()
+    {
+        return $this->updated_at->format('Y-m-d H:i:s');
+    }
+
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id', 'id')

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Repositories\InviteRepositoryInterface;
-use App\Repositories\InviteRepository;
+//use App\Repositories\InviteRepository;
 use Exception;
 
 class InviteController extends BaseApiController
