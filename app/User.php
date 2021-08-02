@@ -4,8 +4,10 @@ namespace App;
 
 use App\Models\Company;
 use App\Models\Role;
+use App\Models\UserRanks;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -78,6 +80,11 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     {
         return $this->belongsTo(Company::class, 'company_id', 'id')
             ->withDefault();
+    }
+
+    public function userRanks(): HasMany
+    {
+        return $this->hasMany(UserRanks::class, 'user_id', 'id');
     }
 
     /**

@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Shoogle extends Model
 {
@@ -68,5 +69,10 @@ class Shoogle extends Model
     {
         return $this->belongsTo(WellbeingCategory::class, 'wellbeing_category_id', 'id')
             ->withDefault();
+    }
+
+    public function userHasShoogle(): HasMany
+    {
+        return $this->hasMany(UserHasShoogle::class, 'shoogle_id', 'id');
     }
 }

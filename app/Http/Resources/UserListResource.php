@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Shoogle;
+use App\Models\UserRanks;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserListResource extends JsonResource
@@ -15,9 +16,6 @@ class UserListResource extends JsonResource
      */
     public function toArray($request)
     {
-        // id, photo, firstName, lastName, department, email, rating, shoogles
-        // photo, lastName, firstName, email, rating = 0, shoogles, department
-
         return $this->resource->map(function ($item) {
             return [
                 'id' => $item->id,
@@ -26,7 +24,7 @@ class UserListResource extends JsonResource
                 'lastName' => $item->last_name,
                 'department' => null,
                 'email' => $item->email,
-                'rating' => 0,
+                'rating' => UserRanks::where('user_id', $this->resource->id)->count(),
                 'shoogles' => Shoogle::where('owner_id', $item->id)->count(),
             ];
         });

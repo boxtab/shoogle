@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShoogleCreateUpdate;
 use App\Http\Resources\ShooglesListResource;
+use App\Http\Resources\ShooglesResource;
 use App\Models\Buddie;
 use App\Models\Company;
 use App\Models\ModelHasRole;
@@ -37,27 +38,6 @@ class ShooglesController extends BaseApiController
         $shooglesListResource = new ShooglesListResource($shoogles);
 
         return $shooglesListResource->response();
-
-        /*
-        try {
-            $search = $request->has('search') ? $request->search : null;
-
-            $data = Shoogle::on()
-                ->when( ! is_null( $search ) , function ($query) use ($search) {
-                    return $query->where('title', 'like', '%' . $search .'%');
-                })
-                ->get(['id', 'title'])
-                ->toArray();
-
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
-        */
     }
 
     /**
@@ -122,34 +102,10 @@ class ShooglesController extends BaseApiController
      */
     public function show($id = null)
     {
-        try {
-            $data = Shoogle::on()
-                ->firstOrFail()
-                ->get(['id', 'title', 'created_at', 'owner_id'])
-                ->where('id', '=', $id)
-                ->map( function ( $item ) {
-                    return [
-                        'id' => $item->id,
-                        'title' => $item->title,
-                        'created_at' => $item->created_at,
-                        'creator' => [
-                            'email' => User::where('id', $item->owner_id)->first()->email,
-                            'team' => User::where('id', $item->owner_id)->first()->company->name,
-                            'role' => ModelHasRole::where('model_id', $item->owner_id)->first()->role->name,
-                        ],
-                        'shooglers_count' => Shoogle::count(),
-                        'buddies_count' => Buddie::where('shoogle_id', $item->id)->count(),
-                    ];
-                })->toArray();
+        $shoogles = Shoogle::on()->where('id', $id)->firstOrFail();
 
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $data[0],
-        ]);
+        $shooglesResource = new ShooglesResource($shoogles);
+        return $shooglesResource->response();
     }
 
     /**

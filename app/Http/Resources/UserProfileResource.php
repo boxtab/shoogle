@@ -3,7 +3,9 @@
 namespace App\Http\Resources;
 
 use App\Models\Shoogle;
+use App\Models\UserRanks;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class UserProfileResource extends JsonResource
 {
@@ -15,7 +17,6 @@ class UserProfileResource extends JsonResource
      */
     public function toArray($request)
     {
-        // id, photo, firstName, lastName, department, email, rating, shoogles
         return [
             'id'            => $this->resource->id,
             'photo'         => $this->resource->avatar,
@@ -23,7 +24,7 @@ class UserProfileResource extends JsonResource
             'lastName'      => $this->resource->last_name,
             'department'    => null,
             'email'         => $this->resource->email,
-            'rating'        => 0,
+            'rating'        => UserRanks::where('user_id', $this->resource->id)->count(),
             'shoogles'      => Shoogle::where('owner_id', $this->resource->id)->count(),
         ];
     }
