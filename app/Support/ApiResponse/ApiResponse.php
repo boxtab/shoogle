@@ -22,7 +22,7 @@ class ApiResponse
             $response = response()->json(
                 [
                     'success' => true,
-                    'data' => $data
+                    'data' => $data,
                 ],
                 $status,
                 $headers,
@@ -49,7 +49,7 @@ class ApiResponse
             $response = response()->json(
                 [
                     'success' => true,
-                    'message' => $message
+                    'message' => $message,
                 ],
                 $status,
                 $headers,
@@ -74,7 +74,7 @@ class ApiResponse
         return response()->json(
             [
                 'success' => false,
-                'errors' => $errors
+                'errors' => replaceArraysOnStrings($errors),
             ],
             $status,
             $headers,

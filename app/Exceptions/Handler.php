@@ -56,12 +56,12 @@ class Handler extends ExceptionHandler
     public function register()
     {
         // reportable
-        $this->renderable(function (Throwable $e) {
-            return response([
-                'success' => false,
-                'globalError' => $e->getMessage()],
-                $e->getCode() ?: 400
-            );
-        });
+//        $this->renderable(function (Throwable $e) {
+//            return response([
+//                'success' => false,
+//                'globalError' => $e->getMessage()],
+//                $e->getCode() ?: 400
+//            );
+//        });
     }
 }

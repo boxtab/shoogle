@@ -6,8 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use App\Support\ApiRequest\ApiRequest;
 
-class DepartmentCreateRequest extends FormRequest
+class DepartmentCreateRequest extends ApiRequest
 {
 //    protected $errorBag;
 
@@ -33,18 +34,4 @@ class DepartmentCreateRequest extends FormRequest
             'departmentName' => 'required|min:2|max:255',
         ];
     }
-
-//    protected function failedValidation( \Illuminate\Contracts\Validation\Validator $validator )
-//    {
-//        return response()->json([
-//            'success' => false,
-//            'errors' => 'asd',
-//        ], 422);
-//    }
-
-//    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
-//    {
-//        $response = new Response(['error' => $validator->errors()->first()], 422);
-//        throw new ValidationException($validator, $response);
-//    }
 }
