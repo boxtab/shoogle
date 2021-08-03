@@ -21,6 +21,7 @@ trait FailedAuthorization
      */
     protected function failedAuthorization() : void
     {
-        throw new RequestAuthorizeException('You are not allowed for this action!');
+        throw new RequestAuthorizeException('Unauthorized.');
+//        throw new RequestAuthorizeException('You are not allowed for this action!');
     }
 }

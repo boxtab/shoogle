@@ -5,11 +5,29 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentCreateRequest;
+use App\Repositories\DepartmentRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Support\ApiResponse\ApiResponse;
 
 class DepartmentController extends BaseApiController
 {
+    /**
+     * @var DepartmentRepository
+     */
+    private $departmentRepository;
+
+    /**
+     * DepartmentController constructor.
+     *
+     * @param DepartmentRepository $departmentRepository
+     */
+    public function __construct(DepartmentRepository $departmentRepository)
+    {
+        $this->departmentRepository = $departmentRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,6 +46,14 @@ class DepartmentController extends BaseApiController
      */
     public function create(DepartmentCreateRequest $request)
     {
+        try {
+            $this->departmentRepository->create([
+                'company_id' => $request->input('companyId'),
+                'name' => $request->input('departmentName'),
+            ]);
+        } catch (\Exception $e) {
+            return ApiResponse::returnError($e->getMessage());
+        }
 
         return response()->json([
             'success' => true,

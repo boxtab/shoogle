@@ -71,10 +71,13 @@ class ApiResponse
     public static function returnError($errors = null, int $status = Response::HTTP_BAD_REQUEST, array $headers = []): JsonResponse
     {
         $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+
+        $keyError = ( $status === Response::HTTP_UNPROCESSABLE_ENTITY ) ? 'errors' : 'globalError';
+
         return response()->json(
             [
                 'success' => false,
-                'errors' => replaceArraysOnStrings($errors),
+                $keyError => replaceArraysOnStrings($errors),
             ],
             $status,
             $headers,
