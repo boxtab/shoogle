@@ -137,15 +137,15 @@ return [
     'TEST_USER_NAME' => env('TEST_USER_NAME'),
     'TEST_USER_EMAIL' => env('TEST_USER_EMAIL'),
     'TEST_USER_PASSWORD' => env('TEST_USER_PASSWORD'),
-  
+
     'SUPER_ADMIN_NAME' => env('SUPER_ADMIN_NAME'),
     'SUPER_ADMIN_EMAIL' => env('SUPER_ADMIN_EMAIL'),
     'SUPER_ADMIN_PASSWORD' => env('SUPER_ADMIN_PASSWORD'),
-  
+
     'ADMIN_NAME' => env('ADMIN_NAME'),
     'ADMIN_EMAIL' => env('ADMIN_EMAIL'),
     'ADMIN_PASSWORD' => env('ADMIN_PASSWORD'),
-    
+
     'providers' => [
 
         /*
@@ -182,7 +182,7 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\RepositoryServiceProvider::class,
+//        App\Providers\RepositoryServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,

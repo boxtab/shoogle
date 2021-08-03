@@ -50,17 +50,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-//        if ( $exception ) {
-//            // log the error
-//            return response()->json([
-//                'success' => false,
-//                'data' => [
-//                    'status' => $exception->getStatusCode(),
-//                    'error' => $exception->getMessage(),
-//                ],
-//            ]);
-//        }
-
         return parent::render($request, $exception);
     }
 
@@ -70,10 +59,9 @@ class Handler extends ExceptionHandler
         $this->renderable(function (Throwable $e) {
             return response([
                 'success' => false,
-                'reportableError' => $e->getMessage()],
+                'globalError' => $e->getMessage()],
                 $e->getCode() ?: 400
             );
-//            return response(['error123' => $e->getMessage()], $e->getCode() ?: 400);
         });
     }
 }

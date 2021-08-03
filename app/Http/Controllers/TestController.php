@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Invite;
 use App\Models\Shoogle;
 use App\Repositories\InviteRepositoryInterface;
+use App\Repositories\TestRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\User;
@@ -15,9 +16,6 @@ use App\Repositories\TestRepositoryInterface;
 
 class TestController extends Controller
 {
-    /**
-     * @var TestRepositoryInterface
-     */
     private $testRepository;
 
     /**
@@ -25,10 +23,10 @@ class TestController extends Controller
      *
      * @param TestRepositoryInterface $testRepository
      */
-//    private function __construct(TestRepositoryInterface $testRepository)
-//    {
-//        $this->testRepository = $testRepository;
-//    }
+    public function __construct(TestRepository $testRepository)
+    {
+        $this->testRepository = $testRepository;
+    }
 
     public function index()
     {

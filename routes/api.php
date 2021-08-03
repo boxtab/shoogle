@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\CompanyController;
+use App\Http\Controllers\API\V1\DepartmentController;
 use App\Http\Controllers\API\V1\InviteController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\ShooglesController;
@@ -144,4 +145,14 @@ Route::group(['prefix' => 'v1/profile', 'middleware' => ['auth:api', 'user_alrea
     // Retrieving data from a user profile
     Route::get('', [ProfileController::class, 'show']);
 
+});
+
+/**
+ * Entity: Department
+ * Table: departments
+ */
+Route::group(['prefix' => 'v1/department', 'middlewar' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+
+    // Create a department
+    Route::post('', [DepartmentController::class, 'create']);
 });
