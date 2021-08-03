@@ -26,7 +26,7 @@ class DepartmentController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(/*Request $request*/DepartmentCreateRequest $request)
+    public function create(/*Request $request*/ DepartmentCreateRequest $request)
     {
 //        $validator =  Validator::make($request->all(),[
 //            'companyId' => 'required|integer',

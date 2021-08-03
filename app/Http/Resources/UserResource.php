@@ -29,11 +29,12 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'token' => $this->token,
-            'name' => $this->first_name,
-            'email' => $this->email,
-            'role' => count( $this->getRoleNames() ) !== 0 ? $this->getRoleNames()[0] : null,
-            'avatar' => $this->avatar,
+            'token'     => $this->token,
+            'firstName' => $this->first_name,
+            'lastName'  => $this->first_name,
+            'email'     => $this->email,
+            'role'      => count( $this->getRoleNames() ) !== 0 ? $this->getRoleNames()[0] : null,
+            'avatar'    => $this->avatar,
         ];
     }
 

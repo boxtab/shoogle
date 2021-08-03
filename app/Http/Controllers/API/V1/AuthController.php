@@ -75,7 +75,6 @@ class AuthController extends BaseApiController
 
         try {
             $user = User::where('email', $credentials['email'])->firstOrFail();
-//            $token = $user->createToken('Personal Access Token')->plainTextToken;
             $userResource = new UserResource($user);
         } catch (Exception $e) {
             return $this->globalError( $e->getMessage() );
