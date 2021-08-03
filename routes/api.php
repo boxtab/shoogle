@@ -155,4 +155,7 @@ Route::group(['prefix' => 'v1/department', 'middlewar' => ['auth:api', 'user_alr
 
     // Create a department
     Route::post('', [DepartmentController::class, 'create']);
+
+    // List of departments
+    Route::get('list', [DepartmentController::class, 'index']);
 });

@@ -29,13 +29,18 @@ class DepartmentController extends BaseApiController
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the department.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        //
+        $listDepartment = $this->departmentRepository->get(['id', 'company_id', 'name']);
+
+        return response()->json([
+            'success' => true,
+            'data' => $listDepartment,
+        ]);
     }
 
     /**
