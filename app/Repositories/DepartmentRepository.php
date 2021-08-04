@@ -22,4 +22,9 @@ class DepartmentRepository extends Repositories
     {
         parent::__construct($model);
     }
+
+    public function getList()
+    {
+
+    }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentCreateRequest;
+use App\Http\Resources\DepartmentListResource;
+use App\Models\Department;
 use App\Repositories\DepartmentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -35,12 +37,21 @@ class DepartmentController extends BaseApiController
      */
     public function index()
     {
+        $listDepartment = $this->departmentRepository->get();
+        $departmentListResource = new DepartmentListResource($listDepartment);
+
+        return ApiResponse::returnData($departmentListResource);
+
+//        return $departmentListResource->response();
+
+        /*
         $listDepartment = $this->departmentRepository->get(['id', 'company_id', 'name']);
 
         return response()->json([
             'success' => true,
             'data' => $listDepartment,
         ]);
+        */
     }
 
     /**
