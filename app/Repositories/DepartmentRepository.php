@@ -33,9 +33,19 @@ class DepartmentRepository extends Repositories
     {
         return $this->model
             ->select(DB::raw('departments.name as department_name, count(users.id) as shooglers'))
-            // ->leftJoin('bid', 'offer.bid_id', '=', 'bid.id')
             ->leftJoin('users', 'users.department_id', '=', 'departments.id')
             ->groupBy('departments.name')
             ->get();
+    }
+
+    /**
+     * Detailed information on the department.
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function getDetail(int $id)
+    {
+        return $this->model->where('id', $id)->get();
     }
 }

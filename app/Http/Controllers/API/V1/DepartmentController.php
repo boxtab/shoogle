@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentCreateRequest;
+use App\Http\Resources\DepartmentDetailResource;
 use App\Http\Resources\DepartmentListResource;
 use App\Models\Department;
 use App\Repositories\DepartmentRepository;
@@ -78,14 +79,17 @@ class DepartmentController extends BaseApiController
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource department.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
+        $departmentDetail = $this->departmentRepository->getDetail($id);
+        $departmentDetailResource = new DepartmentDetailResource($departmentDetail);
+
+        return ApiResponse::returnData($departmentDetailResource);
     }
 
     /**

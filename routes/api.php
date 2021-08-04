@@ -158,4 +158,7 @@ Route::group(['prefix' => 'v1/department', 'middlewar' => ['auth:api', 'user_alr
 
     // List of departments
     Route::get('list', [DepartmentController::class, 'index']);
+
+    // Detailed information on the department
+    Route::get('{id}', [DepartmentController::class, 'show']);
 });
