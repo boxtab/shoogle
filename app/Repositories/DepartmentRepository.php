@@ -25,6 +25,6 @@ class DepartmentRepository extends Repositories
 
     public function getList()
     {
-
+        return $this->model->get(['id', 'name']);
     }
 }

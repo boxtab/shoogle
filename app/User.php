@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Company;
+use App\Models\Department;
 use App\Models\Role;
 use App\Models\UserRanks;
 use Carbon\Carbon;
@@ -22,7 +23,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * Class User
  * @package App
  *
+ * @property int id
  * @property int|null company_id
+ * @property int|null department_id
  * @property string|null first_name
  * @property string|null last_name
  * @property string|null about
@@ -74,14 +77,38 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * @var string the default authentication "guard".
+     */
     protected $guard_name = 'api';
 
+    /**
+     * User from the company.
+     *
+     * @return BelongsTo
+     */
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'company_id', 'id')
             ->withDefault();
     }
 
+    /**
+     * User from the department.
+     *
+     * @return BelongsTo
+     */
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class, 'department_id', 'id')
+            ->withDefault();
+    }
+
+    /**
+     * User rank.
+     *
+     * @return HasMany
+     */
     public function userRanks(): HasMany
     {
         return $this->hasMany(UserRanks::class, 'user_id', 'id');

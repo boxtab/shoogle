@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class ModelHasRole
+ * @package App\Models
+ *
+ * @property int role_id
+ * @property  string model_type
+ * @property int model_id
+ */
+
 class ModelHasRole extends Model
 {
     use HasFactory;
@@ -25,12 +34,18 @@ class ModelHasRole extends Model
         'model_id' => 'integer',
     ];
 
+    /**
+     * @return BelongsTo
+     */
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class, 'role_id', 'id')
             ->withDefault();
     }
 
+    /**
+     * @return BelongsTo
+     */
     public function model(): BelongsTo
     {
         return $this->belongsTo(User::class, 'model_id', 'id')

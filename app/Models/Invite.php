@@ -2,9 +2,23 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * Class Invite
+ * @package App\Models
+ *
+ * @property int id
+ * @property string email
+ * @property boolean is_used
+ * @property int|null created_by
+ * @property int|null companies_id
+ * @property Carbon|null created_at
+ * @property Carbon|null updated_at
+ */
 
 class Invite extends Model
 {
@@ -32,6 +46,9 @@ class Invite extends Model
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
 
+    /**
+     * @return BelongsTo
+     */
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'companies_id', 'id')

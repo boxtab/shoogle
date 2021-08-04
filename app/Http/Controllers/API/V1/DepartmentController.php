@@ -37,7 +37,7 @@ class DepartmentController extends BaseApiController
      */
     public function index()
     {
-        $listDepartment = $this->departmentRepository->get();
+        $listDepartment = $this->departmentRepository->getList();
         $departmentListResource = new DepartmentListResource($listDepartment);
 
         return ApiResponse::returnData($departmentListResource);

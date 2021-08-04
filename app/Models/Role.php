@@ -2,8 +2,20 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class Role
+ * @package App\Models
+ *
+ * @property int id
+ * @property string name
+ * @property string guard_name
+ * @property Carbon|null created_at
+ * @property Carbon|null updated_at
+ */
 
 class Role extends Model
 {

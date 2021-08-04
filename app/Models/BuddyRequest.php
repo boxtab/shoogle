@@ -4,9 +4,24 @@ namespace App\Models;
 
 use App\Enums\BuddyRequestTypeEnum;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * Class BuddyRequest
+ * @package App\Models
+ *
+ * @property int id
+ * @property int shoogle_id
+ * @property int user1_id
+ * @property int user2_id
+ * @property BuddyRequestTypeEnum type
+ * @property string message
+ * @property Carbon|null created_at
+ * @property Carbon|null updated_at
+ */
 
 class BuddyRequest extends Model
 {
@@ -36,18 +51,27 @@ class BuddyRequest extends Model
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
 
+    /**
+     * @return BelongsTo
+     */
     public function user1(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user1_id', 'id')
             ->withDefault();
     }
 
+    /**
+     * @return BelongsTo
+     */
     public function user2(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user2_id', 'id')
             ->withDefault();
     }
 
+    /**
+     * @return BelongsTo
+     */
     public function shoogle(): BelongsTo
     {
         return $this->belongsTo(Shoogle::class, 'shoogle_id', 'id')

@@ -2,8 +2,21 @@
 
 namespace App\Models;
 
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+/**
+ * Class Company
+ * @package App\Models
+ *
+ * @property int id
+ * @property string name
+ * @property Carbon|null created_at
+ * @property Carbon|null updated_at
+ */
 
 class Company extends Model
 {
@@ -24,4 +37,14 @@ class Company extends Model
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
+
+    /**
+     * Company departments.
+     *
+     * @return HasMany
+     */
+    public function departments(): HasMany
+    {
+        return $this->hasMany(Department::class, 'company_id', 'id');
+    }
 }
