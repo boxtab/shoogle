@@ -91,7 +91,7 @@ class AuthController extends BaseApiController
     public function signup(Request $request)
     {
         $validator =  Validator::make($request->all(),[
-            'email' => 'required|email|unique:users,email|min:6|max:255',
+            'email' => 'required|email:rfc,dns|unique:users,email|min:5|max:255',
             'password' => 'min:6|max:64|required',
         ]);
 

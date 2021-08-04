@@ -30,9 +30,19 @@ class TestController extends Controller
 
     public function index()
     {
+        $data = 'default';
+        $email = 'asd@asd.com';
+
+
+        if ( filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $data = 'Valid email';
+        } else {
+            $data = 'No valid';
+        }
+
         return response()->json([
             'success' => true,
-            'data' => [],
+            'data' => $data,
         ]);
     }
 }
