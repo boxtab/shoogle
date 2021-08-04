@@ -280,12 +280,10 @@ class CompanyController extends BaseApiController
     {
         try {
             Company::findOrFail($id);
+            $token = pushCompanyIdToJWT($id);
         } catch (Exception $e) {
             return $this->globalError( $e->getMessage() );
         }
-
-        $user = Auth::user();
-        $token = JWTAuth::customClaims(['company_id' => $id])->fromUser($user);
 
         return response()->json([
             'success' => true,

@@ -28,8 +28,11 @@ class ShooglesController extends BaseApiController
     public function index(Request $request)
     {
         $search = $request->has('search') ? $request->search : null;
+        $companyId = getCompanyIdFromJWT();
 
-        $shoogles = Shoogle::on()->has('owner')
+        $shoogles = Shoogle::on()
+            ->leftJoin('users', 'users.id', '=', 'shoogles.owner_id')
+            ->where('users.company_id', '=', $companyId)
             ->when( ! is_null( $search ) , function ($query) use ($search) {
                 return $query->where('title', 'like', '%' . $search .'%');
             })

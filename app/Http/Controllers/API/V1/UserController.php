@@ -19,39 +19,6 @@ use Exception;
 class UserController extends BaseApiController
 {
     /**
-     * Returns the company ID.
-     *
-     * @return \Illuminate\Http\JsonResponse | int | null
-     */
-    private function getCompanyId()
-    {
-        $companyId = null;
-        $roleName = Auth::user()->roles()->first()->name;
-
-        try {
-            switch ($roleName) {
-                case RoleConstant::SUPER_ADMIN:
-                    $payload = JWTAuth::parseToken()->getPayload();
-                    $companyId = $payload->get('company_id');
-                    if ( is_null( $companyId ) ) {
-                        throw new \Exception('No company selected.');
-                    }
-                    break;
-                case RoleConstant::COMPANY_ADMIN:
-                    $companyId = Auth::user()->company_id;
-                    break;
-            }
-        } catch ( \Exception $e ) {
-            return response()->json([
-                'success' => false,
-                'data' => $e->getMessage(),
-            ]);
-        }
-
-        return $companyId;
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @param Request $request
@@ -59,7 +26,7 @@ class UserController extends BaseApiController
      */
     public function index(Request $request)
     {
-        $companyId = $this->getCompanyId();
+        $companyId = getCompanyIdFromJWT();
 
         $users = User::on()
             ->when( ! is_null( $companyId ) , function ($query) use ($companyId) {
@@ -68,7 +35,6 @@ class UserController extends BaseApiController
             ->get();
 
         $userListResource = new UserListResource($users);
-
         return $userListResource->response();
     }
 

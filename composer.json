@@ -45,7 +45,8 @@
             "App\\": "app/"
         },
         "files": [
-            "app/Helpers/ArrayProcessing.php"
+            "app/Helpers/ArrayProcessing.php",
+            "app/Helpers/ShoogleJWT.php"
         ],
         "classmap": [
             "database/seeds",
