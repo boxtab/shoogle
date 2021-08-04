@@ -41,17 +41,6 @@ class DepartmentController extends BaseApiController
         $departmentListResource = new DepartmentListResource($listDepartment);
 
         return ApiResponse::returnData($departmentListResource);
-
-//        return $departmentListResource->response();
-
-        /*
-        $listDepartment = $this->departmentRepository->get(['id', 'company_id', 'name']);
-
-        return response()->json([
-            'success' => true,
-            'data' => $listDepartment,
-        ]);
-        */
     }
 
     /**

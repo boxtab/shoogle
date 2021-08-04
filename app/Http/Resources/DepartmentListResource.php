@@ -16,8 +16,8 @@ class DepartmentListResource extends JsonResource
     {
         return $this->resource->map(function ($item) {
             return [
-                'id' => $item->id,
-                'name' => $item->name,
+                'departmentName' => $item->department_name,
+                'shooglers' => $item->shooglers,
             ];
         });
     }

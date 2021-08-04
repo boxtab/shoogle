@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Department;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class DepartmentRepository extends Repositories
 {
@@ -23,8 +24,18 @@ class DepartmentRepository extends Repositories
         parent::__construct($model);
     }
 
+    /**
+     * List of departments with the number of employees.
+     *
+     * @return mixed
+     */
     public function getList()
     {
-        return $this->model->get(['id', 'name']);
+        return $this->model
+            ->select(DB::raw('departments.name as department_name, count(users.id) as shooglers'))
+            // ->leftJoin('bid', 'offer.bid_id', '=', 'bid.id')
+            ->leftJoin('users', 'users.department_id', '=', 'departments.id')
+            ->groupBy('departments.name')
+            ->get();
     }
 }
