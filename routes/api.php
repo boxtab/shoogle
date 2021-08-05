@@ -167,7 +167,8 @@ Route::group(['prefix' => 'v1/department', 'middlewar' => ['auth:api', 'user_alr
     Route::get('{id}', [DepartmentController::class, 'show'])->where('id', '[0-9]+');
 
     // Edit department
-//    4) POST v1/department/:id  (отредактировано название департамента)
-//{ departmentName: <string> }
     Route::post('{id}', [DepartmentController::class, 'update'])->where('id', '[0-9]+');
+
+    // Delete department
+    Route::delete('{id}', [DepartmentController::class, 'destroy'])->where('id', '[0-9]+');
 });

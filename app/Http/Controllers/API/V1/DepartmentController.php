@@ -22,7 +22,7 @@ class DepartmentController extends BaseApiController
     /**
      * @var DepartmentRepository
      */
-    private $departmentRepository;
+//    private $departmentRepository;
 
     /**
      * DepartmentController constructor.
@@ -31,7 +31,7 @@ class DepartmentController extends BaseApiController
      */
     public function __construct(DepartmentRepository $departmentRepository)
     {
-        $this->departmentRepository = $departmentRepository;
+        $this->repository = $departmentRepository;
     }
 
     /**
@@ -41,7 +41,7 @@ class DepartmentController extends BaseApiController
      */
     public function index()
     {
-        $listDepartment = $this->departmentRepository->getList();
+        $listDepartment = $this->repository->getList();
         $departmentListResource = new DepartmentListResource($listDepartment);
 
         return ApiResponse::returnData($departmentListResource);
@@ -56,29 +56,15 @@ class DepartmentController extends BaseApiController
     public function create(DepartmentCreateRequest $request)
     {
         try {
-            $this->departmentRepository->create([
+            $this->repository->create([
                 'company_id' => $request->input('companyId'),
                 'name' => $request->input('departmentName'),
             ]);
-        } catch (\Exception $e) {
-            return ApiResponse::returnError($e->getMessage());
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => [],
-        ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return ApiResponse::returnData([]);
     }
 
     /**
@@ -89,24 +75,14 @@ class DepartmentController extends BaseApiController
      */
     public function show($id)
     {
-        $departmentDetail = $this->departmentRepository->find($id);
+        try {
+            $record = $this->findRecordByID($id);
 
-        if ( $departmentDetail ) {
-            return ApiResponse::returnData(new DepartmentDetailResource($departmentDetail));
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return ApiResponse::returnError('Department not found for this ID', Response::HTTP_NOT_FOUND);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return ApiResponse::returnData(new DepartmentDetailResource($record));
     }
 
     /**
@@ -118,27 +94,33 @@ class DepartmentController extends BaseApiController
      */
     public function update(DepartmentUpdateRequest $request, $id)
     {
-        $department = $this->departmentRepository->find($id);
-
-        if ( is_null( $department ) ) {
-            return ApiResponse::returnError('Department not found for this ID', Response::HTTP_NOT_FOUND);
+        try {
+            $record = $this->findRecordByID($id);
+            $record->update([
+                'name' => $request->input('departmentName')
+            ]);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
-
-        $department->update([
-            'name' => $request->input('departmentName')
-        ]);
 
         return ApiResponse::returnData([]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified department from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
      */
     public function destroy($id)
     {
-        //
+        try {
+            $record = $this->findRecordByID($id);
+            $record->destroy($id);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        return ApiResponse::returnData([]);
     }
 }
