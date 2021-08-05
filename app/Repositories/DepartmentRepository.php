@@ -6,6 +6,7 @@ use App\Models\Department;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DepartmentRepository extends Repositories
 {
@@ -31,10 +32,19 @@ class DepartmentRepository extends Repositories
      */
     public function getList()
     {
+        $companyId = getCompanyIdFromJWT();
+
         return $this->model
-            ->select(DB::raw('departments.name as department_name, count(users.id) as shooglers'))
+            ->select(DB::raw('
+                departments.id as department_id,
+                departments.name as department_name,
+                count(users.id) as shooglers'))
             ->leftJoin('users', 'users.department_id', '=', 'departments.id')
-            ->groupBy('departments.name')
+            ->when( ! is_null($companyId), function($query) use ($companyId) {
+                return $query->where('departments.company_id', $companyId);
+            })
+//            ->where('departments.company_id', $companyId)
+            ->groupBy('departments.id', 'departments.name')
             ->get();
     }
 

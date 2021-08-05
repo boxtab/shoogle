@@ -133,7 +133,6 @@ class DepartmentController extends BaseApiController
     {
         try {
             $companyId = getCompanyIdFromJWT();
-            Log::info($companyId);
 
             $listDepartment = $this->repository->where('company_id', $companyId)->get('name');
         } catch (Exception $e) {

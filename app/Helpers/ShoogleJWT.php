@@ -25,9 +25,9 @@ if ( ! function_exists('getCompanyIdFromJWT') ) {
                 case RoleConstant::SUPER_ADMIN:
                     $payload = JWTAuth::parseToken()->getPayload();
                     $companyId = $payload->get('company_id');
-                    if ( is_null( $companyId ) ) {
-                        throw new \Exception('No company selected.');
-                    }
+//                    if ( is_null( $companyId ) ) {
+//                        throw new \Exception('No company selected.');
+//                    }
                     break;
                 case RoleConstant::COMPANY_ADMIN:
                     $companyId = Auth::user()->company_id;
