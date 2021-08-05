@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentCreateRequest;
+use App\Http\Requests\DepartmentUpdateRequest;
 use App\Http\Resources\DepartmentDetailResource;
 use App\Http\Resources\DepartmentListResource;
 use App\Models\Department;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Response;
+use Exception;
 
 class DepartmentController extends BaseApiController
 {
@@ -90,7 +92,6 @@ class DepartmentController extends BaseApiController
         $departmentDetail = $this->departmentRepository->find($id);
 
         if ( $departmentDetail ) {
-            Log::info($departmentDetail);
             return ApiResponse::returnData(new DepartmentDetailResource($departmentDetail));
         }
 
@@ -109,15 +110,25 @@ class DepartmentController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified department in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param DepartmentUpdateRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function update(Request $request, $id)
+    public function update(DepartmentUpdateRequest $request, $id)
     {
-        //
+        $department = $this->departmentRepository->find($id);
+
+        if ( is_null( $department ) ) {
+            return ApiResponse::returnError('Department not found for this ID', Response::HTTP_NOT_FOUND);
+        }
+
+        $department->update([
+            'name' => $request->input('departmentName')
+        ]);
+
+        return ApiResponse::returnData([]);
     }
 
     /**

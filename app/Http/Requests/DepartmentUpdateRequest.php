@@ -3,12 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 use App\Support\ApiRequest\ApiRequest;
 
-class DepartmentCreateRequest extends ApiRequest
+class DepartmentUpdateRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,8 +25,7 @@ class DepartmentCreateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'companyId' => 'required|integer',
-            'departmentName' => 'required|min:2|max:255',
+            'departmentName' => 'required|min:1|max:255',
         ];
     }
 }
