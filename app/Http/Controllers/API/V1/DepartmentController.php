@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Support\ApiResponse\ApiResponse;
+use Illuminate\Http\Response;
 
 class DepartmentController extends BaseApiController
 {
@@ -81,15 +82,19 @@ class DepartmentController extends BaseApiController
     /**
      * Display the specified resource department.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        $departmentDetail = $this->departmentRepository->getDetail($id);
-        $departmentDetailResource = new DepartmentDetailResource($departmentDetail);
+        $departmentDetail = $this->departmentRepository->find($id);
 
-        return ApiResponse::returnData($departmentDetailResource);
+        if ( $departmentDetail ) {
+            Log::info($departmentDetail);
+            return ApiResponse::returnData(new DepartmentDetailResource($departmentDetail));
+        }
+
+        return ApiResponse::returnError('Department not found for this ID', Response::HTTP_NOT_FOUND);
     }
 
     /**

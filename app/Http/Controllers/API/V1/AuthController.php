@@ -96,7 +96,6 @@ class AuthController extends BaseApiController
         ]);
 
         if ( $validator->fails() ) {
-            Log::info( gettype( $validator->errors() ));
             return $this->validatorFails( $validator->errors() );
         }
 

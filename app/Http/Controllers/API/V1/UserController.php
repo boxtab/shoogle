@@ -46,7 +46,6 @@ class UserController extends BaseApiController
      */
     public function create(Request $request)
     {
-        Log::info('create user');
         $validator =  Validator::make($request->all(),[
             'email'         => 'required|email',
             'firstName'     => 'required|min:2|max:255',
