@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Support\ApiResponse\ApiResponse;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -291,5 +292,18 @@ class CompanyController extends BaseApiController
                 'token' => $token,
             ],
         ]);
+    }
+
+    /**
+     * Current company.
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function own()
+    {
+        $company = Company::where('id', Auth::user()->company_id)->first('name');
+        $data = ! is_null($company) ? $company : ['name' => null];
+
+        return ApiResponse::returnData($data);
     }
 }

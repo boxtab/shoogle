@@ -53,7 +53,7 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin
 
     // Get company data by ID
     // GET /api/v1/company/:id
-    Route::get('{id}', [CompanyController::class, 'show']);
+    Route::get('{id}', [CompanyController::class, 'show'])->where('id', '[0-9]+');
 
     // Create a new company
     // POST /api/v1/company
@@ -61,15 +61,19 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin
 
     // Edit new company
     // POST /api/v1/company/:id
-    Route::post('{id}', [CompanyController::class, 'update']);
+    Route::post('{id}', [CompanyController::class, 'update'])->where('id', '[0-9]+');
 
     // Delete company
     // DELETE /api/v1/company/:id
-    Route::delete('{id}', [CompanyController::class, 'destroy']);
+    Route::delete('{id}', [CompanyController::class, 'destroy'])->where('id', '[0-9]+');;
 
     // Entry company
-    // GET v1/company/:id/get-access-token
+    // GET /api/v1/company/:id/get-access-token
     Route::get('{id}/get-access-token', [CompanyController::class, 'entry']);
+
+    // Current company
+    // GET /api/v1/company/own
+    Route::get('own', [CompanyController::class, 'own']);
 });
 
 /**
@@ -83,10 +87,10 @@ Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_
 
     // Get user data by ID
     // GET /api/v1/user/:id
-    Route::get('{id}', [UserController::class, 'show']);
+    Route::get('{id}', [UserController::class, 'show'])->where('id', '[0-9]+');
     // Edit user
     // POST /api/v1/user/:id
-    Route::post('{id}', [UserController::class, 'update']);
+    Route::post('{id}', [UserController::class, 'update'])->where('id', '[0-9]+');
     // Create user
     // POST /api/v1/user/
     Route::post('', [UserController::class, 'create']);});
@@ -116,12 +120,12 @@ Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api', 'user_alre
 
     // shoogles fetch request:
     // GET /api/v1/shoogles/:id
-    Route::get('{id?}', [ShooglesController::class, 'show']);
+    Route::get('{id?}', [ShooglesController::class, 'show'])->where('id', '[0-9]+');
 
 
     // Delete request:
     // DELETE /api/v1/shoogles/:id
-    Route::delete('{id}', [ShooglesController::class, 'destroy']);
+    Route::delete('{id}', [ShooglesController::class, 'destroy'])->where('id', '[0-9]+');
 
     // Create new chat
     // POST /api/v1/shoogles
@@ -130,7 +134,7 @@ Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api', 'user_alre
 
     // Edit chat
     // POST /api/v1/shoogles/:id
-    Route::post('{id}', [ShooglesController::class, 'update']);
+    Route::post('{id}', [ShooglesController::class, 'update'])->where('id', '[0-9]+');
 });
 
 /**
