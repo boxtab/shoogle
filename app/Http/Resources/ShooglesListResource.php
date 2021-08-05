@@ -22,6 +22,7 @@ class ShooglesListResource extends JsonResource
                 'lastActivity' => $item->updated,
                 'firstName' => $item->owner->first_name,
                 'lastName' => $item->owner->last_name,
+                'department' => $item->owner->department->name,
                 'shooglers' => $item->userHasShoogle->count(),
             ];
         });

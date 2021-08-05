@@ -43,7 +43,6 @@ class DepartmentRepository extends Repositories
             ->when( ! is_null($companyId), function($query) use ($companyId) {
                 return $query->where('departments.company_id', $companyId);
             })
-//            ->where('departments.company_id', $companyId)
             ->groupBy('departments.id', 'departments.name')
             ->get();
     }

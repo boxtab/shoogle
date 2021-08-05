@@ -10,6 +10,8 @@ use App\Models\Buddie;
 use App\Models\Company;
 use App\Models\ModelHasRole;
 use App\Models\Shoogle;
+use App\Repositories\ShooglesRepository;
+use App\Support\ApiResponse\ApiResponse;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,8 +19,23 @@ use App\Http\Controllers\API\BaseApiController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Class ShooglesController
+ * @package App\Http\Controllers\API\V1
+ */
+
 class ShooglesController extends BaseApiController
 {
+    /**
+     * ShooglesController constructor.
+     *
+     * @param ShooglesRepository $departmentRepository
+     */
+    public function __construct(ShooglesRepository $shooglesRepository)
+    {
+        $this->repository = $shooglesRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,19 +45,11 @@ class ShooglesController extends BaseApiController
     public function index(Request $request)
     {
         $search = $request->has('search') ? $request->search : null;
-        $companyId = getCompanyIdFromJWT();
 
-        $shoogles = Shoogle::on()
-            ->leftJoin('users', 'users.id', '=', 'shoogles.owner_id')
-            ->where('users.company_id', '=', $companyId)
-            ->when( ! is_null( $search ) , function ($query) use ($search) {
-                return $query->where('title', 'like', '%' . $search .'%');
-            })
-            ->get();
-
+        $shoogles = $this->repository->getList($search);
         $shooglesListResource = new ShooglesListResource($shoogles);
 
-        return $shooglesListResource->response();
+        return ApiResponse::returnData($shooglesListResource);
     }
 
     /**
