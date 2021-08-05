@@ -33,14 +33,14 @@ class ShooglesRepository extends Repositories
      */
     public function getList(string $search)
     {
-        $companyId = getCompanyIdFromJWT();
+//        $companyId = getCompanyIdFromJWT();
 
         return Shoogle::on()
             ->leftJoin('users', 'users.id', '=', 'shoogles.owner_id')
             ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
-            ->when( ! is_null($companyId), function($query) use ($companyId) {
-                return $query->where('users.company_id', $companyId);
-            })
+//            ->when( ! is_null($companyId), function($query) use ($companyId) {
+//                return $query->where('users.company_id', $companyId);
+//            })
             ->when( ! is_null( $search ) , function ($query) use ($search) {
                 return $query->where('title', 'like', '%' . $search .'%');
             })
