@@ -123,4 +123,24 @@ class DepartmentController extends BaseApiController
 
         return ApiResponse::returnData([]);
     }
+
+    /**
+     * List of all departments in the user's current company.
+     *
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function item()
+    {
+        try {
+            $companyId = getCompanyIdFromJWT();
+            Log::info($companyId);
+
+            $listDepartment = $this->repository->where('company_id', $companyId)->get('name');
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        return ApiResponse::returnData($listDepartment);
+    }
+
 }
