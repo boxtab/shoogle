@@ -118,7 +118,7 @@ class UserController extends BaseApiController
             $record->update([
                 'first_name' => $request->input('firstName'),
                 'last_name' => $request->input('lastName'),
-                'department_id' => $request->input('department'),
+                'department_id' => $request->input('departmentId'),
             ]);
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
