@@ -118,7 +118,11 @@ class DepartmentController extends BaseApiController
             $record = $this->findRecordByID($id);
             $record->destroy($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            if ($e->getCode() == 23000) {
+                return ApiResponse::returnError('The department cannot be deleted there are links to it.');
+            } else {
+                return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            }
         }
 
         return ApiResponse::returnData([]);
@@ -129,12 +133,10 @@ class DepartmentController extends BaseApiController
      *
      * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function item()
+    public function items()
     {
         try {
-            $companyId = getCompanyIdFromJWT();
-
-            $listDepartment = $this->repository->where('company_id', $companyId)->get('name');
+            $listDepartment = $this->repository->getItems();
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }

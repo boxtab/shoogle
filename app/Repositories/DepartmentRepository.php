@@ -57,4 +57,26 @@ class DepartmentRepository extends Repositories
     {
         return $this->model->where('id', $id)->get();
     }
+
+    /**
+     * Массив департаментов для текущего пользователя.
+     *
+     * @return mixed
+     */
+    public function getItems()
+    {
+//        get()
+//            ->map( function ( $item ) {
+//                return [ 'id' => $item->id, 'name' => $item->name ];
+//            })->toArray();
+
+        $companyId = getCompanyIdFromJWT();
+
+        return $this->where('company_id', $companyId)
+            ->get('name')
+            ->map(function ($item) {
+                return $item->name;
+            })
+            ->toArray();
+    }
 }
