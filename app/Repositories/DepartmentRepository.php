@@ -64,22 +64,6 @@ class DepartmentRepository extends Repositories
     }
 
     /**
-     * Array of departments for the current user.
-     *
-     * @return mixed
-     */
-    public function getItems()
-    {
-        $companyId = getCompanyIdFromJWT();
-
-        if ( is_null($companyId) ) {
-            return [];
-        } else {
-            return $this->where('company_id', $companyId)->get();
-        }
-    }
-
-    /**
      * Create department.
      *
      * @param string $departmentName

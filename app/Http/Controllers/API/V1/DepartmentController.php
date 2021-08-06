@@ -120,21 +120,4 @@ class DepartmentController extends BaseApiController
 
         return ApiResponse::returnData([]);
     }
-
-    /**
-     * List of all departments in the user's current company.
-     *
-     * @return \Illuminate\Http\JsonResponse|Response
-     */
-    public function items()
-    {
-        try {
-            $listDepartment = $this->repository->getItems();
-        } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
-        }
-
-        return ApiResponse::returnData(new DepartmentItemsResource($listDepartment));
-    }
-
 }

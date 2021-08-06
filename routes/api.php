@@ -172,6 +172,4 @@ Route::group(['prefix' => 'v1/department', 'middlewar' => ['auth:api', 'user_alr
     // Delete department
     Route::delete('{id}', [DepartmentController::class, 'destroy'])->where('id', '[0-9]+');
 
-    // List of all departments in the user's current company
-    Route::get('items', [DepartmentController::class, 'items']);
 });
