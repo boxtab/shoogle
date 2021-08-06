@@ -70,11 +70,14 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin
     // Entry company
     // GET /api/v1/company/:id/get-access-token
     Route::get('{id}/get-access-token', [CompanyController::class, 'entry']);
+});
 
+Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'admin', 'user_already_logged_in', 'cors']], function () {
     // Current company
     // GET /api/v1/company/own
     Route::get('own', [CompanyController::class, 'own']);
 });
+
 
 /**
  * Entity: User
