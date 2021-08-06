@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserListResource;
 use App\Http\Resources\UserProfileResource;
 use App\Repositories\DepartmentRepository;
@@ -104,34 +105,29 @@ class UserController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the profile user.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param UserUpdateRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserUpdateRequest $request, $id)
     {
-        $validator =  Validator::make($request->all(),[
-            'firstName'     => 'required|min:2|max:255',
-            'lastName'      => 'nullable|min:2|max:255',
-            'department'    => 'nullable|min:2|max:255',
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
+        try {
+            $record = $this->findRecordByID($id);
+            $record->update([
+                'first_name' => $request->input('firstName'),
+                'last_name' => $request->input('lastName'),
+                'department_id' => $request->input('department'),
+            ]);
+        } catch (Exception $e) {
+            if ($e->getCode() == 23000) {
+                return ApiResponse::returnError('Department does not exist.');
+            } else {
+                return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            }
         }
 
-        User::where('id', $id)
-            ->firstorFail()
-            ->update([
-                'first_name' => $request->firstName,
-                'last_name' => $request->lastName
-            ]);
-
-        return response()->json([
-            'success' => true,
-            'data' => [],
-        ]);
+        return ApiResponse::returnData([]);
     }
 }

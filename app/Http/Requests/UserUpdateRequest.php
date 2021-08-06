@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Support\ApiRequest\ApiRequest;
 
-class ShoogleCreateUpdate extends FormRequest
+class UserUpdateRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +25,9 @@ class ShoogleCreateUpdate extends FormRequest
     public function rules()
     {
         return [
-            'wellbeingCategoryId' => ['required', 'integer', 'exists:wellbeing_categories,id'],
-            'active' => ['required', 'boolean'],
-            'title' => ['nullable', 'min:2', 'max:45'],
-            'description' => ['nullable', 'min:2', 'max:9086'],
-            'coverImage' => ['required', 'min:2', 'max:256'],
-            'acceptBuddies' => ['required', 'boolean'],
+            'firstName'     => 'required|min:2|max:255',
+            'lastName'      => 'nullable|min:2|max:255',
+            'department'    => 'nullable|integer',
         ];
     }
 }

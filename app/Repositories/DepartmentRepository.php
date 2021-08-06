@@ -64,7 +64,7 @@ class DepartmentRepository extends Repositories
     }
 
     /**
-     * Массив департаментов для текущего пользователя.
+     * Array of departments for the current user.
      *
      * @return mixed
      */
@@ -76,12 +76,6 @@ class DepartmentRepository extends Repositories
             return [];
         } else {
             return $this->where('company_id', $companyId)->get();
-//            return $this->where('company_id', $companyId)
-//                ->get('name')
-//                ->map(function ($item) {
-//                    return $item->name;
-//                })
-//                ->toArray();
         }
     }
 
