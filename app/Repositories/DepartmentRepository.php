@@ -75,12 +75,13 @@ class DepartmentRepository extends Repositories
         if ( is_null($companyId) ) {
             return [];
         } else {
-            return $this->where('company_id', $companyId)
-                ->get('name')
-                ->map(function ($item) {
-                    return $item->name;
-                })
-                ->toArray();
+            return $this->where('company_id', $companyId)->get();
+//            return $this->where('company_id', $companyId)
+//                ->get('name')
+//                ->map(function ($item) {
+//                    return $item->name;
+//                })
+//                ->toArray();
         }
     }
 

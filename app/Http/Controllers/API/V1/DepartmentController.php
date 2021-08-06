@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DepartmentCreateRequest;
 use App\Http\Requests\DepartmentUpdateRequest;
 use App\Http\Resources\DepartmentDetailResource;
+use App\Http\Resources\DepartmentItemsResource;
 use App\Http\Resources\DepartmentListResource;
 use App\Models\Department;
 use App\Repositories\DepartmentRepository;
@@ -133,7 +134,7 @@ class DepartmentController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return ApiResponse::returnData($listDepartment);
+        return ApiResponse::returnData(new DepartmentItemsResource($listDepartment));
     }
 
 }
