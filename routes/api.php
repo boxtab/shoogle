@@ -84,7 +84,7 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'admin', 'u
  * Table: invites
  */
 Route::group(['prefix' => 'v1/invite', 'middleware' => ['auth:api', 'admin.superadmin', 'user_already_logged_in', 'cors']], function () {
-    Route::get('', [InviteController::class, 'index']);
+    Route::get('list', [InviteController::class, 'index']);
     Route::post('csv', [InviteController::class, 'upload']);
 });
 
