@@ -7,6 +7,9 @@ use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserListResource;
 use App\Http\Resources\UserProfileResource;
+use App\Repositories\DepartmentRepository;
+use App\Repositories\UserRepository;
+use App\Support\ApiResponse\ApiResponse;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,26 +19,32 @@ use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Exception;
 
+/**
+ * Class UserController
+ * @package App\Http\Controllers\API\V1
+ */
 class UserController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * UserController constructor.
      *
-     * @param Request $request
+     * @param UserRepository $userRepository
+     */
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->repository = $userRepository;
+    }
+
+    /**
+     * Display a listing of the users.
+     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index()
     {
-        $companyId = getCompanyIdFromJWT();
+        $users = $this->repository->getList();
 
-        $users = User::on()
-            ->when( ! is_null( $companyId ) , function ($query) use ($companyId) {
-                return $query->where('company_id', $companyId);
-            })
-            ->get();
-
-        $userListResource = new UserListResource($users);
-        return $userListResource->response();
+        return ApiResponse::returnData(new UserListResource($users));
     }
 
     /**

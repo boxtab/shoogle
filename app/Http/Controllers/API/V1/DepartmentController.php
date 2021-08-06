@@ -20,11 +20,6 @@ use Exception;
 class DepartmentController extends BaseApiController
 {
     /**
-     * @var DepartmentRepository
-     */
-//    private $departmentRepository;
-
-    /**
      * DepartmentController constructor.
      *
      * @param DepartmentRepository $departmentRepository
