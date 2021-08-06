@@ -23,7 +23,7 @@ class UserProfileResource extends JsonResource
             'photo'         => $this->resource->avatar,
             'firstName'     => $this->resource->first_name,
             'lastName'      => $this->resource->last_name,
-            'department'    => null,
+            'department'    => $this->resource->department->name,
             'email'         => $this->resource->email,
             'rating'        => UserRanks::where('user_id', $this->resource->id)->count(),
             'shoogles'      => Shoogle::where('owner_id', $this->resource->id)->count(),
@@ -37,20 +37,6 @@ class UserProfileResource extends JsonResource
                     ];
                 })
                 ->toArray(),
-//            'shooglesList'  => ['title' => 1, 'wellbeingCategory' => 2, 'shooglersCount' => 3],
-        ];
-    }
-
-    /**
-     * Get additional data that should be returned with the resource array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
-    public function with($request)
-    {
-        return [
-            'success' => true,
         ];
     }
 }

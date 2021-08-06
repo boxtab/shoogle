@@ -86,39 +86,21 @@ class UserController extends BaseApiController
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
+     * Display the profile user.
      *
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     * @throws Exception
      */
     public function show($id)
     {
-        $user = User::where('id', $id)->firstOrFail();
-        $userProfileResource = new UserProfileResource($user);
+        try {
+            $record = $this->findRecordByID($id);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
 
-        return $userProfileResource->response();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return ApiResponse::returnData(new UserProfileResource($record));
     }
 
     /**
@@ -151,16 +133,5 @@ class UserController extends BaseApiController
             'success' => true,
             'data' => [],
         ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
