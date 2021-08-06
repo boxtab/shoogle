@@ -28,7 +28,6 @@ class DepartmentCreateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'companyId' => 'required|integer',
             'departmentName' => 'required|min:2|max:255',
         ];
     }

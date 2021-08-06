@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Department;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -77,5 +78,25 @@ class DepartmentRepository extends Repositories
                 })
                 ->toArray();
         }
+    }
+
+    /**
+     * Create department.
+     *
+     * @param string $departmentName
+     * @throws \Exception
+     */
+    public function createDepartment(string $departmentName)
+    {
+        $companyId = getCompanyIdFromJWT();
+
+        if ( is_null( $companyId ) ) {
+            throw new \Exception('No company selected', Response::HTTP_FAILED_DEPENDENCY);
+        }
+
+        $this->create([
+            'company_id' => $companyId,
+            'name' => $departmentName,
+        ]);
     }
 }

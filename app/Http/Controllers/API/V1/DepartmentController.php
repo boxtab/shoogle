@@ -56,10 +56,7 @@ class DepartmentController extends BaseApiController
     public function create(DepartmentCreateRequest $request)
     {
         try {
-            $this->repository->create([
-                'company_id' => $request->input('companyId'),
-                'name' => $request->input('departmentName'),
-            ]);
+            $this->repository->createDepartment($request->input('departmentName'));
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
