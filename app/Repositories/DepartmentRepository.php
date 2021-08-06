@@ -65,18 +65,17 @@ class DepartmentRepository extends Repositories
      */
     public function getItems()
     {
-//        get()
-//            ->map( function ( $item ) {
-//                return [ 'id' => $item->id, 'name' => $item->name ];
-//            })->toArray();
-
         $companyId = getCompanyIdFromJWT();
 
-        return $this->where('company_id', $companyId)
-            ->get('name')
-            ->map(function ($item) {
-                return $item->name;
-            })
-            ->toArray();
+        if ( is_null($companyId) ) {
+            return [];
+        } else {
+            return $this->where('company_id', $companyId)
+                ->get('name')
+                ->map(function ($item) {
+                    return $item->name;
+                })
+                ->toArray();
+        }
     }
 }
