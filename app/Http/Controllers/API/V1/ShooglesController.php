@@ -47,7 +47,6 @@ class ShooglesController extends BaseApiController
         $search = $request->has('search') ? $request->search : null;
 
         $shoogles = $this->repository->getList($search);
-        Log::info($shoogles);
         $shooglesListResource = new ShooglesListResource($shoogles);
 
         return ApiResponse::returnData($shooglesListResource);

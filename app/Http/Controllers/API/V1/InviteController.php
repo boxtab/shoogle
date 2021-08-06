@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Requests\InviteCSVRequest;
+use App\Http\Requests\InviteStoreRequest;
 use App\Http\Resources\DepartmentListResource;
 use App\Http\Resources\InviteListResource;
 use App\Repositories\InviteRepository;
@@ -45,6 +46,27 @@ class InviteController extends BaseApiController
         $listInvite = $this->repository->getList();
 
         return ApiResponse::returnData(new InviteListResource($listInvite));
+    }
+
+    /**
+     * Store a newly created invite in storage.
+     *
+     * @param InviteStoreRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function store(InviteStoreRequest $request)
+    {
+        try {
+        $this->repository->create($request->input('email'));
+        } catch (Exception $e) {
+            if ($e->getCode() == 23000) {
+                return ApiResponse::returnError('An invitation with this email address has already been downloaded.');
+            } else {
+                return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            }
+        }
+
+        return ApiResponse::returnData([]);
     }
 
     /**

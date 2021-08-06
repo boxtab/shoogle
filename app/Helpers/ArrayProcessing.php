@@ -9,7 +9,7 @@ if ( ! function_exists('replaceArraysOnStrings') ) {
         if ( gettype( $objectContainsArrays ) === 'string' ) {
             return $objectContainsArrays;
         }
-        Log::info('test');
+
         $objectContainsStrings = new stdClass();
         foreach ($objectContainsArrays->toArray() as $key => $value) {
             $objectContainsStrings->$key = implode($value);

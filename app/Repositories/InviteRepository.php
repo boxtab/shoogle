@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class InviteRepository
@@ -49,5 +50,24 @@ class InviteRepository extends Repositories
                 return $query->where('invites.companies_id', $companyId);
             })
             ->get();
+    }
+
+    /**
+     * Creating a single invite.
+     *
+     * @param string $email
+     */
+    public function create(string $email): void
+    {
+        $companyId = getCompanyIdFromJWT();
+
+        if ( ! is_null($companyId) ) {
+            $this->model->create([
+                'email' => $email,
+                'is_used' => 0,
+                'created_by' => Auth::user()->id,
+                'companies_id' => $companyId,
+            ]);
+        }
     }
 }
