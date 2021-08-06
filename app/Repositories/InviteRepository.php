@@ -4,15 +4,17 @@ namespace App\Repositories;
 
 use App\Models\Invite;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
-class InviteRepository extends Repositories implements InviteRepositoryInterface
+/**
+ * Class InviteRepository
+ * @package App\Repositories
+ */
+class InviteRepository extends Repositories
 {
-    /**
-     * @var array
-     */
-    private $uploadResult = [];
-
     /**
      * @var Invite
      */
@@ -29,24 +31,23 @@ class InviteRepository extends Repositories implements InviteRepositoryInterface
     }
 
     /**
-     * Writes a file to the invites table.
+     * List of departments with the number of employees.
      *
-     * @param array $fileCSV
-     * @return string
+     * @return mixed
      */
-    public function upload(array $fileCSV = null)
+    public function getList()
     {
-        return 'test repositories';
-    }
+        $companyId = getCompanyIdFromJWT();
 
-    /**
-     * Returns download results.
-     *
-     * @return array
-     */
-    public function getUploadResult()
-    {
-        return $this->uploadResult;
+        return $this->model
+            ->select(DB::raw('
+                invites.id as id,
+                invites.email as email,
+                invites.is_used as is_used,
+                invites.companies_id as companies_id'))
+            ->when( ! is_null($companyId), function($query) use ($companyId) {
+                return $query->where('invites.companies_id', $companyId);
+            })
+            ->get();
     }
-
 }

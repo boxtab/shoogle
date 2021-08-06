@@ -21,7 +21,7 @@ use Tymon\JWTAuth\Facades\JWTFactory;
 class CompanyController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the company.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse

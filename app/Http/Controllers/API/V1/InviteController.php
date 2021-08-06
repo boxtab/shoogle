@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Http\Requests\InviteCSVRequest;
+use App\Http\Resources\DepartmentListResource;
+use App\Http\Resources\InviteListResource;
+use App\Repositories\InviteRepository;
+use App\Support\ApiResponse\ApiResponse;
 use App\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\API\V1\InviteMail;
@@ -14,27 +19,33 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use App\Repositories\InviteRepositoryInterface;
-//use App\Repositories\InviteRepository;
 use Exception;
 
 class InviteController extends BaseApiController
 {
     const COUNT_FIELD = 1;
-    /**
-     * @var InviteRepositoryInterface
-     */
-    private $inviteRepository;
 
     /**
      * InviteController constructor.
      *
-     * @param InviteRepositoryInterface $inviteRepository
+     * @param InviteRepository $inviteRepository
      */
-//    private function __construct(InviteRepositoryInterface $inviteRepository)
-//    {
-//        $this->inviteRepository = $inviteRepository;
-//    }
+    public function __construct(InviteRepository $inviteRepository)
+    {
+        $this->repository = $inviteRepository;
+    }
+
+    /**
+     * Display a listing of the company.
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $listInvite = $this->repository->getList();
+
+        return ApiResponse::returnData(new InviteListResource($listInvite));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -42,17 +53,8 @@ class InviteController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function upload(InviteCSVRequest $request)
     {
-        $validator =  Validator::make($request->all(),[
-            'files' => 'required|mimes:csv,txt',
-            'companyId' => 'integer'
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
-        }
-
         $path = $request->file('files')->getRealPath();
         $fileCSV = array_map('str_getcsv', file($path));
         $listEmail = [];
@@ -94,18 +96,6 @@ class InviteController extends BaseApiController
             }
 
             $listEmail[] = $inviteRow[0];
-
-//            Invite::on()->updateOrCreate(
-//                [
-//                    'email' =>  $invite[0]
-//                ],
-//                [
-//                    'is_used' => 0,
-//                    'created_by' => Auth::id(),
-//                    'companies_id' => $invite[1]
-//                ]
-//            );
-
         }
 
         if ( ! empty( $listEmail ) ) {
@@ -115,10 +105,6 @@ class InviteController extends BaseApiController
                 Mail::send($inviteMail);
             }
         }
-
-        return response()->json([
-            'success' => true,
-            'data' => [],
-        ]);
+        return ApiResponse::returnData([]);
     }
 }

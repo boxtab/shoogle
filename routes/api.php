@@ -80,14 +80,21 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'admin', 'u
 
 
 /**
+ * Entity: Invite
+ * Table: invites
+ */
+Route::group(['prefix' => 'v1/invite', 'middleware' => ['auth:api', 'admin.superadmin', 'user_already_logged_in', 'cors']], function () {
+    Route::get('', [InviteController::class, 'index']);
+    Route::post('csv', [InviteController::class, 'upload']);
+});
+
+/**
  * Entity: User
  * Table: users
  */
 Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
 
     Route::get('list', [UserController::class, 'index'])->middleware(['admin.superadmin']);
-    Route::post('csv', [InviteController::class, 'store']);
-
     // Get user data by ID
     // GET /api/v1/user/:id
     Route::get('{id}', [UserController::class, 'show'])->where('id', '[0-9]+');
@@ -96,7 +103,8 @@ Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_
     Route::post('{id}', [UserController::class, 'update'])->where('id', '[0-9]+');
     // Create user
     // POST /api/v1/user/
-    Route::post('', [UserController::class, 'create']);});
+    Route::post('', [UserController::class, 'create']);
+});
 
 /**
  * Entity: WellbeingCategory
