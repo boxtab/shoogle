@@ -44,7 +44,6 @@ class UserController extends BaseApiController
     public function index()
     {
         $users = $this->repository->getList();
-
         return ApiResponse::returnData(new UserListResource($users));
     }
 

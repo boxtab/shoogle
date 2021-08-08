@@ -9,7 +9,7 @@ class AuthResource extends JsonResource
     /**
      * @var string
      */
-    protected $token;
+    private $token;
 
     /**
      * Set token.

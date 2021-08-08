@@ -2,8 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Models\Company;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -75,5 +77,24 @@ class CompanyRepository extends Repositories
                 from companies as c
                 order by c.id
             '));
+    }
+
+    /**
+     * Get the entity of the admin company by the company ID.
+     *
+     * @param int $companyId
+     * @return \Illuminate\Database\Eloquent\Builder|Model
+     */
+    public function getAdminByCompanyId(int $companyId): User
+    {
+        return User::on()->
+            leftJoin('model_has_roles', function($join) {
+                $join->on('users.id', '=', 'model_has_roles.model_id');
+            })->leftJoin('roles', function($join) {
+                $join->on('roles.id', '=', 'model_has_roles.role_id');
+            })
+            ->where('users.company_id', $companyId)
+            ->where('roles.name', RoleConstant::COMPANY_ADMIN)
+            ->firstOrFail();
     }
 }

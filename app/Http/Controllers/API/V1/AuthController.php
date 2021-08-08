@@ -105,7 +105,6 @@ class AuthController extends BaseApiController
                     ->where('id', $invite->id)
                     ->update(['is_used' => 1]);
 
-
                 return $user;
             });
             $token = JWTAuth::fromUser($user);
