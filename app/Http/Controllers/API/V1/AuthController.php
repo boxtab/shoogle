@@ -4,7 +4,10 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
+use App\Http\Requests\AuthLoginRequest;
+use App\Http\Requests\AuthSignupRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Resources\AuthResource;
 use App\Http\Resources\UserResource;
 use App\Models\Invite;
 use App\User;
@@ -16,9 +19,17 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use stdClass;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Support\ApiResponse\ApiResponse;
+use Illuminate\Http\Response;
 
+/**
+ * Class AuthController.
+ *
+ * @package App\Http\Controllers\API\V1
+ */
 class AuthController extends BaseApiController
 {
     /**
@@ -31,74 +42,42 @@ class AuthController extends BaseApiController
         $this->middleware('auth:api', ['except' => ['login', 'signup']]);
     }
 
-    private function rules($data)
-    {
-        $messages = [
-            'email.required'    => 'Please enter email.',
-            'email.exists'      => 'Email not registered.',
-            'email.email'       => 'Please enter valid email.',
-            'password.required' => 'Enter your password.',
-        ];
-
-        $validator = Validator::make($data, [
-            'email'     => 'required|email|exists:users',
-            'password'  => 'required',
-        ], $messages);
-
-        return $validator;
-    }
-
     /**
      * Get a JWT via given credentials.
      *
-     * @param Request $request
+     * @param AuthLoginRequest $request
      * @return JsonResponse
      */
-    public function login(Request $request)
+    public function login(AuthLoginRequest $request)
     {
-        $validator = $this->rules($request->all());
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
-        }
-
-        $credentials = $request->only(['email','password']);
+        $credentials = $request->only(['email', 'password']);
         $expirationTime = ['exp' => Carbon::now()->addDays(7)->timestamp];
 
         if ( ! $token = JWTAuth::attempt($credentials, $expirationTime) ) {
-//        if ( ! $token = Auth::attempt( $credentials ) ) {
-            return response()->json([
-                'success' => false,
-                'errors' => (object)(['password' => 'Wrong password']),
-            ], 422);
+            $errorWrongPassword = new stdClass();
+            $errorWrongPassword->password = ['Enter your password.'];
+            $errorWrongPassword = collect($errorWrongPassword);
+
+            return ApiResponse::returnError($errorWrongPassword, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
             $user = User::where('email', $credentials['email'])->firstOrFail();
-            $userResource = new UserResource($user);
+            $authResource = new AuthResource($user);
+            $authResource->setToken($token);
         } catch (Exception $e) {
-            return $this->globalError( $e->getMessage() );
+            return ApiResponse::returnError($e->getMessage());
         }
 
-        return $userResource->setToken($token)
-            ->response();
+        return ApiResponse::returnData($authResource);
     }
 
     /**
-     * @param Request $request
-     * @return JsonResponse
+     * @param AuthSignupRequest $request
+     * @return JsonResponse|object
      */
-    public function signup(Request $request)
+    public function signup(AuthSignupRequest $request)
     {
-        $validator =  Validator::make($request->all(),[
-            'email' => 'required|email:rfc,dns|unique:users,email|min:5|max:255',
-            'password' => 'min:6|max:64|required',
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
-        }
-
         try {
             $invite = Invite::where('email', $request->email)->firstorFail();
         } catch (Exception $e) {
@@ -130,15 +109,13 @@ class AuthController extends BaseApiController
                 return $user;
             });
             $token = JWTAuth::fromUser($user);
-//            $token = $user->createToken('Personal Access Token')->plainTextToken;
-            $userResource = new UserResource($user);
+            $authResource = new AuthResource($user);
+            $authResource->setToken($token);
         } catch (Exception $e) {
-            return $this->globalError( $e->getMessage() );
+            return ApiResponse::returnError($e->getMessage());
         }
 
-        return $userResource->setToken($token)
-            ->response($token)
-            ->setStatusCode(200);
+        return ApiResponse::returnData($authResource);
     }
 
     /**
@@ -150,11 +127,7 @@ class AuthController extends BaseApiController
     {
         auth()->logout();
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'message' => 'User successfully signed out'
-            ],
-        ]);
+        $data = ['message' => 'User successfully signed out'];
+        return ApiResponse::returnData($data);
     }
 }

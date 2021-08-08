@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Support\ApiResponse;
 
 use App\Helpers\Helper;

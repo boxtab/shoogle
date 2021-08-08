@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Log;
 use stdClass;
 use App\Constants\RoleConstant;
 use Illuminate\Support\Facades\Auth;
