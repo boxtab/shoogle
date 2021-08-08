@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
@@ -281,7 +282,7 @@ class CompanyController extends BaseApiController
     {
         try {
             Company::findOrFail($id);
-            $token = pushCompanyIdToJWT($id);
+            $token = Helper::pushCompanyIdToJWT($id);
         } catch (Exception $e) {
             return $this->globalError( $e->getMessage() );
         }

@@ -1,21 +1,55 @@
 <?php
 
+namespace App\Helpers;
+
+use stdClass;
 use App\Constants\RoleConstant;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-if ( ! function_exists('pushCompanyIdToJWT') ) {
+/**
+ * Class Helper.
+ *
+ * @package App\Helpers
+ */
+class Helper
+{
+    /**
+     * Makes a string out of a set of array elements.
+     *
+     * @param $objectContainsArrays
+     * @return stdClass
+     */
+    public static function replaceArraysOnStrings( $objectContainsArrays )
+    {
+        if ( gettype( $objectContainsArrays ) === 'string' ) {
+            return $objectContainsArrays;
+        }
 
-    function pushCompanyIdToJWT( int $companyId )
+        $objectContainsStrings = new stdClass();
+        foreach ($objectContainsArrays->toArray() as $key => $value) {
+            $objectContainsStrings->$key = implode($value);
+        }
+        return $objectContainsStrings;
+    }
+
+    /**
+     * Push the company ID into the token.
+     *
+     * @param int $companyId
+     * @return mixed
+     */
+    public static function pushCompanyIdToJWT( int $companyId )
     {
         return JWTAuth::customClaims(['company_id' => $companyId])->fromUser( Auth::user() );
     }
 
-}
-
-if ( ! function_exists('getCompanyIdFromJWT') ) {
-
-    function getCompanyIdFromJWT()
+    /**
+     * Get the company ID from the token.
+     *
+     * @return \Illuminate\Http\JsonResponse|null
+     */
+    public static function getCompanyIdFromJWT()
     {
         $companyId = null;
         $roleName = Auth::user()->roles()->first()->name;

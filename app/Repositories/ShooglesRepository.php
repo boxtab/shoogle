@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Helpers\Helper;
 use App\Models\Shoogle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -33,7 +34,7 @@ class ShooglesRepository extends Repositories
      */
     public function getList(string $search = null)
     {
-        $companyId = getCompanyIdFromJWT();
+        $companyId = Helper::getCompanyIdFromJWT();
 
         return Shoogle::on()
             ->leftJoin('users', 'users.id', '=', 'shoogles.owner_id')

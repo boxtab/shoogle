@@ -73,7 +73,6 @@ class ShooglesController extends BaseApiController
         }
 
         try {
-
             Shoogle::create([
                 'owner_id' => Auth()->user()->id,
                 'wellbeing_category_id' => $request->wellbeingCategoryId,
@@ -118,16 +117,6 @@ class ShooglesController extends BaseApiController
 
         $shooglesResource = new ShooglesResource($shoogles);
         return $shooglesResource->response();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**

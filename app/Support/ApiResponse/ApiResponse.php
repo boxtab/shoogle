@@ -3,8 +3,10 @@
 
 namespace App\Support\ApiResponse;
 
+use App\Helpers\Helper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class ApiResponse
 {
@@ -77,7 +79,8 @@ class ApiResponse
         return response()->json(
             [
                 'success' => false,
-                $keyError => replaceArraysOnStrings($errors),
+                $keyError => Helper::replaceArraysOnStrings($errors),
+//                $keyError => replaceArraysOnStrings($errors),
             ],
             $status,
             $headers,

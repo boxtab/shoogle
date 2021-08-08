@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Helpers\Helper;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class Repositories
@@ -24,7 +25,7 @@ abstract class Repositories
     public function __construct( Model $model )
     {
         $this->model = $model;
-        $this->companyId = getCompanyIdFromJWT();
+        $this->companyId = Helper::getCompanyIdFromJWT();
     }
 
     /**

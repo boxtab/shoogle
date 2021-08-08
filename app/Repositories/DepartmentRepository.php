@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Helpers\Helper;
 use App\Models\Department;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
@@ -37,7 +38,7 @@ class DepartmentRepository extends Repositories
      */
     public function getList()
     {
-        $companyId = getCompanyIdFromJWT();
+        $companyId = Helper::getCompanyIdFromJWT();
 
         return $this->model
             ->select(DB::raw('
@@ -71,7 +72,7 @@ class DepartmentRepository extends Repositories
      */
     public function createDepartment(string $departmentName)
     {
-        $companyId = getCompanyIdFromJWT();
+        $companyId = Helper::getCompanyIdFromJWT();
 
         if ( is_null( $companyId ) ) {
             throw new \Exception('No company selected', Response::HTTP_FAILED_DEPENDENCY);

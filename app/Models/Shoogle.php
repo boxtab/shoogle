@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class Shoogle
@@ -52,7 +53,7 @@ class Shoogle extends Model
         'wellbeing_category_id' => 'integer',
         'active' => 'boolean',
         'title' => 'string:45',
-        'reminder' => 'datetime',
+        'reminder' => 'datetime: h:i:s',
         'description' => 'string',
         'cover_image' => 'string:256',
         'accept_buddies' => 'boolean',
@@ -65,7 +66,15 @@ class Shoogle extends Model
      *
      * @var string
      */
-    protected $dateFormat = 'U';
+
+    //  Commented out because there was a conflict
+    //      "success": false,
+    //      "globalError": [
+    //          "22007",
+    //          1292,
+    //              "Incorrect datetime value: '1628418122' for column 'updated_at' at row 1"
+    //      ]
+//    protected $dateFormat = 'U';
 
     /**
      * Formatted creation date.

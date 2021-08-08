@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Helpers\Helper;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
@@ -37,7 +38,7 @@ class UserRepository extends Repositories
      */
     public function getList()
     {
-        $companyId = getCompanyIdFromJWT();
+        $companyId = Helper::getCompanyIdFromJWT();
 
         return User::on()
             ->when( ! is_null( $companyId ) , function ($query) use ($companyId) {

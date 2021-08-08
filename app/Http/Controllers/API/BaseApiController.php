@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Repositories\Repositories;
 use App\Support\ApiResponse\ApiResponse;
@@ -47,7 +48,7 @@ class BaseApiController extends Controller
     {
         return response()->json([
             'success' => false,
-            'errors' => replaceArraysOnStrings($validatorErrors),
+            'errors' => Helper::replaceArraysOnStrings($validatorErrors),
         ], 422);
     }
 
