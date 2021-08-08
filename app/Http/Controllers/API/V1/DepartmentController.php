@@ -18,6 +18,10 @@ use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Response;
 use Exception;
 
+/**
+ * Class DepartmentController
+ * @package App\Http\Controllers\API\V1
+ */
 class DepartmentController extends BaseApiController
 {
     /**

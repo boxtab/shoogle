@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\Shoogle;
-use App\Repositories\InviteRepositoryInterface;
 use App\Repositories\TestRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,7 +20,7 @@ class TestController extends Controller
     /**
      * TestController constructor.
      *
-     * @param TestRepositoryInterface $testRepository
+     * @param TestRepository $testRepository
      */
     public function __construct(TestRepository $testRepository)
     {

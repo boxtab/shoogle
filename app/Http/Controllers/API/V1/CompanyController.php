@@ -5,7 +5,10 @@ namespace App\Http\Controllers\API\V1;
 use App\Helpers\Helper;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CompanyIndexRequest;
 use App\Models\Company;
+use App\Repositories\CompanyRepository;
+use App\Repositories\DepartmentRepository;
 use App\Support\ApiResponse\ApiResponse;
 use App\User;
 use Exception;
@@ -13,86 +16,45 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Constants\RoleConstant;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Facades\JWTFactory;
+use Illuminate\Http\Response;
 
+/**
+ * Class CompanyController.
+ *
+ * @package App\Http\Controllers\API\V1
+ */
 class CompanyController extends BaseApiController
 {
     /**
-     * Display a listing of the company.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * CompanyController constructor.
+     * @param CompanyRepository $companyRepository
      */
-    public function index(Request $request)
+    public function __construct(CompanyRepository $companyRepository)
     {
-        $validator =  Validator::make($request->all(),[
-            'order' => [
-                'required',
-                Rule::in(['asc', 'desc', 'ASC', 'DESC']),
-            ],
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
-        }
-
-        try {
-            $data = DB::select(DB::raw('
-                select
-                    c.id as id,
-                    c.name as company_name,
-                    (
-                        select
-                            un.first_name
-                        from users as un
-                        left outer join model_has_roles as mhr on un.id = mhr.model_id
-                        left outer join roles as r on r.id = mhr.role_id
-                        where un.company_id = c.id
-                          and r.name = "company-admin"
-                        limit 1
-                    ) as contact_person_first_name,
-                    (
-                        select
-                            ul.last_name
-                        from users as ul
-                        left outer join model_has_roles as mhrl on ul.id = mhrl.model_id
-                        left outer join roles as r on r.id = mhrl.role_id
-                        where ul.company_id = c.id
-                          and r.name = "company-admin"
-                        limit 1
-                    ) as contact_person_last_name,
-                    (
-                        select
-                            un.email
-                        from users as un
-                        left outer join model_has_roles as mhr on un.id = mhr.model_id
-                        left outer join roles as r on r.id = mhr.role_id
-                        where un.company_id = c.id
-                          and r.name = "company-admin"
-                        limit 1
-                    ) as contact_person_email,
-                    (select count(uc.id) from users as uc where uc.company_id = c.id) as users_count
-                from companies as c
-                order by c.id
-            '));
-
-
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
+        $this->repository = $companyRepository;
     }
 
     /**
-     * Display the specified resource.
+     * Display a listing of the company.
+     *
+     * @param CompanyIndexRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(CompanyIndexRequest $request)
+    {
+        try {
+            $listCompany = $this->repository->getList();
+        } catch (\Exception $e) {
+            return ApiResponse::returnError( $e->getMessage() );
+        }
+
+        return ApiResponse::returnData($listCompany);
+    }
+
+    /**
+     * Display details by company ID.
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
@@ -127,10 +89,7 @@ class CompanyController extends BaseApiController
             return $this->globalError( $e->getMessage() );
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
+        return ApiResponse::returnData($data);
     }
 
     /**

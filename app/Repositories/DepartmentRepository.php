@@ -38,30 +38,17 @@ class DepartmentRepository extends Repositories
      */
     public function getList()
     {
-        $companyId = Helper::getCompanyIdFromJWT();
-
         return $this->model
             ->select(DB::raw('
                 departments.id as department_id,
                 departments.name as department_name,
                 count(users.id) as shooglers'))
             ->leftJoin('users', 'users.department_id', '=', 'departments.id')
-            ->when( ! is_null($companyId), function($query) use ($companyId) {
-                return $query->where('departments.company_id', $companyId);
+            ->when( ! $this->noCompany(), function($query) {
+                return $query->where('departments.company_id', $this->companyId);
             })
             ->groupBy('departments.id', 'departments.name')
             ->get();
-    }
-
-    /**
-     * Detailed information on the department.
-     *
-     * @param int $id
-     * @return mixed
-     */
-    public function getDetail(int $id)
-    {
-        return $this->model->where('id', $id)->get();
     }
 
     /**
@@ -72,14 +59,12 @@ class DepartmentRepository extends Repositories
      */
     public function createDepartment(string $departmentName)
     {
-        $companyId = Helper::getCompanyIdFromJWT();
-
-        if ( is_null( $companyId ) ) {
+        if ( $this->noCompany() ) {
             throw new \Exception('No company selected', Response::HTTP_FAILED_DEPENDENCY);
         }
 
         $this->create([
-            'company_id' => $companyId,
+            'company_id' => $this->companyId,
             'name' => $departmentName,
         ]);
     }
