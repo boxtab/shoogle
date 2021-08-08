@@ -24,8 +24,6 @@ use Exception;
 
 class InviteController extends BaseApiController
 {
-    const COUNT_FIELD = 1;
-
     /**
      * InviteController constructor.
      *
@@ -49,7 +47,7 @@ class InviteController extends BaseApiController
     }
 
     /**
-     * Store a newly created invite in storage.
+     * Creating a new invite.
      *
      * @param InviteStoreRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
@@ -57,7 +55,7 @@ class InviteController extends BaseApiController
     public function store(InviteStoreRequest $request)
     {
         try {
-        $this->repository->create($request->input('email'));
+            $this->repository->create( $request->input('email') );
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('An invitation with this email address has already been downloaded.');
@@ -65,68 +63,24 @@ class InviteController extends BaseApiController
                 return ApiResponse::returnError($e->getMessage(), $e->getCode());
             }
         }
-
         return ApiResponse::returnData([]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Loading invites from a CSV file.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param InviteCSVRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function upload(InviteCSVRequest $request)
     {
-        $path = $request->file('files')->getRealPath();
-        $fileCSV = array_map('str_getcsv', file($path));
-        $listEmail = [];
-
-        foreach ($fileCSV as $inviteRow) {
-
-            if (count($inviteRow) !== self::COUNT_FIELD) {
-                continue;
-            }
-
-            if (!filter_var($inviteRow[0], FILTER_VALIDATE_EMAIL)) {
-                continue;
-            }
-
-            if (Invite::on()->where('email', $inviteRow[0])->count() > 0) {
-                continue;
-            }
-
-            if (User::on()->where('email', $inviteRow[0])->count() > 0) {
-                continue;
-            }
-
-            $invite = Invite::on()->where('email', $inviteRow[0])->first();
-
-            if ($invite !== null) {
-                $invite->update([
-                    'is_used' => 0,
-                    'created_by' => Auth::id(),
-                    'companies_id' => $request->companyId,
-                ]);
-            } else {
-
-                $invite = new Invite();
-                $invite->email = $inviteRow[0];
-                $invite->is_used = 0;
-                $invite->created_by = Auth::id();
-                $invite->companies_id = $request->companyId;
-                $invite->save();
-            }
-
-            $listEmail[] = $inviteRow[0];
+        try {
+            $patchFile = $request->file('files')->getRealPath();
+            $this->repository->upload($patchFile);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        if ( ! empty( $listEmail ) ) {
-            $inviteMail = new InviteMail();
-            foreach ($listEmail as $email) {
-                $inviteMail->to($email);
-                Mail::send($inviteMail);
-            }
-        }
         return ApiResponse::returnData([]);
     }
 }

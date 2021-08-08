@@ -12,6 +12,11 @@ abstract class Repositories
     protected $model;
 
     /**
+     * @var int|null
+     */
+    protected $companyId;
+
+    /**
      * Repositories constructor.
      *
      * @param Model $model
@@ -19,6 +24,17 @@ abstract class Repositories
     public function __construct( Model $model )
     {
         $this->model = $model;
+        $this->companyId = getCompanyIdFromJWT();
+    }
+
+    /**
+     * Is the company selected.
+     *
+     * @return bool
+     */
+    public function noCompany(): bool
+    {
+        return is_null( $this->companyId ) ? true : false;
     }
 
     public function __call( $name, $arguments )

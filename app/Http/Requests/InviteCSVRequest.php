@@ -26,7 +26,6 @@ class InviteCSVRequest extends ApiRequest
     {
         return [
             'files' => 'required|mimes:csv,txt',
-            'companyId' => 'integer',
         ];
     }
 }

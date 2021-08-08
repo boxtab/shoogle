@@ -2,13 +2,17 @@
 
 namespace App\Repositories;
 
+use App\Http\Requests\InviteCSVRequest;
+use App\Mail\API\V1\InviteMail;
 use App\Models\Invite;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Class InviteRepository
@@ -16,6 +20,8 @@ use Illuminate\Support\Facades\Auth;
  */
 class InviteRepository extends Repositories
 {
+    const COUNT_FIELD = 1;
+
     /**
      * @var Invite
      */
@@ -38,16 +44,14 @@ class InviteRepository extends Repositories
      */
     public function getList()
     {
-        $companyId = getCompanyIdFromJWT();
-
         return $this->model
             ->select(DB::raw('
                 invites.id as id,
                 invites.email as email,
                 invites.is_used as is_used,
                 invites.companies_id as companies_id'))
-            ->when( ! is_null($companyId), function($query) use ($companyId) {
-                return $query->where('invites.companies_id', $companyId);
+            ->when( ! $this->noCompany(), function($query) {
+                return $query->where('invites.companies_id', $this->companyId);
             })
             ->get();
     }
@@ -59,15 +63,84 @@ class InviteRepository extends Repositories
      */
     public function create(string $email): void
     {
-        $companyId = getCompanyIdFromJWT();
+        if ( $this->noCompany() ) {
+            return;
+        }
 
-        if ( ! is_null($companyId) ) {
-            $this->model->create([
-                'email' => $email,
-                'is_used' => 0,
-                'created_by' => Auth::user()->id,
-                'companies_id' => $companyId,
-            ]);
+        $this->model->create([
+            'email' => $email,
+            'is_used' => 0,
+            'created_by' => Auth::user()->id,
+            'companies_id' => $this->companyId,
+        ]);
+
+        $this->sendInvitationsToEmail([$email]);
+    }
+
+    /**
+     * Loading invites from a CSV file.
+     *
+     * @param string $pathFile
+     */
+    public function upload(string $pathFile): void
+    {
+        $fileCSV = array_map('str_getcsv', file($pathFile));
+        $listEmail = [];
+
+        foreach ($fileCSV as $inviteRow) {
+
+            if (count($inviteRow) !== self::COUNT_FIELD) {
+                continue;
+            }
+
+            if ( ! filter_var($inviteRow[0], FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
+
+            if (Invite::on()->where('email', $inviteRow[0])->count() > 0) {
+                continue;
+            }
+
+            if (User::on()->where('email', $inviteRow[0])->count() > 0) {
+                continue;
+            }
+
+            $invite = Invite::on()->where('email', $inviteRow[0])->first();
+            if ($invite !== null) {
+                $invite->update([
+                    'is_used' => 0,
+                    'created_by' => Auth::id(),
+                    'companies_id' => $this->companyId,
+                ]);
+            } else {
+                $invite = new Invite();
+                $invite->email = $inviteRow[0];
+                $invite->is_used = 0;
+                $invite->created_by = Auth::id();
+                $invite->companies_id = $this->companyId;
+                $invite->save();
+            }
+
+            $listEmail[] = $inviteRow[0];
+        }
+        $this->sendInvitationsToEmail($listEmail);
+    }
+
+    /**
+     * Send invitations to email.
+     *
+     * @param array $listEmail
+     */
+    private function sendInvitationsToEmail(array $listEmail): void
+    {
+        if ( empty( $listEmail ) ) {
+            return;
+        }
+
+        $inviteMail = new InviteMail();
+        foreach ($listEmail as $email) {
+            $inviteMail->to($email);
+            Mail::send($inviteMail);
         }
     }
 }
