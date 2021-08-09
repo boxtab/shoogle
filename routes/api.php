@@ -7,7 +7,7 @@ use App\Http\Controllers\API\V1\InviteController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
-use App\Http\Controllers\API\V1\WeelbeingScoresController;
+use App\Http\Controllers\API\V1\WelbeingScoresController;
 use App\Http\Controllers\API\V1\WellbeingCategoryController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
@@ -108,7 +108,7 @@ Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_
     Route::post('', [UserController::class, 'create']);
 
     // Getting wellbeing scores points for a user.
-    Route::post('{id}/wellbeing-scores', [WeelbeingScoresController::class, 'averageUser'])->where('id', '[0-9]+');
+    Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageUser'])->where('id', '[0-9]+');
 });
 
 /**
@@ -144,7 +144,7 @@ Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api', 'user_alre
     Route::delete('{id}', [ShooglesController::class, 'destroy'])->where('id', '[0-9]+');
 
     // Getting wellbeing scores points for a shoogles.
-    Route::post('{id}/wellbeing-scores', [WeelbeingScoresController::class, 'averageShoogle'])->where('id', '[0-9]+');
+    Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageShoogle'])->where('id', '[0-9]+');
 });
 
 /**
