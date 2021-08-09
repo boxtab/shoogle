@@ -20,7 +20,6 @@ class WellbeingCategoryController extends BaseApiController
     public function index()
     {
         try {
-
             $data = WellbeingCategory::get()
                 ->map( function ( $item ) {
                     return [ 'id' => $item->id, 'name' => $item->name ];

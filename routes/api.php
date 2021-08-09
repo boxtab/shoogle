@@ -7,6 +7,7 @@ use App\Http\Controllers\API\V1\InviteController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
+use App\Http\Controllers\API\V1\WeelbeingScoresController;
 use App\Http\Controllers\API\V1\WellbeingCategoryController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
@@ -105,6 +106,10 @@ Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_
 
     // Create a user.
     Route::post('', [UserController::class, 'create']);
+
+    // Getting wellbeing scores points for a user.
+    // POST api/v1/user/:id/wellbeing-scores
+    Route::post('{id}/wellbeing-scores', [WeelbeingScoresController::class, 'show'])->where('id', '[0-9]+');
 });
 
 /**
