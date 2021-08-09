@@ -56,7 +56,7 @@ class DepartmentController extends BaseApiController
     public function create(DepartmentCreateRequest $request)
     {
         try {
-            $this->repository->createDepartment($request->input('departmentName'));
+            $this->repository->createDepartment($request->input('name'));
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
@@ -92,7 +92,7 @@ class DepartmentController extends BaseApiController
         try {
             $record = $this->findRecordByID($id);
             $record->update([
-                'name' => $request->input('departmentName')
+                'name' => $request->input('name')
             ]);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());

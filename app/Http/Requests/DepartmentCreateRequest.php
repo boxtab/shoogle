@@ -28,7 +28,7 @@ class DepartmentCreateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'departmentName' => 'required|min:2|max:255',
+            'name' => 'required|min:2|max:255',
         ];
     }
 }
