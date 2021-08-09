@@ -139,7 +139,7 @@ class CompanyController extends BaseApiController
             'companyName'   => 'required|min:2|max:45',
             'firstName'     => 'required|min:2|max:255',
             'lastName'      => 'nullable|min:2|max:255',
-            'email'         => 'required|email|min:6|max:255',
+            'email'         => 'required|email:rfc,dns|min:6|max:255',
             'password'      => 'nullable|min:6|max:64',
         ]);
 

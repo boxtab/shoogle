@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -38,13 +39,30 @@ class UserRepository extends Repositories
      */
     public function getList()
     {
-        $companyId = Helper::getCompanyIdFromJWT();
-
         return User::on()
-            ->when( ! is_null( $companyId ) , function ($query) use ($companyId) {
-                return $query->where('company_id', $companyId);
+            ->when( ! $this->noCompany() , function ($query) {
+                return $query->where('company_id', $this->companyId);
             })
             ->get();
     }
 
+    /**
+     * Create new user.
+     *
+     * @param array $credentials
+     */
+    public function create(array $credentials): void
+    {
+        DB::transaction( function () use($credentials) {
+            $user = new User();
+            $user->company_id = $this->companyId;
+            $user->department_id = $credentials['departmentId'];
+            $user->first_name = $credentials['firstName'];
+            $user->last_name = $credentials['lastName'];
+            $user->email = $credentials['email'];
+            $user->save();
+
+            $user->assignRole(RoleConstant::USER);
+        });
+    }
 }

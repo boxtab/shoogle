@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserListResource;
 use App\Http\Resources\UserProfileResource;
@@ -48,41 +49,25 @@ class UserController extends BaseApiController
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Create user.
      *
-     * @param Request $request
+     * @param UserCreateRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(Request $request)
+    public function create(UserCreateRequest $request)
     {
-        $validator =  Validator::make($request->all(),[
-            'email'         => 'required|email',
-            'firstName'     => 'required|min:2|max:255',
-            'lastName'      => 'nullable|min:2|max:255',
-            'department'    => 'nullable|min:2|max:255',
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
+        try {
+            $credentials = $request->only(['email', 'firstName', 'lastName', 'departmentId']);
+            $this->repository->create($credentials);
+        } catch (Exception $e) {
+            if ($e->getCode() == 23000) {
+                return ApiResponse::returnError('Violation of constraint integrity of foreign or unique key!');
+            } else {
+                return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            }
         }
 
-        $companyId = $this->getCompanyId();
-
-        DB::transaction( function () use($request, $companyId) {
-            $user = new User();
-            $user->email = $request->email;
-            $user->company_id = $companyId;
-            $user->first_name = $request->firstName;
-            $user->last_name = $request->lastName;
-            $user->save();
-
-            $user->assignRole(RoleConstant::USER);
-        });
-
-        return response()->json([
-            'success' => true,
-            'data' => [],
-        ]);
+        return ApiResponse::returnData([]);
     }
 
     /**
@@ -120,11 +105,7 @@ class UserController extends BaseApiController
                 'department_id' => $request->input('departmentId'),
             ]);
         } catch (Exception $e) {
-            if ($e->getCode() == 23000) {
-                return ApiResponse::returnError('Department does not exist.');
-            } else {
-                return ApiResponse::returnError($e->getMessage(), $e->getCode());
-            }
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
         return ApiResponse::returnData([]);

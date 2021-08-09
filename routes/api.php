@@ -94,16 +94,16 @@ Route::group(['prefix' => 'v1/invite', 'middleware' => ['auth:api', 'admin.super
  * Table: users
  */
 Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
-
+    // User list.
     Route::get('list', [UserController::class, 'index'])->middleware(['admin.superadmin']);
-    // Get user data by ID
-    // GET /api/v1/user/:id
+
+    // Show a user.
     Route::get('{id}', [UserController::class, 'show'])->where('id', '[0-9]+');
-    // Edit user
-    // POST /api/v1/user/:id
+
+    // Edit a user.
     Route::post('{id}', [UserController::class, 'update'])->where('id', '[0-9]+');
-    // Create user
-    // POST /api/v1/user/
+
+    // Create a user.
     Route::post('', [UserController::class, 'create']);
 });
 

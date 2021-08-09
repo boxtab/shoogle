@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Support\ApiRequest\ApiRequest;
 
-class UserUpdateRequest extends ApiRequest
+class UserCreateRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,6 +25,7 @@ class UserUpdateRequest extends ApiRequest
     public function rules()
     {
         return [
+            'email'         => 'required|email:rfc,dns',
             'firstName'     => 'required|min:2|max:255',
             'lastName'      => 'nullable|min:2|max:255',
             'departmentId'  => 'nullable|integer',
