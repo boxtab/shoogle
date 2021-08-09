@@ -124,29 +124,20 @@ Route::group(['prefix' => 'v1/wellbeing-category', 'middleware' => ['auth:api', 
  * Table: shoogles
  */
 Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
-
-    // list request:
-    // POST api/v1/shoogles/list
-    // {query: 'abc'}
+    // Shoogles list.
     Route::post('list', [ShooglesController::class, 'index'])->middleware(['admin.superadmin']);
 
-    // shoogles fetch request:
-    // GET /api/v1/shoogles/:id
-    Route::get('{id?}', [ShooglesController::class, 'show'])->where('id', '[0-9]+');
-
-
-    // Delete request:
-    // DELETE /api/v1/shoogles/:id
-    Route::delete('{id}', [ShooglesController::class, 'destroy'])->where('id', '[0-9]+');
-
-    // Create new chat
-    // POST /api/v1/shoogles
+    // Create a shoogle.
     Route::post('', [ShooglesController::class, 'create']);
 
+    // Show a shoogles.
+    Route::get('{id?}', [ShooglesController::class, 'show'])->where('id', '[0-9]+');
 
-    // Edit chat
-    // POST /api/v1/shoogles/:id
+    // Editing a shoogles.
     Route::post('{id}', [ShooglesController::class, 'update'])->where('id', '[0-9]+');
+
+    // Delete shoogles.
+    Route::delete('{id}', [ShooglesController::class, 'destroy'])->where('id', '[0-9]+');
 });
 
 /**

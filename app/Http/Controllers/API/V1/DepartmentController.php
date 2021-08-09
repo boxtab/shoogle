@@ -74,11 +74,9 @@ class DepartmentController extends BaseApiController
     {
         try {
             $record = $this->findRecordByID($id);
-
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
-
         return ApiResponse::returnData(new DepartmentDetailResource($record));
     }
 

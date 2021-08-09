@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ShoogleCreateUpdate;
+use App\Http\Requests\ShoogleUpdateRequest;
+use App\Http\Requests\ShooglesCreateRequest;
 use App\Http\Resources\ShooglesListResource;
 use App\Http\Resources\ShooglesResource;
 use App\Models\Buddie;
@@ -11,9 +12,11 @@ use App\Models\Company;
 use App\Models\ModelHasRole;
 use App\Models\Shoogle;
 use App\Repositories\ShooglesRepository;
+use App\Support\ApiRequest\ApiRequest;
 use App\Support\ApiResponse\ApiResponse;
 use App\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
 use Illuminate\Support\Facades\Log;
@@ -52,27 +55,15 @@ class ShooglesController extends BaseApiController
     }
 
     /**
-     * Show the form for creating a new shoogle.
+     * Create a shoogle.
      *
+     * @param ShooglesCreateRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(Request $request)
+    public function create(ShooglesCreateRequest $request)
     {
-        $validator =  Validator::make($request->all(),[
-            'wellbeingCategoryId'   => ['required', 'integer', 'exists:wellbeing_categories,id'],
-            'active'                => ['required', 'boolean'],
-            'title'                 => ['nullable', 'min:2', 'max:45'],
-            'description'           => ['nullable', 'min:2', 'max:9086'],
-            'coverImage'            => ['required', 'min:2', 'max:256'],
-            'acceptBuddies'         => ['required', 'boolean'],
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
-        }
-
         try {
-            Shoogle::create([
+            $this->repository->create([
                 'owner_id' => Auth()->user()->id,
                 'wellbeing_category_id' => $request->wellbeingCategoryId,
                 'active' => $request->active,
@@ -83,52 +74,42 @@ class ShooglesController extends BaseApiController
                 'accept_buddies' => $request->acceptBuddies,
             ]);
 
-        } catch (\Illuminate\Database\QueryException $e) {
-            return $this->globalError( $e->errorInfo );
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => [],
-        ]);
+        return ApiResponse::returnData([]);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
+     * Show detailed information about a chat by ID.
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id = null)
     {
-        $shoogles = Shoogle::on()->where('id', $id)->firstOrFail();
+        try {
+            $shoogles = $this->findRecordByID($id);
+            $shooglesResource = new ShooglesResource($shoogles);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
 
-        $shooglesResource = new ShooglesResource($shoogles);
-        return $shooglesResource->response();
+        return ApiResponse::returnData($shooglesResource);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Editing a shoogle.
      *
-     * @param Request $request
+     * @param ShoogleUpdateRequest $request
      * @param $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function update(ShoogleCreateUpdate $request, $id)
+    public function update(ShoogleUpdateRequest $request, $id)
     {
         try {
-            $shoogle = Shoogle::where('id', $id)->firstOrFail();
+            $shoogle = $this->findRecordByID($id);
             $shoogle->update([
                 'wellbeing_category_id' => $request->wellbeingCategoryId,
                 'active' => $request->active,
@@ -137,18 +118,15 @@ class ShooglesController extends BaseApiController
                 'cover_image' => $request->coverImage,
                 'accept_buddies' => $request->acceptBuddies,
             ]);
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $shoogle,
-        ]);
+        return ApiResponse::returnData([]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete shoogle.
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
@@ -156,17 +134,16 @@ class ShooglesController extends BaseApiController
     public function destroy($id)
     {
         try {
-
-            $shoogle = Shoogle::find($id);
-            $shoogle->delete();
-
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
+            $shoogle = $this->findRecordByID($id);
+            $shoogle->destroy($id);
+        } catch (Exception $e) {
+            if ($e->getCode() == 23000) {
+                return ApiResponse::returnError('The shoogle cannot be deleted there are links to it.');
+            } else {
+                return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            }
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => [],
-        ]);
+        return ApiResponse::returnData([]);
     }
 }
