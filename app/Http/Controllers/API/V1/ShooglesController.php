@@ -28,8 +28,7 @@ class ShooglesController extends BaseApiController
 {
     /**
      * ShooglesController constructor.
-     *
-     * @param ShooglesRepository $departmentRepository
+     * @param ShooglesRepository $shooglesRepository
      */
     public function __construct(ShooglesRepository $shooglesRepository)
     {
@@ -37,7 +36,7 @@ class ShooglesController extends BaseApiController
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the shoogles.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -53,7 +52,7 @@ class ShooglesController extends BaseApiController
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new shoogle.
      *
      * @return \Illuminate\Http\JsonResponse
      */
