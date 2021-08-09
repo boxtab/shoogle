@@ -23,7 +23,7 @@ class UserProfileResource extends JsonResource
             'photo'         => $this->resource->avatar,
             'firstName'     => $this->resource->first_name,
             'lastName'      => $this->resource->last_name,
-            'department'    => $this->resource->department_id,
+            'departmentId'  => $this->resource->department_id,
             'email'         => $this->resource->email,
             'rating'        => UserRanks::where('user_id', $this->resource->id)->count(),
             'shoogles'      => Shoogle::where('owner_id', $this->resource->id)->count(),
