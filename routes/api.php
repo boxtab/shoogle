@@ -108,8 +108,7 @@ Route::group(['prefix' => 'v1/user', 'middleware' => ['auth:api', 'user_already_
     Route::post('', [UserController::class, 'create']);
 
     // Getting wellbeing scores points for a user.
-    // POST api/v1/user/:id/wellbeing-scores
-    Route::post('{id}/wellbeing-scores', [WeelbeingScoresController::class, 'show'])->where('id', '[0-9]+');
+    Route::post('{id}/wellbeing-scores', [WeelbeingScoresController::class, 'averageUser'])->where('id', '[0-9]+');
 });
 
 /**
@@ -143,6 +142,9 @@ Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api', 'user_alre
 
     // Delete shoogles.
     Route::delete('{id}', [ShooglesController::class, 'destroy'])->where('id', '[0-9]+');
+
+    // Getting wellbeing scores points for a shoogles.
+    Route::post('{id}/wellbeing-scores', [WeelbeingScoresController::class, 'averageShoogle'])->where('id', '[0-9]+');
 });
 
 /**
