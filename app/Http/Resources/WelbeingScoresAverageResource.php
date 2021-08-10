@@ -15,12 +15,12 @@ class WelbeingScoresAverageResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'social'        => null,
-            'physical'      => null,
-            'mental'        => null,
-            'economical'    => null,
-            'spiritual'     => null,
-            'emotional'     => null,
+            'social'        => $this->resource->social,
+            'physical'      => $this->resource->physical,
+            'mental'        => $this->resource->mental,
+            'economical'    => $this->resource->economical,
+            'spiritual'     => $this->resource->spiritual,
+            'emotional'     => $this->resource->emotional,
         ];
     }
 }

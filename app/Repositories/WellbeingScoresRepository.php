@@ -64,4 +64,52 @@ class WellbeingScoresRepository extends Repositories
             throw new Exception('Shoogle not found for this ID', Response::HTTP_NOT_FOUND);
         }
     }
+
+    /**
+     * Calculate the average well-being for one user.
+     *
+     * @param int $userId
+     * @param string $from
+     * @param string $to
+     * @return object
+     */
+    public function getAverageUser(int $userId, string $from, string $to)
+    {
+//        return $this->model
+//            ->select(DB::raw('
+//                    AVG(social) as social,
+//                    AVG(physical) as physical,
+//                    AVG(mental) as mental,
+//                    AVG(economical) as economical,
+//                    AVG(spiritual) as spiritual,
+//                    AVG(emotional) as emotional
+//                '))
+//            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
+//            ->where('user_id', $userId)
+//            ->first();
+//
+        $selection = $this->model
+            ->select(DB::raw('
+                    social,
+                    physical,
+                    mental,
+                    economical,
+                    spiritual,
+                    emotional
+                '))
+            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
+            ->where('user_id', $userId)
+            ->get();
+
+        $average = [
+            'social' => collect($selection)->average('social'),
+            'physical' => collect($selection)->average('physical'),
+            'mental' => collect($selection)->average('mental'),
+            'economical' => collect($selection)->average('economical'),
+            'spiritual' => collect($selection)->average('spiritual'),
+            'emotional' => collect($selection)->average('emotional'),
+        ];
+
+        return (object)$average;
+    }
 }

@@ -5,43 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\Shoogle;
+use App\Models\WellbeingScores;
 use App\Repositories\TestRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\User;
 use App\Constants\RoleConstant;
 use Spatie\Permission\Models\Role;
-use App\Repositories\TestRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 class TestController extends Controller
 {
-    private $testRepository;
-
-    /**
-     * TestController constructor.
-     *
-     * @param TestRepository $testRepository
-     */
-    public function __construct(TestRepository $testRepository)
-    {
-        $this->testRepository = $testRepository;
-    }
-
     public function index()
     {
-        $data = 'default';
-        $email = 'asd@asd.com';
-
-
-        if ( filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $data = 'Valid email';
-        } else {
-            $data = 'No valid';
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
+        null;
+//        echo Auth::user()->id;
+//        $welbeingScores = new WellbeingScores();
+//        $welbeingScores->user_id = 3;
+//
+//        $welbeingScores->social = 5;
+//        $welbeingScores->physical = 6;
+//        $welbeingScores->mental = 7;
+//        $welbeingScores->economical = 8;
+//        $welbeingScores->spiritual = 9;
+//        $welbeingScores->emotional = 10;
+//        $welbeingScores->save();
     }
 }

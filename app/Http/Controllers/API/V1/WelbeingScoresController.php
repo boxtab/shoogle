@@ -39,11 +39,12 @@ class WelbeingScoresController extends BaseApiController
     {
         try {
             $this->repository->existsUser($id);
+            $average = $this->repository->getAverageUser( $id, $request->input('from'), $request->input('to') );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        $wellbeingScoresAverageResource = new WelbeingScoresAverageResource([]);
+        $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);
         return ApiResponse::returnData($wellbeingScoresAverageResource);
     }
 
