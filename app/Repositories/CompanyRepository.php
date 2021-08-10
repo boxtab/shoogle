@@ -97,4 +97,36 @@ class CompanyRepository extends Repositories
             ->where('roles.name', RoleConstant::COMPANY_ADMIN)
             ->firstOrFail();
     }
+
+    /**
+     * Changes to company information and administrator credentials of that company.
+     *
+     * @param Company $company
+     * @param array $credentials
+     */
+    public function update(Company $company, array $credentials): void
+    {
+        DB::transaction( function () use ($company, $credentials) {
+
+            $company->update(['name' => $credentials['companyName']]);
+
+            $userAdminCompany = User::on()->
+                leftJoin('model_has_roles', function($join) {
+                    $join->on('users.id', '=', 'model_has_roles.model_id');
+                })->leftJoin('roles', function($join) {
+                    $join->on('roles.id', '=', 'model_has_roles.role_id');
+                })
+                ->where('users.company_id', $company->id)
+                ->where('roles.name', RoleConstant::COMPANY_ADMIN)
+                ->firstOrFail(['users.id']);
+
+            $userAdminCompany->update([
+                'company_id'    => $company->id,
+                'first_name'    => $credentials['firstName'],
+                'last_name'     => $credentials['lastName'],
+                'email'         => $credentials['email'],
+                'password'      => bcrypt($credentials['password']),
+            ]);
+        });
+    }
 }

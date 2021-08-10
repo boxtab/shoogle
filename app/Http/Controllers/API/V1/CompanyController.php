@@ -6,6 +6,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompanyIndexRequest;
+use App\Http\Requests\CompanyUpdateRequest;
 use App\Http\Resources\CompanyShowResource;
 use App\Models\Company;
 use App\Repositories\CompanyRepository;
@@ -127,63 +128,25 @@ class CompanyController extends BaseApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Editing user credentials.
      *
      * @param Request $request
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(CompanyUpdateRequest $request, $id)
     {
-        $validator =  Validator::make($request->all(),[
-            'companyName'   => 'required|min:2|max:45',
-            'firstName'     => 'required|min:2|max:255',
-            'lastName'      => 'nullable|min:2|max:255',
-            'email'         => 'required|email:rfc,dns|min:6|max:255',
-            'password'      => 'nullable|min:6|max:64',
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
-        }
-
         try {
-            Company::where('id', $id)->firstOrFail();
+            $company = $this->findRecordByID($id);
 
-            DB::transaction( function () use ($request, $id) {
+            $credentials = $request->only(['companyName', 'firstName','lastName', 'email', 'password']);
+            $this->repository->update($company, $credentials);
 
-                Company::where('id', $id)->update([
-                    'name' => $request->companyName,
-                ]);
-
-                $userAdminCompany = User::on()->
-                    leftJoin('model_has_roles', function($join) {
-                        $join->on('users.id', '=', 'model_has_roles.model_id');
-                    })->leftJoin('roles', function($join) {
-                        $join->on('roles.id', '=', 'model_has_roles.role_id');
-                    })
-                    ->where('users.company_id', $id)
-                    ->where('roles.name', RoleConstant::COMPANY_ADMIN)
-                    ->firstOrFail(['users.id']);
-
-                User::where('id', $userAdminCompany->id)->update([
-                    'company_id'    => $id,
-                    'first_name'    => $request->firstName,
-                    'last_name'     => $request->lastName,
-                    'email'         => $request->email,
-                    'password'      => bcrypt($request->password),
-                ]);
-
-            });
-
-        } catch (\Illuminate\Database\QueryException $e) {
-            return $this->globalError( $e->errorInfo );
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => [],
-        ]);
+        return ApiResponse::returnData([]);
     }
 
     /**
