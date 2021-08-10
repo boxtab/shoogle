@@ -27,7 +27,7 @@ class UserUpdateRequest extends ApiRequest
         return [
             'firstName'     => 'required|min:2|max:255',
             'lastName'      => 'nullable|min:2|max:255',
-            'departmentId'  => 'nullable|integer',
+            'department'    => 'nullable|integer',
         ];
     }
 }
