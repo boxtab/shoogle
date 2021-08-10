@@ -120,24 +120,16 @@ class CompanyController extends BaseApiController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Deleting a company.
      *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
      */
     public function destroy($id)
     {
         try {
-            $company = Company::findOrFail($id);
-
-            DB::transaction( function () use ($company) {
-                $user = User::where('company_id', $company->id)->first();
-                $user->roles()->detach();
-
-                User::where('company_id', $company->id)->delete();
-                Company::where('id', $company->id)->delete();
-            });
-
+            $company = $this->findRecordByID($id);
+            $this->repository->destroy($company);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }

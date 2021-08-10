@@ -155,4 +155,20 @@ class CompanyRepository extends Repositories
             ]);
         });
     }
+
+    /**
+     * Deleting a company.
+     *
+     * @param Company $company
+     */
+    public function destroy(Company $company): void
+    {
+        DB::transaction( function () use ($company) {
+            $user = User::where('company_id', $company->id)->first();
+            $user->roles()->detach();
+
+            User::where('company_id', $company->id)->delete();
+            Company::where('id', $company->id)->delete();
+        });
+    }
 }
