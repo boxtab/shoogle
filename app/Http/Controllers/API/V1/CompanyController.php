@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Helpers\Helper;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CompanyCreateRequest;
 use App\Http\Requests\CompanyIndexRequest;
 use App\Http\Requests\CompanyUpdateRequest;
 use App\Http\Resources\CompanyShowResource;
@@ -79,60 +80,29 @@ class CompanyController extends BaseApiController
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Create a company.
      *
-     * @param Request $request
+     * @param CompanyCreateRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(Request $request)
+    public function create(CompanyCreateRequest $request)
     {
-        $validator =  Validator::make($request->all(),[
-            'companyName'  => 'required|unique:companies,name|min:2|max:45',
-            'firstName'    => 'required|min:2|max:255',
-            'lastName'     => 'min:2|max:255',
-            'email'         => 'required|email:rfc,dns|unique:users,email|min:5|max:255',
-            'password'      => 'required|min:6|max:64',
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
-        }
-
         try {
-            DB::transaction( function () use ($request) {
-
-                $company = Company::create([
-                    'name' => $request->companyName,
-                ]);
-
-                $user = User::create([
-                    'company_id'    => $company->id,
-                    'first_name'    => $request->firstName,
-                    'last_name'     => $request->lastName,
-                    'email'         => $request->email,
-                    'password'      => bcrypt($request->password),
-                ]);
-
-                $user->assignRole(RoleConstant::COMPANY_ADMIN);
-
-            });
-
-        } catch (\Illuminate\Database\QueryException $e) {
-            return $this->globalError( $e->errorInfo );
+            $credentials = $request->only(['companyName', 'firstName','lastName', 'email', 'password']);
+            $this->repository->create($credentials);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => [],
-        ]);
+        return ApiResponse::returnData([]);
     }
 
     /**
-     * Editing user credentials.
+     * Editing company.
      *
-     * @param Request $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param CompanyUpdateRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
      */
     public function update(CompanyUpdateRequest $request, $id)
     {
@@ -168,14 +138,11 @@ class CompanyController extends BaseApiController
                 Company::where('id', $company->id)->delete();
             });
 
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return response()->json([
-            'success' => true,
-            'data' =>[],
-        ]);
+        return ApiResponse::returnData([]);
     }
 
     /**

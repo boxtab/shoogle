@@ -99,6 +99,32 @@ class CompanyRepository extends Repositories
     }
 
     /**
+     * Create a new company.
+     *
+     * @param array $credentials
+     */
+    public function create(array $credentials): void
+    {
+        DB::transaction( function () use ($credentials) {
+
+            $company = Company::create([
+                'name' => $credentials['companyName'],
+            ]);
+
+            $user = User::create([
+                'company_id'    => $company->id,
+                'first_name'    => $credentials['firstName'],
+                'last_name'     => $credentials['lastName'],
+                'email'         => $credentials['email'],
+                'password'      => bcrypt($credentials['password']),
+            ]);
+
+            $user->assignRole(RoleConstant::COMPANY_ADMIN);
+
+        });
+    }
+
+    /**
      * Changes to company information and administrator credentials of that company.
      *
      * @param Company $company
