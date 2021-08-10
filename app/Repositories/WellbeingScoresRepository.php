@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Models\Shoogle;
+use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
 use App\User;
 use Exception;
@@ -73,7 +74,7 @@ class WellbeingScoresRepository extends Repositories
      * @param string $to
      * @return object
      */
-    public function getAverageUser(int $userId, string $from, string $to)
+    public function getAverageUser(int $userId, string $from, string $to): object
     {
 //        return $this->model
 //            ->select(DB::raw('
@@ -109,6 +110,57 @@ class WellbeingScoresRepository extends Repositories
             'spiritual' => collect($selection)->average('spiritual'),
             'emotional' => collect($selection)->average('emotional'),
         ];
+
+        return (object)$average;
+    }
+
+    /**
+     * Getting average points of well-being by shoogle.
+     *
+     * @param int $shoogleId
+     * @param string $from
+     * @param string $to
+     * @return object
+     */
+    public function getAverageShoogle(int $shoogleId, string $from, string $to): object
+    {
+        $arrayUserId = UserHasShoogle::where('shoogle_id', $shoogleId)
+            ->select('user_id')
+            ->get()
+            ->map(function ($item) {
+                return $item->user_id;
+            })
+            ->toArray();
+
+        $countUser = count($arrayUserId);
+
+        $average = [
+            'social' => 0,
+            'physical' => 0,
+            'mental' => 0,
+            'economical' => 0,
+            'spiritual' => 0,
+            'emotional' => 0,
+        ];
+
+        foreach ($arrayUserId as $userId) {
+            $averageUser = $this->getAverageUser($userId, $from, $to);
+            $average['social'] += $averageUser->social;
+            $average['physical'] += $averageUser->physical;
+            $average['mental'] += $averageUser->mental;
+            $average['economical'] += $averageUser->economical;
+            $average['spiritual'] += $averageUser->spiritual;
+            $average['emotional'] += $averageUser->emotional;
+        }
+
+        if ( $countUser > 0 ) {
+            $average['social'] = $average['social'] / $countUser;
+            $average['physical'] = $average['physical'] / $countUser;
+            $average['mental'] = $average['mental'] / $countUser;
+            $average['economical'] = $average['economical'] / $countUser;
+            $average['spiritual'] = $average['spiritual'] / $countUser;
+            $average['emotional'] = $average['emotional'] / $countUser;
+        }
 
         return (object)$average;
     }
