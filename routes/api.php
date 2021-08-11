@@ -128,13 +128,14 @@ Route::group(['prefix' => 'v1/wellbeing-category', 'middleware' => ['auth:api', 
  * Table: shoogles
  */
 Route::group(['prefix' => 'v1/shoogles', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
-    // Shoogles list.
+
+    // POST /api/v1/shoogles/list
     Route::post('list', [ShooglesController::class, 'index'])->middleware(['admin.superadmin']);
 
     // Create a shoogle.
     Route::post('', [ShooglesController::class, 'create']);
 
-    // Show a shoogles.
+    // GET /api/v1/shoogles/:id
     Route::get('{id?}', [ShooglesController::class, 'show'])->where('id', '[0-9]+');
 
     // Editing a shoogles.

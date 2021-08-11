@@ -34,14 +34,15 @@ class ShooglesRepository extends Repositories
      */
     public function getList(string $search = null)
     {
-        return Shoogle::on()->select([
-                'shoogles.id as shoogle_id',
-                'shoogles.title as shoogle_title',
-                'shoogles.updated_at as shoogle_last_activity',
-                'users.first_name as users_first_name',
-                'users.last_name as users_last_name',
-                'departments.name as departments_name',
-            ])
+        return Shoogle::on()->select(DB::raw(
+                'shoogles.id as shoogle_id, ' .
+                'shoogles.title as shoogle_title, ' .
+                'shoogles.updated_at as shoogle_last_activity, ' .
+                'users.first_name as users_first_name, ' .
+                'users.last_name as users_last_name, ' .
+                '(select count(uhs.user_id) from user_has_shoogle as uhs where uhs.shoogle_id = shoogles.id) as shooglers, ' .
+                'departments.name as departments_name '
+            ))
             ->leftJoin('users', 'users.id', '=', 'shoogles.owner_id')
             ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
             ->when( ! $this->noCompany(), function($query) {
