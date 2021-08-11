@@ -144,27 +144,22 @@ class CompanyController extends BaseApiController
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function entry(Request $request, int $id)
+    public function entry(int $id)
     {
         try {
-            Company::findOrFail($id);
+            $this->findRecordByID($id);
             $token = Helper::pushCompanyIdToJWT($id);
         } catch (Exception $e) {
             return $this->globalError( $e->getMessage() );
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'token' => $token,
-            ],
-        ]);
+        return ApiResponse::returnData(['token' => $token]);
     }
 
     /**
      * Current company.
      *
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|Response
      */
     public function own()
     {

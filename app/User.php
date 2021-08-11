@@ -117,6 +117,16 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     }
 
     /**
+     * Average user rating.
+     *
+     * @return false|float
+     */
+    public function getAverageUserRankAttribute()
+    {
+        return round(UserRanks::where('user_id', $this->id)->avg('rank'),2);
+    }
+
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed

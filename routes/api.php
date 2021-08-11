@@ -66,11 +66,11 @@ Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'superadmin
 
     // Delete company
     // DELETE /api/v1/company/:id
-    Route::delete('{id}', [CompanyController::class, 'destroy'])->where('id', '[0-9]+');;
+    Route::delete('{id}', [CompanyController::class, 'destroy'])->where('id', '[0-9]+');
 
     // Entry company
     // GET /api/v1/company/:id/get-access-token
-    Route::get('{id}/get-access-token', [CompanyController::class, 'entry']);
+    Route::get('{id}/get-access-token', [CompanyController::class, 'entry'])->where('id', '[0-9]+');
 });
 
 Route::group(['prefix' => 'v1/company', 'middleware' => ['auth:api', 'admin', 'user_already_logged_in', 'cors']], function () {

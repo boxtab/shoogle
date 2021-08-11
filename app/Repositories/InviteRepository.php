@@ -67,14 +67,16 @@ class InviteRepository extends Repositories
             return;
         }
 
-        $this->model->create([
+        $invite = $this->model->create([
             'email' => $email,
             'is_used' => 0,
             'created_by' => Auth::user()->id,
             'companies_id' => $this->companyId,
         ]);
 
-        $this->sendInvitationsToEmail([$email]);
+        if ( ! is_null($invite) ) {
+            $this->sendInvitationsToEmail([$email]);
+        }
     }
 
     /**

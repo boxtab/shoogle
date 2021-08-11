@@ -24,7 +24,8 @@ class UserListResource extends JsonResource
                 'lastName' => $item->last_name,
                 'department' => $item->department->name,
                 'email' => $item->email,
-                'rating' => UserRanks::where('user_id', $item->id)->count(),
+                'rating' => $item->average_user_rank,
+//                'rating' => UserRanks::where('user_id', $item->id)->count(),
                 'shoogles' => Shoogle::where('owner_id', $item->id)->count(),
             ];
         });

@@ -25,7 +25,8 @@ class UserProfileResource extends JsonResource
             'lastName'      => $this->resource->last_name,
             'departmentId'  => $this->resource->department_id,
             'email'         => $this->resource->email,
-            'rating'        => UserRanks::where('user_id', $this->resource->id)->count(),
+            'rating'        => $this->resource->average_user_rank,
+//            'rating'        => UserRanks::where('user_id', $this->resource->id)->count(),
             'shoogles'      => Shoogle::where('owner_id', $this->resource->id)->count(),
             'shooglesList'  => Shoogle::where('owner_id', $this->resource->id)
                 ->get()
