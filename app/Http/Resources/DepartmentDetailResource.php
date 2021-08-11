@@ -18,6 +18,7 @@ class DepartmentDetailResource extends JsonResource
     {
         return [
             'name' => $this->resource->name,
+            'shooglersCount' => User::where('department_id', $this->resource->id)->count(),
             'shooglers' => new DepartmentUserResource(User::where('department_id', $this->resource->id)->get()),
         ];
     }
