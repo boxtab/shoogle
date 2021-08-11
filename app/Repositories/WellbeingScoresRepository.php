@@ -70,11 +70,11 @@ class WellbeingScoresRepository extends Repositories
      * Calculate the average well-being for one user.
      *
      * @param int $userId
-     * @param string $from
-     * @param string $to
+     * @param string|null $from
+     * @param string|null $to
      * @return object
      */
-    public function getAverageUser(int $userId, string $from, string $to): object
+    public function getAverageUser(int $userId, string $from = null, string $to = null): object
     {
 //        return $this->model
 //            ->select(DB::raw('
@@ -98,7 +98,10 @@ class WellbeingScoresRepository extends Repositories
                     spiritual,
                     emotional
                 '))
-            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
+            ->when( (! is_null($from)) && (! is_null($to)), function($query) use ($from, $to) {
+                return $query->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+            })
+//            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
             ->where('user_id', $userId)
             ->get();
 
@@ -118,11 +121,11 @@ class WellbeingScoresRepository extends Repositories
      * Getting average points of well-being by shoogle.
      *
      * @param int $shoogleId
-     * @param string $from
-     * @param string $to
+     * @param string|null $from
+     * @param string|null $to
      * @return object
      */
-    public function getAverageShoogle(int $shoogleId, string $from, string $to): object
+    public function getAverageShoogle(int $shoogleId, string $from = null, string $to=null): object
     {
         $arrayUserId = UserHasShoogle::where('shoogle_id', $shoogleId)
             ->select('user_id')

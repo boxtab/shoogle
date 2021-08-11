@@ -25,8 +25,8 @@ class WellbeingScoresAverageRequest extends ApiRequest
     public function rules()
     {
         return [
-            'to'    => 'required|date_format:Y-m-d',
-            'from'  => 'required|date_format:Y-m-d',
+            'from'  => 'nullable|date_format:Y-m-d',
+            'to'    => 'nullable|date_format:Y-m-d',
         ];
     }
 }
