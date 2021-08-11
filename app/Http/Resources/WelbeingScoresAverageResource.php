@@ -15,12 +15,12 @@ class WelbeingScoresAverageResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'social'        => isset($this->resource->social) ? $this->resource->social : null,
-            'physical'      => isset($this->resource->physical) ? $this->resource->physical : null,
-            'mental'        => isset($this->resource->mental) ? $this->resource->mental : null,
-            'economical'    => isset($this->resource->economical) ? $this->resource->economical : null,
-            'spiritual'     => isset($this->resource->spiritual) ? $this->resource->spiritual : null,
-            'emotional'     => isset($this->resource->emotional) ? $this->resource->emotional : null,
+            'social'        => isset($this->resource->social) ? round($this->resource->social, 2) : null,
+            'physical'      => isset($this->resource->physical) ? round($this->resource->physical, 2) : null,
+            'mental'        => isset($this->resource->mental) ? round($this->resource->mental, 2) : null,
+            'economical'    => isset($this->resource->economical) ? round($this->resource->economical, 2) : null,
+            'spiritual'     => isset($this->resource->spiritual) ? round($this->resource->spiritual, 2) : null,
+            'emotional'     => isset($this->resource->emotional) ? round($this->resource->emotional, 2) : null,
         ];
     }
 }
