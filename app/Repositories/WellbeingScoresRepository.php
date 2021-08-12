@@ -96,7 +96,8 @@ class WellbeingScoresRepository extends Repositories
                     mental,
                     economical,
                     spiritual,
-                    emotional
+                    emotional,
+                    intellectual
                 '))
             ->when( (! is_null($from)) && (! is_null($to)), function($query) use ($from, $to) {
                 return $query->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
@@ -112,6 +113,7 @@ class WellbeingScoresRepository extends Repositories
             'economical' => collect($selection)->average('economical'),
             'spiritual' => collect($selection)->average('spiritual'),
             'emotional' => collect($selection)->average('emotional'),
+            'intellectual' => collect($selection)->average('intellectual'),
         ];
 
         return (object)$average;
@@ -138,12 +140,13 @@ class WellbeingScoresRepository extends Repositories
         $countUser = count($arrayUserId);
 
         $average = [
-            'social' => 0,
-            'physical' => 0,
-            'mental' => 0,
-            'economical' => 0,
-            'spiritual' => 0,
-            'emotional' => 0,
+            'social'        => 0,
+            'physical'      => 0,
+            'mental'        => 0,
+            'economical'    => 0,
+            'spiritual'     => 0,
+            'emotional'     => 0,
+            'intellectual'  => 0,
         ];
 
         foreach ($arrayUserId as $userId) {
@@ -154,6 +157,7 @@ class WellbeingScoresRepository extends Repositories
             $average['economical'] += $averageUser->economical;
             $average['spiritual'] += $averageUser->spiritual;
             $average['emotional'] += $averageUser->emotional;
+            $average['intellectual'] += $averageUser->intellectual;
         }
 
         if ( $countUser > 0 ) {
@@ -163,6 +167,7 @@ class WellbeingScoresRepository extends Repositories
             $average['economical'] = $average['economical'] / $countUser;
             $average['spiritual'] = $average['spiritual'] / $countUser;
             $average['emotional'] = $average['emotional'] / $countUser;
+            $average['intellectual'] = $average['intellectual'] / $countUser;
         }
 
         return (object)$average;

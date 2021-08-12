@@ -21,6 +21,7 @@ class WelbeingScoresAverageResource extends JsonResource
             'economical'    => isset($this->resource->economical) ? round($this->resource->economical, 2) : null,
             'spiritual'     => isset($this->resource->spiritual) ? round($this->resource->spiritual, 2) : null,
             'emotional'     => isset($this->resource->emotional) ? round($this->resource->emotional, 2) : null,
+            'intellectual'  => isset($this->resource->intellectual) ? round($this->resource->intellectual, 2) : null,
         ];
     }
 }
