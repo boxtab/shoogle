@@ -150,7 +150,7 @@ class CompanyController extends BaseApiController
             $this->findRecordByID($id);
             $token = Helper::pushCompanyIdToJWT($id);
         } catch (Exception $e) {
-            return $this->globalError( $e->getMessage() );
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
         return ApiResponse::returnData(['token' => $token]);

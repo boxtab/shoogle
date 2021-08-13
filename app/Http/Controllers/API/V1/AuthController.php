@@ -73,6 +73,8 @@ class AuthController extends BaseApiController
     }
 
     /**
+     * User Authentication.
+     *
      * @param AuthSignupRequest $request
      * @return JsonResponse|object
      */
