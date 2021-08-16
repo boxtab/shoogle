@@ -21,6 +21,15 @@ class TestController extends Controller
     {
         null;
 
+        $fieldCredentials = [
+            'company_id'    => 123,
+            'first_name'    => 'abc',
+        ];
+
+        $fieldCredentials['password'] = '123qwe+++';
+
+        dd($fieldCredentials);
+
 
 //        $userRank = new UserRanks();
 //        $userRank->user_id = 3;

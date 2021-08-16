@@ -9,8 +9,6 @@ use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\WelbeingScoresController;
 use App\Http\Controllers\API\V1\WellbeingCategoryController;
-use App\Http\Controllers\TestController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*

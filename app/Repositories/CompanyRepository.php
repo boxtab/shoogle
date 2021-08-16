@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use \Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Class CompanyRepository
@@ -35,9 +36,10 @@ class CompanyRepository extends Repositories
     /**
      * Get a list of companies.
      *
+     * @param string $order
      * @return array
      */
-    public function getList(): array
+    public function getList(string $order): array
     {
         return DB::select(DB::raw('
                 select
@@ -75,8 +77,28 @@ class CompanyRepository extends Repositories
                     ) as contact_person_email,
                     (select count(uc.id) from users as uc where uc.company_id = c.id) as users_count
                 from companies as c
-                order by c.id
+                order by c.name ' . $order . '
             '));
+    }
+
+    /**
+     * Get a list of companies.
+     *
+     * @param string $order
+     * @return array
+     */
+    public function getList2(string $order): array
+    {
+        return $this->model->on()
+            ->select([
+                'companies.id as id',
+                'companies.name as companyName',
+            ])
+            ->with('users:id,first_name')
+//            ->leftJoin('users', 'companies.id', '=', 'users.company_id')
+            ->orderBy('companies.name', $order)
+            ->get()
+            ->toArray();
     }
 
     /**
@@ -129,31 +151,46 @@ class CompanyRepository extends Repositories
      *
      * @param Company $company
      * @param array $credentials
+     * @throws \Exception
      */
     public function update(Company $company, array $credentials): void
     {
-        DB::transaction( function () use ($company, $credentials) {
-
+        try {
             $company->update(['name' => $credentials['companyName']]);
 
             $userAdminCompany = User::on()->
-                leftJoin('model_has_roles', function($join) {
+                leftJoin('model_has_roles', function ($join) {
                     $join->on('users.id', '=', 'model_has_roles.model_id');
-                })->leftJoin('roles', function($join) {
+                })->leftJoin('roles', function ($join) {
                     $join->on('roles.id', '=', 'model_has_roles.role_id');
                 })
                 ->where('users.company_id', $company->id)
                 ->where('roles.name', RoleConstant::COMPANY_ADMIN)
-                ->firstOrFail(['users.id']);
+                ->firstOrFail();
 
-            $userAdminCompany->update([
-                'company_id'    => $company->id,
-                'first_name'    => $credentials['firstName'],
-                'last_name'     => $credentials['lastName'],
-                'email'         => $credentials['email'],
-                'password'      => bcrypt($credentials['password']),
-            ]);
-        });
+            $fieldCredentials = [
+                'company_id' => $company->id,
+                'first_name' => $credentials['firstName'],
+                'last_name' => $credentials['lastName'],
+//                'email' => $credentials['email'],
+            ];
+
+            if ( ! is_null( $credentials['password'] ) ) {
+                $fieldCredentials['password'] = bcrypt($credentials['password']);
+            }
+
+            if ( $userAdminCompany->email != $credentials['email'] ) {
+                $this->model->where('email', $credentials['email'])->firstOrFail();
+                $fieldCredentials['email'] = $credentials['email'];
+            }
+
+            $userAdminCompany->update( $fieldCredentials );
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+                throw new \Exception($e->getMessage(), $e->getCode());
+        }
     }
 
     /**

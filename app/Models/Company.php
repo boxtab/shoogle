@@ -47,4 +47,12 @@ class Company extends Model
     {
         return $this->hasMany(Department::class, 'company_id', 'id');
     }
+
+    /**
+     * @return HasMany
+     */
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'company_id', 'id')->select(['first_name', 'last_name', 'email']);
+    }
 }
