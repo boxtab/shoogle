@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Constants\RoleConstant;
+use Illuminate\Http\Response;
 
 class CheckRoleSuperAdmin
 {
@@ -23,7 +24,7 @@ class CheckRoleSuperAdmin
             return response()->json([
                 'success' => false,
                 'data' => ['message' => 'The route is available only for users with the SUPER ADMIN role.'],
-            ]);
+            ], Response::HTTP_FORBIDDEN);
         }
 
         return $next($request);

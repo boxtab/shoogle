@@ -6,6 +6,7 @@ use App\Constants\RoleConstant;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 
 class CheckRoleAdmin
 {
@@ -22,7 +23,7 @@ class CheckRoleAdmin
             return response()->json([
                 'success' => false,
                 'data' => ['message' => 'The route is available only for users with the ADMIN role.'],
-            ]);
+            ], Response::HTTP_FORBIDDEN);
         }
 
         return $next($request);

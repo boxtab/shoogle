@@ -49,7 +49,7 @@ class BaseApiController extends Controller
         return response()->json([
             'success' => false,
             'errors' => Helper::replaceArraysOnStrings($validatorErrors),
-        ], 422);
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     protected function globalError( $exceptionMessage )
@@ -65,6 +65,6 @@ class BaseApiController extends Controller
         return response()->json([
             'success' => false,
             'errors' => $listErrors,
-        ], 422);
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
