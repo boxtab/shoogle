@@ -43,22 +43,24 @@ class UserRanks extends Model
 
     /**
      * When created.
+     * Escape: "2021-08-16T08:02:46.000000Z"
      *
      * @return mixed
      */
     public function getCreatedAttribute()
     {
-        return $this->created_at->format('Y-m-d H:i:s');
+        return ( ! is_null($this->created_at) ) ? $this->created_at->format('Y-m-d H:i:s') : null;
     }
 
     /**
      * When changed.
+     * Escape: "2021-08-16T08:02:46.000000Z"
      *
      * @return mixed
      */
     public function getUpdatedAttribute()
     {
-        return $this->updated_at->format('Y-m-d H:i:s');
+        return ( ! is_null($this->updated_at) ) ? $this->updated_at->format('Y-m-d H:i:s') : null;
     }
 
     /**

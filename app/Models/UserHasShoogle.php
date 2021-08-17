@@ -56,42 +56,46 @@ class UserHasShoogle extends Model
 
     /**
      * When joined.
+     * Escape: "2021-08-16T08:02:46.000000Z"
      *
      * @return mixed
      */
     public function getJoinedAtFormatAttribute()
     {
-        return $this->joined_at->format('Y-m-d H:i:s');
+        return ( ! is_null($this->joined_at) ) ? $this->joined_at->format('Y-m-d H:i:s') : null;
     }
 
     /**
      * When was the last action.
+     * Escape: "2021-08-16T08:02:46.000000Z"
      *
      * @return mixed
      */
     public function getLeftAtFormatAttribute()
     {
-        return $this->left_at->format('Y-m-d H:i:s');
+        return ( ! is_null($this->left_at) ) ? $this->left_at->format('Y-m-d H:i:s') : null;
     }
 
     /**
      * When created.
+     * Escape: "2021-08-16T08:02:46.000000Z"
      *
      * @return mixed
      */
     public function getCreatedAttribute()
     {
-        return $this->created_at->format('Y-m-d H:i:s');
+        return ( ! is_null($this->created_at) ) ? $this->created_at->format('Y-m-d H:i:s') : null;
     }
 
     /**
      * When changed.
+     * Escape: "2021-08-16T08:02:46.000000Z"
      *
      * @return mixed
      */
     public function getUpdatedAttribute()
     {
-        return $this->updated_at->format('Y-m-d H:i:s');
+        return ( ! is_null($this->updated_at) ) ? $this->updated_at->format('Y-m-d H:i:s') : null;
     }
 
     /**

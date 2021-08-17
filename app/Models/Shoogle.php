@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\User;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -62,38 +63,25 @@ class Shoogle extends Model
     ];
 
     /**
-     * The storage format of the model's date columns.
-     *
-     * @var string
-     */
-
-    //  Commented out because there was a conflict
-    //      "success": false,
-    //      "globalError": [
-    //          "22007",
-    //          1292,
-    //              "Incorrect datetime value: '1628418122' for column 'updated_at' at row 1"
-    //      ]
-//    protected $dateFormat = 'U';
-
-    /**
      * Formatted creation date.
+     * Escape: "2021-08-16T08:02:46.000000Z"
      *
      * @return mixed
      */
     public function getCreatedAttribute()
     {
-        return $this->created_at->format('Y-m-d H:i:s');
+        return ( ! is_null($this->created_at) ) ? $this->created_at->format('Y-m-d H:i:s') : null;
     }
 
     /**
      * Formatted Editing Date.
+     * Escape: "2021-08-16T08:02:46.000000Z"
      *
      * @return mixed
      */
     public function getUpdatedAttribute()
     {
-        return $this->updated_at->format('Y-m-d H:i:s');
+        return ( ! is_null($this->updated_at) ) ? $this->updated_at->format('Y-m-d H:i:s') : null;
     }
 
     /**
