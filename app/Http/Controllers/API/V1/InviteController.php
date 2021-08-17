@@ -58,7 +58,7 @@ class InviteController extends BaseApiController
             $this->repository->create( $request->input('email') );
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
-                return ApiResponse::returnError('An invitation with this email address has already been downloaded.');
+                return ApiResponse::returnError('A user with this email has been invited already.');
             } else {
                 return ApiResponse::returnError($e->getMessage(), $e->getCode());
             }

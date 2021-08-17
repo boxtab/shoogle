@@ -25,12 +25,12 @@ class ShoogleUpdateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'wellbeingCategoryId' => ['required', 'integer', 'exists:wellbeing_categories,id'],
-            'active' => ['required', 'boolean'],
+            'wellbeingCategoryId' => ['nullable', 'integer', 'exists:wellbeing_categories,id'],
+            'active' => ['nullable', 'boolean'],
             'title' => ['nullable', 'min:2', 'max:45'],
             'description' => ['nullable', 'min:2', 'max:9086'],
-            'coverImage' => ['required', 'min:2', 'max:256'],
-            'acceptBuddies' => ['required', 'boolean'],
+            'coverImage' => ['nullable', 'min:2', 'max:256'],
+            'acceptBuddies' => ['nullable', 'boolean'],
         ];
     }
 }
