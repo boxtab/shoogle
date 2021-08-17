@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Constants\RoleConstant;
+use App\Helpers\Helper;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserCreateRequest;
@@ -99,11 +100,9 @@ class UserController extends BaseApiController
     {
         try {
             $record = $this->findRecordByID($id);
-            $record->update([
-                'first_name' => $request->input('firstName'),
-                'last_name' => $request->input('lastName'),
-                'department_id' => $request->input('departmentId'),
-            ]);
+            $record->update(
+                Helper::formatSnakeCase($request->all())
+            );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }

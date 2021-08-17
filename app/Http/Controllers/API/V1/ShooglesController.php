@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShoogleUpdateRequest;
 use App\Http\Requests\ShooglesCreateRequest;
@@ -110,14 +111,9 @@ class ShooglesController extends BaseApiController
     {
         try {
             $shoogle = $this->findRecordByID($id);
-            $shoogle->update([
-                'wellbeing_category_id' => $request->wellbeingCategoryId,
-                'active' => $request->active,
-                'title' => $request->title,
-                'description' => $request->description,
-                'cover_image' => $request->coverImage,
-                'accept_buddies' => $request->acceptBuddies,
-            ]);
+            $shoogle->update(
+                Helper::formatSnakeCase($request->all())
+            );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
