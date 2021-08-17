@@ -37,6 +37,7 @@ class ShooglesRepository extends Repositories
         return Shoogle::on()->select(DB::raw(
                 'shoogles.id as shoogle_id, ' .
                 'shoogles.title as shoogle_title, ' .
+                'shoogles.active as shoogle_active, ' .
                 'shoogles.updated_at as shoogle_last_activity, ' .
                 'users.first_name as users_first_name, ' .
                 'users.last_name as users_last_name, ' .

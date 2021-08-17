@@ -20,11 +20,11 @@ class ShooglesListResource extends JsonResource
             return [
                 'id' => $item->shoogle_id,
                 'title' => $item->shoogle_title,
+                'active' => (boolean) $item->shoogle_active,
                 'lastActivity' => $item->shoogle_last_activity,
                 'firstName' => $item->users_first_name,
                 'lastName' => $item->users_last_name,
                 'shooglers' => $item->shooglers,
-//                'shooglers' => $item->userHasShoogle->count(),
                 'depatment' => $item->departments_name,
             ];
         });
