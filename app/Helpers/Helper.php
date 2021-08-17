@@ -52,6 +52,10 @@ class Helper
      */
     public static function getCompanyIdFromJWT()
     {
+        if ( Auth::guest() ) {
+            return null;
+        }
+
         $companyId = null;
         $roleName = Auth::user()->roles()->first()->name;
 

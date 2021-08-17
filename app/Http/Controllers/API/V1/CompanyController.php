@@ -48,9 +48,7 @@ class CompanyController extends BaseApiController
     public function index(CompanyIndexRequest $request)
     {
         try {
-//            Log::info('test');
             $listCompany = $this->repository->getList($request->input('order'));
-//            $listCompany = $this->repository->getList2($request->input('order'));
         } catch (\Exception $e) {
             return ApiResponse::returnError( $e->getMessage() );
         }
