@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProfileRequest;
+use App\Http\Requests\ProfileStoreRequest;
+use App\Repositories\ProfileRepository;
+use App\Support\ApiResponse\ApiResponse;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,28 +16,41 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
+/**
+ * Class ProfileController
+ * @package App\Http\Controllers\API\V1
+ */
 class ProfileController extends BaseApiController
 {
+    /**
+     * ProfileController constructor.
+     * @param ProfileRepository $profileRepository
+     */
+    public function __construct(ProfileRepository $profileRepository)
+    {
+        $this->repository = $profileRepository;
+    }
+
     /**
      * Saving a user profile.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(ProfileStoreRequest $request)
     {
-        $validator =  Validator::make($request->all(),[
-            'firstName'     => 'required|min:2|max:255|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
-            'lastName'      => 'nullable|min:2|max:255',
-            'about'         => 'nullable|min:2|max:16384',
-            'profileImage'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2048 Kb
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
-        }
-
         try {
+//            52
+//            Log::info(Auth::id());
+
+            $this->repository->updateProfile($request);
+//            if ( $request->has('profileImage') ) {
+//                Log::info('Yes');
+//                Log::info($request->all());
+//            } else {
+//                Log::info('No');
+//            }
+            /*
             $profile = User::where('id', Auth::id())->firstOrFail();
             $profile->update([
                 'first_name' => $request->firstName,
@@ -56,15 +71,12 @@ class ProfileController extends BaseApiController
                 $profile->profile_image = $mediaId . '/' . $uniqueFilename;
                 $profile->save();
             }
-
+            */
         } catch (Exception $e) {
-            return $this->globalError( $e->getMessage() );
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => [],
-        ]);
+        return ApiResponse::returnData([]);
     }
 
     /**
@@ -75,21 +87,11 @@ class ProfileController extends BaseApiController
     public function show()
     {
         try {
-            $profile = User::where('id', Auth::id())
-                ->firstOrFail([
-                    'first_name',
-                    'last_name',
-                    'about',
-                    'profile_image',
-                ]);
-            $profile->profile_image = url('storage') . '/' . $profile->profile_image;
+            $profile = $this->repository->getProfile();
         } catch (Exception $e) {
-            return $this->globalError( $e->getMessage() );
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $profile,
-        ]);
+        return ApiResponse::returnData($profile);
     }
 }

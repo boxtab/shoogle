@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Support\ApiRequest\ApiRequest;
 
-class ShoogleUpdateRequest extends ApiRequest
+class ProfileStoreRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +25,11 @@ class ShoogleUpdateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'wellbeingCategoryId'   => ['nullable', 'integer', 'exists:wellbeing_categories,id'],
-            'active'                => ['nullable', 'boolean'],
-            'title'                 => ['nullable', 'min:2', 'max:45'],
-            'description'           => ['nullable', 'min:2', 'max:9086'],
-            'coverImage'            => ['nullable', 'min:2', 'max:256'],
+            'firstName'     => 'nullable|min:2|max:255|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
+            'lastName'      => 'nullable|min:2|max:255',
+            'about'         => 'nullable|min:2|max:16384',
+            'profileImage'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2048 Kb
+            'rank'          => 'nullable|integer|between:1,5',
         ];
     }
 }
