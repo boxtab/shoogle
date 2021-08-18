@@ -30,7 +30,6 @@ class ShoogleUpdateRequest extends ApiRequest
             'title' => ['nullable', 'min:2', 'max:45'],
             'description' => ['nullable', 'min:2', 'max:9086'],
             'coverImage' => ['nullable', 'min:2', 'max:256'],
-            'acceptBuddies' => ['nullable', 'boolean'],
         ];
     }
 }

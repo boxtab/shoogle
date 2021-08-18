@@ -72,7 +72,6 @@ class ShooglesController extends BaseApiController
                 'reminder' => Carbon::now(),
                 'description' => $request->description,
                 'cover_image' => $request->coverImage,
-                'accept_buddies' => $request->acceptBuddies,
             ]);
 
         } catch (Exception $e) {
