@@ -7,6 +7,7 @@ use stdClass;
 use App\Constants\RoleConstant;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Str;
 
 /**
  * Class Helper.
@@ -80,6 +81,21 @@ class Helper
         }
 
         return $companyId;
+    }
+
+    /**
+     * Convert array keys from camelCase to snake_case.
+     *
+     * @param array $request
+     * @return array
+     */
+    public static function formatSnakeCase(array $request): array
+    {
+        $replaced = [];
+        foreach ($request as $key => $field) {
+            $replaced[Str::snake($key)] = $field;
+        }
+        return $replaced;
     }
 
 }

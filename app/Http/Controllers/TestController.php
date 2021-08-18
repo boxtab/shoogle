@@ -21,14 +21,9 @@ class TestController extends Controller
     {
         null;
 
-        $fieldCredentials = [
-            'company_id'    => 123,
-            'first_name'    => 'abc',
-        ];
+        $user = User::find(3);
 
-        $fieldCredentials['password'] = '123qwe+++';
-
-        dd($fieldCredentials);
+        dd($user->role[0]->name);
 
 
 //        $userRank = new UserRanks();

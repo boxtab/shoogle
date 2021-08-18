@@ -139,10 +139,58 @@ class InviteRepository extends Repositories
             return;
         }
 
+        if ( ! $this->isCredentialsEmail() ) {
+            return;
+        }
+
         $inviteMail = new InviteMail();
         foreach ($listEmail as $email) {
             $inviteMail->to($email);
             Mail::send($inviteMail);
         }
+    }
+
+    /**
+     * Is there any credentials for email.
+     *
+     * @return bool
+     */
+    private function isCredentialsEmail()
+    {
+        $credentials = true;
+
+        if ( empty( env('MAIL_MAILER') ) ) {
+            $credentials = false;
+        }
+
+        if ( empty( env('MAIL_HOST') ) ) {
+            $credentials = false;
+        }
+
+        if ( empty( env('MAIL_PORT') ) ) {
+            $credentials = false;
+        }
+
+        if ( empty( env('MAIL_USERNAME') ) ) {
+            $credentials = false;
+        }
+
+        if ( empty( env('MAIL_PASSWORD') ) ) {
+            $credentials = false;
+        }
+
+        if ( empty( env('MAIL_ENCRYPTION') ) ) {
+            $credentials = false;
+        }
+
+        if ( empty( env('MAIL_FROM_ADDRESS') ) ) {
+            $credentials = false;
+        }
+
+        if ( empty( env('MAIL_FROM_NAME') ) ) {
+            $credentials = false;
+        }
+
+        return $credentials;
     }
 }

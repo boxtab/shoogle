@@ -26,6 +26,7 @@ class ShooglesResource extends JsonResource
                 'email' => $this->resource->owner->email,
                 'firstName' => $this->resource->owner->first_name,
                 'lastName' => $this->resource->owner->last_name,
+                'avatar' => $this->resource->owner->avatar,
             ],
             'createdAt' => $this->resource->created,
             'lastActivity' => $this->resource->updated,
@@ -37,6 +38,7 @@ class ShooglesResource extends JsonResource
                 ->map(function ($item) {
                     return [
                         'photo' => $item->user->avatar,
+                        'id' => $item->user->id,
                         'firstName' => $item->user->first_name,
                         'lastName' => $item->user->last_name,
                         'lastActivity' => $item->left_at_format,

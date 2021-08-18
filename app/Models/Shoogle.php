@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\Log;
  * @property Carbon reminder
  * @property string|null description
  * @property string cover_image
- * @property bool accept_buddies
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  */
@@ -43,7 +42,6 @@ class Shoogle extends Model
         'reminder',
         'description',
         'cover_image',
-        'accept_buddies',
         'created_at',
         'updated_at',
     ];
@@ -57,7 +55,6 @@ class Shoogle extends Model
         'reminder' => 'datetime: h:i:s',
         'description' => 'string',
         'cover_image' => 'string:256',
-        'accept_buddies' => 'boolean',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
