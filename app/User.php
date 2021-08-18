@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\ModelHasRole;
 use App\Models\Role;
+use App\Models\Shoogle;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -123,6 +124,16 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     public function role(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
+    }
+
+    public function getActiveShooglesCountAttribute()
+    {
+        return 0;
+    }
+
+    public function getInactiveShooglesCountAttribute()
+    {
+        return Shoogle::where('owner_id', $this->id)->count() - $this->getActiveShooglesCountAttribute();
     }
 
     /**

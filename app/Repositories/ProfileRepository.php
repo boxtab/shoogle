@@ -42,8 +42,9 @@ class ProfileRepository extends Repositories
      */
     public function getProfile()
     {
-        $profile = User::where('id', Auth::id())
+        $profile = $this->model->where('id', Auth::id())
             ->firstOrFail([
+                'id',
                 'first_name',
                 'last_name',
                 'about',

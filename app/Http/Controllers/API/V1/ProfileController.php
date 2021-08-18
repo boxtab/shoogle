@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileStoreRequest;
+use App\Http\Resources\ProfileShowResource;
 use App\Repositories\ProfileRepository;
 use App\Support\ApiResponse\ApiResponse;
 use App\User;
@@ -61,6 +62,6 @@ class ProfileController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return ApiResponse::returnData($profile);
+        return ApiResponse::returnData(new ProfileShowResource($profile));
     }
 }
