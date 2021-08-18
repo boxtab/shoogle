@@ -6,7 +6,6 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\ModelHasRole;
 use App\Models\Role;
-use App\Models\UserRanks;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -111,16 +110,6 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     }
 
     /**
-     * User rank.
-     *
-     * @return HasMany
-     */
-    public function userRanks(): HasMany
-    {
-        return $this->hasMany(UserRanks::class, 'user_id', 'id');
-    }
-
-    /**
      * @return HasMany
      */
     public function manyRole(): HasMany
@@ -134,16 +123,6 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     public function role(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
-    }
-
-    /**
-     * Average user rating.
-     *
-     * @return false|float
-     */
-    public function getAverageUserRankAttribute()
-    {
-        return round(UserRanks::where('user_id', $this->id)->avg('rank'),2);
     }
 
     /**

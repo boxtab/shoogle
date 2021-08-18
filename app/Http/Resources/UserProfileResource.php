@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
-use App\Models\UserRanks;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
 
@@ -26,7 +25,6 @@ class UserProfileResource extends JsonResource
             'departmentId'  => $this->resource->department_id,
             'email'         => $this->resource->email,
             'rating'        => $this->resource->average_user_rank,
-//            'rating'        => UserRanks::where('user_id', $this->resource->id)->count(),
             'shoogles'      => Shoogle::where('owner_id', $this->resource->id)->count(),
             'shooglesList'  => Shoogle::where('owner_id', $this->resource->id)
                 ->get()

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\Shoogle;
-use App\Models\UserRanks;
 use App\Models\WellbeingScores;
 use App\Repositories\TestRepository;
 use Carbon\Carbon;
@@ -20,27 +19,5 @@ class TestController extends Controller
     public function index()
     {
         null;
-
-        $user = User::find(3);
-
-        dd($user->role[0]->name);
-
-
-//        $userRank = new UserRanks();
-//        $userRank->user_id = 3;
-//        $userRank->rank = 2;
-//        $userRank->save();
-
-//        echo Auth::user()->id;
-//        $welbeingScores = new WellbeingScores();
-//        $welbeingScores->user_id = 3;
-//
-//        $welbeingScores->social = 5;
-//        $welbeingScores->physical = 6;
-//        $welbeingScores->mental = 7;
-//        $welbeingScores->economical = 8;
-//        $welbeingScores->spiritual = 9;
-//        $welbeingScores->emotional = 10;
-//        $welbeingScores->save();
     }
 }

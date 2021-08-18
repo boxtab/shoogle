@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use App\Models\Shoogle;
-use App\Models\UserRanks;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserListResource extends JsonResource
