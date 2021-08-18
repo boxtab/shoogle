@@ -25,7 +25,8 @@ class ProfileStoreRequest extends ApiRequest
     public function rules()
     {
         return [
-            'firstName'     => 'nullable|min:2|max:255|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
+//            'firstName'     => 'nullable|min:2|max:255|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
+            'firstName'     => 'nullable|min:2|max:255',
             'lastName'      => 'nullable|min:2|max:255',
             'about'         => 'nullable|min:2|max:16384',
             'profileImage'  => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2048 Kb

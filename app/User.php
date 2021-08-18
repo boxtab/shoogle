@@ -36,6 +36,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string password
  * @property string|null remember_token
  * @property string|null avatar
+ * @property int|null rank
  * @property string|null profile_image
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
@@ -60,6 +61,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         'email',
         'password',
         'avatar',
+        'rank',
         'profile_image',
     ];
 

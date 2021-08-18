@@ -40,38 +40,7 @@ class ProfileController extends BaseApiController
     public function store(ProfileStoreRequest $request)
     {
         try {
-//            52
-//            Log::info(Auth::id());
-
             $this->repository->updateProfile($request);
-//            if ( $request->has('profileImage') ) {
-//                Log::info('Yes');
-//                Log::info($request->all());
-//            } else {
-//                Log::info('No');
-//            }
-            /*
-            $profile = User::where('id', Auth::id())->firstOrFail();
-            $profile->update([
-                'first_name' => $request->firstName,
-                'last_name' => $request->lastName,
-                'about' => $request->about,
-            ]);
-
-            if ( $request->has('profileImage') ) {
-                $uniqueFilename = Str::uuid()->toString() . '.' . $request->file('profileImage')->extension();
-
-                $profile->clearMediaCollection($profile->id);
-                $profile->addMediaFromRequest('profileImage')
-                    ->usingFileName($uniqueFilename)
-                    ->toMediaCollection($profile->id);
-
-                $mediaId = DB::table('media')->where('file_name', $uniqueFilename)->get('id')[0]->id;
-
-                $profile->profile_image = $mediaId . '/' . $uniqueFilename;
-                $profile->save();
-            }
-            */
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
