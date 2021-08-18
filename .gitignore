@@ -38,3 +38,4 @@ coverage.xml
 !/**/.gitkeep
 papermove-backend.code-workspace
 /storage/framework/laravel-excel
+public/adminer.php
