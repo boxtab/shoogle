@@ -41,6 +41,7 @@ class ShooglesRepository extends Repositories
                 'shoogles.updated_at as shoogle_last_activity, ' .
                 'users.first_name as users_first_name, ' .
                 'users.last_name as users_last_name, ' .
+                'users.avatar as users_avatar, ' .
                 '(select count(uhs.user_id) from user_has_shoogle as uhs where uhs.shoogle_id = shoogles.id) as shooglers, ' .
                 'departments.name as departments_name '
             ))
