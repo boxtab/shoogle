@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\Shoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class UserListResource extends JsonResource
 {
@@ -23,7 +24,7 @@ class UserListResource extends JsonResource
                 'lastName'      => $item->last_name,
                 'department'    => $item->department->name,
                 'email'         => $item->email,
-                'role'          => $item->role[0]->name,
+                'role'          => ( count($item->role) > 0 ) ? $item->role[0]->name : 'Warning: no role',
                 'rating'        => $item->rank,
                 'shoogles'      => Shoogle::where('owner_id', $item->id)->count(),
             ];

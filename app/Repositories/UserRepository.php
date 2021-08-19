@@ -39,7 +39,7 @@ class UserRepository extends Repositories
      */
     public function getList()
     {
-        return User::on()
+        return $this->model->on()
             ->when( ! $this->noCompany() , function ($query) {
                 return $query->where('company_id', $this->companyId);
             })
