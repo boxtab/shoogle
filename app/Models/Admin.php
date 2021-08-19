@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon|null updated_at
  */
 
-class Admin extends Model
+class Admin extends BaseModel
 {
     use HasFactory;
 

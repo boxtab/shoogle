@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null updated_at
  */
 
-class WellbeingScores extends Model
+class WellbeingScores extends BaseModel
 {
     use HasFactory;
 

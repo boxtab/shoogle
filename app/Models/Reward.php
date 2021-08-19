@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null updated_at
  */
 
-class Reward extends Model
+class Reward extends BaseModel
 {
     use HasFactory;
 
@@ -34,8 +34,9 @@ class Reward extends Model
     protected $casts = [
         'id' => 'integer',
         'name' => 'string:45',
-        'icon' => 'icon:256',
+        'icon' => 'string:256',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
+
 }

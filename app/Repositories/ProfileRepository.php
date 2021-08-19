@@ -42,6 +42,7 @@ class ProfileRepository extends Repositories
      */
     public function getProfile()
     {
+        Log::info(Auth::id());
         $profile = $this->model->where('id', Auth::id())
             ->firstOrFail([
                 'id',

@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon|null updated_at
  */
 
-class Company extends Model
+class Company extends BaseModel
 {
     use HasFactory;
 

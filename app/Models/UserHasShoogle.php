@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon|null updated_at
  */
 
-class UserHasShoogle extends Model
+class UserHasShoogle extends BaseModel
 {
     use HasFactory;
 
@@ -74,28 +74,6 @@ class UserHasShoogle extends Model
     public function getLeftAtFormatAttribute()
     {
         return ( ! is_null($this->left_at) ) ? $this->left_at->format('Y-m-d H:i:s') : null;
-    }
-
-    /**
-     * When created.
-     * Escape: "2021-08-16T08:02:46.000000Z"
-     *
-     * @return mixed
-     */
-    public function getCreatedAttribute()
-    {
-        return ( ! is_null($this->created_at) ) ? $this->created_at->format('Y-m-d H:i:s') : null;
-    }
-
-    /**
-     * When changed.
-     * Escape: "2021-08-16T08:02:46.000000Z"
-     *
-     * @return mixed
-     */
-    public function getUpdatedAttribute()
-    {
-        return ( ! is_null($this->updated_at) ) ? $this->updated_at->format('Y-m-d H:i:s') : null;
     }
 
     /**

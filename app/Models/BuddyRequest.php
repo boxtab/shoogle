@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon|null updated_at
  */
 
-class BuddyRequest extends Model
+class BuddyRequest extends BaseModel
 {
     use HasFactory;
 

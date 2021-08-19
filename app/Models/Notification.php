@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon|null updated_at
  */
 
-class Notification extends Model
+class Notification extends BaseModel
 {
     use HasFactory;
 

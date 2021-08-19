@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon|null updated_at
  */
 
-class Abuse extends Model
+class Abuse extends BaseModel
 {
     use HasFactory;
 

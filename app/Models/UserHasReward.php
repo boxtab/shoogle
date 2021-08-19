@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int given_by_user_id
  */
 
-class UserHasReward extends Model
+class UserHasReward extends BaseModel
 {
     use HasFactory;
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\UserHasReward;
+use App\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProfileShowResource extends JsonResource
@@ -22,11 +24,12 @@ class ProfileShowResource extends JsonResource
             'profileImage'          => $this->resource->profile_image,
             'activeShooglesCount'   => $this->resource->activeShooglesCount,
             'inactiveShooglesCount' => $this->resource->inactiveShooglesCount,
-            'rewards' => [
-//                  { icon, givenByUserId, createdAt }
-//                  { icon, givenByUserId, createdAt }
-//                  { icon, givenByUserId, createdAt }
-            ],
+            'rewards'               => UserHasRewardCollection::collection(
+                UserHasReward::where('user_id', $this->resource->id)
+                    ->orderBy('created_at', 'desc')
+                    ->limit(4)
+                    ->get()
+            ),
         ];
     }
 }

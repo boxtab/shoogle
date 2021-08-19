@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null updated_at
  */
 
-class WellbeingCategory extends Model
+class WellbeingCategory extends BaseModel
 {
     use HasFactory;
 

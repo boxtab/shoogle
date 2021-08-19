@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon|null updated_at
  */
 
-class Department extends Model
+class Department extends BaseModel
 {
     use HasFactory;
 

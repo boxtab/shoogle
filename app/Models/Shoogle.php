@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Log;
  * @property Carbon|null updated_at
  */
 
-class Shoogle extends Model
+class Shoogle extends BaseModel
 {
     use HasFactory;
 
@@ -58,28 +58,6 @@ class Shoogle extends Model
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
-
-    /**
-     * Formatted creation date.
-     * Escape: "2021-08-16T08:02:46.000000Z"
-     *
-     * @return mixed
-     */
-    public function getCreatedAttribute()
-    {
-        return ( ! is_null($this->created_at) ) ? $this->created_at->format('Y-m-d H:i:s') : null;
-    }
-
-    /**
-     * Formatted Editing Date.
-     * Escape: "2021-08-16T08:02:46.000000Z"
-     *
-     * @return mixed
-     */
-    public function getUpdatedAttribute()
-    {
-        return ( ! is_null($this->updated_at) ) ? $this->updated_at->format('Y-m-d H:i:s') : null;
-    }
 
     /**
      * Shoogle creator.

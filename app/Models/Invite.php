@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon|null updated_at
  */
 
-class Invite extends Model
+class Invite extends BaseModel
 {
     use HasFactory;
 

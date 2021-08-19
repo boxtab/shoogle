@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int model_id
  */
 
-class ModelHasRole extends Model
+class ModelHasRole extends BaseModel
 {
     use HasFactory;
 
