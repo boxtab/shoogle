@@ -31,13 +31,13 @@ class ShooglesResource extends JsonResource
             'createdAt' => $this->resource->created,
             'lastActivity' => $this->resource->updated,
             'wellbeingCategory' => $this->resource->wellbeingCategory->name,
+
             'shooglersCount' => UserHasShoogle::where('shoogle_id', $this->resource->id)->count(),
-            'buddiesCount' => BuddyRequest::where('shoogle_id', $this->resource->id)->count(),
             'shooglersList' => UserHasShoogle::where('shoogle_id', $this->resource->id)
                 ->get()
                 ->map(function ($item) {
                     return [
-                        'photo' => $item->user->avatar,
+                        'avatar' => $item->user->avatar,
                         'id' => $item->user->id,
                         'firstName' => $item->user->first_name,
                         'lastName' => $item->user->last_name,
@@ -45,13 +45,22 @@ class ShooglesResource extends JsonResource
                     ];
                 })
                 ->toArray(),
-            'buddiesList' => BuddyRequest::where('shoogle_id', $this->resource->id)
+
+            'buddiesCount' => Buddie::where('shoogle_id', $this->resource->id)->count(),
+            'buddiesList' => Buddie::where('shoogle_id', $this->resource->id)
                 ->get()
                 ->map(function ($item) {
                     return [
-                        'photo' => $item->user->avatar,
-                        'firstName' => $item->user1->first_name,
-                        'lastName' => $item->user1->last_name,
+                        'user1' => [
+                            'firstName' => $item->user1->first_name,
+                            'lastName' => $item->user1->last_name,
+                            'avatar' => $item->user1->avatar,
+                        ],
+                        'user2' => [
+                            'firstName' => $item->user2->first_name,
+                            'lastName' => $item->user2->last_name,
+                            'avatar' => $item->user2->avatar,
+                        ],
                     ];
                 })
                 ->toArray(),

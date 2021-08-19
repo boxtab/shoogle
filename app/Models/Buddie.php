@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int user1_id
  * @property int user2_id
  * @property Carbon connected_at
- * @property Carbon disconnect_at
+ * @property Carbon|null disconnect_at
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  */
