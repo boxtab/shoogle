@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ShooglerEnum;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\Shoogle;
@@ -13,6 +14,7 @@ use App\User;
 use App\Constants\RoleConstant;
 use Recurr\Rule;
 use Recurr\Transformer\TextTransformer;
+use ReflectionClass;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationRuleParser;
@@ -23,11 +25,7 @@ class TestController extends Controller
     {
         null;
 
-        $sample = "RRULE:FREQ=WEEKLY;COUNT=30;INTERVAL=1;WKST=MO";
-
-        $rule = new Rule($sample, new \DateTime());
-        $textTransformer = new TextTransformer();
-        echo $textTransformer->transform($rule);
+        return ReflectionClass::getConstants('ShooglerEnum');
 
 //        $shoogle = Shoogle::find(11);
 //        $shoogle->reminder_interval = 'kk';

@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\ModelHasRole;
 use App\Models\Role;
 use App\Models\Shoogle;
+use App\Models\UserHasShoogle;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -116,6 +117,14 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     public function manyRole(): HasMany
     {
         return $this->hasMany(ModelHasRole::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function userHasShoogle(): HasMany
+    {
+        return $this->hasMany(UserHasShoogle::class);
     }
 
     /**

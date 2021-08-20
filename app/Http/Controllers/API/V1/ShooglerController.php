@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShooglerIndexRequest;
+use App\Http\Resources\ShooglerListResource;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use App\Repositories\ShooglerRepository;
@@ -47,12 +48,13 @@ class ShooglerController extends BaseApiController
                 throw new \Exception('Shoogle not found for this ID', Response::HTTP_NOT_FOUND);
             }
 
-            $shoogler = $this->repository->getList($id);
+            $shoogler = $this->repository->getList($id, $request->input('query'), $request->input('filter'));
 
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return ApiResponse::returnData([]);
+        $shooglerResource = ShooglerListResource::collection($shoogler);
+        return ApiResponse::returnData($shooglerResource);
     }
 }
