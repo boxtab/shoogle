@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Helpers\Helper;
 use App\Models\Shoogle;
+use App\Models\UserHasShoogle;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -21,18 +22,17 @@ class ShooglerRepository extends Repositories
      */
     protected $model;
 
-
     /**
      * ShooglerRepository constructor.
-     * @param User $model
+     * @param UserHasShoogle $model
      */
-    public function __construct(User $model)
+    public function __construct(UserHasShoogle $model)
     {
         parent::__construct($model);
     }
 
 
-    public function getList()
+    public function getList(int $shoogleId)
     {
         return 123;
     }

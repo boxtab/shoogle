@@ -62,7 +62,7 @@ class CompanyController extends BaseApiController
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(int $id)
     {
         try {
 
