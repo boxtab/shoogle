@@ -5,6 +5,7 @@ use App\Http\Controllers\API\V1\CompanyController;
 use App\Http\Controllers\API\V1\DepartmentController;
 use App\Http\Controllers\API\V1\InviteController;
 use App\Http\Controllers\API\V1\ProfileController;
+use App\Http\Controllers\API\V1\ShooglerController;
 use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\WelbeingScoresController;
@@ -75,6 +76,11 @@ Route::group(['prefix' => 'front/v1'], function () {
         // POST /api/front/v1/shoogles/:id/wellbeing-scores
         Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageShoogle'])->where('id', '[0-9]+');
 
+        // POST /api/front/v1/shoogles/:id/shooglers/:page/:pageSize
+        Route::post('{id}/shooglers/{page}/{pageSize}', [ShooglerController::class, 'index'])
+            ->where('id', '[0-9]+')
+            ->where('page', '[0-9]+')
+            ->where('pageSize', '[0-9]+');
     });
 
 });

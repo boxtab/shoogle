@@ -9,6 +9,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Class ShooglesRepository
+ * @package App\Repositories
+ */
 class ShooglesRepository extends Repositories
 {
     /**
