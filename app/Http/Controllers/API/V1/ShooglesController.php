@@ -69,7 +69,8 @@ class ShooglesController extends BaseApiController
                 'wellbeing_category_id' => $request->wellbeingCategoryId,
                 'active' => $request->active,
                 'title' => $request->title,
-                'reminder' => Carbon::now(),
+                'reminder' => $request->reminder,
+                'reminder_interval' => $request->reminderInterval,
                 'description' => $request->description,
                 'cover_image' => $request->coverImage,
             ]);

@@ -19,6 +19,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "mad-web/laravel-enum": "^2.2",
+        "simshaun/recurr": "^4.0",
         "spatie/laravel-medialibrary": "^7.0.0",
         "spatie/laravel-permission": "^4.2",
         "tymon/jwt-auth": "^1.0"
