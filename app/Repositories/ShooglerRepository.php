@@ -62,21 +62,23 @@ class ShooglerRepository extends Repositories
             ->leftJoin('users as u', 'uhs.user_id', '=', 'u.id')
             ->where('uhs.shoogle_id', $shoogleId)
             ->when( ! is_null($search), function($query) use ($search) {
-                return $query->where('u.first_name', 'LIKE', '%' . $search . '%')
+                return $query->where(function ($query) use ($search) {
+                    return $query->where('u.first_name', 'LIKE', '%' . $search . '%')
                     ->orWhere('u.email', 'LIKE', '%' . $search . '%');
+                });
             })
             ->when($filter === 'recentlyJoined', function ($query) {
                 return $query->where( 'joined_at', '<=', Carbon::now()->subDays(1)->toDateTimeString() );
             })
             ->when($filter === 'available', function ($query) use ($shoogleId) {
-                return $query->whereExists(function ($query) use ($shoogleId) {
+                return $query->whereNotExists(function ($query) use ($shoogleId) {
                     $query->select('buddies.id')
                         ->from('buddies')
                         ->whereRaw('buddies.user1_id = u.id or buddies.user2_id = u.id and buddies.shoogle_id = ' . $shoogleId);
                 });
             })
             ->when($filter === 'buddied', function ($query) use ($shoogleId) {
-                return $query->whereNotExists(function ($query) use ($shoogleId) {
+                return $query->whereExists(function ($query) use ($shoogleId) {
                     $query->select('buddies.id')
                         ->from('buddies')
                         ->whereRaw('buddies.user1_id = u.id or buddies.user2_id = u.id and buddies.shoogle_id = ' . $shoogleId);
@@ -84,7 +86,6 @@ class ShooglerRepository extends Repositories
             })
             ->get()
             ->toArray();
-
     }
 }
 
