@@ -70,6 +70,20 @@ Route::group(['prefix' => 'front/v1'], function () {
         // GET /api/front/v1/shoogle/:id/views
         Route::get('{id}/views', [ShooglesController::class, 'views'])->where('id', '[0-9]+');
 
+        // POST /api/front/v1/shoogle/:id/solo/1
+        Route::post('{id}/solo/1', [ShooglesController::class, 'soloYes'])->where('id', '[0-9]+');
+
+        // POST /api/front/v1/shoogle/:id/solo/0
+        Route::post('{id}/solo/0', [ShooglesController::class, 'soloNo'])->where('id', '[0-9]+');
+
+        // POST /api/front/v1/shoogle/:id/leave
+        Route::post('{id}/leave', [ShooglesController::class, 'leave'])->where('id', '[0-9]+');
+
+        // POST /api/front/v1/shoogle/search/:page/:pageSize
+        Route::post('search/{page}/{pageSize}', [ShooglesController::class, 'search'])
+            ->where('page', '[0-9]+')
+            ->where('pageSize', '[0-9]+');
+
         // POST /api/front/v1/shoogles/:id
         Route::post('{id}', [ShooglesController::class, 'update'])->where('id', '[0-9]+');
 

@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -118,6 +119,47 @@ class ShooglesController extends BaseApiController
         }
 
         return ApiResponse::returnData($shooglesViewsResource);
+    }
+
+    /**
+     * Set to solo mode.
+     *
+     * @param int|null $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function soloYes(int $id = null)
+    {
+        $this->repository->soloChange($id, true);
+        return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Cancel solo mode.
+     *
+     * @param int|null $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function soloNo(int $id = null)
+    {
+        $this->repository->soloChange($id, false);
+        return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Shoogle exit method.
+     *
+     * @param int|null $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function leave(int $id = null)
+    {
+        $this->repository->leave($id);
+        return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
+    }
+
+    public function search(int $page, int $pageSize)
+    {
+        return ApiResponse::returnData([]);
     }
 
     /**

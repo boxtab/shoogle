@@ -5,8 +5,11 @@ namespace App\Repositories;
 use App\Helpers\Helper;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
+use App\Models\UserHasShoogle;
+use App\Support\ApiResponse\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -93,6 +96,33 @@ class ShooglesRepository extends Repositories
             ],
             ['last_view' => Carbon::now()]
         );
+    }
+
+    /**
+     * Change solo mode.
+     *
+     * @param int $shoogleId
+     * @param bool $flag
+     */
+    public function soloChange(int $shoogleId, bool $flag): void
+    {
+        UserHasShoogle::on()
+            ->where('user_id', Auth::id())
+            ->where('shoogle_id', $shoogleId)
+            ->update(['solo' => ((int) $flag)]);
+    }
+
+    /**
+     * Shoogle exit method.
+     *
+     * @param int $shoogleId
+     */
+    public function leave(int $shoogleId)
+    {
+        UserHasShoogle::on()
+            ->where('user_id', Auth::id())
+            ->where('shoogle_id', $shoogleId)
+            ->delete();
     }
 }
 

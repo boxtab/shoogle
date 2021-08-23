@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int user_id
  * @property int shoogle_id
  * @property Carbon joined_at
+ * @property boolean solo
  * @property Carbon|null left_at
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
@@ -33,6 +34,7 @@ class UserHasShoogle extends BaseModel
         'shoogle_id',
         'joined_at',
         'left_at',
+        'solo',
         'created_at',
         'updated_at',
     ];
@@ -43,6 +45,7 @@ class UserHasShoogle extends BaseModel
         'shoogle_id' => 'integer',
         'joined_at' => 'datetime:Y-m-d h:i:s',
         'left_at' => 'datetime:Y-m-d h:i:s',
+        'solo' => 'boolean',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
@@ -52,7 +55,7 @@ class UserHasShoogle extends BaseModel
      *
      * @var string
      */
-    protected $dateFormat = 'U';
+//    protected $dateFormat = 'U';
 
     /**
      * When joined.
