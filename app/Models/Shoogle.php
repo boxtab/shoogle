@@ -84,6 +84,14 @@ class Shoogle extends BaseModel
     }
 
     /**
+     * @return HasMany
+     */
+    public function shoogleViews(): HasMany
+    {
+        return $this->hasMany(ShoogleViews::class);
+    }
+
+    /**
      * Shoogle users.
      *
      * @return HasMany

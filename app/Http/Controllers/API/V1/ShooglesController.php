@@ -8,6 +8,7 @@ use App\Http\Requests\ShoogleUpdateRequest;
 use App\Http\Requests\ShooglesCreateRequest;
 use App\Http\Resources\ShooglesListResource;
 use App\Http\Resources\ShooglesResource;
+use App\Http\Resources\ShooglesViewsResource;
 use App\Models\Buddie;
 use App\Models\Company;
 use App\Models\ModelHasRole;
@@ -98,6 +99,25 @@ class ShooglesController extends BaseApiController
         }
 
         return ApiResponse::returnData($shooglesResource);
+    }
+
+    /**
+     * Shoogle view.
+     *
+     * @param null $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function views($id = null)
+    {
+        try {
+            $shoogles = $this->findRecordByID($id);
+            $this->repository->incrementViews($id);
+            $shooglesViewsResource = new ShooglesViewsResource($shoogles);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        return ApiResponse::returnData($shooglesViewsResource);
     }
 
     /**

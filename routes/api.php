@@ -67,6 +67,9 @@ Route::group(['prefix' => 'front/v1'], function () {
         // GET /api/front/v1/shoogles/:id
         Route::get('{id?}', [ShooglesController::class, 'show'])->where('id', '[0-9]+');
 
+        // GET /api/front/v1/shoogle/:id/views
+        Route::get('{id}/views', [ShooglesController::class, 'views'])->where('id', '[0-9]+');
+
         // POST /api/front/v1/shoogles/:id
         Route::post('{id}', [ShooglesController::class, 'update'])->where('id', '[0-9]+');
 

@@ -4,8 +4,11 @@ namespace App\Repositories;
 
 use App\Helpers\Helper;
 use App\Models\Shoogle;
+use App\Models\ShoogleViews;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -58,6 +61,38 @@ class ShooglesRepository extends Repositories
                 return $query->where('title', 'like', '%' . $search .'%');
             })
             ->get();
+    }
+
+    /**
+     * Increase views counter.
+     *
+     * @param int $shoogleId
+     */
+    public function incrementViews(int $shoogleId): void
+    {
+        $userId = Auth::id();
+//        $hourAgo = Carbon::now()->subHours(1);
+        $minuteAgo = Carbon::now()->subMinute();
+        $timeAgo = $minuteAgo;
+
+        $shoogleViews = ShoogleViews::where('shoogle_id', $shoogleId)->where('user_id', $userId)->first();
+
+        $lastUpdate = ( ! is_null($shoogleViews) ) ? $shoogleViews->last_view : $timeAgo;
+
+
+        if ( $lastUpdate->getTimestamp() <= $timeAgo->getTimestamp() ) {
+            $shoogle = Shoogle::where('id', $shoogleId)->first();
+            $shoogle->views++;
+            $shoogle->save();
+        }
+
+        ShoogleViews::updateOrCreate(
+            [
+                'shoogle_id' =>  $shoogleId,
+                'user_id' => Auth::id(),
+            ],
+            ['last_view' => Carbon::now()]
+        );
     }
 }
 
