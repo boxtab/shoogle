@@ -124,5 +124,10 @@ class ShooglesRepository extends Repositories
             ->where('shoogle_id', $shoogleId)
             ->delete();
     }
+
+    public function userList()
+    {
+        return UserHasShoogle::on()->where('user_id', Auth::id())->get();
+    }
 }
 

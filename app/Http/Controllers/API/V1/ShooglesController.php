@@ -8,6 +8,7 @@ use App\Http\Requests\ShoogleUpdateRequest;
 use App\Http\Requests\ShooglesCreateRequest;
 use App\Http\Resources\ShooglesListResource;
 use App\Http\Resources\ShooglesResource;
+use App\Http\Resources\ShooglesUserListResource;
 use App\Http\Resources\ShooglesViewsResource;
 use App\Models\Buddie;
 use App\Models\Company;
@@ -55,6 +56,16 @@ class ShooglesController extends BaseApiController
         $shooglesListResource = new ShooglesListResource($shoogles);
 
         return ApiResponse::returnData($shooglesListResource);
+    }
+
+    public function userList()
+    {
+        $userList = $this->repository->userList();
+        Log::info($userList);
+//        $userListResource = new ShooglesUserListResource($userList);
+
+//        return ApiResponse::returnData($userListResource);
+        return ApiResponse::returnData([]);
     }
 
     /**
