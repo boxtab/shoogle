@@ -176,10 +176,28 @@ class ShooglesRepository extends Repositories
              '), 'shooglers_solo.unique_shoogle_id', '=', 'uhs.shoogle_id')
             ->where('uhs.user_id', Auth::id());
 
-        Log::info($query->toSql());
-        $result = $query->get()->toArray();
-        return $result;
-//        return [];
+//        Log::info($query->toSql());
+        return $query->get()->toArray();
+    }
+
+    public function search(string $search, string $order, int $page, int $pageSize)
+    {
+        $query = DB::table('shoogles as sh')
+            ->select(DB::raw('
+                null as id,
+                null as title,
+                null as coverImage,
+                null as shooglersCount,
+                null as buddiesCount,
+                null as solosCount,
+                null as buddyName,
+                null as solo,
+                null as joined'
+            ));
+
+//        Log::info($query->toSql());
+        $searchResult = $query->get()->toArray();
+        return $searchResult;
     }
 }
 

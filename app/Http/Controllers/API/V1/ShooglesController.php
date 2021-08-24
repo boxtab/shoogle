@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ShooglesSearchRequest;
 use App\Http\Requests\ShoogleUpdateRequest;
 use App\Http\Requests\ShooglesCreateRequest;
 use App\Http\Resources\ShooglesListResource;
 use App\Http\Resources\ShooglesResource;
+use App\Http\Resources\ShooglesSearchResultResource;
 use App\Http\Resources\ShooglesUserListResource;
 use App\Http\Resources\ShooglesViewsResource;
 use App\Models\Buddie;
@@ -171,9 +173,26 @@ class ShooglesController extends BaseApiController
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
     }
 
-    public function search(int $page, int $pageSize)
+    /**
+     * Search by shoogles.
+     *
+     * @param ShooglesSearchRequest $request
+     * @param int $page
+     * @param int $pageSize
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function search(ShooglesSearchRequest $request, int $page, int $pageSize)
     {
-        return ApiResponse::returnData([]);
+        $searchResult = $this->repository->search(
+            $request->input('search'),
+            $request->input('query'),
+            $page,
+            $pageSize
+        );
+
+        $searchResultResource = new ShooglesSearchResultResource($searchResult);
+
+        return ApiResponse::returnData($searchResultResource);
     }
 
     /**

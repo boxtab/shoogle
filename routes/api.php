@@ -64,7 +64,7 @@ Route::group(['prefix' => 'front/v1'], function () {
         // GET /api/front/v1/shoogle/list/:page/:pageSize
         Route::get('list/{page}/{pageSize}', [ShooglesController::class, 'userList'])
             ->where('page', '[0-9]+')
-            ->where('pageSize', '[0-9]+');;
+            ->where('pageSize', '[0-9]+');
 
         // POST /api/front/v1/shoogles
         Route::post('', [ShooglesController::class, 'create']);
