@@ -180,20 +180,34 @@ class ShooglesRepository extends Repositories
         return $query->get()->toArray();
     }
 
-    public function search(string $search, string $order, int $page, int $pageSize)
+    /**
+     * Search by shoogles.
+     *
+     * @param string|null $search
+     * @param string|null $order
+     * @param int|null $page
+     * @param int|null $pageSize
+     * @return array
+     */
+    public function search(string $search = null, string $order = null, int $page = null, int $pageSize = null)
     {
         $query = DB::table('shoogles as sh')
             ->select(DB::raw('
-                null as id,
-                null as title,
-                null as coverImage,
+                sh.id as id,
+                sh.title as title,
+                sh.cover_image as coverImage,
                 null as shooglersCount,
                 null as buddiesCount,
                 null as solosCount,
                 null as buddyName,
                 null as solo,
-                null as joined'
-            ));
+                null as joined
+            '))
+            ->when( ! is_null($search), function ($query) use ($search) {
+                return $query
+                    ->where('sh.title', 'like', '%' . $search .'%')
+                    ->orWhere('sh.description', 'like', '%' . $search .'%');
+            });
 
 //        Log::info($query->toSql());
         $searchResult = $query->get()->toArray();

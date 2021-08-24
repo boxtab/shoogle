@@ -177,11 +177,11 @@ class ShooglesController extends BaseApiController
      * Search by shoogles.
      *
      * @param ShooglesSearchRequest $request
-     * @param int $page
-     * @param int $pageSize
+     * @param int|null $page
+     * @param int|null $pageSize
      * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function search(ShooglesSearchRequest $request, int $page, int $pageSize)
+    public function search(ShooglesSearchRequest $request, int $page = null, int $pageSize = null)
     {
         $searchResult = $this->repository->search(
             $request->input('search'),
@@ -189,10 +189,11 @@ class ShooglesController extends BaseApiController
             $page,
             $pageSize
         );
-
-        $searchResultResource = new ShooglesSearchResultResource($searchResult);
-
+//        Log::info($searchResult);
+        $searchResultResource = ShooglesSearchResultResource::collection($searchResult);
+//        Log::info($searchResultResource);
         return ApiResponse::returnData($searchResultResource);
+//        return ApiResponse::returnData([]);
     }
 
     /**

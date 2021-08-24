@@ -14,6 +14,16 @@ class ShooglesSearchResultResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->resource->id,
+            'title' => $this->resource->title,
+            'coverImage' => $this->resource->coverImage,
+            'shooglersCount' => $this->resource->shooglersCount,
+            'buddiesCount' => $this->resource->buddiesCount,
+            'solosCount' => $this->resource->solosCount,
+            'buddyName' => $this->resource->buddyName,
+            'solo' => $this->resource->solo,
+            'joined' => $this->resource->joined,
+        ];
     }
 }
