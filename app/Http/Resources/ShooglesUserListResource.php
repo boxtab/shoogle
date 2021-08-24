@@ -4,6 +4,10 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * Class ShooglesUserListResource
+ * @package App\Http\Resources
+ */
 class ShooglesUserListResource extends JsonResource
 {
     /**
@@ -15,14 +19,14 @@ class ShooglesUserListResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->resource->shoogle_id,
-            'title' => null,
-            'coverImage' => null,
-            'shooglersCount' => null,
-            'buddiesCount' => null,
-            'solosCount' => null,
-            'buddyName' => null,
-            'solo' => $this->resource->solo,
+            'id'                => $this->resource->id,
+            'title'             => $this->resource->title,
+            'coverImage'        => $this->resource->coverImage,
+            'shooglersCount'    => $this->resource->shooglersCount,
+            'buddiesCount'      => $this->resource->buddiesCount,
+            'solosCount'        => $this->resource->solosCount,
+            'buddyName'         => $this->resource->buddyName,
+            'solo'              => $this->resource->solo,
         ];
     }
 }

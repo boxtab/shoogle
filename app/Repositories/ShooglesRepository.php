@@ -125,9 +125,27 @@ class ShooglesRepository extends Repositories
             ->delete();
     }
 
+    /**
+     * List of user shoogles.
+     *
+     * @return array
+     */
     public function userList()
     {
-        return UserHasShoogle::on()->where('user_id', Auth::id())->get();
+        return DB::table('user_has_shoogle as uhs')
+            ->select(DB::raw('
+                null as id,
+                null as title,
+                null as coverImage,
+                null as shooglersCount,
+                null as buddiesCount,
+                null as solosCount,
+                null as buddyName,
+                null as solo
+            '))
+            ->where('uhs.user_id', Auth::id())
+            ->get()
+            ->toArray();
     }
 }
 

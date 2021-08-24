@@ -58,14 +58,17 @@ class ShooglesController extends BaseApiController
         return ApiResponse::returnData($shooglesListResource);
     }
 
+    /**
+     * List of user shoogles.
+     *
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
     public function userList()
     {
         $userList = $this->repository->userList();
-        Log::info($userList);
-//        $userListResource = new ShooglesUserListResource($userList);
+        $userListResource = ShooglesUserListResource::collection($userList);
 
-//        return ApiResponse::returnData($userListResource);
-        return ApiResponse::returnData([]);
+        return ApiResponse::returnData($userListResource);
     }
 
     /**
