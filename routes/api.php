@@ -56,7 +56,7 @@ Route::group(['prefix' => 'front/v1'], function () {
      * Entity: Shoogle
      * Table: shoogles
      */
-    Route::group(['prefix' => 'shoogles', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'shoogle', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
 
         // POST /api/front/v1/shoogles/list
         Route::post('list', [ShooglesController::class, 'index'])->middleware(['admin.superadmin']);
