@@ -61,19 +61,6 @@ class ShooglesController extends BaseApiController
     }
 
     /**
-     * List of user shoogles.
-     *
-     * @return \Illuminate\Http\JsonResponse|Response
-     */
-    public function userList()
-    {
-        $userList = $this->repository->userList();
-        $userListResource = ShooglesUserListResource::collection($userList);
-
-        return ApiResponse::returnData($userListResource);
-    }
-
-    /**
      * Create a shoogle.
      *
      * @param ShooglesCreateRequest $request
@@ -174,6 +161,21 @@ class ShooglesController extends BaseApiController
     }
 
     /**
+     * List of user shoogles.
+     *
+     * @param int|null $page
+     * @param int|null $pageSize
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function userList(int $page = null, int $pageSize = null)
+    {
+        $userList = $this->repository->userList($page, $pageSize);
+        $userListResource = ShooglesUserListResource::collection($userList);
+
+        return ApiResponse::returnData($userListResource);
+    }
+
+    /**
      * Search by shoogles.
      *
      * @param ShooglesSearchRequest $request
@@ -185,7 +187,7 @@ class ShooglesController extends BaseApiController
     {
         $searchResult = $this->repository->search(
             $request->input('search'),
-            $request->input('query'),
+            $request->input('order'),
             $page,
             $pageSize
         );
