@@ -189,11 +189,8 @@ class ShooglesController extends BaseApiController
             $page,
             $pageSize
         );
-//        Log::info($searchResult);
-        $searchResultResource = ShooglesSearchResultResource::collection($searchResult);
-//        Log::info($searchResultResource);
+        $searchResultResource = new ShooglesSearchResultResource($searchResult);
         return ApiResponse::returnData($searchResultResource);
-//        return ApiResponse::returnData([]);
     }
 
     /**
