@@ -67,4 +67,22 @@ class WelbeingScoresController extends BaseApiController
         $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);
         return ApiResponse::returnData($wellbeingScoresAverageResource);
     }
+
+    /**
+     * Average wellbeing scores for the company.
+     *
+     * @param WellbeingScoresAverageRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function averageCompany(WellbeingScoresAverageRequest $request)
+    {
+        try {
+            $average = $this->repository->getAverageCompany($request->input('from'), $request->input('to'));
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);
+        return ApiResponse::returnData($wellbeingScoresAverageResource);
+    }
 }

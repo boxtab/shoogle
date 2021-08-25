@@ -98,6 +98,9 @@ Route::group(['prefix' => 'front/v1'], function () {
         // POST /api/front/v1/shoogles/:id/wellbeing-scores
         Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageShoogle'])->where('id', '[0-9]+');
 
+        // POST /api/front/v1/shoogles/wellbeing-scores
+        Route::post('wellbeing-scores', [WelbeingScoresController::class, 'averageCompany']);
+
         // POST /api/front/v1/shoogles/:id/shooglers/:page/:pageSize
         Route::post('{id}/shooglers/{page}/{pageSize}', [ShooglerController::class, 'index'])
             ->where('id', '[0-9]+')

@@ -74,21 +74,8 @@ class WellbeingScoresRepository extends Repositories
      * @param string|null $to
      * @return object
      */
-    public function getAverageUser(int $userId, string $from = null, string $to = null): object
+    public function getAverageUser(int $userId, string $from = null, string $to = null): ?object
     {
-//        return $this->model
-//            ->select(DB::raw('
-//                    AVG(social) as social,
-//                    AVG(physical) as physical,
-//                    AVG(mental) as mental,
-//                    AVG(economical) as economical,
-//                    AVG(spiritual) as spiritual,
-//                    AVG(emotional) as emotional
-//                '))
-//            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
-//            ->where('user_id', $userId)
-//            ->first();
-//
         $selection = $this->model
             ->select(DB::raw('
                     social,
@@ -102,7 +89,6 @@ class WellbeingScoresRepository extends Repositories
             ->when( (! is_null($from)) && (! is_null($to)), function($query) use ($from, $to) {
                 return $query->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
             })
-//            ->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59'])
             ->where('user_id', $userId)
             ->get();
 
@@ -120,23 +106,15 @@ class WellbeingScoresRepository extends Repositories
     }
 
     /**
-     * Getting average points of well-being by shoogle.
+     * Get the average from an array of users.
      *
-     * @param int $shoogleId
+     * @param array $arrayUserId
      * @param string|null $from
      * @param string|null $to
-     * @return object
+     * @return object|null
      */
-    public function getAverageShoogle(int $shoogleId, string $from = null, string $to=null): object
+    private function getAverageFromArrayUsers(array $arrayUserId, string $from = null, string $to=null): ?object
     {
-        $arrayUserId = UserHasShoogle::where('shoogle_id', $shoogleId)
-            ->select('user_id')
-            ->get()
-            ->map(function ($item) {
-                return $item->user_id;
-            })
-            ->toArray();
-
         $countUser = count($arrayUserId);
 
         $average = [
@@ -171,5 +149,52 @@ class WellbeingScoresRepository extends Repositories
         }
 
         return (object)$average;
+    }
+
+    /**
+     * Getting average points of well-being by shoogle.
+     *
+     * @param int $shoogleId
+     * @param string|null $from
+     * @param string|null $to
+     * @return object
+     */
+    public function getAverageShoogle(int $shoogleId, string $from = null, string $to=null): ?object
+    {
+        $arrayUserId = UserHasShoogle::where('shoogle_id', $shoogleId)
+            ->select('user_id')
+            ->get()
+            ->map(function ($item) {
+                return $item->user_id;
+            })
+            ->toArray();
+
+        return $this->getAverageFromArrayUsers($arrayUserId, $from, $to);
+    }
+
+    /**
+     * Get the average for a company.
+     *
+     * @param string|null $from
+     * @param string|null $to
+     * @return object|null
+     * @throws Exception
+     */
+    public function getAverageCompany(string $from = null, string $to=null): ?object
+    {
+        if ( $this->noCompany() ) {
+            throw new \Exception('Company ID not found', Response::HTTP_NOT_FOUND);
+        }
+
+        $arrayUserId = User::where('company_id', $this->companyId)
+            ->select('id')
+            ->distinct()
+            ->get()
+            ->map(function ($item) {
+                return $item->id;
+            })
+            ->toArray();
+
+        return $this->getAverageFromArrayUsers($arrayUserId, $from, $to);
     }
 }
