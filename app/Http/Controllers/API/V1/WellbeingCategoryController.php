@@ -4,82 +4,70 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\WellbeingCategoryCreateRequest;
+use App\Http\Requests\WellbeingCategoryUpdateRequest;
+use App\Http\Resources\DepartmentDetailResource;
+use App\Http\Resources\DepartmentListResource;
+use App\Http\Resources\WellbeingCategoryResource;
 use App\Models\Company;
 use App\Models\WellbeingCategory;
+use App\Repositories\DepartmentRepository;
+use App\Repositories\WellbeingCategoryRepository;
+use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
+/**
+ * Class WellbeingCategoryController
+ * @package App\Http\Controllers\API\V1
+ */
 class WellbeingCategoryController extends BaseApiController
 {
     /**
-     * Display a listing of the resource.
+     * WellbeingCategoryController constructor.
+     * @param WellbeingCategoryRepository $wellbeingCategoryRepository
+     */
+    public function __construct(WellbeingCategoryRepository $wellbeingCategoryRepository)
+    {
+        $this->repository = $wellbeingCategoryRepository;
+    }
+
+    /**
+     * Display a listing of the wellbeing category.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        try {
-            $data = WellbeingCategory::get()
-                ->map( function ( $item ) {
-                    return [ 'id' => $item->id, 'name' => $item->name ];
-                })->toArray();
+        $werllbeingCategory = $this->repository->getList();
+        $werllbeingCategoryResource = WellbeingCategoryResource::collection($werllbeingCategory);
 
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
+        return ApiResponse::returnData($werllbeingCategoryResource);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Creating a wellbeing category.
      *
-     * @param Request $request
+     * @param WellbeingCategoryCreateRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(Request $request)
+    public function create(WellbeingCategoryCreateRequest $request)
     {
-        $validator =  Validator::make($request->all(),[
-            'name' => 'required|unique:wellbeing_categories,name|min:2|max:45'
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
-        }
-
         try {
-            WellbeingCategory::create([
-                'name' => $request->name,
+            $this->repository->create([
+                'name' => $request->input('name')
             ]);
-        } catch (\Illuminate\Database\QueryException $e) {
-            return $this->globalError( $e->errorInfo );
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'message' => 'The WellbeingCategory was created successfully',
-            ],
-        ]);
+        return ApiResponse::returnData([]);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
+     * Display the wellbeing category resource.
      *
      * @param $id
      * @return \Illuminate\Http\JsonResponse
@@ -87,90 +75,55 @@ class WellbeingCategoryController extends BaseApiController
     public function show($id)
     {
         try {
-            $data = WellbeingCategory::where('id', $id)
-                ->firstOrFail()
-                ->get()
-                ->map( function ( $item ) {
-                    return [ 'id' => $item->id, 'name' => $item->name ];
-                })->toArray();
-
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
+            $record = $this->findRecordByID($id);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
-
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
+        return ApiResponse::returnData(new WellbeingCategoryResource($record));
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update the Wellbeing Category in storage.
      *
      * @param Request $request
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(WellbeingCategoryUpdateRequest $request, $id)
     {
-        $validator =  Validator::make($request->all(),[
-            'name' => 'required|unique:wellbeing_categories,name|min:2|max:45'
-        ]);
-
-        if ( $validator->fails() ) {
-            return $this->validatorFails( $validator->errors() );
-        }
-
         try {
-            $wellbeingCategory = WellbeingCategory::where('id', $id)->firstOrFail();
+            $wellbeingCategory = $this->findRecordByID($id);
             $wellbeingCategory->update([
-                'name' => $request->name,
+                'name' => $request->input('name')
             ]);
-
-            $wellbeingCategory = $wellbeingCategory->get()
-                ->map( function ( $item ) {
-                    return [ 'id' => $item->id, 'name' => $item->name ];
-                })->toArray();
-
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
+//            $wellbeingCategoryResource = WellbeingCategoryResource::collection(WellbeingCategory::get());
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $wellbeingCategory,
-        ]);
+        return ApiResponse::returnData([]);
+//        return ApiResponse::returnData($wellbeingCategoryResource);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the wellbeing category from storage.
      *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function destroy($id)
     {
         try {
-            $company = Company::findOrFail($id);
-            $company->delete();
-        } catch (\Exception $e) {
-            return $this->globalError( $e->getMessage() );
+            $wellbeingCategory = $this->findRecordByID($id);
+            $wellbeingCategory->destroy($id);
+        } catch (Exception $e) {
+            if ($e->getCode() == 23000) {
+                return ApiResponse::returnError('The wellbeing categories cannot be deleted there are links to it.');
+            } else {
+                return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            }
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => [],
-        ]);
+        return ApiResponse::returnData([]);
     }
 }

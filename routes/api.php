@@ -167,6 +167,9 @@ Route::group(['prefix' => 'admin/v1'], function () {
 
         // GET /api/admin/v1/invite/:id
         Route::get('{id}', [InviteController::class, 'show'])->where('id', '[0-9]+');
+
+        // DELETE /api/admin/v1/invite/:id
+        Route::delete('{id}', [InviteController::class, 'destroy'])->where('id', '[0-9]+');
     });
 
     /**

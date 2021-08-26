@@ -10,6 +10,7 @@ use App\Http\Resources\InviteShowResource;
 use App\Repositories\InviteRepository;
 use App\Support\ApiResponse\ApiResponse;
 use App\User;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\API\V1\InviteMail;
 use App\Http\Controllers\Controller;
@@ -104,5 +105,26 @@ class InviteController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
         return ApiResponse::returnData($inviteResource);
+    }
+
+    /**
+     * Remove the invite from storage.
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function destroy($id)
+    {
+        try {
+            $invite = $this->findRecordByID($id);
+            if ($invite->is_used == 1) {
+                throw new Exception('Unable to delete used invite', Response::HTTP_FORBIDDEN);
+            }
+            $invite->destroy($id);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        return ApiResponse::returnData([]);
     }
 }
