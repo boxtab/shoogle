@@ -196,6 +196,9 @@ Route::group(['prefix' => 'admin/v1'], function () {
         // POST /api/admin/v1/user/:id/wellbeing-scores
         Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageUser'])->where('id', '[0-9]+');
 
+        // DELETE /api/admin/v1/user/:id
+        Route::delete('{id}', [UserController::class, 'destroy'])->where('id', '[0-9]+');
+
     });
 
     /**

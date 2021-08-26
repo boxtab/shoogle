@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class User
@@ -46,7 +47,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject, HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasMediaTrait;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasMediaTrait, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -84,6 +85,13 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Attributes to be converted to date.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     /**
      * @var string the default authentication "guard".

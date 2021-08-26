@@ -15,6 +15,7 @@ use App\Repositories\UserRepository;
 use App\Support\ApiResponse\ApiResponse;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -103,6 +104,24 @@ class UserController extends BaseApiController
             $record->update(
                 Helper::formatSnakeCase($request->all())
             );
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        return ApiResponse::returnData([]);
+    }
+
+    /**
+     * Remove the user from storage.
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function destroy($id)
+    {
+        try {
+            $user = $this->findRecordByID($id);
+            $user->destroy($id);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
