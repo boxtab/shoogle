@@ -6,6 +6,7 @@ use App\Http\Requests\InviteCSVRequest;
 use App\Http\Requests\InviteStoreRequest;
 use App\Http\Resources\DepartmentListResource;
 use App\Http\Resources\InviteListResource;
+use App\Http\Resources\InviteShowResource;
 use App\Repositories\InviteRepository;
 use App\Support\ApiResponse\ApiResponse;
 use App\User;
@@ -22,6 +23,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Exception;
 
+/**
+ * Class InviteController
+ * @package App\Http\Controllers\API\V1
+ */
 class InviteController extends BaseApiController
 {
     /**
@@ -82,5 +87,22 @@ class InviteController extends BaseApiController
         }
 
         return ApiResponse::returnData([]);
+    }
+
+    /**
+     * Display the specified resource department.
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        try {
+            $invite = $this->findRecordByID($id);
+            $inviteResource = new InviteShowResource($invite);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+        return ApiResponse::returnData($inviteResource);
     }
 }

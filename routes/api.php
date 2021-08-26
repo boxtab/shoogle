@@ -165,6 +165,8 @@ Route::group(['prefix' => 'admin/v1'], function () {
         // POST /api/admin/v1/invite/csv
         Route::post('csv', [InviteController::class, 'upload']);
 
+        // GET /api/admin/v1/invite/:id
+        Route::get('{id}', [InviteController::class, 'show'])->where('id', '[0-9]+');
     });
 
     /**
