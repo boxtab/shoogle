@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Requests\InviteCSVRequest;
 use App\Mail\API\V1\InviteMail;
+use App\Models\Department;
 use App\Models\Invite;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Mail;
  */
 class InviteRepository extends Repositories
 {
-    const COUNT_FIELD = 1;
+    const COUNT_FIELD = 2;
 
     /**
      * @var Invite
@@ -49,7 +50,8 @@ class InviteRepository extends Repositories
                 invites.id as id,
                 invites.email as email,
                 invites.is_used as is_used,
-                invites.companies_id as companies_id'))
+                invites.companies_id as companies_id,
+                invites.department_id as department_id'))
             ->when( ! $this->noCompany(), function($query) {
                 return $query->where('invites.companies_id', $this->companyId);
             })
@@ -60,8 +62,9 @@ class InviteRepository extends Repositories
      * Creating a single invite.
      *
      * @param string $email
+     * @param int $departmentId
      */
-    public function create(string $email): void
+    public function create(string $email, int $departmentId): void
     {
         if ( $this->noCompany() ) {
             return;
@@ -72,6 +75,7 @@ class InviteRepository extends Repositories
             'is_used' => 0,
             'created_by' => Auth::user()->id,
             'companies_id' => $this->companyId,
+            'department_id' => $departmentId,
         ]);
 
         if ( ! is_null($invite) ) {
@@ -88,6 +92,7 @@ class InviteRepository extends Repositories
     {
         $fileCSV = array_map('str_getcsv', file($pathFile));
         $listEmail = [];
+
 
         foreach ($fileCSV as $inviteRow) {
 
@@ -107,12 +112,17 @@ class InviteRepository extends Repositories
                 continue;
             }
 
+            if (Department::on()->where('id', $inviteRow[1])->count() != 1) {
+                continue;
+            }
+
             $invite = Invite::on()->where('email', $inviteRow[0])->first();
             if ($invite !== null) {
                 $invite->update([
                     'is_used' => 0,
                     'created_by' => Auth::id(),
                     'companies_id' => $this->companyId,
+                    'department_id' => $inviteRow[1],
                 ]);
             } else {
                 $invite = new Invite();
@@ -120,12 +130,13 @@ class InviteRepository extends Repositories
                 $invite->is_used = 0;
                 $invite->created_by = Auth::id();
                 $invite->companies_id = $this->companyId;
+                $invite->department_id = $inviteRow[1];
                 $invite->save();
             }
 
             $listEmail[] = $inviteRow[0];
         }
-        $this->sendInvitationsToEmail($listEmail);
+//        $this->sendInvitationsToEmail($listEmail);
     }
 
     /**

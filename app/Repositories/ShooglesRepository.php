@@ -180,7 +180,7 @@ class ShooglesRepository extends Repositories
             ->offset($page * $pageSize - $pageSize)
             ->limit($pageSize);
 
-//        Log::info($query->toSql());
+//        $query->toSql();
         return $query->get()->toArray();
     }
 
@@ -264,7 +264,7 @@ class ShooglesRepository extends Repositories
             ->limit($pageSize);
 
 
-//        Log::info($query->toSql());
+//        $query->toSql();
         $searchResult = $query->get()->toArray();
         return $searchResult;
     }

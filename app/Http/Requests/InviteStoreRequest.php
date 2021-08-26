@@ -26,6 +26,7 @@ class InviteStoreRequest extends ApiRequest
     {
         return [
             'email' => 'required|email:rfc,dns',
+            'departmentId' => 'required|integer|exists:departments,id',
         ];
     }
 }

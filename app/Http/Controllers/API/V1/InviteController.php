@@ -55,7 +55,7 @@ class InviteController extends BaseApiController
     public function store(InviteStoreRequest $request)
     {
         try {
-            $this->repository->create( $request->input('email') );
+            $this->repository->create( $request->input('email'), $request->input('departmentId') );
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('A user with this email has been invited already.');
