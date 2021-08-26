@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Requests\AuthLoginRequest;
+use App\Http\Requests\AuthPasswordForgotRequest;
 use App\Http\Requests\AuthSignupRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\AuthResource;
@@ -24,6 +25,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Password;
 
 /**
  * Class AuthController.
@@ -130,5 +132,17 @@ class AuthController extends BaseApiController
 
         $data = ['message' => 'User successfully signed out'];
         return ApiResponse::returnData($data);
+    }
+
+    /**
+     * Password recovery.
+     *
+     * @param AuthPasswordForgotRequest $request
+     * @return JsonResponse|Response
+     */
+    public function passwordForgot(AuthPasswordForgotRequest $request)
+    {
+        Password::sendResetLink();
+        return ApiResponse::returnData(['password' => 'forgot']);
     }
 }

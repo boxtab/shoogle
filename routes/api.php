@@ -30,6 +30,9 @@ Route::group(['prefix' => 'shared/v1'], function () {
 
     // POST /api/shared/v1/login
     Route::post('login', [AuthController::class, 'login'])->name('login');
+
+    // POST /shared/v1/password/forgot
+    Route::post('password/forgot', [AuthController::class, 'passwordForgot']);
 });
 
 
