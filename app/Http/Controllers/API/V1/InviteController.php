@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Requests\InviteCSVRequest;
 use App\Http\Requests\InviteStoreRequest;
+use App\Http\Requests\InviteUpdateRequest;
 use App\Http\Resources\DepartmentListResource;
 use App\Http\Resources\InviteListResource;
 use App\Http\Resources\InviteShowResource;
@@ -105,6 +106,28 @@ class InviteController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
         return ApiResponse::returnData($inviteResource);
+    }
+
+    /**
+     * Update the invite in storage.
+     *
+     * @param InviteUpdateRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function update(InviteUpdateRequest $request, $id)
+    {
+        try {
+            $record = $this->findRecordByID($id);
+            $record->update([
+                'email' => $request->input('email'),
+                'department_id' => $request->input('departmentId'),
+            ]);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        return ApiResponse::returnData([]);
     }
 
     /**

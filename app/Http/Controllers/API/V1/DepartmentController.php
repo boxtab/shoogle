@@ -81,7 +81,7 @@ class DepartmentController extends BaseApiController
     }
 
     /**
-     * Update the specified department in storage.
+     * Update the department in storage.
      *
      * @param DepartmentUpdateRequest $request
      * @param $id

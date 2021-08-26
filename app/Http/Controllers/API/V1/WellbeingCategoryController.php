@@ -46,7 +46,6 @@ class WellbeingCategoryController extends BaseApiController
 
         return ApiResponse::returnData($werllbeingCategoryResource);
     }
-
     /**
      * Creating a wellbeing category.
      *
