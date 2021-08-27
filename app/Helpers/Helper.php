@@ -98,4 +98,16 @@ class Helper
         return $replaced;
     }
 
+    /**
+     * Get a link to reset your password.
+     *
+     * @param string $token
+     * @param string $email
+     * @return string
+     */
+    public static function getLinkResetPassword(string $token, string $email): string
+    {
+        $host = request()->getSchemeAndHttpHost();
+        return "$host/reset-password/:$token/:$email";
+    }
 }

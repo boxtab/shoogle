@@ -119,4 +119,17 @@ return [
         'email_from' => env('INVITE_EMAIL_FROM', 'support@shoogle.com'),
         'subject' => env('INVITE_SUBJECT', 'We invite you to the system shoogle.'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Password recovery address
+    |--------------------------------------------------------------------------
+    | Please edit these parameters in the environment file.
+    |
+    */
+
+    'password-recovery' => [
+        'email_from' => env('PASSWORD_RECOVERY_EMAIL_FROM', 'support@shoogle.com'),
+        'subject' => env('PASSWORD_RECOVERY_SUBJECT', 'Password recovery'),
+    ],
 ];

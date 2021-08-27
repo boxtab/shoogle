@@ -6,6 +6,7 @@ use App\Constants\RoleConstant;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthPasswordForgotRequest;
+use App\Http\Requests\AuthPasswordResetRequest;
 use App\Http\Requests\AuthSignupRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\AuthResource;
@@ -16,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +28,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 /**
  * Class AuthController.
@@ -41,7 +44,7 @@ class AuthController extends BaseApiController
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'signup']]);
+//        $this->middleware('auth:api', ['except' => ['login', 'signup']]);
     }
 
     /**
@@ -135,14 +138,59 @@ class AuthController extends BaseApiController
     }
 
     /**
-     * Password recovery.
+     * Password reset.
      *
      * @param AuthPasswordForgotRequest $request
      * @return JsonResponse|Response
      */
     public function passwordForgot(AuthPasswordForgotRequest $request)
     {
-        Password::sendResetLink();
-        return ApiResponse::returnData(['password' => 'forgot']);
+        $status = null;
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return ApiResponse::returnData(
+            $status === Password::RESET_LINK_SENT
+                ? ['status' => __($status)]
+                : ['email' => __($status)]
+        );
+    }
+
+    /**
+     * Password recovery.
+     *
+     * @param AuthPasswordResetRequest $request
+     * @return JsonResponse|Response
+     */
+    public function passwordReset(AuthPasswordResetRequest $request)
+    {
+//        $credentials = $request->only(['email', 'token','password']);
+        $passwordResets = DB::table('password_resets')
+            ->where('email', $request->input('email'))
+            ->first();
+
+        if ( $passwordResets &&  Hash::check($request->input('token'), $passwordResets->token) ) {
+            return ApiResponse::returnError('Invalid token');
+        }
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) use ($request) {
+                $user->forceFill([
+                    'password' => bcrypt($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+            }
+        );
+
+        return ApiResponse::returnData(
+            $status == Password::PASSWORD_RESET
+            ? ['status', __($status)]
+            : ['email' => __($status)]
+        );
+
+//        return ApiResponse::returnData([]);
     }
 }

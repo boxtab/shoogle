@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Helpers\Helper;
+use App\Mail\API\V1\InviteMail;
+use App\Mail\API\V1\ResetPasswordMail;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\ModelHasRole;
@@ -15,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasRoles;
@@ -23,6 +28,7 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
+//use App\Notifications\ResetPasswordNotification;
 
 /**
  * Class User
@@ -180,5 +186,16 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $link = Helper::getLinkResetPassword($token, $this->email);
+
+        $resetPasswordMail = new ResetPasswordMail($link);
+        $resetPasswordMail->to($this->email);
+        Mail::send($resetPasswordMail);
+
+//        $this->notify(new ResetPasswordNotification($url));
     }
 }
