@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use League\Glide\Api\Api;
 use stdClass;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -165,14 +166,14 @@ class AuthController extends BaseApiController
      */
     public function passwordReset(AuthPasswordResetRequest $request)
     {
-//        $credentials = $request->only(['email', 'token','password']);
         $passwordResets = DB::table('password_resets')
             ->where('email', $request->input('email'))
             ->first();
 
-        if ( $passwordResets &&  Hash::check($request->input('token'), $passwordResets->token) ) {
+        if ( ! ( $passwordResets && Hash::check($request->input('token'), $passwordResets->token) ) ) {
             return ApiResponse::returnError('Invalid token');
         }
+
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
@@ -190,7 +191,5 @@ class AuthController extends BaseApiController
             ? ['status', __($status)]
             : ['email' => __($status)]
         );
-
-//        return ApiResponse::returnData([]);
     }
 }
