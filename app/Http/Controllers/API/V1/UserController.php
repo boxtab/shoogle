@@ -82,7 +82,6 @@ class UserController extends BaseApiController
      */
     public function show($id)
     {
-        Log::info(Helper::getRole(Auth::id()));
         try {
             $record = $this->findRecordByID($id);
         } catch (Exception $e) {
@@ -102,10 +101,14 @@ class UserController extends BaseApiController
     public function update(UserUpdateRequest $request, $id)
     {
         try {
-            $record = $this->findRecordByID($id);
-            $record->update(
+            $user = $this->findRecordByID($id);
+            $credentials = $request->only(['firstName', 'lastName', 'departmentId', 'isAdminCompany']);
+            $this->repository->update($user, $credentials);
+            /*
+            $user->update(
                 Helper::formatSnakeCase($request->all())
             );
+            */
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }

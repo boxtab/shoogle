@@ -25,9 +25,10 @@ class UserUpdateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'firstName'     => 'nullable|min:2|max:255',
-            'lastName'      => 'nullable|min:2|max:255',
-            'departmentId'  => 'nullable|integer',
+            'firstName'         => 'nullable|min:2|max:255',
+            'lastName'          => 'nullable|min:2|max:255',
+            'departmentId'      => 'nullable|integer',
+            'isAdminCompany'    => 'nullable|boolean',
         ];
     }
 }
