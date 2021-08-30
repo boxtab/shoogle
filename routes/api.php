@@ -5,6 +5,7 @@ use App\Http\Controllers\API\V1\CompanyController;
 use App\Http\Controllers\API\V1\DepartmentController;
 use App\Http\Controllers\API\V1\InviteController;
 use App\Http\Controllers\API\V1\ProfileController;
+use App\Http\Controllers\API\V1\RewardController;
 use App\Http\Controllers\API\V1\ShooglerController;
 use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
@@ -112,6 +113,14 @@ Route::group(['prefix' => 'front/v1'], function () {
             ->where('id', '[0-9]+')
             ->where('page', '[0-9]+')
             ->where('pageSize', '[0-9]+');
+    });
+
+    /**
+     * Entity: Reward
+     * Table: user_has_reward
+     */
+    Route::group(['prefix' => 'reward', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+        Route::post('user', [RewardController::class, 'assign']);
     });
 
 });
