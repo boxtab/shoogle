@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\ModelHasRole;
 use Illuminate\Support\Facades\Log;
 use stdClass;
 use App\Constants\RoleConstant;
@@ -109,5 +110,19 @@ class Helper
     {
         $host = request()->getSchemeAndHttpHost();
         return "$host/reset-password/:$token/:$email";
+    }
+
+    /**
+     * Returns the text name of the role.
+     *
+     * @param int $userId
+     * @return string
+     */
+    public static function getRole(int $userId): string
+    {
+        return ModelHasRole::where('model_id', $userId)
+            ->first('role_id')
+            ->role
+            ->name;
     }
 }

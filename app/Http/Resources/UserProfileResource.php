@@ -2,9 +2,12 @@
 
 namespace App\Http\Resources;
 
+use App\Constants\RoleConstant;
+use App\Helpers\Helper;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class UserProfileResource extends JsonResource
@@ -18,15 +21,16 @@ class UserProfileResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'            => $this->resource->id,
-            'photo'         => $this->resource->avatar,
-            'firstName'     => $this->resource->first_name,
-            'lastName'      => $this->resource->last_name,
-            'departmentId'  => $this->resource->department_id,
-            'email'         => $this->resource->email,
-            'rating'        => $this->resource->rank,
-            'shoogles'      => Shoogle::where('owner_id', $this->resource->id)->count(),
-            'shooglesList'  => Shoogle::where('owner_id', $this->resource->id)
+            'id'                => $this->resource->id,
+            'photo'             => $this->resource->avatar,
+            'firstName'         => $this->resource->first_name,
+            'lastName'          => $this->resource->last_name,
+            'departmentId'      => $this->resource->department_id,
+            'email'             => $this->resource->email,
+            'rating'            => $this->resource->rank,
+            'shoogles'          => Shoogle::where('owner_id', $this->resource->id)->count(),
+            'isAdminCompany'    => Helper::getRole(Auth::id()) === RoleConstant::COMPANY_ADMIN ? true : false,
+            'shooglesList'      => Shoogle::where('owner_id', $this->resource->id)
                 ->get()
                 ->map(function ($item) {
                     return [

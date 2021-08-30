@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\TextUI\Help;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Exception;
 
@@ -81,6 +82,7 @@ class UserController extends BaseApiController
      */
     public function show($id)
     {
+        Log::info(Helper::getRole(Auth::id()));
         try {
             $record = $this->findRecordByID($id);
         } catch (Exception $e) {
