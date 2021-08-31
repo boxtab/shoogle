@@ -135,6 +135,9 @@ Route::group(['prefix' => 'front/v1'], function () {
     Route::group(['prefix' => 'buddy', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
         // POST /api/front/v1/buddy/request
         Route::post('request', [BuddyRequestController::class, 'buddyRequest']);
+
+        // POST /api/front/v1/buddy/confirm
+        Route::post('confirm', [BuddyRequestController::class, 'buddyConfirm']);
     });
 
 });

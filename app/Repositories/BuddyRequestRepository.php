@@ -64,4 +64,18 @@ class BuddyRequestRepository extends Repositories
         ]);
 
     }
+
+    /**
+     * Accept the invitation.
+     *
+     * @param int $buddyRequestId
+     */
+    public function buddyConfirm(int $buddyRequestId)
+    {
+        BuddyRequest::on()
+            ->where('id', $buddyRequestId)
+            ->update([
+                'type' => BuddyRequestTypeEnum::CONFIRM,
+            ]);
+    }
 }

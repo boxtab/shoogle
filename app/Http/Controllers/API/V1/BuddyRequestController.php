@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BuddyConfirmRequest;
 use App\Http\Requests\BuddyRequest;
 use App\Repositories\BuddyRequestRepository;
 use App\Repositories\CompanyRepository;
@@ -35,12 +36,28 @@ class BuddyRequestController extends BaseApiController
     public function buddyRequest(BuddyRequest $request)
     {
         try {
-
             $shoogleId = $request->input('buddyId');
             $user2id = $request->input('buddyId');
             $message = $request->input('message');
             $this->repository->buddyRequest($shoogleId, $user2id, $message);
+        } catch (\Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
 
+        return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Accept the invitation.
+     *
+     * @param BuddyConfirmRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function buddyConfirm(BuddyConfirmRequest $request)
+    {
+        try {
+            $buddyRequestId = $request->input('buddyRequestId');
+            $this->repository->buddyConfirm($buddyRequestId);
         } catch (\Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
