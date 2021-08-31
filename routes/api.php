@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\V1\AuthController;
+use App\Http\Controllers\API\V1\BuddyRequestController;
 use App\Http\Controllers\API\V1\CompanyController;
 use App\Http\Controllers\API\V1\DepartmentController;
 use App\Http\Controllers\API\V1\InviteController;
@@ -125,6 +126,15 @@ Route::group(['prefix' => 'front/v1'], function () {
 
         // GET /api/front/v1/reward/list
         Route::get('list', [RewardController::class, 'listReward']);
+    });
+
+    /**
+     * Entity: Buddy request
+     * Table: buddy_request
+     */
+    Route::group(['prefix' => 'buddy', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+        // POST /api/front/v1/buddy/request
+        Route::post('request', [BuddyRequestController::class, 'buddyRequest']);
     });
 
 });

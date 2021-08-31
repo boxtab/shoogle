@@ -40,16 +40,16 @@ class BuddyRequest extends BaseModel
         'updated_at',
     ];
 
-    protected $casts = [
-        'id' => 'integer',
-        'shoogle_id' => 'integer',
-        'user1_id' => 'integer',
-        'user2_id' => 'integer',
-        'type' => BuddyRequestTypeEnum::class,
-        'message' => 'text',
-        'created_at' => 'datetime:Y-m-d h:i:s',
-        'updated_at' => 'datetime:Y-m-d h:i:s',
-    ];
+//    protected $casts = [
+//        'id' => 'integer',
+//        'shoogle_id' => 'integer',
+//        'user1_id' => 'integer',
+//        'user2_id' => 'integer',
+//        'type' => BuddyRequestTypeEnum::class,
+//        'message' => 'text',
+//        'created_at' => 'datetime:Y-m-d h:i:s',
+//        'updated_at' => 'datetime:Y-m-d h:i:s',
+//    ];
 
     /**
      * @return BelongsTo
