@@ -54,7 +54,6 @@ class BuddyRequestRepository extends Repositories
         if ( $buddyRequest === true ) {
             return;
         }
-        Log::info('test');
 
         BuddyRequest::create([
             'shoogle_id'    => $shoogleId,

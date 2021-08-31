@@ -60,7 +60,7 @@ class RewardRepository extends Repositories
         return $this->model
             ->get()
             ->map(function($item) {
-                $item['icon'] = URL::to('/') . '/' . $item['icon'];
+                $item['icon'] = URL::to('/') . '/rewards/' . $item['icon'];
                 return $item;
             });
     }

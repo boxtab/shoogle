@@ -1,6 +1,7 @@
 <?php
 
 use Database\Seeders\GuardApiSeeder;
+use Database\Seeders\IconRewardsSeeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\SuperAdminSeeder;
 use Database\Seeders\AdminSeeder;
@@ -16,10 +17,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         $this->call(TestUserSeeder::class);
-         $this->call(RoleSeeder::class);
-         $this->call(GuardApiSeeder::class);
-         $this->call(SuperAdminSeeder::class);
-         $this->call(AdminSeeder::class);
+        $this->call(IconRewardsSeeder::class);
+        $this->call(TestUserSeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(GuardApiSeeder::class);
+        $this->call(SuperAdminSeeder::class);
+        $this->call(AdminSeeder::class);
     }
 }
