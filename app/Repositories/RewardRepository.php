@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use \Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\URL;
 
 /**
  * Class RewardRepository
@@ -26,6 +27,10 @@ class RewardRepository extends Repositories
      */
     protected $model;
 
+    /**
+     * RewardRepository constructor.
+     * @param Reward $model
+     */
     public function __construct(Reward $model)
     {
         parent::__construct($model);
@@ -43,5 +48,20 @@ class RewardRepository extends Repositories
             ['user_id' => $userId, 'reward_id' => $rewardId],
             ['given_by_user_id' => Auth::id()]
         );
+    }
+
+    /**
+     * List of rewards.
+     *
+     * @return mixed
+     */
+    public function getList()
+    {
+        return $this->model
+            ->get()
+            ->map(function($item) {
+                $item['icon'] = URL::to('/') . '/' . $item['icon'];
+                return $item;
+            });
     }
 }

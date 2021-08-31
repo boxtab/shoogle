@@ -120,7 +120,11 @@ Route::group(['prefix' => 'front/v1'], function () {
      * Table: user_has_reward
      */
     Route::group(['prefix' => 'reward', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+        // POST /api/front/v1/reward/user
         Route::post('user', [RewardController::class, 'assign']);
+
+        // GET /api/front/v1/reward/list
+        Route::get('list', [RewardController::class, 'listReward']);
     });
 
 });
