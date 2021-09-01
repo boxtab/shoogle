@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BuddyConfirmRequest;
+use App\Http\Requests\BuddyDisconnectRequest;
 use App\Http\Requests\BuddyRejectRequest;
 use App\Http\Requests\BuddyRequest;
 use App\Repositories\BuddyRequestRepository;
@@ -77,6 +78,25 @@ class BuddyRequestController extends BaseApiController
         try {
             $buddyRequestId = $request->input('buddyRequestId');
             $this->repository->buddyReject($buddyRequestId);
+        } catch (\Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Leaving friends.
+     *
+     * @param BuddyDisconnectRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function buddyDisconnect(BuddyDisconnectRequest $request)
+    {
+        try {
+            $buddyId = $request->input('buddyId');
+            $shoogleId = $request->input('shoogleId');
+            $this->repository->buddyDisconnect($buddyId, $shoogleId);
         } catch (\Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }

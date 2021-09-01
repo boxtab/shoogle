@@ -141,6 +141,9 @@ Route::group(['prefix' => 'front/v1'], function () {
 
         // POST /api/front/v1/buddy/reject
         Route::post('reject', [BuddyRequestController::class, 'buddyReject']);
+
+        // POST /api/front/v1/buddy/disconnect
+        Route::post('disconnect', [BuddyRequestController::class, 'buddyDisconnect']);
     });
 
 });

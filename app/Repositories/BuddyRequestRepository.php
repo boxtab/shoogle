@@ -72,7 +72,7 @@ class BuddyRequestRepository extends Repositories
      *
      * @param int $buddyRequestId
      */
-    public function buddyConfirm(int $buddyRequestId)
+    public function buddyConfirm(int $buddyRequestId): void
     {
         DB::transaction( function () use ($buddyRequestId) {
             $buddyRequest = BuddyRequest::on()
@@ -102,7 +102,7 @@ class BuddyRequestRepository extends Repositories
      *
      * @param int $buddyRequestId
      */
-    public function buddyReject(int $buddyRequestId)
+    public function buddyReject(int $buddyRequestId): void
     {
         BuddyRequest::on()
             ->where('id', $buddyRequestId)
@@ -110,5 +110,42 @@ class BuddyRequestRepository extends Repositories
             ->update([
                 'type' => BuddyRequestTypeEnum::REJECT,
             ]);
+    }
+
+    /**
+     * Leaving friends.
+     *
+     * @param int $buddyId
+     * @param int $shoogleId
+     */
+    public function buddyDisconnect(int $buddyId, int $shoogleId): void
+    {
+        DB::transaction( function () use ($buddyId, $shoogleId) {
+            BuddyRequest::on()
+                ->where('type', '<>', BuddyRequestTypeEnum::DISCONNECT)
+                ->where('shoogle_id', $shoogleId)
+                ->orWhere(function($query) use ($buddyId) {
+                    $query->where('user1_id', $buddyId)->where('user2_id', Auth::id());
+                })
+                ->orWhere(function($query) use ($buddyId) {
+                    $query->where('user1_id', Auth::id())->where('user2_id', $buddyId);
+                })
+                ->update([
+                    'type' => BuddyRequestTypeEnum::DISCONNECT,
+                ]);
+
+            Buddie::on()
+                ->whereNull('disconnected_at')
+                ->where('shoogle_id', $shoogleId)
+                ->orWhere(function($query) use ($buddyId) {
+                    $query->where('user1_id', $buddyId)->where('user2_id', Auth::id());
+                })
+                ->orWhere(function($query) use ($buddyId) {
+                    $query->where('user1_id', Auth::id())->where('user2_id', $buddyId);
+                })
+                ->update([
+                    'disconnected_at' => Carbon::now(),
+                ]);
+        });
     }
 }
