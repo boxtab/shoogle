@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BuddyConfirmRequest;
+use App\Http\Requests\BuddyRejectRequest;
 use App\Http\Requests\BuddyRequest;
 use App\Repositories\BuddyRequestRepository;
 use App\Repositories\CompanyRepository;
@@ -58,6 +59,24 @@ class BuddyRequestController extends BaseApiController
         try {
             $buddyRequestId = $request->input('buddyRequestId');
             $this->repository->buddyConfirm($buddyRequestId);
+        } catch (\Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Reject friend request.
+     *
+     * @param BuddyRejectRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function buddyReject(BuddyRejectRequest $request)
+    {
+        try {
+            $buddyRequestId = $request->input('buddyRequestId');
+            $this->repository->buddyReject($buddyRequestId);
         } catch (\Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }

@@ -138,6 +138,9 @@ Route::group(['prefix' => 'front/v1'], function () {
 
         // POST /api/front/v1/buddy/confirm
         Route::post('confirm', [BuddyRequestController::class, 'buddyConfirm']);
+
+        // POST /api/front/v1/buddy/reject
+        Route::post('reject', [BuddyRequestController::class, 'buddyReject']);
     });
 
 });

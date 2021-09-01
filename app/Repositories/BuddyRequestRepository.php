@@ -96,4 +96,19 @@ class BuddyRequestRepository extends Repositories
             ]);
         });
     }
+
+    /**
+     * Reject friend request.
+     *
+     * @param int $buddyRequestId
+     */
+    public function buddyReject(int $buddyRequestId)
+    {
+        BuddyRequest::on()
+            ->where('id', $buddyRequestId)
+            ->where('type', BuddyRequestTypeEnum::INVITE)
+            ->update([
+                'type' => BuddyRequestTypeEnum::REJECT,
+            ]);
+    }
 }
