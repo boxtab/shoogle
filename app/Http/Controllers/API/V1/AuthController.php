@@ -14,7 +14,8 @@ use App\Http\Resources\UserResource;
 use App\Models\Invite;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+//use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 use League\Glide\Api\Api;
 use stdClass;
+use Symfony\Component\Console\Input\Input;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Support\ApiResponse\ApiResponse;
@@ -147,8 +149,15 @@ class AuthController extends BaseApiController
     public function passwordForgot(AuthPasswordForgotRequest $request)
     {
         $status = null;
+
+        Log::info(gettype($request->only('email')));
+        Log::info(gettype($request->get('email')));
+
         $status = Password::sendResetLink(
-            $request->only('email')
+            [
+                'email' => $request->get('email'),
+            ]
+//            $request->only('email')
         );
 
         return ApiResponse::returnData(

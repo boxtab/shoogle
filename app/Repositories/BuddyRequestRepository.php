@@ -8,6 +8,7 @@ use App\Helpers\Helper;
 use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use \Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\Buddie;
 
 /**
  * Class BuddyRequestRepository
@@ -72,10 +74,26 @@ class BuddyRequestRepository extends Repositories
      */
     public function buddyConfirm(int $buddyRequestId)
     {
-        BuddyRequest::on()
-            ->where('id', $buddyRequestId)
-            ->update([
+        DB::transaction( function () use ($buddyRequestId) {
+            $buddyRequest = BuddyRequest::on()
+                ->where('id', $buddyRequestId)->first();
+
+            Buddie::on()
+                ->where('shoogle_id', $buddyRequest->shoogle_id)
+                ->where('user1_id', $buddyRequest->user1_id)
+                ->where('user2_id', $buddyRequest->user2_id)
+                ->firstOr(function() use($buddyRequest) {
+                    Buddie::on()->create([
+                        'shoogle_id' => $buddyRequest->shoogle_id,
+                        'user1_id' => $buddyRequest->user1_id,
+                        'user2_id' => $buddyRequest->user2_id,
+                        'connected_at' => Carbon::now(),
+                    ]);
+                });
+
+            $buddyRequest->update([
                 'type' => BuddyRequestTypeEnum::CONFIRM,
             ]);
+        });
     }
 }
