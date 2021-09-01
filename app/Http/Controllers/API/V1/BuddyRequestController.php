@@ -7,6 +7,7 @@ use App\Http\Requests\BuddyConfirmRequest;
 use App\Http\Requests\BuddyDisconnectRequest;
 use App\Http\Requests\BuddyRejectRequest;
 use App\Http\Requests\BuddyRequest;
+use App\Http\Resources\BuddyBidResource;
 use App\Repositories\BuddyRequestRepository;
 use App\Repositories\CompanyRepository;
 use App\Support\ApiResponse\ApiResponse;
@@ -38,7 +39,7 @@ class BuddyRequestController extends BaseApiController
     public function buddyRequest(BuddyRequest $request)
     {
         try {
-            $shoogleId = $request->input('buddyId');
+            $shoogleId = $request->input('shoogleId');
             $user2id = $request->input('buddyId');
             $message = $request->input('message');
             $this->repository->buddyRequest($shoogleId, $user2id, $message);
@@ -47,6 +48,44 @@ class BuddyRequestController extends BaseApiController
         }
 
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Requests received.
+     *
+     * @param int $page
+     * @param int $pageSize
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function buddyReceived(int $page, int $pageSize)
+    {
+        try {
+            $buddyReceived = $this->repository->buddyReceived($page, $pageSize);
+            $buddyReceivedResource = BuddyBidResource::collection($buddyReceived);
+        } catch (\Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        return ApiResponse::returnData($buddyReceivedResource);
+    }
+
+    /**
+     * Sent requests.
+     *
+     * @param int $page
+     * @param int $pageSize
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function buddySent(int $page, int $pageSize)
+    {
+        try {
+            $buddySent = $this->repository->buddySent($page, $pageSize);
+            $buddySentResource = BuddyBidResource::collection($buddySent);
+        } catch (\Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+        }
+
+        return ApiResponse::returnData($buddySentResource);
     }
 
     /**

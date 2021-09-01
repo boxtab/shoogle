@@ -68,6 +68,53 @@ class BuddyRequestRepository extends Repositories
     }
 
     /**
+     * Requests received.
+     *
+     * @param int $page
+     * @param int $pageSize
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function buddyReceived(int $page, int $pageSize)
+    {
+        return BuddyRequest::on()
+            ->select(DB::raw('
+                id as id,
+                user1_id as buddy,
+                shoogle_id as shoogle_id,
+                message as message
+            '))
+            ->where('user2_id', Auth::id())
+            ->where('type', BuddyRequestTypeEnum::INVITE)
+            ->offset($page * $pageSize - $pageSize)
+            ->limit($pageSize)
+            ->get();
+    }
+
+    /**
+     * Sent requests.
+     *
+     * @param int $page
+     * @param int $pageSize
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function buddySent(int $page, int $pageSize)
+    {
+        return BuddyRequest::on()
+            ->select(DB::raw('
+                id as id,
+                user2_id as buddy,
+                shoogle_id as shoogle_id,
+                message as message
+            '))
+            ->where('user1_id', Auth::id())
+            ->offset($page * $pageSize - $pageSize)
+            ->limit($pageSize)
+            ->orderBy('type', 'ASC')
+            ->orderBy('created_at', 'DESC')
+            ->get();
+    }
+
+    /**
      * Accept the invitation.
      *
      * @param int $buddyRequestId

@@ -136,6 +136,16 @@ Route::group(['prefix' => 'front/v1'], function () {
         // POST /api/front/v1/buddy/request
         Route::post('request', [BuddyRequestController::class, 'buddyRequest']);
 
+        // GET /api/front/v1/buddy/requests-received/:page/:pageSize
+        Route::get('requests-received/{page}/{pageSize}', [BuddyRequestController::class, 'buddyReceived'])
+            ->where('page', '[0-9]+')
+            ->where('pageSize', '[0-9]+');
+
+        // GET /api/front/v1/buddy/requests-sent/:page/:pageSize
+        Route::get('requests-sent/{page}/{pageSize}', [BuddyRequestController::class, 'buddySent'])
+            ->where('page', '[0-9]+')
+            ->where('pageSize', '[0-9]+');
+
         // POST /api/front/v1/buddy/confirm
         Route::post('confirm', [BuddyRequestController::class, 'buddyConfirm']);
 
