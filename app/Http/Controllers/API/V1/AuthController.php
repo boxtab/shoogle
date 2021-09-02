@@ -154,11 +154,17 @@ class AuthController extends BaseApiController
             'email' => $request->get('email'),
         ]);
 
-        return ApiResponse::returnData(
-            $status === Password::RESET_LINK_SENT
-                ? ['status' => __($status)]
-                : ['email' => __($status)]
-        );
+        if ( $status === Password::RESET_LINK_SENT ) {
+            return ApiResponse::returnData(['status' => __($status)]);
+        } else {
+            return ApiResponse::returnError(__($status));
+        }
+
+//        return ApiResponse::returnData(
+//            $status === Password::RESET_LINK_SENT
+//                ? ['status' => __($status)]
+//                : ['email' => __($status)]
+//        );
     }
 
     /**
