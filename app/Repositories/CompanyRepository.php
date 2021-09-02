@@ -155,42 +155,55 @@ class CompanyRepository extends Repositories
      */
     public function update(Company $company, array $credentials): void
     {
-        try {
-            $company->update(['name' => $credentials['companyName']]);
+        // ['companyName', 'firstName','lastName', 'email', 'password']
+        $userAdminCompany = User::on()
+            ->select(DB::raw('
+                users.id as id,
+                users.first_name as first_name,
+                users.last_name as last_name,
+                users.email as email,
+                users.password as password
+            '))
+            ->leftJoin('model_has_roles', function ($join) {
+                $join->on('users.id', '=', 'model_has_roles.model_id');
+            })
+            ->leftJoin('roles', function ($join) {
+                $join->on('roles.id', '=', 'model_has_roles.role_id');
+            })
+            ->where('users.company_id', '=', $company->id)
+            ->where('roles.name', '=', RoleConstant::COMPANY_ADMIN)
+            ->get();
 
-            $userAdminCompany = User::on()->
-                leftJoin('model_has_roles', function ($join) {
-                    $join->on('users.id', '=', 'model_has_roles.model_id');
-                })->leftJoin('roles', function ($join) {
-                    $join->on('roles.id', '=', 'model_has_roles.role_id');
-                })
-                ->where('users.company_id', $company->id)
-                ->where('roles.name', RoleConstant::COMPANY_ADMIN)
-                ->firstOrFail();
-
-            $fieldCredentials = [
-                'company_id' => $company->id,
-                'first_name' => $credentials['firstName'],
-                'last_name' => $credentials['lastName'],
-//                'email' => $credentials['email'],
-            ];
-
-            if ( ! is_null( $credentials['password'] ) ) {
-                $fieldCredentials['password'] = bcrypt($credentials['password']);
-            }
-
-            if ( $userAdminCompany->email != $credentials['email'] ) {
-                $this->model->where('email', $credentials['email'])->firstOrFail();
-                $fieldCredentials['email'] = $credentials['email'];
-            }
-
-            $userAdminCompany->update( $fieldCredentials );
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-                throw new \Exception($e->getMessage(), $e->getCode());
+        if ( $userAdminCompany->count() !== 1 ) {
+            return;
         }
+
+        $isEmailBusy = 0;
+        if ( ( ! is_null($credentials['email']) ) && ($userAdminCompany[0]->email != $credentials['email']) ) {
+            $isEmailBusy = User::on()
+                ->where('email', '=', $credentials['email'])
+                ->where('id', '!=', $userAdminCompany[0]->id)
+                ->count();
+        }
+
+        if ( $isEmailBusy === 1 ) {
+            throw new \Exception('This email is reserved by another user', Response::HTTP_CONFLICT);
+        }
+
+        DB::transaction( function () use ( $company, $userAdminCompany, $credentials ) {
+            $company->name = $credentials['companyName'];
+            $company->save();
+
+            $userAdminCompany[0]->first_name = $credentials['firstName'];
+            $userAdminCompany[0]->last_name = $credentials['lastName'];
+            if ( ! is_null($credentials['email']) ) {
+                $userAdminCompany[0]->email = $credentials['email'];
+            }
+            if ( $credentials['password'] ) {
+                $userAdminCompany[0]->password = bcrypt($credentials['password']);
+            }
+            $userAdminCompany[0]->save();
+        });
     }
 
     /**

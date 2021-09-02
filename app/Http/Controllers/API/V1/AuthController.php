@@ -150,15 +150,9 @@ class AuthController extends BaseApiController
     {
         $status = null;
 
-        Log::info(gettype($request->only('email')));
-        Log::info(gettype($request->get('email')));
-
-        $status = Password::sendResetLink(
-            [
-                'email' => $request->get('email'),
-            ]
-//            $request->only('email')
-        );
+        $status = Password::sendResetLink([
+            'email' => $request->get('email'),
+        ]);
 
         return ApiResponse::returnData(
             $status === Password::RESET_LINK_SENT
