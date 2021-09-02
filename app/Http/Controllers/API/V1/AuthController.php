@@ -59,7 +59,26 @@ class AuthController extends BaseApiController
     public function login(AuthLoginRequest $request)
     {
         $credentials = $request->only(['email', 'password']);
-        $expirationTime = ['exp' => Carbon::now()->addDays(7)->timestamp];
+        $expirationTime = ['exp' => Carbon::now()->addDays(30)->timestamp];
+        $token = JWTAuth::attempt($credentials, $expirationTime);
+
+        if ( ! $token ) {
+            return ApiResponse::returnError('Unauthorized', Response::HTTP_UNAUTHORIZED);
+        }
+
+        try {
+            $user = User::where('email', $credentials['email'])->firstOrFail();
+            $authResource = new AuthResource($user);
+            $authResource->setToken($token);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage());
+        }
+
+        return ApiResponse::returnData($authResource);
+
+        /*
+        $credentials = $request->only(['email', 'password']);
+        $expirationTime = ['exp' => Carbon::now()->addDays(30)->timestamp];
 
         if ( ! $token = JWTAuth::attempt($credentials, $expirationTime) ) {
             $errorWrongPassword = new stdClass();
@@ -78,6 +97,7 @@ class AuthController extends BaseApiController
         }
 
         return ApiResponse::returnData($authResource);
+        */
     }
 
     /**
