@@ -113,7 +113,7 @@ class CompanyController extends BaseApiController
             $this->repository->update($company, $credentials);
 
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);

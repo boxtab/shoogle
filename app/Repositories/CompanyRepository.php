@@ -174,7 +174,7 @@ class CompanyRepository extends Repositories
             ->where('roles.name', '=', RoleConstant::COMPANY_ADMIN)
             ->get();
 
-        if ( $userAdminCompany->count() !== 1 ) {
+        if ( $userAdminCompany->count() != 1 ) {
             return;
         }
 
@@ -186,7 +186,7 @@ class CompanyRepository extends Repositories
                 ->count();
         }
 
-        if ( $isEmailBusy === 1 ) {
+        if ( $isEmailBusy == 1 ) {
             throw new \Exception('This email is reserved by another user', Response::HTTP_CONFLICT);
         }
 
@@ -199,7 +199,7 @@ class CompanyRepository extends Repositories
             if ( ! is_null($credentials['email']) ) {
                 $userAdminCompany[0]->email = $credentials['email'];
             }
-            if ( $credentials['password'] ) {
+            if ( ! is_null( $credentials['password'] ) ) {
                 $userAdminCompany[0]->password = bcrypt($credentials['password']);
             }
             $userAdminCompany[0]->save();
