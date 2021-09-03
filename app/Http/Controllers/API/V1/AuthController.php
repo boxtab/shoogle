@@ -64,8 +64,11 @@ class AuthController extends BaseApiController
 
         try {
             $token = JWTAuth::attempt($credentials, $expirationTime);
-            if ( empty($token) ) {
-                return ApiResponse::returnError('Invalid password', Response::HTTP_UNPROCESSABLE_ENTITY);
+            if ( ! $token ) {
+                $errorWrongPassword = new stdClass();
+                $errorWrongPassword->password = ['Invalid password'];
+                $errorWrongPassword = collect($errorWrongPassword);
+                return ApiResponse::returnError($errorWrongPassword, Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         } catch (JWTException $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
