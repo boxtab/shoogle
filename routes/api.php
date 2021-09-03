@@ -53,7 +53,7 @@ Route::group(['prefix' => 'front/v1'], function () {
     Route::group(['prefix' => 'profile', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
 
         // PUT /api/front/v1/profile
-        Route::put('', [ProfileController::class, 'store']);
+        Route::post('', [ProfileController::class, 'store']);
 
         // GET /api/front/v1/profile
         Route::get('', [ProfileController::class, 'show']);
