@@ -49,6 +49,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null profile_image
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
+ * @property Carbon|null deleted_at
  */
 
 class User extends Authenticatable implements JWTSubject, HasMedia

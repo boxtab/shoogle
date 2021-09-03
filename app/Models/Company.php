@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Company
@@ -16,11 +17,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string name
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
+ * @property Carbon|null deleted_at
  */
 
 class Company extends BaseModel
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'companies';
 
@@ -37,6 +39,13 @@ class Company extends BaseModel
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
+
+    /**
+     * Attributes to be converted to date.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     /**
      * Company departments.
