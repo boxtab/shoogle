@@ -25,8 +25,8 @@ class AuthLoginRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email'     => 'required|email:rfc,dns|min:5|max:255|exists:users,email',
-            'password'  => 'required|min:6|max:64',
+            'email'     => 'required|email:rfc,dns|min:4|max:255|exists:users,email',
+            'password'  => 'required|min:2|max:64',
         ];
     }
 

@@ -59,12 +59,6 @@ class AuthController extends BaseApiController
      */
     public function login(AuthLoginRequest $request)
     {
-        $errorWrongPassword = new stdClass();
-        $errorWrongPassword->password = ['Invalid password'];
-        $errorWrongPassword = collect($errorWrongPassword);
-        return ApiResponse::returnError($errorWrongPassword, Response::HTTP_UNPROCESSABLE_ENTITY);
-
-
         $credentials = $request->only(['email', 'password']);
         $expirationTime = ['exp' => Carbon::now()->addDays(30)->timestamp];
 
