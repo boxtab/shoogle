@@ -152,14 +152,24 @@ class AuthController extends BaseApiController
     /**
      * Log the user out (Invalidate the token).
      *
-     * @return JsonResponse
+     * @return JsonResponse|Response
      */
     public function logout()
     {
-        auth()->logout();
+        try {
 
+            JWTAuth::invalidate( JWTAuth::getToken() );
+            return ApiResponse::returnData('User successfully signed out');
+
+        } catch (JWTException $exception) {
+            return ApiResponse::returnError('Sorry, the user cannot be logged out', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        /*
+        auth()->logout();
         $data = ['message' => 'User successfully signed out'];
         return ApiResponse::returnData($data);
+        */
     }
 
     /**

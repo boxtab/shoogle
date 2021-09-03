@@ -80,7 +80,8 @@ class User extends Authenticatable implements JWTSubject, HasMedia
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
