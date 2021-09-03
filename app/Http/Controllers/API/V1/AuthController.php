@@ -215,7 +215,6 @@ class AuthController extends BaseApiController
             return ApiResponse::returnError('Invalid token');
         }
 
-
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) use ($request) {
@@ -227,10 +226,16 @@ class AuthController extends BaseApiController
             }
         );
 
-        return ApiResponse::returnData(
-            $status == Password::PASSWORD_RESET
-            ? ['status', __($status)]
-            : ['email' => __($status)]
-        );
+        if ( $status === Password::RESET_LINK_SENT ) {
+            return ApiResponse::returnData(['status' => __($status)]);
+        } else {
+            return ApiResponse::returnError(__($status));
+        }
+
+//        return ApiResponse::returnData(
+//            $status == Password::PASSWORD_RESET
+//            ? ['status', __($status)]
+//            : ['email' => __($status)]
+//        );
     }
 }
