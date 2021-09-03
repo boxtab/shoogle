@@ -58,6 +58,7 @@ class AuthController extends BaseApiController
      */
     public function login(AuthLoginRequest $request)
     {
+        /*
         $credentials = $request->only(['email', 'password']);
         $expirationTime = ['exp' => Carbon::now()->addDays(30)->timestamp];
         $token = JWTAuth::attempt($credentials, $expirationTime);
@@ -75,8 +76,9 @@ class AuthController extends BaseApiController
         }
 
         return ApiResponse::returnData($authResource);
+        */
 
-        /*
+
         $credentials = $request->only(['email', 'password']);
         $expirationTime = ['exp' => Carbon::now()->addDays(30)->timestamp];
 
@@ -97,7 +99,7 @@ class AuthController extends BaseApiController
         }
 
         return ApiResponse::returnData($authResource);
-        */
+
     }
 
     /**
