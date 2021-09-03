@@ -196,10 +196,10 @@ class CompanyRepository extends Repositories
 
             $userAdminCompany[0]->first_name = $credentials['firstName'];
             $userAdminCompany[0]->last_name = $credentials['lastName'];
-            if ( ! is_null($credentials['email']) ) {
+            if ( isset($credentials['email']) && ! is_null($credentials['email']) ) {
                 $userAdminCompany[0]->email = $credentials['email'];
             }
-            if ( ! is_null( $credentials['password'] ) ) {
+            if ( isset($credentials['password']) && ( ! is_null( $credentials['password'] ) ) ) {
                 $userAdminCompany[0]->password = bcrypt($credentials['password']);
             }
             $userAdminCompany[0]->save();
