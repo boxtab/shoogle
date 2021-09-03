@@ -82,6 +82,7 @@ class UserController extends BaseApiController
      */
     public function show($id)
     {
+        Log::info('test user');
         try {
             $record = $this->findRecordByID($id);
         } catch (Exception $e) {

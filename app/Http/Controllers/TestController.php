@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\ShooglerEnum;
 use App\Models\Company;
 use App\Models\Invite;
+use App\Models\ModelHasRole;
 use App\Models\Shoogle;
 use App\Models\WellbeingScores;
 use App\Repositories\TestRepository;
@@ -25,12 +26,16 @@ class TestController extends Controller
     {
         null;
 
-        return ReflectionClass::getConstants('ShooglerEnum');
+         $modelHasRole = ModelHasRole::where('model_id', 0)->first();
 
-//        $shoogle = Shoogle::find(11);
-//        $shoogle->reminder_interval = 'kk';
-//        $shoogle->save();
-//        $output = $shoogle->reminder_interval;
-//        return $output;
+         if ( empty($modelHasRole) ) {
+             return 'yes';
+         } else {
+             return 'no';
+         }
+//         return $modelHasRole;
+
+//        $role = $modelHasRole->role->name;
+//        return $role;
     }
 }

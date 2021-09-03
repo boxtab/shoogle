@@ -120,9 +120,7 @@ class Helper
      */
     public static function getRole(int $userId): string
     {
-        return ModelHasRole::where('model_id', $userId)
-            ->first('role_id')
-            ->role
-            ->name;
+        $modelHasRole = ModelHasRole::where('model_id', $userId)->first();
+        return ( ! is_null($modelHasRole) ) ? $modelHasRole->role->name : 'User has no role';
     }
 }
