@@ -25,8 +25,8 @@ class AuthLoginRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email'     => 'required|email|exists:users,email',
-            'password'  => 'required',
+            'email'     => 'required|email:rfc,dns|min:5|max:255|exists:users,email',
+            'password'  => 'required|min:6|max:64',
         ];
     }
 
@@ -35,13 +35,13 @@ class AuthLoginRequest extends ApiRequest
      *
      * @return array
      */
-    public function messages(): array
-    {
-        return [
-            'email.required'    => 'Please enter email.',
-            'email.exists'      => 'Email not registered.',
-            'email.email'       => 'Please enter valid email.',
-            'password.required' => 'Enter your password.',
-        ];
-    }
+//    public function messages(): array
+//    {
+//        return [
+//            'email.required'    => 'Please enter email.',
+//            'email.exists'      => 'Email not registered.',
+//            'email.email'       => 'Please enter valid email.',
+//            'password.required' => 'Enter your password.',
+//        ];
+//    }
 }

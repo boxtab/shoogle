@@ -9,6 +9,7 @@ use App\Http\Requests\AuthPasswordForgotRequest;
 use App\Http\Requests\AuthPasswordResetRequest;
 use App\Http\Requests\AuthSignupRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Resources\AuthLoginResource;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\UserResource;
 use App\Models\Invite;
@@ -58,27 +59,23 @@ class AuthController extends BaseApiController
      */
     public function login(AuthLoginRequest $request)
     {
-        /*
         $credentials = $request->only(['email', 'password']);
         $expirationTime = ['exp' => Carbon::now()->addDays(30)->timestamp];
-        $token = JWTAuth::attempt($credentials, $expirationTime);
-
-        if ( ! $token ) {
-            return ApiResponse::returnError('Unauthorized', Response::HTTP_UNAUTHORIZED);
-        }
 
         try {
-            $user = User::where('email', $credentials['email'])->firstOrFail();
-            $authResource = new AuthResource($user);
-            $authResource->setToken($token);
-        } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage());
+            $token = JWTAuth::attempt($credentials, $expirationTime);
+            if ( empty($token) ) {
+                return ApiResponse::returnError('Invalid password', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        } catch (JWTException $e) {
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData($authResource);
-        */
+        $authLoginResource = new AuthLoginResource($token);
+        return ApiResponse::returnData($authLoginResource);
 
 
+        /*
         $credentials = $request->only(['email', 'password']);
         $expirationTime = ['exp' => Carbon::now()->addDays(30)->timestamp];
 
@@ -99,7 +96,7 @@ class AuthController extends BaseApiController
         }
 
         return ApiResponse::returnData($authResource);
-
+        */
     }
 
     /**
