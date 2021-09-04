@@ -79,7 +79,6 @@ class ApiResponse
             [
                 'success' => false,
                 $keyError => Helper::replaceArraysOnStrings($errors),
-//                $keyError => replaceArraysOnStrings($errors),
             ],
             $status,
             $headers,

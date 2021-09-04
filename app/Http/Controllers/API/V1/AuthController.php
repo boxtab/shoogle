@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Constants\RoleConstant;
+use App\Helpers\Helper;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthPasswordForgotRequest;
@@ -55,10 +56,10 @@ class AuthController extends BaseApiController
         try {
             $token = JWTAuth::attempt($credentials, $expirationTime);
             if ( ! $token ) {
-                $errorWrongPassword = new stdClass();
-                $errorWrongPassword->password = ['Invalid password!'];
-                $errorWrongPassword = collect($errorWrongPassword);
-                return ApiResponse::returnError($errorWrongPassword, Response::HTTP_UNPROCESSABLE_ENTITY);
+                return ApiResponse::returnError(
+                    ['password' => 'Invalid password!'],
+                    Response::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
         } catch (JWTException $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -79,20 +80,27 @@ class AuthController extends BaseApiController
         try {
             $invite = Invite::where('email', $request->email)->firstorFail();
         } catch (Exception $e) {
-            return $this->getCustomValidatorErrors( ['email' => 'Email is not in the invite list'] );
+            return ApiResponse::returnError(
+                ['email' => 'Email is not in the invite list'],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
 
         if ( (int) $invite->is_used === 1 ) {
-            return $this->getCustomValidatorErrors( ['email' => 'The invitation for this email has already been used.'] );
+            return ApiResponse::returnError(
+                ['email' => 'The invitation for this email has already been used.'],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
 
         try {
-            $credentials = $request->only(['name', 'email','password']);
+            $credentials = $request->only(['email','password']);
 
             $user = DB::transaction( function () use ( $credentials, $invite ) {
 
                 $user = User::create([
                     'company_id' => $invite->companies_id,
+                    'department_id' => $invite->department_id,
                     'password' => bcrypt($credentials['password']),
                     'email' => $credentials['email'],
                 ]);

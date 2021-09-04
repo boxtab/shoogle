@@ -44,7 +44,7 @@ Route::group(['prefix' => 'shared/v1'], function () {
 Route::group(['prefix' => 'front/v1'], function () {
 
     // POST /api/front/v1/signup
-    Route::post('signup', [AuthController::class, 'signup'])->name('signup');
+    Route::post('signup', [AuthController::class, 'signup']);
 
     /**
      * Entity: Profile

@@ -32,11 +32,6 @@ class CheckRoleAdminAndSuperAdmin
                 'The route is available only for users with the ADMIN or SUPER ADMIN role.',
                 Response::HTTP_FORBIDDEN
             );
-//            return response()->json([
-//                'success' => false,
-//                'data' => ['message' => 'The route is available only for users with the ADMIN or SUPER ADMIN role.'],
-//            ], Response::HTTP_FORBIDDEN);
-
         }
 
         return $next($request);

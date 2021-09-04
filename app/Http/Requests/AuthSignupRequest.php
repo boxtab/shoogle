@@ -14,7 +14,7 @@ class AuthSignupRequest extends ApiRequest
      */
     public function authorize()
     {
-        return auth()->check();
+        return true;
     }
 
     /**
@@ -25,8 +25,8 @@ class AuthSignupRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email' => 'required|email:rfc,dns|unique:users,email|min:5|max:255',
-            'password' => 'min:6|max:64|required',
+            'email'     => 'required|email:rfc,dns|unique:users,email|min:5|max:255',
+            'password'  => 'required|min:6|max:64',
         ];
     }
 }

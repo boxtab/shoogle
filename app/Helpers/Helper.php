@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\ModelHasRole;
 use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use stdClass;
 use App\Constants\RoleConstant;
@@ -20,6 +21,21 @@ use Illuminate\Support\Str;
 class Helper
 {
     /**
+     * Converting an array to a collection.
+     *
+     * @param array $messages
+     * @return Collection
+     */
+    public static function arrayToCollection(array $messages): Collection
+    {
+        $classMessages = new stdClass();
+        foreach ($messages as $key => $text) {
+            $classMessages->$key = $text;
+        }
+        return collect($classMessages);
+    }
+
+    /**
      * Makes a string out of a set of array elements.
      *
      * @param $objectContainsArrays
@@ -32,8 +48,8 @@ class Helper
         }
 
         $objectContainsStrings = new stdClass();
-        foreach ($objectContainsArrays->toArray() as $key => $value) {
-            $objectContainsStrings->$key = implode($value);
+        foreach ($objectContainsArrays as $key => $value) {
+            $objectContainsStrings->$key = $value;
         }
         return $objectContainsStrings;
     }

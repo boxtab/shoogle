@@ -43,28 +43,4 @@ class BaseApiController extends Controller
 
         return $record;
     }
-
-    protected function validatorFails( object $validatorErrors )
-    {
-        return response()->json([
-            'success' => false,
-            'errors' => Helper::replaceArraysOnStrings($validatorErrors),
-        ], Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    protected function globalError( $exceptionMessage )
-    {
-        return response()->json([
-            'success' => false,
-            'globalError' => $exceptionMessage,
-        ]);
-    }
-
-    protected function getCustomValidatorErrors( array $listErrors )
-    {
-        return response()->json([
-            'success' => false,
-            'errors' => $listErrors,
-        ], Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
 }
