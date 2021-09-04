@@ -61,10 +61,10 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->renderable(function (NotFoundHttpException $e, $request) {
-            return response()->json([
-                'success' => false,
-                'globalError' => 'Resource not found'
-            ], Response::HTTP_NOT_FOUND);
+            return ApiResponse::returnError(
+                'Resource not found',
+                Response::HTTP_NOT_FOUND
+            );
         });
     }
 }

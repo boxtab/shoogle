@@ -42,16 +42,6 @@ use Illuminate\Support\Str;
 class AuthController extends BaseApiController
 {
     /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-//        $this->middleware('auth:api', ['except' => ['login', 'signup']]);
-    }
-
-    /**
      * Get a JWT via given credentials.
      *
      * @param AuthLoginRequest $request
@@ -76,30 +66,6 @@ class AuthController extends BaseApiController
 
         $authLoginResource = new AuthLoginResource($token);
         return ApiResponse::returnData($authLoginResource);
-
-
-        /*
-        $credentials = $request->only(['email', 'password']);
-        $expirationTime = ['exp' => Carbon::now()->addDays(30)->timestamp];
-
-        if ( ! $token = JWTAuth::attempt($credentials, $expirationTime) ) {
-            $errorWrongPassword = new stdClass();
-            $errorWrongPassword->password = ['Enter your password.'];
-            $errorWrongPassword = collect($errorWrongPassword);
-
-            return ApiResponse::returnError($errorWrongPassword, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        try {
-            $user = User::where('email', $credentials['email'])->firstOrFail();
-            $authResource = new AuthResource($user);
-            $authResource->setToken($token);
-        } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage());
-        }
-
-        return ApiResponse::returnData($authResource);
-        */
     }
 
     /**
@@ -164,12 +130,6 @@ class AuthController extends BaseApiController
         } catch (JWTException $exception) {
             return ApiResponse::returnError('Sorry, the user cannot be logged out', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        /*
-        auth()->logout();
-        $data = ['message' => 'User successfully signed out'];
-        return ApiResponse::returnData($data);
-        */
     }
 
     /**
@@ -191,12 +151,6 @@ class AuthController extends BaseApiController
         } else {
             return ApiResponse::returnError(__($status));
         }
-
-//        return ApiResponse::returnData(
-//            $status === Password::RESET_LINK_SENT
-//                ? ['status' => __($status)]
-//                : ['email' => __($status)]
-//        );
     }
 
     /**
@@ -231,11 +185,5 @@ class AuthController extends BaseApiController
         } else {
             return ApiResponse::returnError(__($status));
         }
-
-//        return ApiResponse::returnData(
-//            $status == Password::PASSWORD_RESET
-//            ? ['status', __($status)]
-//            : ['email' => __($status)]
-//        );
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\ApiResponse\ApiResponse;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,10 +22,10 @@ class CheckRoleSuperAdmin
     public function handle(Request $request, Closure $next)
     {
         if ( Auth::user()->roles()->first()->name !== RoleConstant::SUPER_ADMIN ) {
-            return response()->json([
-                'success' => false,
-                'data' => ['message' => 'The route is available only for users with the SUPER ADMIN role.'],
-            ], Response::HTTP_FORBIDDEN);
+            return ApiResponse::returnError(
+                'The route is available only for users with the SUPER ADMIN role.',
+                Response::HTTP_FORBIDDEN
+            );
         }
 
         return $next($request);
