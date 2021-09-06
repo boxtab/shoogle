@@ -65,10 +65,6 @@ Route::group(['prefix' => 'front/v1'], function () {
      * Table: shoogles
      */
     Route::group(['prefix' => 'shoogle', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
-
-        // POST /api/front/v1/shoogles/list
-        Route::post('list', [ShooglesController::class, 'index'])->middleware(['admin.superadmin']);
-
         // GET /api/front/v1/shoogle/list/:page/:pageSize
         Route::get('list/{page}/{pageSize}', [ShooglesController::class, 'userList'])
             ->where('page', '[0-9]+')
@@ -160,6 +156,11 @@ Route::group(['prefix' => 'front/v1'], function () {
 
 
 Route::group(['prefix' => 'admin/v1'], function () {
+
+    Route::group(['prefix' => 'shoogle', 'middleware' => ['auth:api', 'admin.superadmin', 'user_already_logged_in', 'cors']], function () {
+        // POST /api/admin/v1/shoogle/list
+        Route::post('list', [ShooglesController::class, 'index']);
+    });
 
     /**
      * Entity: Company
