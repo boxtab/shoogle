@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
+use App\Helpers\HelperAvatar;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use PHPUnit\TextUI\Help;
 
 /**
  * Class ProfileRepository
@@ -63,14 +65,20 @@ class ProfileRepository extends Repositories
      */
     public function updateProfile(Request $request)
     {
-//        $profile = User::where('id', Auth::id())->first();
-//        $profile->update(
-//            Helper::formatSnakeCase(
-//                $request->except(['profileImage'])
-//            )
-//        );
+//        Log::info(Auth::id());
+        $profile = User::where('id', Auth::id())->first();
+        $profile->update(
+            Helper::formatSnakeCase(
+                $request->except(['profileImage'])
+            )
+        );
 
+        $profileImage = $request->get('profileImage');
+//        Log::info($profileImage);
 
+        HelperAvatar::processBase64Image($profileImage);
+
+        /*
         $profile = User::where('id', Auth::id())->firstOrFail();
         $profile->update(
             Helper::formatSnakeCase(
@@ -91,6 +99,6 @@ class ProfileRepository extends Repositories
             $profile->profile_image = $mediaId . '/' . $uniqueFilename;
             $profile->save();
         }
-
+        */
     }
 }

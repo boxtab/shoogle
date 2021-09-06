@@ -93,10 +93,10 @@ Route::group(['prefix' => 'front/v1'], function () {
             ->where('page', '[0-9]+')
             ->where('pageSize', '[0-9]+');
 
-        // POST /api/front/v1/shoogles/:id
+        // POST /api/front/v1/shoogle/:id
         Route::post('{id}', [ShooglesController::class, 'update'])->where('id', '[0-9]+');
 
-        // DELETE /api/front/v1/shoogles/:id
+        // DELETE /api/front/v1/shoogle/:id
         Route::delete('{id}', [ShooglesController::class, 'destroy'])->where('id', '[0-9]+');
 
         // POST /api/front/v1/shoogles/:id/wellbeing-scores
@@ -160,6 +160,9 @@ Route::group(['prefix' => 'admin/v1'], function () {
     Route::group(['prefix' => 'shoogle', 'middleware' => ['auth:api', 'admin.superadmin', 'user_already_logged_in', 'cors']], function () {
         // POST /api/admin/v1/shoogle/list
         Route::post('list', [ShooglesController::class, 'index']);
+
+        // POST /api/front/v1/shoogle/:id
+        Route::post('{id}', [ShooglesController::class, 'turnOnOff'])->where('id', '[0-9]+');
     });
 
     /**

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShooglesSearchRequest;
+use App\Http\Requests\ShoogleTurnOnOffRequest;
 use App\Http\Requests\ShoogleUpdateRequest;
 use App\Http\Requests\ShooglesCreateRequest;
 use App\Http\Resources\ShooglesListResource;
@@ -210,9 +211,30 @@ class ShooglesController extends BaseApiController
                 Helper::formatSnakeCase($request->all())
             );
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        return ApiResponse::returnData([]);
+    }
+
+    /**
+     * Enables / disables shoogle.
+     *
+     * @param ShoogleTurnOnOffRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function turnOnOff(ShoogleTurnOnOffRequest $request, $id)
+    {
+        try {
+            $shoogle = $this->findRecordByID($id);
+            $active = $request->get('active');
+            $shoogle->update([
+                'active' => $active,
+            ]);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         return ApiResponse::returnData([]);
     }
 
@@ -231,7 +253,7 @@ class ShooglesController extends BaseApiController
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('The shoogle cannot be deleted there are links to it.');
             } else {
-                return ApiResponse::returnError($e->getMessage(), $e->getCode());
+                return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 
