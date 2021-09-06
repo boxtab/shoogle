@@ -105,11 +105,9 @@ class UserController extends BaseApiController
             $user = $this->findRecordByID($id);
             $credentials = $request->only(['firstName', 'lastName', 'departmentId', 'isAdminCompany']);
             $this->repository->update($user, $credentials);
-            /*
             $user->update(
                 Helper::formatSnakeCase($request->all())
             );
-            */
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
