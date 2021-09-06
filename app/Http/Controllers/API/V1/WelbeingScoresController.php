@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WellbeingScoresAverageRequest;
 use App\Http\Resources\WelbeingScoresAverageResource;
@@ -11,6 +12,7 @@ use App\Support\ApiResponse\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 /**

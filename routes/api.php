@@ -73,9 +73,6 @@ Route::group(['prefix' => 'front/v1'], function () {
         // POST /api/front/v1/shoogles
         Route::post('', [ShooglesController::class, 'create']);
 
-        // GET /api/front/v1/shoogles/:id
-        Route::get('{id?}', [ShooglesController::class, 'show'])->where('id', '[0-9]+');
-
         // GET /api/front/v1/shoogle/:id/views
         Route::get('{id}/views', [ShooglesController::class, 'views'])->where('id', '[0-9]+');
 
@@ -93,17 +90,8 @@ Route::group(['prefix' => 'front/v1'], function () {
             ->where('page', '[0-9]+')
             ->where('pageSize', '[0-9]+');
 
-        // POST /api/front/v1/shoogle/:id
-        Route::post('{id}', [ShooglesController::class, 'update'])->where('id', '[0-9]+');
-
         // DELETE /api/front/v1/shoogle/:id
         Route::delete('{id}', [ShooglesController::class, 'destroy'])->where('id', '[0-9]+');
-
-        // POST /api/front/v1/shoogles/:id/wellbeing-scores
-        Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageShoogle'])->where('id', '[0-9]+');
-
-        // POST /api/front/v1/shoogles/wellbeing-scores
-        Route::post('wellbeing-scores', [WelbeingScoresController::class, 'averageCompany']);
 
         // POST /api/front/v1/shoogles/:id/shooglers/:page/:pageSize
         Route::post('{id}/shooglers/{page}/{pageSize}', [ShooglerController::class, 'index'])
@@ -156,13 +144,28 @@ Route::group(['prefix' => 'front/v1'], function () {
 
 
 Route::group(['prefix' => 'admin/v1'], function () {
-
+    /**
+     * Entity: Shoogle
+     * Table: shoogles
+     */
     Route::group(['prefix' => 'shoogle', 'middleware' => ['auth:api', 'admin.superadmin', 'user_already_logged_in', 'cors']], function () {
         // POST /api/admin/v1/shoogle/list
         Route::post('list', [ShooglesController::class, 'index']);
 
         // POST /api/front/v1/shoogle/:id
         Route::post('{id}', [ShooglesController::class, 'turnOnOff'])->where('id', '[0-9]+');
+
+        // POST /api/admin/v1/shoogles/:id/wellbeing-scores
+        Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageShoogle'])->where('id', '[0-9]+');
+
+        // POST /api/admin/v1/shoogles/wellbeing-scores
+        Route::post('wellbeing-scores', [WelbeingScoresController::class, 'averageCompany']);
+
+        // GET /api/admin/v1/shoogle/:id
+        Route::get('{id?}', [ShooglesController::class, 'show'])->where('id', '[0-9]+');
+
+        // POST /api/front/v1/shoogle/:id
+        Route::post('{id}', [ShooglesController::class, 'update'])->where('id', '[0-9]+');
     });
 
     /**
