@@ -53,7 +53,7 @@ class ProfileRepository extends Repositories
                 'rank',
                 'profile_image',
             ]);
-        $profile->profile_image = url('storage') . '/' . $profile->profile_image;
+        $profile->profile_image = url('public/avatars') . '/' . $profile->profile_image;
 
         return $profile;
     }
@@ -74,7 +74,7 @@ class ProfileRepository extends Repositories
 
         $profileImage = $request->get('profileImage');
 
-        HelperAvatar::processBase64Image($profileImage);
+        HelperAvatar::processBase64Image($profileImage, $profile);
 
         /*
         $profile = User::where('id', Auth::id())->firstOrFail();

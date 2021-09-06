@@ -2,9 +2,12 @@
 
 namespace App\Helpers;
 
+use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
 
 /**
  * Class HelperAvatar
@@ -45,11 +48,17 @@ class HelperAvatar
         }
     }
 
-    public static function processBase64Image($base64)
+    public static function processBase64Image(string $base64, User $user)
     {
         $photoDecoded = base64_decode(static::clearBase64Image($base64));
         $info = getimagesizefromstring($photoDecoded);
         $fileExtension = self::getFileExtension($info['mime']);
+        $fileName = 'id' . Auth::id() . '-' . Str::uuid()->toString() . '.' . $fileExtension;
+
+        $user->profile_image = $fileName;
+        $user->save();
+
+        Log::info($fileName);
     }
 
 }

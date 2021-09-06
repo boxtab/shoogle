@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Http\Response;
 
 /**
  * Class ProfileController
@@ -25,6 +26,7 @@ class ProfileController extends BaseApiController
 {
     /**
      * ProfileController constructor.
+     *
      * @param ProfileRepository $profileRepository
      */
     public function __construct(ProfileRepository $profileRepository)
@@ -43,7 +45,7 @@ class ProfileController extends BaseApiController
         try {
             $this->repository->updateProfile($request);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -59,7 +61,7 @@ class ProfileController extends BaseApiController
         try {
             $profile = $this->repository->getProfile();
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData(new ProfileShowResource($profile));
