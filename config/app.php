@@ -125,12 +125,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Autoloaded Service Providers
+    | Image size
     |--------------------------------------------------------------------------
     |
-    | The service providers listed here will be automatically loaded on the
-    | request to your application. Feel free to add your own services to
-    | this array to grant expanded functionality to your applications.
+    | Max width of user profile picture.
+    |
+    */
+
+    'report_image_max_side_px' => 600,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Test Users
+    |--------------------------------------------------------------------------
+    |
+    | Data for test users.
     |
     */
 
@@ -145,6 +154,17 @@ return [
     'ADMIN_NAME' => env('ADMIN_NAME'),
     'ADMIN_EMAIL' => env('ADMIN_EMAIL'),
     'ADMIN_PASSWORD' => env('ADMIN_PASSWORD'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Autoloaded Service Providers
+    |--------------------------------------------------------------------------
+    |
+    | The service providers listed here will be automatically loaded on the
+    | request to your application. Feel free to add your own services to
+    | this array to grant expanded functionality to your applications.
+    |
+    */
 
     'providers' => [
 
