@@ -65,7 +65,6 @@ class ProfileRepository extends Repositories
      */
     public function updateProfile(Request $request)
     {
-//        Log::info(Auth::id());
         $profile = User::where('id', Auth::id())->first();
         $profile->update(
             Helper::formatSnakeCase(
@@ -74,7 +73,6 @@ class ProfileRepository extends Repositories
         );
 
         $profileImage = $request->get('profileImage');
-//        Log::info($profileImage);
 
         HelperAvatar::processBase64Image($profileImage);
 

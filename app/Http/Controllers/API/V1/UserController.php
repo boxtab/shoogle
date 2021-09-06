@@ -66,7 +66,7 @@ class UserController extends BaseApiController
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('Violation of constraint integrity of foreign or unique key!');
             } else {
-                return ApiResponse::returnError($e->getMessage(), $e->getCode());
+                return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 
@@ -82,7 +82,6 @@ class UserController extends BaseApiController
      */
     public function show($id)
     {
-        Log::info('test user');
         try {
             $record = $this->findRecordByID($id);
         } catch (Exception $e) {
@@ -103,13 +102,10 @@ class UserController extends BaseApiController
     {
         try {
             $user = $this->findRecordByID($id);
-            $credentials = $request->only(['firstName', 'lastName', 'departmentId', 'isAdminCompany']);
+            $credentials = $request->only(['firstName', 'lastName', 'email', 'departmentId', 'isAdminCompany']);
             $this->repository->update($user, $credentials);
-            $user->update(
-                Helper::formatSnakeCase($request->all())
-            );
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -127,7 +123,7 @@ class UserController extends BaseApiController
             $user = $this->findRecordByID($id);
             $user->destroy($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);

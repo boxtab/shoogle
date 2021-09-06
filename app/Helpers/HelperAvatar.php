@@ -47,12 +47,9 @@ class HelperAvatar
 
     public static function processBase64Image($base64)
     {
-//        Log::info('base64');
-//        Log::info($base64);
         $photoDecoded = base64_decode(static::clearBase64Image($base64));
         $info = getimagesizefromstring($photoDecoded);
         $fileExtension = self::getFileExtension($info['mime']);
-        Log::info($fileExtension);
     }
 
 }

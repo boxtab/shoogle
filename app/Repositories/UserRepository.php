@@ -77,23 +77,41 @@ class UserRepository extends Repositories
      */
     public function update(User $user, array $credentials): void
     {
-        DB::transaction( function () use($user, $credentials) {
-            $user->first_name = $credentials['firstName'];
-            $user->last_name = $credentials['lastName'];
-            $user->department_id = $credentials['departmentId'];
-            $user->save();
+        $user->first_name = $credentials['firstName'];
+        $user->last_name = $credentials['lastName'];
 
-            if (
-                ( ! is_null($credentials['isAdminCompany']) )
-                && ( Helper::getRole(Auth::id()) === RoleConstant::SUPER_ADMIN )
-            ) {
-                $roleName = $credentials['isAdminCompany'] ? RoleConstant::COMPANY_ADMIN : RoleConstant::USER;
-                $roleId = (int)(Role::where('name', $roleName)->first()->id);
+        if ( ( ! is_null( $credentials['email'] ) ) && ( $credentials['email'] !== $user->email ) ) {
+            if ( User::on()->where('email', '=', $credentials['email'])->count() === 0 ) {
+                $user->email = $credentials['email'];
+            }
+        }
 
+        $user->department_id = $credentials['departmentId'];
+        $user->save();
+
+        if (
+            ( ! is_null($credentials['isAdminCompany']) )
+            && ( Helper::getRole(Auth::id()) === RoleConstant::SUPER_ADMIN )
+        ) {
+            $roleName = $credentials['isAdminCompany'] ? RoleConstant::COMPANY_ADMIN : RoleConstant::USER;
+            $roleId = (int)(Role::on()->where('name', '=', $roleName)->first()->id);
+
+
+            $countModelHasRole = ModelHasRole::on()
+                ->where('model_id', '=', (int)$user->id)
+                ->count();
+
+            if ( $countModelHasRole === 0 ) {
+                DB::table('model_has_roles')->insert([
+                    'role_id' => $roleId,
+                    'model_type' => 'App\User',
+                    'model_id' => $user->id,
+                ]);
+            } else {
                 DB::table('model_has_roles')
                     ->where('model_id', '=', (int)$user->id)
                     ->update(['role_id' => $roleId]);
             }
-        });
+        }
     }
 }
