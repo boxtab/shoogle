@@ -70,9 +70,9 @@ class HelperAvatar
      * Saving an image.
      *
      * @param string $filePath
-     * @param string $base64
+     * @param $base64
      */
-    public static function putBase64Image(string $filePath, string $base64): void
+    public static function putBase64Image(string $filePath, $base64): void
     {
         Storage::disk('local')->put($filePath, $base64);
     }
@@ -102,10 +102,10 @@ class HelperAvatar
     /**
      * Save user avatar.
      *
-     * @param string $base64
+     * @param $base64
      * @param User $user
      */
-    public static function saveAvatar(string $base64, User $user): void
+    public static function saveAvatar($base64, User $user): void
     {
         self::deleteAvatar($user);
 

@@ -74,18 +74,36 @@ class UserController extends BaseApiController
     }
 
     /**
-     * Display the profile user.
+     * Display the profile user for regular user.
      *
      * @param $id
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      * @throws Exception
      */
-    public function show($id)
+    public function showFront($id)
     {
         try {
             $record = $this->findRecordByID($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::returnData(new UserProfileResource($record));
+    }
+
+    /**
+     * Display the profile user for admin-company and super-admin.
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     * @throws Exception
+     */
+    public function showAdmin($id)
+    {
+        try {
+            $record = $this->findRecordByID($id);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData(new UserProfileResource($record));

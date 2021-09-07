@@ -80,8 +80,6 @@ class ProfileRepository extends Repositories
             } else {
                 HelperAvatar::saveAvatar($profileImage, $profile);
             }
-
-
         }
     }
 }

@@ -57,6 +57,12 @@ Route::group(['prefix' => 'shared/v1'], function () {
 Route::post('front/v1/signup', [AuthController::class, 'signup']);
 
 Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+
+    Route::group(['prefix' => 'user'], function () {
+        // GET /api/front/v1/user/:id
+        Route::get('{id}', [UserController::class, 'showFront'])->where('id', '[0-9]+');
+    });
+
     /**
      * Entity: WellbeingCategory
      * Table: wellbeing_categories
@@ -180,10 +186,10 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         // POST /api/front/v1/shoogle/:id
         Route::post('{id}', [ShooglesController::class, 'turnOnOff'])->where('id', '[0-9]+');
 
-        // POST /api/admin/v1/shoogles/:id/wellbeing-scores
+        // POST /api/admin/v1/shoogle/:id/wellbeing-scores
         Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageShoogle'])->where('id', '[0-9]+');
 
-        // POST /api/admin/v1/shoogles/wellbeing-scores
+        // POST /api/admin/v1/shoogle/wellbeing-scores
         Route::post('wellbeing-scores', [WelbeingScoresController::class, 'averageCompany']);
 
         // GET /api/admin/v1/shoogle/:id
@@ -265,7 +271,7 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         Route::get('list', [UserController::class, 'index'])->middleware(['admin.superadmin']);
 
         // GET /api/admin/v1/user/:id
-        Route::get('{id}', [UserController::class, 'show'])->where('id', '[0-9]+');
+        Route::get('{id}', [UserController::class, 'showAdmin'])->where('id', '[0-9]+')->middleware(['admin.superadmin']);
 
         // POST /api/admin/v1/user/:id
         Route::post('{id}', [UserController::class, 'update'])->where('id', '[0-9]+')->middleware(['admin.superadmin']);

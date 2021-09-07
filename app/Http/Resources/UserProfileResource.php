@@ -29,7 +29,7 @@ class UserProfileResource extends JsonResource
             'email'             => $this->resource->email,
             'rating'            => $this->resource->rank,
             'shoogles'          => Shoogle::where('owner_id', $this->resource->id)->count(),
-            'isAdminCompany'    => (Helper::getRole($this->resource->id) == RoleConstant::COMPANY_ADMIN) ? true : false,
+            'isCompanyAdmin'    => (Helper::getRole($this->resource->id) == RoleConstant::COMPANY_ADMIN) ? true : false,
             'shooglesList'      => Shoogle::where('owner_id', $this->resource->id)
                 ->get()
                 ->map(function ($item) {
