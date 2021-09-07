@@ -11,7 +11,7 @@ use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Exception;
 
 /**
@@ -43,10 +43,10 @@ class RewardController extends BaseApiController
 
             $this->repository->assign($userId, $rewardId);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), ResponseAlias::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
+        return ApiResponse::returnData([], ResponseAlias::HTTP_NO_CONTENT);
     }
 
     /**

@@ -50,7 +50,7 @@ class CompanyController extends BaseApiController
         try {
             $listCompany = $this->repository->getList($request->input('order'));
         } catch (\Exception $e) {
-            return ApiResponse::returnError( $e->getMessage() );
+            return ApiResponse::returnError( $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR );
         }
 
         return ApiResponse::returnData($listCompany);
@@ -70,7 +70,7 @@ class CompanyController extends BaseApiController
             $adminCompany = $this->repository->getAdminByCompanyId($id);
 
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $companyShowResource = new CompanyShowResource($company);
@@ -91,7 +91,7 @@ class CompanyController extends BaseApiController
             $credentials = $request->only(['companyName', 'firstName','lastName', 'email', 'password']);
             $this->repository->create($credentials);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -131,7 +131,7 @@ class CompanyController extends BaseApiController
             $company = $this->findRecordByID($id);
             $this->repository->destroy($company);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -150,7 +150,7 @@ class CompanyController extends BaseApiController
             $this->findRecordByID($id);
             $token = Helper::pushCompanyIdToJWT($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData(['token' => $token]);

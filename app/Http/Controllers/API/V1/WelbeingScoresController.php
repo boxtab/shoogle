@@ -12,6 +12,7 @@ use App\Support\ApiResponse\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -43,7 +44,7 @@ class WelbeingScoresController extends BaseApiController
             $this->repository->existsUser($id);
             $average = $this->repository->getAverageUser( $id, $request->input('from'), $request->input('to') );
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);
@@ -63,7 +64,7 @@ class WelbeingScoresController extends BaseApiController
             $this->repository->existsShoogle($id);
             $average = $this->repository->getAverageShoogle( $id, $request->input('from'), $request->input('to') );
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);
@@ -81,7 +82,7 @@ class WelbeingScoresController extends BaseApiController
         try {
             $average = $this->repository->getAverageCompany($request->input('from'), $request->input('to'));
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);

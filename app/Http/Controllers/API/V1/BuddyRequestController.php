@@ -44,7 +44,7 @@ class BuddyRequestController extends BaseApiController
             $message = $request->input('message');
             $this->repository->buddyRequest($shoogleId, $user2id, $message);
         } catch (\Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
@@ -63,7 +63,7 @@ class BuddyRequestController extends BaseApiController
             $buddyReceived = $this->repository->buddyReceived($page, $pageSize);
             $buddyReceivedResource = BuddyBidResource::collection($buddyReceived);
         } catch (\Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData($buddyReceivedResource);
@@ -82,7 +82,7 @@ class BuddyRequestController extends BaseApiController
             $buddySent = $this->repository->buddySent($page, $pageSize);
             $buddySentResource = BuddyBidResource::collection($buddySent);
         } catch (\Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData($buddySentResource);
@@ -100,7 +100,7 @@ class BuddyRequestController extends BaseApiController
             $buddyRequestId = $request->input('buddyRequestId');
             $this->repository->buddyConfirm($buddyRequestId);
         } catch (\Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
@@ -118,7 +118,7 @@ class BuddyRequestController extends BaseApiController
             $buddyRequestId = $request->input('buddyRequestId');
             $this->repository->buddyReject($buddyRequestId);
         } catch (\Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
@@ -137,7 +137,7 @@ class BuddyRequestController extends BaseApiController
             $shoogleId = $request->input('shoogleId');
             $this->repository->buddyDisconnect($buddyId, $shoogleId);
         } catch (\Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);

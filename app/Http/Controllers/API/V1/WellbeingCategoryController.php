@@ -15,6 +15,7 @@ use App\Repositories\DepartmentRepository;
 use App\Repositories\WellbeingCategoryRepository;
 use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Exception;
@@ -59,7 +60,7 @@ class WellbeingCategoryController extends BaseApiController
                 'name' => $request->input('name')
             ]);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -76,7 +77,7 @@ class WellbeingCategoryController extends BaseApiController
         try {
             $record = $this->findRecordByID($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return ApiResponse::returnData(new WellbeingCategoryResource($record));
     }
@@ -97,7 +98,7 @@ class WellbeingCategoryController extends BaseApiController
             ]);
 //            $wellbeingCategoryResource = WellbeingCategoryResource::collection(WellbeingCategory::get());
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -119,7 +120,7 @@ class WellbeingCategoryController extends BaseApiController
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('The wellbeing categories cannot be deleted there are links to it.');
             } else {
-                return ApiResponse::returnError($e->getMessage(), $e->getCode());
+                return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 
