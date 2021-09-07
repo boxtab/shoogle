@@ -20,7 +20,7 @@ class InviteListResource extends JsonResource
                 'email' => $item->email,
                 'is_used' => $item->is_used,
                 'companies_id' => $item->companies_id,
-                'department_id' => $item->department_id,
+                'department' => $item->department,
             ];
         });
     }

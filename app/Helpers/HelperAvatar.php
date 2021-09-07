@@ -51,6 +51,7 @@ class HelperAvatar
 
     public static function deleteBase64Image(string $filePath): void
     {
+        $filePath = substr($filePath, 0, -4);
         if (Storage::disk('local')->exists($filePath. '.' . 'png')) {
             Storage::disk('local')->delete($filePath. '.' . 'png');
         }
@@ -65,14 +66,21 @@ class HelperAvatar
         Storage::disk('local')->put($filePath, $base64);
     }
 
+    public static function getPath(string $fileName): string
+    {
+        return ImageConstant::BASE_PATH_AVATAR_INTERNAL . '/' . $fileName;
+    }
+
     public static function deleteAvatar(User $user): void
     {
-        $filePath = ImageConstant::BASE_PATH_AVATAR . '/' . substr($user->profile_image, 0, -4);
+        $filePath = static::getPath($user->profile_image);
         static::deleteBase64Image($filePath);
     }
 
     public static function saveAvatar(string $base64, User $user): void
     {
+        self::deleteAvatar($user);
+
         $photoDecoded = base64_decode(static::clearBase64Image($base64));
         $info = getimagesizefromstring($photoDecoded);
         $fileExtension = self::getFileExtension($info['mime']);
@@ -81,18 +89,7 @@ class HelperAvatar
         $user->profile_image = $fileName;
         $user->save();
 
-
-        $filepath = ImageConstant::BASE_PATH_AVATAR . '/' . $fileName;
-
-        if (Storage::disk('local')->exists($filepath. '.' . 'png')) {
-            Storage::disk('local')->delete($filepath. '.' . 'png');
-        }
-
-        if (Storage::disk('local')->exists($filepath . '.' . 'jpg')) {
-            Storage::disk('local')->delete($filepath . '.' . 'jpg');
-        }
-
-
+        $filePath = static::getPath($fileName);
+        static::putBase64Image($filePath, $photoDecoded);
     }
-
 }

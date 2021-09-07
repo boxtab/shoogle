@@ -54,7 +54,7 @@ class ProfileRepository extends Repositories
                 'rank',
                 'profile_image',
             ]);
-        $profile->profile_image = url(ImageConstant::BASE_PATH_AVATAR) . '/' . $profile->profile_image;
+        $profile->profile_image = url(ImageConstant::BASE_PATH_AVATAR_EXTERNAL) . '/' . $profile->profile_image;
 
         return $profile;
     }

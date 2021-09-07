@@ -8,5 +8,6 @@ namespace App\Constants;
  */
 class ImageConstant
 {
-    const BASE_PATH_AVATAR = 'storage/avatars';
+    const BASE_PATH_AVATAR_EXTERNAL = 'storage/avatars';
+    const BASE_PATH_AVATAR_INTERNAL = 'public/avatars';
 }
