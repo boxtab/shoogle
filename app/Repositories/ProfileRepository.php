@@ -83,29 +83,5 @@ class ProfileRepository extends Repositories
 
 
         }
-
-
-        /*
-        $profile = User::where('id', Auth::id())->firstOrFail();
-        $profile->update(
-            Helper::formatSnakeCase(
-                $request->except(['profileImage', '_method'])
-            )
-        );
-
-        if ( $request->has('profileImage') ) {
-            $uniqueFilename = Str::uuid()->toString() . '.' . $request->file('profileImage')->extension();
-
-            $profile->clearMediaCollection($profile->id);
-            $profile->addMediaFromRequest('profileImage')
-                ->usingFileName($uniqueFilename)
-                ->toMediaCollection($profile->id);
-
-            $mediaId = DB::table('media')->where('file_name', $uniqueFilename)->get('id')[0]->id;
-
-            $profile->profile_image = $mediaId . '/' . $uniqueFilename;
-            $profile->save();
-        }
-        */
     }
 }

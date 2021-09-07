@@ -49,6 +49,11 @@ class HelperAvatar
         }
     }
 
+    /**
+     * Deleting images in all formats.
+     *
+     * @param string $filePath
+     */
     public static function deleteBase64Image(string $filePath): void
     {
         $filePath = substr($filePath, 0, -4);
@@ -61,22 +66,45 @@ class HelperAvatar
         }
     }
 
+    /**
+     * Saving an image.
+     *
+     * @param string $filePath
+     * @param string $base64
+     */
     public static function putBase64Image(string $filePath, string $base64): void
     {
         Storage::disk('local')->put($filePath, $base64);
     }
 
+    /**
+     * Returns the path to the image.
+     *
+     * @param string $fileName
+     * @return string
+     */
     public static function getPath(string $fileName): string
     {
         return ImageConstant::BASE_PATH_AVATAR_INTERNAL . '/' . $fileName;
     }
 
+    /**
+     * Removes the avatar of the transferred user.
+     *
+     * @param User $user
+     */
     public static function deleteAvatar(User $user): void
     {
         $filePath = static::getPath($user->profile_image);
         static::deleteBase64Image($filePath);
     }
 
+    /**
+     * Save user avatar.
+     *
+     * @param string $base64
+     * @param User $user
+     */
     public static function saveAvatar(string $base64, User $user): void
     {
         self::deleteAvatar($user);
