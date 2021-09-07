@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserListResource;
+use App\Http\Resources\UserProfileAdminResource;
+use App\Http\Resources\UserProfileFrontResource;
 use App\Http\Resources\UserProfileResource;
 use App\Repositories\DepartmentRepository;
 use App\Repositories\UserRepository;
@@ -88,7 +90,7 @@ class UserController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData(new UserProfileResource($record));
+        return ApiResponse::returnData(new UserProfileFrontResource($record));
     }
 
     /**
@@ -106,7 +108,7 @@ class UserController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData(new UserProfileResource($record));
+        return ApiResponse::returnData(new UserProfileAdminResource($record));
     }
 
     /**

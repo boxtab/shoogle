@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class UserProfileResource extends JsonResource
+class UserProfileAdminResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
