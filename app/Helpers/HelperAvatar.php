@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Constants\ImageConstant;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -48,7 +49,29 @@ class HelperAvatar
         }
     }
 
-    public static function processBase64Image(string $base64, User $user)
+    public static function deleteBase64Image(string $filePath): void
+    {
+        if (Storage::disk('local')->exists($filePath. '.' . 'png')) {
+            Storage::disk('local')->delete($filePath. '.' . 'png');
+        }
+
+        if (Storage::disk('local')->exists($filePath . '.' . 'jpg')) {
+            Storage::disk('local')->delete($filePath . '.' . 'jpg');
+        }
+    }
+
+    public static function putBase64Image(string $filePath, string $base64): void
+    {
+        Storage::disk('local')->put($filePath, $base64);
+    }
+
+    public static function deleteAvatar(User $user): void
+    {
+        $filePath = ImageConstant::BASE_PATH_AVATAR . '/' . substr($user->profile_image, 0, -4);
+        static::deleteBase64Image($filePath);
+    }
+
+    public static function saveAvatar(string $base64, User $user): void
     {
         $photoDecoded = base64_decode(static::clearBase64Image($base64));
         $info = getimagesizefromstring($photoDecoded);
@@ -58,7 +81,18 @@ class HelperAvatar
         $user->profile_image = $fileName;
         $user->save();
 
-        Log::info($fileName);
+
+        $filepath = ImageConstant::BASE_PATH_AVATAR . '/' . $fileName;
+
+        if (Storage::disk('local')->exists($filepath. '.' . 'png')) {
+            Storage::disk('local')->delete($filepath. '.' . 'png');
+        }
+
+        if (Storage::disk('local')->exists($filepath . '.' . 'jpg')) {
+            Storage::disk('local')->delete($filepath . '.' . 'jpg');
+        }
+
+
     }
 
 }

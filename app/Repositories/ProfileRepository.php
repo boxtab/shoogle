@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Constants\ImageConstant;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
@@ -53,7 +54,7 @@ class ProfileRepository extends Repositories
                 'rank',
                 'profile_image',
             ]);
-        $profile->profile_image = url('public/avatars') . '/' . $profile->profile_image;
+        $profile->profile_image = url(ImageConstant::BASE_PATH_AVATAR) . '/' . $profile->profile_image;
 
         return $profile;
     }
@@ -72,9 +73,17 @@ class ProfileRepository extends Repositories
             )
         );
 
-        $profileImage = $request->get('profileImage');
+        if ( $request->exists('profileImage') ) {
+            $profileImage = $request->get('profileImage');
+            if ( is_null( $profileImage ) ) {
+                HelperAvatar::deleteAvatar($profile);
+            } else {
+                HelperAvatar::saveAvatar($profileImage, $profile);
+            }
 
-        HelperAvatar::processBase64Image($profileImage, $profile);
+
+        }
+
 
         /*
         $profile = User::where('id', Auth::id())->firstOrFail();

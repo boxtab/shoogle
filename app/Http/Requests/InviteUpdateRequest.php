@@ -25,8 +25,8 @@ class InviteUpdateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email:rfc,dns',
-            'departmentId' => 'required|integer|exists:departments,id',
+            'email'         => 'required|string|email:rfc,dns',
+            'departmentId'  => 'nullable|integer|exists:departments,id',
         ];
     }
 }

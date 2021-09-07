@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Support\ApiRequest\ApiRequest;
 
-class InviteStoreRequest extends ApiRequest
+class InviteCreateRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,8 @@ class InviteStoreRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email' => 'required|email:rfc,dns',
-            'departmentId' => 'required|integer|exists:departments,id',
+            'email'         => 'required|email:rfc,dns',
+            'departmentId'  => 'nullable|integer|exists:departments,id',
         ];
     }
 }

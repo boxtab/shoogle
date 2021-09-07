@@ -62,9 +62,9 @@ class InviteRepository extends Repositories
      * Creating a single invite.
      *
      * @param string $email
-     * @param int $departmentId
+     * @param int|null $departmentId
      */
-    public function create(string $email, int $departmentId): void
+    public function create(string $email, ?int $departmentId): void
     {
         if ( $this->noCompany() ) {
             return;

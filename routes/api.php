@@ -239,17 +239,17 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         // GET /api/admin/v1/invite/list
         Route::get('list', [InviteController::class, 'index']);
 
-        // POST /api/invite/admin/v1
-        Route::post('', [InviteController::class, 'store']);
+        // POST /api/admin/v1/invite
+        Route::post('', [InviteController::class, 'create']);
+
+        // POST /api/admin/v1/invite/:id
+        Route::post('{id}', [InviteController::class, 'update'])->where('id', '[0-9]+');
 
         // POST /api/admin/v1/invite/csv
         Route::post('csv', [InviteController::class, 'upload']);
 
         // GET /api/admin/v1/invite/:id
         Route::get('{id}', [InviteController::class, 'show'])->where('id', '[0-9]+');
-
-        // POST /api/admin/v1/invite/:id
-        Route::post('{id}', [InviteController::class, 'update'])->where('id', '[0-9]+');
 
         // DELETE /api/admin/v1/invite/:id
         Route::delete('{id}', [InviteController::class, 'destroy'])->where('id', '[0-9]+');

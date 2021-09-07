@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Requests\InviteCSVRequest;
-use App\Http\Requests\InviteStoreRequest;
+use App\Http\Requests\InviteCreateRequest;
 use App\Http\Requests\InviteUpdateRequest;
 use App\Http\Resources\DepartmentListResource;
 use App\Http\Resources\InviteListResource;
@@ -56,10 +56,10 @@ class InviteController extends BaseApiController
     /**
      * Creating a new invite.
      *
-     * @param InviteStoreRequest $request
+     * @param InviteCreateRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function store(InviteStoreRequest $request)
+    public function create(InviteCreateRequest $request)
     {
         try {
             $this->repository->create( $request->input('email'), $request->input('departmentId') );
@@ -67,45 +67,10 @@ class InviteController extends BaseApiController
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('A user with this email has been invited already.');
             } else {
-                return ApiResponse::returnError($e->getMessage(), $e->getCode());
+                return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
         return ApiResponse::returnData([]);
-    }
-
-    /**
-     * Loading invites from a CSV file.
-     *
-     * @param InviteCSVRequest $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
-     */
-    public function upload(InviteCSVRequest $request)
-    {
-        try {
-            $patchFile = $request->file('files')->getRealPath();
-            $this->repository->upload($patchFile);
-        } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
-        }
-
-        return ApiResponse::returnData([]);
-    }
-
-    /**
-     * Display the specified resource department.
-     *
-     * @param $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id)
-    {
-        try {
-            $invite = $this->findRecordByID($id);
-            $inviteResource = new InviteShowResource($invite);
-        } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
-        }
-        return ApiResponse::returnData($inviteResource);
     }
 
     /**
@@ -124,10 +89,45 @@ class InviteController extends BaseApiController
                 'department_id' => $request->input('departmentId'),
             ]);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
+    }
+
+    /**
+     * Loading invites from a CSV file.
+     *
+     * @param InviteCSVRequest $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function upload(InviteCSVRequest $request)
+    {
+        try {
+            $patchFile = $request->file('files')->getRealPath();
+            $this->repository->upload($patchFile);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::returnData([]);
+    }
+
+    /**
+     * Display the specified resource department.
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        try {
+            $invite = $this->findRecordByID($id);
+            $inviteResource = new InviteShowResource($invite);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return ApiResponse::returnData($inviteResource);
     }
 
     /**
@@ -145,7 +145,7 @@ class InviteController extends BaseApiController
             }
             $invite->destroy($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode());
+            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
