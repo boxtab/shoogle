@@ -25,6 +25,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+/**
+ * =====================================================================================================================
+ * SHARED
+ * =====================================================================================================================
+ */
 Route::group(['prefix' => 'shared/v1'], function () {
 
     // POST /api/shared/v1/logout
@@ -41,16 +47,30 @@ Route::group(['prefix' => 'shared/v1'], function () {
 });
 
 
-Route::group(['prefix' => 'front/v1'], function () {
+/**
+ * =====================================================================================================================
+ * FRONT
+ * =====================================================================================================================
+ */
 
-    // POST /api/front/v1/signup
-    Route::post('signup', [AuthController::class, 'signup']);
+// POST /api/front/v1/signup
+Route::post('front/v1/signup', [AuthController::class, 'signup']);
+
+Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+    /**
+     * Entity: WellbeingCategory
+     * Table: wellbeing_categories
+     */
+    Route::group(['prefix' => 'wellbeing-category'], function () {
+        // GET /api/front/v1/wellbeing-category/list
+        Route::get('list', [WellbeingCategoryController::class, 'index']);
+    });
 
     /**
      * Entity: Profile
      * Table: users
      */
-    Route::group(['prefix' => 'profile', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'profile'], function () {
 
         // PUT /api/front/v1/profile
         Route::post('', [ProfileController::class, 'store']);
@@ -64,7 +84,7 @@ Route::group(['prefix' => 'front/v1'], function () {
      * Entity: Shoogle
      * Table: shoogles
      */
-    Route::group(['prefix' => 'shoogle', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'shoogle'], function () {
         // GET /api/front/v1/shoogle/list/:page/:pageSize
         Route::get('list/{page}/{pageSize}', [ShooglesController::class, 'userList'])
             ->where('page', '[0-9]+')
@@ -104,7 +124,7 @@ Route::group(['prefix' => 'front/v1'], function () {
      * Entity: Reward
      * Table: user_has_reward
      */
-    Route::group(['prefix' => 'reward', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'reward'], function () {
         // POST /api/front/v1/reward/user
         Route::post('user', [RewardController::class, 'assign']);
 
@@ -116,7 +136,7 @@ Route::group(['prefix' => 'front/v1'], function () {
      * Entity: Buddy request
      * Table: buddy_request
      */
-    Route::group(['prefix' => 'buddy', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'buddy'], function () {
         // POST /api/front/v1/buddy/request
         Route::post('request', [BuddyRequestController::class, 'buddyRequest']);
 
@@ -143,12 +163,17 @@ Route::group(['prefix' => 'front/v1'], function () {
 });
 
 
-Route::group(['prefix' => 'admin/v1'], function () {
+/**
+ * =====================================================================================================================
+ * ADMIN
+ * =====================================================================================================================
+ */
+Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
     /**
      * Entity: Shoogle
      * Table: shoogles
      */
-    Route::group(['prefix' => 'shoogle', 'middleware' => ['auth:api', 'admin.superadmin', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'shoogle', 'middleware' => ['admin.superadmin']], function () {
         // POST /api/admin/v1/shoogle/list
         Route::post('list', [ShooglesController::class, 'index']);
 
@@ -172,7 +197,7 @@ Route::group(['prefix' => 'admin/v1'], function () {
      * Entity: Company
      * Table: companies
      */
-    Route::group(['prefix' => 'company', 'middleware' => ['auth:api', 'superadmin', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'company', 'middleware' => ['superadmin']], function () {
 
         // POST /api/admin/v1/company/list
         Route::post('list', [CompanyController::class, 'index']);
@@ -198,7 +223,7 @@ Route::group(['prefix' => 'admin/v1'], function () {
      * Entity: Company
      * Table: companies
      */
-    Route::group(['prefix' => 'company', 'middleware' => ['auth:api', 'admin', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'company', 'middleware' => ['admin']], function () {
 
         // GET /api/admin/v1/company/own
         Route::get('own', [CompanyController::class, 'own']);
@@ -209,7 +234,7 @@ Route::group(['prefix' => 'admin/v1'], function () {
      * Entity: Invite
      * Table: invites
      */
-    Route::group(['prefix' => 'invite', 'middleware' => ['auth:api', 'admin.superadmin', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'invite', 'middleware' => ['admin.superadmin']], function () {
 
         // GET /api/admin/v1/invite/list
         Route::get('list', [InviteController::class, 'index']);
@@ -234,7 +259,7 @@ Route::group(['prefix' => 'admin/v1'], function () {
      * Entity: User
      * Table: users
      */
-    Route::group(['prefix' => 'user', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'user'], function () {
 
         // GET /api/admin/v1/user/list
         Route::get('list', [UserController::class, 'index'])->middleware(['admin.superadmin']);
@@ -243,16 +268,16 @@ Route::group(['prefix' => 'admin/v1'], function () {
         Route::get('{id}', [UserController::class, 'show'])->where('id', '[0-9]+');
 
         // POST /api/admin/v1/user/:id
-        Route::post('{id}', [UserController::class, 'update'])->where('id', '[0-9]+');
+        Route::post('{id}', [UserController::class, 'update'])->where('id', '[0-9]+')->middleware(['admin.superadmin']);
 
         // POST /api/user/admin/v1
-        Route::post('', [UserController::class, 'create']);
+        Route::post('', [UserController::class, 'create'])->middleware(['admin.superadmin']);
 
         // POST /api/admin/v1/user/:id/wellbeing-scores
         Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageUser'])->where('id', '[0-9]+');
 
         // DELETE /api/admin/v1/user/:id
-        Route::delete('{id}', [UserController::class, 'destroy'])->where('id', '[0-9]+');
+        Route::delete('{id}', [UserController::class, 'destroy'])->where('id', '[0-9]+')->middleware(['admin.superadmin']);
 
     });
 
@@ -260,7 +285,7 @@ Route::group(['prefix' => 'admin/v1'], function () {
      * Entity: WellbeingCategory
      * Table: wellbeing_categories
      */
-    Route::group(['prefix' => 'wellbeing-category', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'wellbeing-category', 'middleware' => ['admin.superadmin']], function () {
 
         // GET /api/admin/v1/wellbeing-category/list
         Route::get('list', [WellbeingCategoryController::class, 'index']);
@@ -283,7 +308,7 @@ Route::group(['prefix' => 'admin/v1'], function () {
      * Entity: Department
      * Table: departments
      */
-    Route::group(['prefix' => 'department', 'middlewar' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+    Route::group(['prefix' => 'department', 'middlewar' => ['admin.superadmin']], function () {
 
         // POST /api/admin/v1/department
         Route::post('', [DepartmentController::class, 'create']);
