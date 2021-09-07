@@ -51,7 +51,8 @@ class InviteRepository extends Repositories
                 invites.email as email,
                 invites.is_used as is_used,
                 invites.companies_id as companies_id,
-                d.name as department'))
+                d.name as department,
+                invites.created_at as created_at'))
             ->leftJoin('departments as d', 'invites.department_id', '=', 'd.id')
             ->when( ! $this->noCompany(), function($query) {
                 return $query->where('invites.companies_id', $this->companyId);

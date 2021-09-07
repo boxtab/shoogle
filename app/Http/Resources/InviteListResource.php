@@ -21,6 +21,7 @@ class InviteListResource extends JsonResource
                 'is_used' => $item->is_used,
                 'companies_id' => $item->companies_id,
                 'department' => $item->department,
+                'created_at' => date('Y-m-d H:i:s', strtotime($item->created_at)),
             ];
         });
     }
