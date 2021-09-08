@@ -101,6 +101,9 @@ class HelperAvatar
 
         $filePath = static::getPath($user->profile_image);
         static::deleteBase64Image($filePath);
+
+        $user->profile_image = null;
+        $user->save();
     }
 
     /**
