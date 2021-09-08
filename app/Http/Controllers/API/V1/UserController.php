@@ -122,7 +122,7 @@ class UserController extends BaseApiController
     {
         try {
             $user = $this->findRecordByID($id);
-            $credentials = $request->only(['firstName', 'lastName', 'email', 'departmentId', 'isAdminCompany']);
+            $credentials = $request->only(['firstName', 'lastName', 'email', 'departmentId', 'isCompanyAdmin']);
             $this->repository->update($user, $credentials);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
