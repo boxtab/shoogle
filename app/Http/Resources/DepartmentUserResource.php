@@ -21,7 +21,7 @@ class DepartmentUserResource extends JsonResource
                 'firstName' => $item->first_name,
                 'lastName' => $item->last_name,
                 'email' => $item->email,
-                'photo' => $item->avatar,
+                'profileImage' => $item->profile_image,
             ];
         });
     }

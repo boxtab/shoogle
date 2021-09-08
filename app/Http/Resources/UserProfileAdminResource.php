@@ -22,7 +22,7 @@ class UserProfileAdminResource extends JsonResource
     {
         return [
             'id'                => $this->resource->id,
-            'photo'             => $this->resource->avatar,
+            'profile_image'     => $this->resource->profile_image,
             'firstName'         => $this->resource->first_name,
             'lastName'          => $this->resource->last_name,
             'departmentId'      => $this->resource->department_id,
