@@ -119,7 +119,7 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
         // DELETE /api/front/v1/shoogle/:id
         Route::delete('{id}', [ShooglesController::class, 'destroy'])->where('id', '[0-9]+');
 
-        // POST /api/front/v1/shoogles/:id/shooglers/:page/:pageSize
+        // POST /api/front/v1/shoogle/:id/shooglers/:page/:pageSize
         Route::post('{id}/shooglers/{page}/{pageSize}', [ShooglerController::class, 'index'])
             ->where('id', '[0-9]+')
             ->where('page', '[0-9]+')

@@ -38,9 +38,11 @@ class ShooglerRepository extends Repositories
      * @param int $shoogleId
      * @param string|null $search
      * @param string|null $filter
+     * @param int|null $page
+     * @param int|null $pageSize
      * @return array
      */
-    public function getList(int $shoogleId, string $search = null, string $filter = null)
+    public function getList(int $shoogleId, string $search = null, string $filter = null, int $page = null, int $pageSize = null)
     {
         // ['recentlyJoined', 'available', 'solo', 'buddied'])
         return DB::table('user_has_shoogle as uhs')
@@ -84,6 +86,8 @@ class ShooglerRepository extends Repositories
                         ->whereRaw('buddies.user1_id = u.id or buddies.user2_id = u.id and buddies.shoogle_id = ' . $shoogleId);
                 });
             })
+            ->offset($page * $pageSize - $pageSize)
+            ->limit($pageSize)
             ->get()
             ->toArray();
     }

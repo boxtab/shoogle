@@ -90,10 +90,10 @@ class UserRepository extends Repositories
         $user->save();
 
         if (
-            ( ! is_null($credentials['isAdminCompany']) )
+            ( ! is_null($credentials['isCompanyAdmin']) )
             && ( Helper::getRole(Auth::id()) === RoleConstant::SUPER_ADMIN )
         ) {
-            $roleName = $credentials['isAdminCompany'] ? RoleConstant::COMPANY_ADMIN : RoleConstant::USER;
+            $roleName = $credentials['isCompanyAdmin'] ? RoleConstant::COMPANY_ADMIN : RoleConstant::USER;
             $roleId = (int)(Role::on()->where('name', '=', $roleName)->first()->id);
 
 

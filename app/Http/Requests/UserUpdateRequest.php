@@ -29,7 +29,7 @@ class UserUpdateRequest extends ApiRequest
             'lastName'          => 'nullable|min:2|max:255',
             'email'             => 'nullable|email:rfc,dns|min:4|max:255',
             'departmentId'      => 'nullable|integer',
-            'isAdminCompany'    => 'nullable|boolean',
+            'isCompanyAdmin'    => 'nullable|boolean',
         ];
     }
 }
