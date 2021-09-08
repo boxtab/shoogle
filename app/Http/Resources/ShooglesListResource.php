@@ -24,7 +24,7 @@ class ShooglesListResource extends JsonResource
                 'lastActivity' => $item->shoogle_last_activity,
                 'firstName' => $item->users_first_name,
                 'lastName' => $item->users_last_name,
-                'prfile_image' => $item->users_avatar,
+                'prfileImage' => $item->users_profile_image,
                 'shooglers' => $item->shooglers,
                 'depatment' => $item->departments_name,
             ];

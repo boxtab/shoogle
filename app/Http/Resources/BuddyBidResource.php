@@ -22,7 +22,7 @@ class BuddyBidResource extends JsonResource
             'buddy' => User::on()
                 ->select(DB::raw('
                     id as id,
-                    avatar as photo,
+                    profile_image as profileImage,
                     first_name as firstName,
                     last_name as lastName,
                     about as about
