@@ -96,7 +96,7 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
             ->where('page', '[0-9]+')
             ->where('pageSize', '[0-9]+');
 
-        // POST /api/front/v1/shoogles
+        // POST /api/front/v1/shoogle
         Route::post('', [ShooglesController::class, 'create']);
 
         // GET /api/front/v1/shoogle/:id/views

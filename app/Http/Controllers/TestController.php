@@ -25,14 +25,8 @@ class TestController extends Controller
     public function index()
     {
         null;
+        phpinfo();
 
-         $modelHasRole = ModelHasRole::where('model_id', 0)->first();
-
-         if ( empty($modelHasRole) ) {
-             return 'yes';
-         } else {
-             return 'no';
-         }
 //         return $modelHasRole;
 
 //        $role = $modelHasRole->role->name;
