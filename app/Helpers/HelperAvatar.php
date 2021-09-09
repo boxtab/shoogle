@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Constants\ImageConstant;
 use App\User;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -95,9 +96,9 @@ class HelperAvatar
      */
     public static function deleteAvatar(User $user): void
     {
-//        if ( is_null( $user->profile_image ) ) {
-//            return;
-//        }
+        if ( is_null( $user->profile_image ) || ( $user->profile_image == '' ) ) {
+            return;
+        }
 
         $filePath = static::getPath($user->profile_image);
         static::deleteBase64Image($filePath);
@@ -111,15 +112,19 @@ class HelperAvatar
      *
      * @param $base64
      * @param User $user
+     * @throws \Exception
      */
     public static function saveAvatar($base64, User $user): void
     {
-        self::deleteAvatar($user);
-
         $photoDecoded = base64_decode(static::clearBase64Image($base64));
         $info = getimagesizefromstring($photoDecoded);
         $fileExtension = self::getFileExtension($info['mime']);
+        if ( $fileExtension != 'jpg' || $fileExtension != 'png' ) {
+            throw new \Exception('The file extension must be jpg or png', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $fileName = 'id' . Auth::id() . '-' . Str::uuid()->toString() . '.' . $fileExtension;
+
+        self::deleteAvatar($user);
 
         $user->profile_image = $fileName;
         $user->save();

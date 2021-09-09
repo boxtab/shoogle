@@ -45,7 +45,7 @@ class ProfileController extends BaseApiController
         try {
             $this->repository->updateProfile($request);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
         return ApiResponse::returnData([]);
@@ -61,7 +61,7 @@ class ProfileController extends BaseApiController
         try {
             $profile = $this->repository->getProfile();
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode());
         }
 
         return ApiResponse::returnData(new ProfileShowResource($profile));

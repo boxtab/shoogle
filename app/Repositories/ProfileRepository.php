@@ -65,6 +65,7 @@ class ProfileRepository extends Repositories
      * Update profile.
      *
      * @param Request $request
+     * @throws \Exception
      */
     public function updateProfile(Request $request)
     {
@@ -77,7 +78,7 @@ class ProfileRepository extends Repositories
 
         if ( $request->exists('profileImage') ) {
             $profileImage = $request->get('profileImage');
-            if ( is_null( $profileImage ) ) {
+            if ( is_null( $profileImage ) || $profileImage === '' ) {
                 HelperAvatar::deleteAvatar($profile);
             } else {
                 HelperAvatar::saveAvatar($profileImage, $profile);
