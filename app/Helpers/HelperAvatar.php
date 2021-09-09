@@ -95,9 +95,9 @@ class HelperAvatar
      */
     public static function deleteAvatar(User $user): void
     {
-        if ( is_null( $user->profile_image ) ) {
-            return;
-        }
+//        if ( is_null( $user->profile_image ) ) {
+//            return;
+//        }
 
         $filePath = static::getPath($user->profile_image);
         static::deleteBase64Image($filePath);
