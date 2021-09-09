@@ -134,6 +134,61 @@ class ShooglesRepository extends Repositories
      */
     public function userList(int $page, int $pageSize)
     {
+        $query = DB::table('shoogles as sh')
+            ->select(DB::raw('
+                sh.id as id,
+                sh.title as title,
+                sh.cover_image as coverImage,
+                ifnull(shooglers_count.count_user, 0) as shooglersCount,
+                ifnull(shooglers_buddies.count_user, 0) as buddiesCount,
+                ifnull(shooglers_solo.count_user, 0) as solosCount,
+                null as buddyName,
+                null as solo
+            '))
+            ->join(DB::raw('
+                (select
+                    shoogle_id
+                    from user_has_shoogle
+                    where user_id = ' . Auth::id() .' ) as uhs'),
+                'uhs.shoogle_id', '=', 'sh.id'
+            )
+            ->leftJoin(DB::raw('
+                    (select
+                        user_has_shoogle.shoogle_id as unique_shoogle_id,
+                        count(user_has_shoogle.user_id) + 1 as count_user
+                    from user_has_shoogle
+                    group by user_has_shoogle.shoogle_id)
+                    as shooglers_count
+             '), 'shooglers_count.unique_shoogle_id', '=', 'sh.id')
+            ->leftJoin(DB::raw('
+                    (select
+                        user_has_shoogle.shoogle_id as unique_shoogle_id,
+                        count(user_has_shoogle.user_id) as count_user
+                    from user_has_shoogle
+                         where exists(
+                                        select 1 from buddies
+                                        where user_has_shoogle.shoogle_id = buddies.shoogle_id
+                                        and (user_has_shoogle.user_id = buddies.user1_id or user_has_shoogle.user_id = buddies.user2_id)
+                                   )
+                    group by user_has_shoogle.shoogle_id)
+                    as shooglers_buddies
+             '), 'shooglers_buddies.unique_shoogle_id', '=', 'sh.id')
+            ->leftJoin(DB::raw('
+                    (select
+                        user_has_shoogle.shoogle_id as unique_shoogle_id,
+                        count(user_has_shoogle.user_id) as count_user
+                    from user_has_shoogle
+                    where user_has_shoogle.solo = 1
+                    group by user_has_shoogle.shoogle_id)
+                    as shooglers_solo
+             '), 'shooglers_solo.unique_shoogle_id', '=', 'sh.id')
+            ->where('sh.owner_id', '=', Auth::id())
+            ->offset($page * $pageSize - $pageSize)
+            ->limit($pageSize);
+
+        return $query->get()->toArray();
+
+        /*
         $query = DB::table('user_has_shoogle as uhs')
             ->select(DB::raw('
                 uhs.shoogle_id as id,
@@ -180,8 +235,8 @@ class ShooglesRepository extends Repositories
             ->offset($page * $pageSize - $pageSize)
             ->limit($pageSize);
 
-//        $query->toSql();
         return $query->get()->toArray();
+        */
     }
 
     /**

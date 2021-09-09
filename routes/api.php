@@ -195,7 +195,7 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         // GET /api/admin/v1/shoogle/:id
         Route::get('{id?}', [ShooglesController::class, 'show'])->where('id', '[0-9]+');
 
-        // POST /api/front/v1/shoogle/:id
+        // POST /api/admin/v1/shoogle/:id
         Route::post('{id}', [ShooglesController::class, 'update'])->where('id', '[0-9]+');
     });
 
@@ -280,7 +280,7 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         Route::post('', [UserController::class, 'create'])->middleware(['admin.superadmin']);
 
         // POST /api/admin/v1/user/:id/wellbeing-scores
-        Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageUser'])->where('id', '[0-9]+');
+        Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageUser'])->where('id', '[0-9]+')->middleware(['admin.superadmin']);
 
         // DELETE /api/admin/v1/user/:id
         Route::delete('{id}', [UserController::class, 'destroy'])->where('id', '[0-9]+')->middleware(['admin.superadmin']);

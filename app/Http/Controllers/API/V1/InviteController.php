@@ -114,7 +114,7 @@ class InviteController extends BaseApiController
     }
 
     /**
-     * Display the specified resource department.
+     * Display the specified resource invite.
      *
      * @param $id
      * @return \Illuminate\Http\JsonResponse

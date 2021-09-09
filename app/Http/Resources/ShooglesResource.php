@@ -26,7 +26,7 @@ class ShooglesResource extends JsonResource
                 'email' => $this->resource->owner->email,
                 'firstName' => $this->resource->owner->first_name,
                 'lastName' => $this->resource->owner->last_name,
-                'profile_image' => $this->resource->owner->profile_image,
+                'profileImage' => $this->resource->owner->profile_image,
             ],
             'createdAt' => $this->resource->created,
             'lastActivity' => $this->resource->updated,

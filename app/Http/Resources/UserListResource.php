@@ -19,7 +19,7 @@ class UserListResource extends JsonResource
         return $this->resource->map(function ($item) {
             return [
                 'id'            => $item->id,
-                'profile_image' => $item->profile_image,
+                'profileImage'  => $item->profile_image,
                 'firstName'     => $item->first_name,
                 'lastName'      => $item->last_name,
                 'department'    => $item->department->name,
