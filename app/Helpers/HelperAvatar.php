@@ -19,6 +19,22 @@ use Exception;
 class HelperAvatar
 {
     /**
+     * @param $base64
+     * @throws Exception
+     */
+    public static function checkBase64Image($base64)
+    {
+        if (
+            empty($base64) ||
+            strlen($base64) < strlen('data:image/jpeg;base64') + 1 ||
+            substr($base64, 0, 10) !== 'data:image' ||
+            str_contains($base64, 'base64') === false
+        ) {
+            throw new Exception('Invalid image format', Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+        }
+    }
+
+    /**
      * Removing metadata from an image.
      *
      * @param $base64
@@ -46,8 +62,10 @@ class HelperAvatar
             case 'image/jpeg':
             case 'image/jpg':
                 return 'jpg';
-            default:
+            case 'image/png':
                 return 'png';
+            default:
+                return 'not_known';
         }
     }
 
@@ -118,10 +136,11 @@ class HelperAvatar
      */
     public static function saveAvatar($base64, User $user): void
     {
+        self::checkBase64Image($base64);
+
         $photoDecoded = base64_decode(static::clearBase64Image($base64));
         $info = getimagesizefromstring($photoDecoded);
         $fileExtension = self::getFileExtension($info['mime']);
-        Log::info($fileExtension);
         if ( ! ($fileExtension === 'jpg' || $fileExtension === 'png') ) {
             throw new Exception('The file extension must be jpg or png', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
