@@ -44,6 +44,11 @@ Route::group(['prefix' => 'shared/v1'], function () {
 
     // POST /api/shared/v1/password/reset
     Route::post('password/reset', [AuthController::class, 'passwordReset']);
+
+    // POST /api/shared/v1/user/:id/wellbeing-scores
+    Route::post('user/{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageUser'])
+        ->where('id', '[0-9]+')
+        ->middleware(['auth:api', 'user_already_logged_in', 'cors']);
 });
 
 
@@ -96,6 +101,11 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
             ->where('page', '[0-9]+')
             ->where('pageSize', '[0-9]+');
 
+        // POST /api/front/v1/shoogle/search/:page/:pageSize
+        Route::post('search/{page}/{pageSize}', [ShooglesController::class, 'search'])
+            ->where('page', '[0-9]+')
+            ->where('pageSize', '[0-9]+');
+
         // POST /api/front/v1/shoogle
         Route::post('', [ShooglesController::class, 'create']);
 
@@ -110,11 +120,6 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
 
         // POST /api/front/v1/shoogle/:id/leave
         Route::post('{id}/leave', [ShooglesController::class, 'leave'])->where('id', '[0-9]+');
-
-        // POST /api/front/v1/shoogle/search/:page/:pageSize
-        Route::post('search/{page}/{pageSize}', [ShooglesController::class, 'search'])
-            ->where('page', '[0-9]+')
-            ->where('pageSize', '[0-9]+');
 
         // DELETE /api/front/v1/shoogle/:id
         Route::delete('{id}', [ShooglesController::class, 'destroy'])->where('id', '[0-9]+');
@@ -279,12 +284,8 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         // POST /api/user/admin/v1
         Route::post('', [UserController::class, 'create'])->middleware(['admin.superadmin']);
 
-        // POST /api/admin/v1/user/:id/wellbeing-scores
-        Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageUser'])->where('id', '[0-9]+')->middleware(['admin.superadmin']);
-
         // DELETE /api/admin/v1/user/:id
         Route::delete('{id}', [UserController::class, 'destroy'])->where('id', '[0-9]+')->middleware(['admin.superadmin']);
-
     });
 
     /**
