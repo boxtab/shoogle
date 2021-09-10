@@ -40,7 +40,6 @@ class WelbeingScoresController extends BaseApiController
      */
     public function averageUser(WellbeingScoresAverageRequest $request, $id)
     {
-        Log::info('test');
         try {
             $this->repository->existsUser($id);
             $average = $this->repository->getAverageUser( $id, $request->input('from'), $request->input('to') );
