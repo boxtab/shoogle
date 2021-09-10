@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
+use Exception;
 
 /**
  * Class HelperAvatar
@@ -81,10 +82,10 @@ class HelperAvatar
     /**
      * Returns the path to the image.
      *
-     * @param string $fileName
+     * @param string|null $fileName
      * @return string
      */
-    public static function getPath(string $fileName): string
+    public static function getPath(?string $fileName): string
     {
         return ImageConstant::BASE_PATH_AVATAR_INTERNAL . '/' . $fileName;
     }
@@ -92,15 +93,16 @@ class HelperAvatar
     /**
      * Removes the avatar of the transferred user.
      *
-     * @param User $user
+     * @param User|null $user
      */
-    public static function deleteAvatar(User $user): void
+    public static function deleteAvatar(?User $user): void
     {
-        if ( is_null( $user->profile_image ) || ( $user->profile_image == '' ) ) {
+        if ( empty( $user->profile_image ) ) {
             return;
         }
 
         $filePath = static::getPath($user->profile_image);
+
         static::deleteBase64Image($filePath);
 
         $user->profile_image = null;
@@ -119,8 +121,9 @@ class HelperAvatar
         $photoDecoded = base64_decode(static::clearBase64Image($base64));
         $info = getimagesizefromstring($photoDecoded);
         $fileExtension = self::getFileExtension($info['mime']);
-        if ( $fileExtension != 'jpg' || $fileExtension != 'png' ) {
-            throw new \Exception('The file extension must be jpg or png', Response::HTTP_UNPROCESSABLE_ENTITY);
+        Log::info($fileExtension);
+        if ( ! ($fileExtension === 'jpg' || $fileExtension === 'png') ) {
+            throw new Exception('The file extension must be jpg or png', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $fileName = 'id' . Auth::id() . '-' . Str::uuid()->toString() . '.' . $fileExtension;
 

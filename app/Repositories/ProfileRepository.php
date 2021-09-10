@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use PHPUnit\TextUI\Help;
+use Exception;
 
 /**
  * Class ProfileRepository
@@ -69,16 +70,24 @@ class ProfileRepository extends Repositories
      */
     public function updateProfile(Request $request)
     {
-        $profile = User::where('id', Auth::id())->first();
-        $profile->update(
-            Helper::formatSnakeCase(
-                $request->except(['profileImage'])
-            )
-        );
+        $profile = User::on()->find( Auth::id() )->first();
+
+        if ( is_null($profile) ) {
+            throw new Exception('The authenticated user profile was not found.', Response::HTTP_NOT_FOUND);
+        }
+
+        $profile->update([
+            'first_name' => $request->input('firstName'),
+            'last_name' => $request->input('lastName'),
+            'about' => $request->input('about'),
+            'rank' => $request->input('rank'),
+        ]);
+
 
         if ( $request->exists('profileImage') ) {
-            $profileImage = $request->get('profileImage');
-            if ( is_null( $profileImage ) || $profileImage === '' ) {
+            $profileImage = $request->input('profileImage');
+
+            if ( empty( $profileImage ) ) {
                 HelperAvatar::deleteAvatar($profile);
             } else {
                 HelperAvatar::saveAvatar($profileImage, $profile);
