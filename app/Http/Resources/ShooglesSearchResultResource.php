@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Shoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
 
@@ -50,6 +51,16 @@ class ShooglesSearchResultResource extends JsonResource
     }
 
     /**
+     * Counting the total number of shoogles.
+     *
+     * @return int
+     */
+    public function getShoogleCount(): int
+    {
+        return (int)Shoogle::on()->count();
+    }
+
+    /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -59,7 +70,8 @@ class ShooglesSearchResultResource extends JsonResource
     {
         return [
             'items' => ShooglesSearchItemsResource::collection($this->resource),
-            'count' => count($this->resource),
+            'count' => $this->getShoogleCount(),
+//            'count' => count($this->resource),
             'communityCount' => $this->getCommunityCount(),
             'buddiesCount' => $this->getBuddiesCount(),
             'solosCount' => $this->getSolosCount(),
