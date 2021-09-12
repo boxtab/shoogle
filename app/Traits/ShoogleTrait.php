@@ -46,4 +46,31 @@ trait ShoogleTrait
 
         return $uniqueShoogleIDs;
     }
+
+    public function setSoloMode( ?array $shoogles ): ?array
+    {
+        if ( is_null( $shoogles ) ) {
+            return null;
+        }
+        $response = [];
+
+        foreach ($shoogles as $shoogle) {
+            $shoogle->title = $shoogle->title . ' - mytest';
+            $response[] = $shoogle;
+        }
+
+//        Log::info( ((array)$shoogles[1])['title'] );
+
+//        foreach ( $shoogles as $shoogle ) {
+//            $rowShoogle =& $shoogle;
+
+//            (array)$rowShoogle['solo'] = 1;
+
+//            Log::info($rowShoogle);
+//            Log::info($rowShoogle['id']);
+//        }
+
+//        Log::info($shoogles);
+        return $response;
+    }
 }

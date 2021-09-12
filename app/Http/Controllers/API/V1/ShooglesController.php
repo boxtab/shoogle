@@ -183,7 +183,7 @@ class ShooglesController extends BaseApiController
         }
 
         $userList = $this->repository->userList($page, $pageSize);
-        $userListResource = ShooglesUserListResource::collection($userList);
+        $userListResource = ! is_null( $userList ) ? ShooglesUserListResource::collection($userList) : [];
 
         return ApiResponse::returnData($userListResource);
     }
