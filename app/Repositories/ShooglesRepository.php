@@ -3,10 +3,12 @@
 namespace App\Repositories;
 
 use App\Helpers\Helper;
+use App\Helpers\HelperRequest;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\Models\UserHasShoogle;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\ShoogleTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
@@ -21,6 +23,8 @@ use Illuminate\Support\Facades\Log;
  */
 class ShooglesRepository extends Repositories
 {
+    use ShoogleTrait;
+
     /**
      * @var Shoogle
      */
@@ -134,6 +138,8 @@ class ShooglesRepository extends Repositories
      */
     public function userList(int $page, int $pageSize)
     {
+        $shoogleIDs = $this->getShoogleIDsByUserId( Auth::id() );
+
         $query = DB::table('shoogles as sh')
             ->select(DB::raw('
                 sh.id as id,

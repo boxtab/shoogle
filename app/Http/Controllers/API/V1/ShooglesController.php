@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Helper;
+use App\Helpers\HelperRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ShooglesPaginationRequest;
 use App\Http\Requests\ShooglesSearchRequest;
 use App\Http\Requests\ShoogleTurnOnOffRequest;
 use App\Http\Requests\ShoogleUpdateRequest;
@@ -168,8 +170,18 @@ class ShooglesController extends BaseApiController
      * @param int|null $pageSize
      * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function userList(int $page = null, int $pageSize = null)
+    public function userList(?int $page, ?int $pageSize)
     {
+        if ( $page === 0 ) {
+            Log::info('$page == 0');
+            return ApiResponse::returnError(['page' => 'Page number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ( $pageSize === 0 ) {
+            Log::info('$pageSize == 0');
+            return ApiResponse::returnError(['pageSize' => 'PageSize number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $userList = $this->repository->userList($page, $pageSize);
         $userListResource = ShooglesUserListResource::collection($userList);
 
