@@ -3,8 +3,10 @@
 
 namespace App\Traits;
 
+use App\Models\Buddie;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -82,16 +84,46 @@ trait ShoogleTrait
         return $response;
     }
 
+    /**
+     * Set buddies for the current authenticated user.
+     *
+     * @param array|null $shoogles
+     * @return array|null
+     */
     public function setBuddy( ?array $shoogles ): ?array
     {
         if ( is_null( $shoogles ) ) {
-            return null;
+            return $shoogles;
         }
 
+        $authenticatedUserID = Auth::id();
+        $buddies = Buddie::on()
+            ->whereIn('shoogle_id', $this->getShoogleIDsByUserId($authenticatedUserID))
+            ->whereNull('disconnected_at')
+            ->where(function ($query) use ($authenticatedUserID) {
+                $query->where('user1_id', '=', $authenticatedUserID)
+                    ->orWhere('user2_id', '=', $authenticatedUserID);
 
+            })
+            ->get(['shoogle_id', 'user1_id', 'user2_id'])
+            ->map(function ($buddy) use ($authenticatedUserID) {
+                $buddyID = ( $buddy['user1_id'] === $authenticatedUserID ) ? $buddy['user2_id'] : $buddy['user1_id'];
+                $buddyName = User::on()->where('id', '=', $buddyID)->first()->full_name;
+                return [$buddy['shoogle_id'], $buddyName];
+            })
+            ->toAssoc()
+            ->toArray();
+
+
+        if ( is_null( $buddies ) ) {
+            return $shoogles;
+        }
 
         $response = [];
         foreach ($shoogles as $shoogle) {
+            if ( isset($buddies[$shoogle->id]) ) {
+                $shoogle->buddyName = $buddies[$shoogle->id];
+            }
             $response[] = $shoogle;
         }
 

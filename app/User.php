@@ -160,6 +160,16 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         return $this->belongsToMany(Role::class, 'model_has_roles', 'model_id', 'role_id');
     }
 
+    /**
+     * Get the concatenation of first and last name.
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
     public function getActiveShooglesCountAttribute()
     {
         return 0;
@@ -190,6 +200,11 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         return [];
     }
 
+    /**
+     * Send a notification that the password has been reset.
+     *
+     * @param string $token
+     */
     public function sendPasswordResetNotification($token)
     {
         $link = Helper::getLinkResetPassword($token, $this->email);

@@ -158,7 +158,7 @@ class ShooglesRepository extends Repositories
             ->toArray();
 
         $shoogles = $this->setBuddy($shoogles);
-//        $shoogles = $this->setSoloMode($shoogles);
+        $shoogles = $this->setSoloMode($shoogles);
 
         return $shoogles;
 
