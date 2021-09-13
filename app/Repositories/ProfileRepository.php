@@ -76,13 +76,11 @@ class ProfileRepository extends Repositories
             throw new Exception('The authenticated user profile was not found.', Response::HTTP_NOT_FOUND);
         }
 
-        $profile->update([
-            'first_name' => $request->input('firstName'),
-            'last_name' => $request->input('lastName'),
-            'about' => $request->input('about'),
-            'rank' => $request->input('rank'),
-        ]);
-
+        $profile->update(
+            Helper::formatSnakeCase(
+                $request->except(['profileImage'])
+            )
+        );
 
         if ( $request->exists('profileImage') ) {
             $profileImage = $request->input('profileImage');

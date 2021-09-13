@@ -160,7 +160,7 @@ class ShooglesRepository extends Repositories
 //        Log::info($shoogles);
 //        $shoogles = $this->setSoloMode($shoogles);
         $tmp = $this->setSoloMode($shoogles);
-        Log::info($tmp);
+//        Log::info($tmp);
 
         return $shoogles;
 

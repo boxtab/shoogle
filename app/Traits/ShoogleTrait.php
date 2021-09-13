@@ -5,6 +5,7 @@ namespace App\Traits;
 
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -52,6 +53,16 @@ trait ShoogleTrait
         if ( is_null( $shoogles ) ) {
             return null;
         }
+
+//        Log::info(Auth::id());
+
+        $solo = UserHasShoogle::on()
+            ->where('user_id', '=', Auth::id())
+            ->get(['shoogle_id', 'solo'])
+            ->toArray();
+
+        Log::info($solo);
+
         $response = [];
 
         foreach ($shoogles as $shoogle) {
