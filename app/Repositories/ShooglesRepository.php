@@ -157,10 +157,8 @@ class ShooglesRepository extends Repositories
             ->get()
             ->toArray();
 
-//        Log::info($shoogles);
+        $shoogles = $this->setBuddy($shoogles);
 //        $shoogles = $this->setSoloMode($shoogles);
-        $tmp = $this->setSoloMode($shoogles);
-//        Log::info($tmp);
 
         return $shoogles;
 

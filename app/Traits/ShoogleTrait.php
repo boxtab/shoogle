@@ -48,40 +48,53 @@ trait ShoogleTrait
         return $uniqueShoogleIDs;
     }
 
+    /**
+     * Sets solo mode.
+     *
+     * @param array|null $shoogles
+     * @return array|null
+     */
     public function setSoloMode( ?array $shoogles ): ?array
+    {
+        if ( is_null( $shoogles ) ) {
+            return $shoogles;
+        }
+
+        $solo = UserHasShoogle::on()
+            ->where('user_id', '=', Auth::id())
+            ->get(['shoogle_id', 'solo'])
+            ->map(function ($shoogle) {
+                return [$shoogle['shoogle_id'], $shoogle['solo']];
+            })
+            ->toAssoc()
+            ->toArray();
+
+        $response = [];
+        foreach ($shoogles as $shoogle) {
+            if ( isset($solo[$shoogle->id]) && $solo[$shoogle->id] === true ) {
+                $shoogle->solo = true;
+            } else {
+                $shoogle->solo = false;
+            }
+            $response[] = $shoogle;
+        }
+
+        return $response;
+    }
+
+    public function setBuddy( ?array $shoogles ): ?array
     {
         if ( is_null( $shoogles ) ) {
             return null;
         }
 
-//        Log::info(Auth::id());
 
-        $solo = UserHasShoogle::on()
-            ->where('user_id', '=', Auth::id())
-            ->get(['shoogle_id', 'solo'])
-            ->toArray();
-
-        Log::info($solo);
 
         $response = [];
-
         foreach ($shoogles as $shoogle) {
-            $shoogle->title = $shoogle->title . ' - mytest';
             $response[] = $shoogle;
         }
 
-//        Log::info( ((array)$shoogles[1])['title'] );
-
-//        foreach ( $shoogles as $shoogle ) {
-//            $rowShoogle =& $shoogle;
-
-//            (array)$rowShoogle['solo'] = 1;
-
-//            Log::info($rowShoogle);
-//            Log::info($rowShoogle['id']);
-//        }
-
-//        Log::info($shoogles);
         return $response;
     }
 }
