@@ -157,6 +157,7 @@ class ShooglesRepository extends Repositories
             ->get()
             ->toArray();
 
+        $shoogles = $this->setShooglersCount($shoogles);
         $shoogles = $this->setBuddy($shoogles);
         $shoogles = $this->setSoloMode($shoogles);
 

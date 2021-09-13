@@ -8,6 +8,7 @@ use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -123,6 +124,46 @@ trait ShoogleTrait
         foreach ($shoogles as $shoogle) {
             if ( isset($buddies[$shoogle->id]) ) {
                 $shoogle->buddyName = $buddies[$shoogle->id];
+            }
+            $response[] = $shoogle;
+        }
+
+        return $response;
+    }
+
+    /**
+     * Calculates the number of participants in shoogle.
+     *
+     * @param array|null $shoogles
+     * @return array|null
+     */
+    public function setShooglersCount( ?array $shoogles ): ?array
+    {
+        if ( is_null( $shoogles ) ) {
+            return $shoogles;
+        }
+
+        $authenticatedUserID = Auth::id();
+        $shooglersCount = UserHasShoogle::on()
+            ->select('shoogle_id', DB::raw('count(user_id) as total'))
+            ->where('user_id', '<>', $authenticatedUserID)
+            ->whereIn('shoogle_id', $this->getShoogleIDsByUserId($authenticatedUserID))
+            ->groupBy('shoogle_id')
+            ->get(['shoogle_id', 'total'])
+            ->map(function ($shoogle) {
+                return [$shoogle['shoogle_id'], $shoogle['total']];
+            })
+            ->toAssoc()
+            ->toArray();
+
+        Log::info($shooglersCount);
+
+        $response = [];
+        foreach ($shoogles as $shoogle) {
+            if ( isset($shooglersCount[$shoogle->id]) ) {
+                $shoogle->shooglersCount = ($shooglersCount[$shoogle->id] + 1);
+            } else {
+                $shoogle->shooglersCount = 1;
             }
             $response[] = $shoogle;
         }
