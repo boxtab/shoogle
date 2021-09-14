@@ -62,7 +62,7 @@ class ShooglerRepository extends Repositories
                 uhs.joined_at as joinedAt
             '))
             ->leftJoin('users as u', 'uhs.user_id', '=', 'u.id')
-            ->where('uhs.shoogle_id', $shoogleId)
+            ->where('uhs.shoogle_id', '=', $shoogleId)
             ->when( ! is_null($search), function($query) use ($search) {
                 return $query->where(function ($query) use ($search) {
                     return $query->where('u.first_name', 'LIKE', '%' . $search . '%')

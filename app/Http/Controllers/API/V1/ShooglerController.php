@@ -42,6 +42,14 @@ class ShooglerController extends BaseApiController
      */
     public function index(ShooglerIndexRequest $request, int $id, int $page, int $pageSize)
     {
+        if ( $page === 0 ) {
+            return ApiResponse::returnError(['page' => 'Page number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ( $pageSize === 0 ) {
+            return ApiResponse::returnError(['pageSize' => 'PageSize number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         try {
             $shoogle = Shoogle::find($id);
             if ( is_null( $shoogle ) ) {

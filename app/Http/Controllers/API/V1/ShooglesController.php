@@ -173,12 +173,10 @@ class ShooglesController extends BaseApiController
     public function userList(?int $page, ?int $pageSize)
     {
         if ( $page === 0 ) {
-            Log::info('$page == 0');
             return ApiResponse::returnError(['page' => 'Page number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if ( $pageSize === 0 ) {
-            Log::info('$pageSize == 0');
             return ApiResponse::returnError(['pageSize' => 'PageSize number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
