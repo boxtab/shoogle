@@ -68,7 +68,7 @@ class ShooglerController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $shooglerResource = ShooglerListResource::collection($shoogler);
+        $shooglerResource =  ( ! is_null( $shoogler ) ) ? ShooglerListResource::collection($shoogler) : [];
         return ApiResponse::returnData($shooglerResource);
     }
 }

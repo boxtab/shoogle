@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Helpers\Helper;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
+use App\Traits\ShooglerTrait;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Log;
  */
 class ShooglerRepository extends Repositories
 {
+    use ShooglerTrait;
+
     /**
      * @var Shoogle
      */
@@ -44,6 +47,9 @@ class ShooglerRepository extends Repositories
      */
     public function getList(int $shoogleId, string $search = null, string $filter = null, int $page = null, int $pageSize = null)
     {
+        $shooglersIDs = $this->getShooglersIDsByShoogleID($shoogleId);
+
+
         // ['recentlyJoined', 'available', 'solo', 'buddied'])
         return DB::table('user_has_shoogle as uhs')
             ->select(DB::raw('
