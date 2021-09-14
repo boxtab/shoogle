@@ -215,7 +215,43 @@ trait ShoogleTrait
             }
             $response[] = $shoogle;
         }
+        return $response;
+    }
 
+    /**
+     * Calculating the number of members who have banned friend requests.
+     *
+     * @param array|null $shoogles
+     * @return array|null
+     */
+    public function setSolosCount( ?array  $shoogles ): ?array
+    {
+        if ( is_null( $shoogles ) ) {
+            return $shoogles;
+        }
+
+        $authenticatedUserID = Auth::id();
+        $solosCount = UserHasShoogle::on()
+            ->select('shoogle_id', DB::raw('count(user_id) as total'))
+            ->whereIn('shoogle_id', $this->getShoogleIDsByUserId($authenticatedUserID))
+            ->where('solo', '=', 1)
+            ->groupBy('shoogle_id')
+            ->get(['shoogle_id', 'total'])
+            ->map(function ($shoogle) {
+                return [$shoogle['shoogle_id'], $shoogle['total']];
+            })
+            ->toAssoc()
+            ->toArray();
+
+        $response = [];
+        foreach ($shoogles as $shoogle) {
+            if ( isset($solosCount[$shoogle->id]) ) {
+                $shoogle->solosCount = $solosCount[$shoogle->id];
+            } else {
+                $shoogle->solosCount = 0;
+            }
+            $response[] = $shoogle;
+        }
         return $response;
     }
 }
