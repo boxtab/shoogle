@@ -24,12 +24,20 @@ class TestController extends Controller
 {
     public function index()
     {
-        null;
-        phpinfo();
+        $collection = collect([
+            ['id'=>1, 'name'=>'Hardik', 'city' => 'Mumbai', 'country' => 'India'],
+            ['id'=>2, 'name'=>'Vimal', 'city' => 'New York', 'country' => 'US'],
+            ['id'=>3, 'name'=>'Harshad', 'city' => 'Gujarat', 'country' => 'India'],
+            ['id'=>4, 'name'=>'Harsukh', 'city' => 'New York', 'country' => 'US'],
+        ]);
 
-//         return $modelHasRole;
+        $grouped = $collection->groupBy(function ($item, $key) {
+            return $item['country'].$item['city'];
+        });
 
-//        $role = $modelHasRole->role->name;
-//        return $role;
+        dd($grouped);
+
+//        null;
+//        phpinfo();
     }
 }

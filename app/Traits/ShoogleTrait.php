@@ -7,6 +7,7 @@ use App\Models\Buddie;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use App\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -156,14 +157,61 @@ trait ShoogleTrait
             ->toAssoc()
             ->toArray();
 
-        Log::info($shooglersCount);
-
         $response = [];
         foreach ($shoogles as $shoogle) {
             if ( isset($shooglersCount[$shoogle->id]) ) {
                 $shoogle->shooglersCount = ($shooglersCount[$shoogle->id] + 1);
             } else {
                 $shoogle->shooglersCount = 1;
+            }
+            $response[] = $shoogle;
+        }
+
+        return $response;
+    }
+
+    /**
+     * Get count of members who have a "friend" in the buddies table.
+     *
+     * @param array|null $shoogles
+     * @return array|null
+     */
+    public function setBuddiesCount( ?array $shoogles ): ?array
+    {
+        if ( is_null( $shoogles ) ) {
+            return $shoogles;
+        }
+
+        $authenticatedUserID = Auth::id();
+        $owners = Shoogle::on()
+            ->select('shoogles.id as shoogle_id', 'shoogles.owner_id as user_id')
+            ->where('owner_id', '=', $authenticatedUserID);
+
+        $members = UserHasShoogle::on()
+            ->select('shoogle_id', 'user_id')
+            ->whereIn('shoogle_id', $this->getShoogleIDsByUserId($authenticatedUserID))
+            ->union($owners);
+
+        $buddies = $members
+            ->whereExists(function($query)
+            {
+                $query->select(DB::raw(1))
+                    ->from('buddies')
+                    ->whereRaw('(buddies.shoogle_id = shoogle_id) AND (buddies.user1_id = user_id OR buddies.user2_id = user_id) ');
+            })
+            ->get()
+            ->toArray();
+
+        $buddiesCount = collect($buddies)->groupBy('shoogle_id')->map(function ($row) {
+            return $row->count('user_id');
+        })->toArray();
+
+        $response = [];
+        foreach ($shoogles as $shoogle) {
+            if ( isset($buddiesCount[$shoogle->id]) ) {
+                $shoogle->buddiesCount = $buddiesCount[$shoogle->id];
+            } else {
+                $shoogle->buddiesCount = 0;
             }
             $response[] = $shoogle;
         }
