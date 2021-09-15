@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\HelperBuddies;
 use App\Models\Buddie;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * Trait ShooglerTrait
@@ -70,9 +72,9 @@ trait ShooglerTrait
 
         $response = [];
         foreach ($shooglers as $shoogler) {
+            $shoogler->baddies = HelperBuddies::haveFriends($this->shoogleID, $shoogler->id);
             $response[] = $shoogler;
         }
-
         return $response;
     }
 
@@ -84,7 +86,11 @@ trait ShooglerTrait
      */
     public function setSolo(?array $shooglers): ?array
     {
-        return $this->setField($shooglers, 'solo', false);
+        $formation = function ($shoogler) {
+            return [$shoogler['user_id'], $shoogler['solo']];
+        };
+
+        return $this->setField($shooglers, 'solo', false, $formation);
     }
 
     /**
@@ -95,7 +101,17 @@ trait ShooglerTrait
      */
     public function setJoinedAt(?array $shooglers): ?array
     {
-        return $this->setField($shooglers, 'joined_at', false);
+        $formation = function ($shoogler) {
+            return [$shoogler['user_id'], date_format($shoogler['joined_at'], 'Y-m-d H:i:s')];
+        };
+
+        $default = Shoogle::on()
+            ->where('id', '=', $this->shoogleID)
+            ->first(['created_at'])
+            ->created_at
+            ->format('Y-m-d H:i:s');
+
+        return $this->setField($shooglers, 'joined_at', $default, $formation);
     }
 
     /**
@@ -106,7 +122,7 @@ trait ShooglerTrait
      * @param $default
      * @return array|null
      */
-    private function setField(?array $shooglers, $fieldName, $default): ?array
+    private function setField(?array $shooglers, $fieldName, $default, $formation): ?array
     {
         if ( is_null( $shooglers ) ) {
             return $shooglers;
@@ -118,18 +134,17 @@ trait ShooglerTrait
             ->where('shoogle_id', '=', $this->shoogleID)
             ->whereIn('user_id', $shooglersIDs)
             ->get(['user_id', $fieldName])
-            ->map(function ($shoogler) use ($fieldName) {
-                return [$shoogler['user_id'], $shoogler[$fieldName]];
-            })
+            ->map($formation)
             ->toAssoc()
             ->toArray();
 
         $response = [];
         foreach ($shooglers as $shoogler) {
+            $fieldNameCamelCase = Str::camel($fieldName);
             if ( isset($field[$shoogler->id]) ) {
-                $shoogler->solo = $field[$shoogler->id];
+                $shoogler->$fieldNameCamelCase = $field[$shoogler->id];
             } else {
-                $shoogler->solo = $default;
+                $shoogler->$fieldNameCamelCase = $default;
             }
             $response[] = $shoogler;
         }

@@ -5,6 +5,10 @@ namespace App\Helpers;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
+/**
+ * Class HelperImage
+ * @package App\Helpers
+ */
 class HelperImage
 {
 
