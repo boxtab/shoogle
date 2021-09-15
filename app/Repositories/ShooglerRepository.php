@@ -48,7 +48,8 @@ class ShooglerRepository extends Repositories
      * @param string|null $filter
      * @param int|null $page
      * @param int|null $pageSize
-     * @return array
+     * @return array|null
+     * @throws \ReflectionException
      */
     public function getShooglerList(int $shoogleId, string $search = null, string $filter = null, int $page = null, int $pageSize = null)
     {
@@ -81,6 +82,7 @@ class ShooglerRepository extends Repositories
         $shooglers = $this->setBaddies($shooglers);
         $shooglers = $this->setSolo($shooglers);
         $shooglers = $this->setJoinedAt($shooglers);
+        $shooglers = $this->filter($shooglers, $filter);
 
         return $shooglers;
 

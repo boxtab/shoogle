@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\ShooglerFilterEnum;
 use App\Helpers\HelperBuddies;
 use App\Models\Buddie;
 use App\Models\Shoogle;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 /**
  * Trait ShooglerTrait
@@ -149,5 +151,29 @@ trait ShooglerTrait
             $response[] = $shoogler;
         }
         return $response;
+    }
+
+    /**
+     * Passes users through a filter.
+     *
+     * @param array|null $shooglers
+     * @param string|null $filter
+     * @return array|null
+     * @throws \ReflectionException
+     */
+    public function filter(?array $shooglers, ?string $filter): ?array
+    {
+        if ( is_null( $shooglers ) ) {
+            return $shooglers;
+        }
+
+        if ( ! in_array( $filter, ShooglerFilterEnum::getArrayIndex()) ) {
+            return $shooglers;
+        }
+
+        Log::info($shooglers);
+
+
+        return $shooglers;
     }
 }

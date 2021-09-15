@@ -55,20 +55,20 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        return ApiResponse::returnError(
-            $exception->getMessage(),
-            Response::HTTP_INTERNAL_SERVER_ERROR
-        );
-//        return parent::render($request, $exception);
+//        return ApiResponse::returnError(
+//            $exception->getMessage(),
+//            Response::HTTP_INTERNAL_SERVER_ERROR
+//        );
+        return parent::render($request, $exception);
     }
 
-    public function register()
-    {
-        $this->renderable(function (NotFoundHttpException $e, $request) {
-            return ApiResponse::returnError(
-                'Resource not found',
-                Response::HTTP_NOT_FOUND
-            );
-        });
-    }
+//    public function register()
+//    {
+//        $this->renderable(function (NotFoundHttpException $e, $request) {
+//            return ApiResponse::returnError(
+//                'Resource not found',
+//                Response::HTTP_NOT_FOUND
+//            );
+//        });
+//    }
 }

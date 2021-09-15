@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ShooglerEnum;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;

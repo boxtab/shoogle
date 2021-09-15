@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ShooglerFilterEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use App\Support\ApiRequest\ApiRequest;
 
@@ -22,12 +24,14 @@ class ShooglerIndexRequest extends ApiRequest
      * Get the validation rules that apply to the request.
      *
      * @return array
+     * @throws \ReflectionException
      */
     public function rules()
     {
         return [
             'query'     => ['nullable', 'string'],
-            'filter'    => ['nullable', Rule::in(['recentlyJoined', 'available', 'solo', 'buddied'])],
+//            'filter'    => ['nullable', Rule::in(ShooglerFilterEnum::getArrayIndex())],
+//            'filter'    => ['nullable', Rule::in(['recentlyJoined', 'available', 'solo', 'buddied'])],
         ];
     }
 }
