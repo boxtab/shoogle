@@ -40,4 +40,99 @@ trait ShooglerTrait
 
         return $shoogler;
     }
+
+    /**
+     * Retrieves and returns member IDs.
+     *
+     * @param array $shooglers
+     * @return array
+     */
+    private function getOnlyShooglersIDs(array $shooglers): array
+    {
+        $response = [];
+        foreach ($shooglers as $shoogler) {
+            $response[] = $shoogler->id;
+        }
+        return $response;
+    }
+
+    /**
+     * User has a friend.
+     *
+     * @param array|null $shooglers
+     * @return array|null
+     */
+    public function setBaddies(?array $shooglers): ?array
+    {
+        if ( is_null( $shooglers ) ) {
+            return $shooglers;
+        }
+
+        $response = [];
+        foreach ($shooglers as $shoogler) {
+            $response[] = $shoogler;
+        }
+
+        return $response;
+    }
+
+    /**
+     * Define and set solo mode.
+     *
+     * @param array|null $shooglers
+     * @return array|null
+     */
+    public function setSolo(?array $shooglers): ?array
+    {
+        return $this->setField($shooglers, 'solo', false);
+    }
+
+    /**
+     * Define and set JoinedAt.
+     *
+     * @param array|null $shooglers
+     * @return array|null
+     */
+    public function setJoinedAt(?array $shooglers): ?array
+    {
+        return $this->setField($shooglers, 'joined_at', false);
+    }
+
+    /**
+     * Fills in the member fields.
+     *
+     * @param array|null $shooglers
+     * @param $fieldName
+     * @param $default
+     * @return array|null
+     */
+    private function setField(?array $shooglers, $fieldName, $default): ?array
+    {
+        if ( is_null( $shooglers ) ) {
+            return $shooglers;
+        }
+
+        $shooglersIDs = $this->getOnlyShooglersIDs($shooglers);
+
+        $field = UserHasShoogle::on()
+            ->where('shoogle_id', '=', $this->shoogleID)
+            ->whereIn('user_id', $shooglersIDs)
+            ->get(['user_id', $fieldName])
+            ->map(function ($shoogler) use ($fieldName) {
+                return [$shoogler['user_id'], $shoogler[$fieldName]];
+            })
+            ->toAssoc()
+            ->toArray();
+
+        $response = [];
+        foreach ($shooglers as $shoogler) {
+            if ( isset($field[$shoogler->id]) ) {
+                $shoogler->solo = $field[$shoogler->id];
+            } else {
+                $shoogler->solo = $default;
+            }
+            $response[] = $shoogler;
+        }
+        return $response;
+    }
 }

@@ -56,7 +56,7 @@ class ShooglerController extends BaseApiController
                 throw new \Exception('Shoogle not found for this ID', Response::HTTP_NOT_FOUND);
             }
 
-            $shoogler = $this->repository->getList(
+            $shoogler = $this->repository->getShooglerList(
                 $id,
                 $request->input('query'),
                 $request->input('filter'),

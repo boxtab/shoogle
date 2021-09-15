@@ -16,14 +16,14 @@ class ShooglerListResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->resource->id,
-            'photo' => $this->resource->photo,
-            'firstName' => $this->resource->firstName,
-            'lastName' => $this->resource->lastName,
-            'about' => $this->resource->about,
-            'buddied' => ( $this->resource->buddied !== 0) ? true : false,
-            'solo' => ( $this->resource->solo !== 0) ? true : false,
-            'joinedAt' => $this->resource->joinedAt,
+            'id'            => $this->resource->id,
+            'profile_image' => $this->resource->profile_image,
+            'firstName'     => $this->resource->firstName,
+            'lastName'      => $this->resource->lastName,
+            'about'         => $this->resource->about,
+            'baddies'       => $this->resource->baddies,
+            'solo'          => $this->resource->solo,
+            'joinedAt'      => $this->resource->joinedAt,
         ];
     }
 }
