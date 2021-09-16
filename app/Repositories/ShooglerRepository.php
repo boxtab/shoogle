@@ -21,6 +21,8 @@ class ShooglerRepository extends Repositories
 {
     use ShooglerTrait;
 
+    const OUTDATED = 1;
+
     /**
      * @var Shoogle
      */

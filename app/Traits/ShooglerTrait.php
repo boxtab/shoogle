@@ -8,12 +8,14 @@ use App\Models\Buddie;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use function PHPUnit\Framework\matches;
 
 /**
  * Trait ShooglerTrait
@@ -163,7 +165,7 @@ trait ShooglerTrait
      */
     public function filter(?array $shooglers, ?string $filter): ?array
     {
-        if ( is_null( $shooglers ) ) {
+        if ( is_null( $shooglers ) || is_null( $filter ) ) {
             return $shooglers;
         }
 
@@ -171,9 +173,49 @@ trait ShooglerTrait
             return $shooglers;
         }
 
-        Log::info($shooglers);
+        switch ($filter) {
+            case ShooglerFilterEnum::RECENTLY_JOINED:
+                $shooglerMatches = (function ($shoogler) {
+                    $carbonJoinedAt = Carbon::parse($shoogler->joinedAt);
+                    $carbonNow = Carbon::now();
+                    return ( $carbonJoinedAt->diff($carbonNow)->days < self::OUTDATED ) ? true : false;
+                });
+                break;
+            case ShooglerFilterEnum::AVAILABLE:
+                $shooglerMatches = (function ($shoogler) {
+                    if ( $shoogler->baddies === false ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+                break;
+            case ShooglerFilterEnum::SOLO:
+                $shooglerMatches = (function ($shoogler) {
+                    if ( $shoogler->solo === true ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+                break;
+            case ShooglerFilterEnum::BUDDIED:
+                $shooglerMatches = (function ($shoogler) {
+                    if ( $shoogler->baddies === true ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+                break;
+        }
 
-
-        return $shooglers;
+        $response = [];
+        foreach ($shooglers as $shoogler) {
+            if ( $shooglerMatches( $shoogler ) ) {
+                $response[] = $shoogler;
+            }
+        }
+        return $response;
     }
 }
