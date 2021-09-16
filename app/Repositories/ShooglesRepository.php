@@ -177,78 +177,42 @@ class ShooglesRepository extends Repositories
      */
     public function search(string $search = null, string $order = null, int $page = null, int $pageSize = null)
     {
-        $innerOrder = ($order === 'asc' || $order === 'desc') ? $order : 'desc';
-
-        $query = DB::table('shoogles as sh')
+        $shoogles = DB::table('shoogles as sh')
             ->select(DB::raw('
                 sh.id as id,
                 sh.title as title,
                 sh.cover_image as coverImage,
-                ifnull(shooglers_count.count_user, 0) as shooglersCount,
-                ifnull(shooglers_buddies.count_user, 0) as buddiesCount,
-                ifnull(shooglers_solo.count_user, 0) as solosCount,
+                null as shooglersCount,
+                null as buddiesCount,
+                null as solosCount,
                 null as buddyName,
-                if(
-                    (
-                        select count(*)
-                        from user_has_shoogle as uhs
-                        where uhs.shoogle_id = sh.id
-                          and uhs.solo=1
-                          and uhs.user_id = '. Auth::id() .'
-                    ) = 0,
-                0, 1) as solo,
-                if(
-                    (
-                        select count(*)
-                        from user_has_shoogle as uhs
-                        where uhs.shoogle_id = sh.id
-                          and uhs.user_id = '. Auth::id() .'
-                    ) = 0,
-                0, 1) as joined
+                null as solo,
+                null as joined
             '))
-            ->leftJoin(DB::raw('
-                    (select
-                        user_has_shoogle.shoogle_id as unique_shoogle_id,
-                        count(user_has_shoogle.user_id) as count_user
-                    from user_has_shoogle
-                    group by user_has_shoogle.shoogle_id)
-                    as shooglers_count
-            '), 'shooglers_count.unique_shoogle_id', '=', 'sh.id')
-            ->leftJoin(DB::raw('
-                    (select
-                        user_has_shoogle.shoogle_id as unique_shoogle_id,
-                        count(user_has_shoogle.user_id) as count_user
-                    from user_has_shoogle
-                         where exists(
-                                        select 1 from buddies
-                                        where user_has_shoogle.shoogle_id = buddies.shoogle_id
-                                        and (user_has_shoogle.user_id = buddies.user1_id or user_has_shoogle.user_id = buddies.user2_id)
-                                   )
-                    group by user_has_shoogle.shoogle_id)
-                    as shooglers_buddies
-            '), 'shooglers_buddies.unique_shoogle_id', '=', 'sh.id')
-            ->leftJoin(DB::raw('
-                    (select
-                        user_has_shoogle.shoogle_id as unique_shoogle_id,
-                        count(user_has_shoogle.user_id) as count_user
-                    from user_has_shoogle
-                    where user_has_shoogle.solo = 1
-                    group by user_has_shoogle.shoogle_id)
-                    as shooglers_solo
-            '), 'shooglers_solo.unique_shoogle_id', '=', 'sh.id')
-            ->when( ! is_null($search), function ($query) use ($search) {
-                return $query
-                    ->where('sh.title', 'like', '%' . $search .'%')
-                    ->orWhere('sh.description', 'like', '%' . $search .'%');
+            ->leftJoin('wellbeing_categories as wc', 'sh.wellbeing_category_id', '=', 'wc.id')
+            ->when( ! is_null($search), function($query) use ($search) {
+                return $query->where(function ($query) use ($search) {
+                    return $query->where('sh.title', 'LIKE', '%' . $search . '%')
+                        ->orWhere('sh.description', 'LIKE', '%' . $search . '%')
+                        ->orWhere('wc.name', 'LIKE', '%' . $search . '%');
+                });
             })
-            ->orderBy('sh.created_at', $innerOrder)
+            ->when( ! is_null($order), function($query) use ($order) {
+                return $query->orderBy('sh.created_at', $order);
+            })
             ->offset($page * $pageSize - $pageSize)
-            ->limit($pageSize);
+            ->limit($pageSize)
+            ->get()
+            ->toArray();
 
+        $shoogles = $this->setShooglersCount($shoogles);
+        $shoogles = $this->setBuddiesCount($shoogles);
+        $shoogles = $this->setSolosCount($shoogles);
+        $shoogles = $this->setBuddy($shoogles);
+        $shoogles = $this->setSoloMode($shoogles);
+        $shoogles = $this->setJoined($shoogles);
 
-//        $query->toSql();
-        $searchResult = $query->get()->toArray();
-        return $searchResult;
+        return $shoogles;
     }
 
 }

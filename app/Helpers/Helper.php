@@ -47,10 +47,19 @@ class Helper
             return $objectContainsArrays;
         }
 
+        if ( gettype( $objectContainsArrays ) === 'array') {
+            $objectContainsStrings = new stdClass();
+            foreach ($objectContainsArrays as $key => $value) {
+                $objectContainsStrings->$key = $value;
+            }
+            return $objectContainsStrings;
+        };
+
         $objectContainsStrings = new stdClass();
-        foreach ($objectContainsArrays as $key => $value) {
-            $objectContainsStrings->$key = $value;
+        foreach ($objectContainsArrays->toArray() as $key => $value) {
+            $objectContainsStrings->$key = implode($value);
         }
+
         return $objectContainsStrings;
     }
 

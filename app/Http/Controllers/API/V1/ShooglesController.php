@@ -181,7 +181,7 @@ class ShooglesController extends BaseApiController
         }
 
         $userList = $this->repository->userList($page, $pageSize);
-        $userListResource = ! is_null( $userList ) ? ShooglesUserListResource::collection($userList) : [];
+        $userListResource = ( ! is_null( $userList ) ) ? ShooglesUserListResource::collection($userList) : [];
 
         return ApiResponse::returnData($userListResource);
     }
@@ -194,15 +194,24 @@ class ShooglesController extends BaseApiController
      * @param int|null $pageSize
      * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function search(ShooglesSearchRequest $request, int $page = null, int $pageSize = null)
+    public function search(ShooglesSearchRequest $request, ?int $page, ?int $pageSize)
     {
+        if ( $page === 0 ) {
+            return ApiResponse::returnError(['page' => 'Page number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ( $pageSize === 0 ) {
+            return ApiResponse::returnError(['pageSize' => 'PageSize number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $searchResult = $this->repository->search(
             $request->input('search'),
             $request->input('order'),
             $page,
             $pageSize
         );
-        $searchResultResource = new ShooglesSearchResultResource($searchResult);
+
+        $searchResultResource = ( ! is_null( $searchResult ) ) ? new ShooglesSearchResultResource($searchResult) : [];
         return ApiResponse::returnData($searchResultResource);
     }
 

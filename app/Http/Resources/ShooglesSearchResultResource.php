@@ -57,7 +57,8 @@ class ShooglesSearchResultResource extends JsonResource
      */
     public function getShoogleCount(): int
     {
-        return (int)Shoogle::on()->count();
+        return count( $this->resource );
+//        return (int)Shoogle::on()->count();
     }
 
     /**
@@ -70,8 +71,8 @@ class ShooglesSearchResultResource extends JsonResource
     {
         return [
             'items' => ShooglesSearchItemsResource::collection($this->resource),
+
             'count' => $this->getShoogleCount(),
-//            'count' => count($this->resource),
             'communityCount' => $this->getCommunityCount(),
             'buddiesCount' => $this->getBuddiesCount(),
             'solosCount' => $this->getSolosCount(),

@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\HelperMember;
 use App\Models\Buddie;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
@@ -249,6 +250,27 @@ trait ShoogleTrait
             } else {
                 $shoogle->solosCount = 0;
             }
+            $response[] = $shoogle;
+        }
+        return $response;
+    }
+
+    /**
+     * Is this user a member of a specific shoogle.
+     *
+     * @param array|null $shoogles
+     * @return array|null
+     */
+    public function setJoined( ?array  $shoogles ): ?array
+    {
+        if ( is_null( $shoogles ) ) {
+            return $shoogles;
+        }
+
+        $authenticatedUserID = Auth::id();
+        $response = [];
+        foreach ($shoogles as $shoogle) {
+            $shoogle->joined = HelperMember::isMember($shoogle->id, $authenticatedUserID);
             $response[] = $shoogle;
         }
         return $response;

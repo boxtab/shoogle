@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Support\ApiRequest\ApiRequest;
+use Illuminate\Validation\Rule;
 
 class ShooglesSearchRequest extends ApiRequest
 {
@@ -25,8 +26,8 @@ class ShooglesSearchRequest extends ApiRequest
     public function rules()
     {
         return [
-            'search' => 'nullable|string',
-            'order' => 'nullable|string',
+            'search' => ['nullable', 'string', ],
+            'order' => ['nullable', 'string', Rule::in(['asc', 'desc', 'ASC', 'DESC']),],
         ];
     }
 }

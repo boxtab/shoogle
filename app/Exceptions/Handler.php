@@ -59,6 +59,7 @@ class Handler extends ExceptionHandler
 //            $exception->getMessage(),
 //            Response::HTTP_INTERNAL_SERVER_ERROR
 //        );
+
         return parent::render($request, $exception);
     }
 
