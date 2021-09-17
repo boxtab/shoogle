@@ -55,10 +55,7 @@ class ProfileRepository extends Repositories
                 'rank',
                 'profile_image',
             ]);
-        if ( ! is_null($profile->profile_image) ) {
-            $profile->profile_image = url(ImageConstant::BASE_PATH_AVATAR_EXTERNAL) . '/' . $profile->profile_image;
-        }
-
+        $profile->profile_image = HelperAvatar::getURLProfileImage( $profile->profile_image );
         return $profile;
     }
 
@@ -70,7 +67,8 @@ class ProfileRepository extends Repositories
      */
     public function updateProfile(Request $request)
     {
-        $profile = User::on()->find( Auth::id() )->first();
+        $profile = User::on()->where('id', '=', Auth::id() )->first();
+        Log::info($profile);
 
         if ( is_null($profile) ) {
             throw new Exception('The authenticated user profile was not found.', Response::HTTP_NOT_FOUND);

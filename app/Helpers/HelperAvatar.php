@@ -154,4 +154,15 @@ class HelperAvatar
         $filePath = static::getPath($fileName);
         static::putBase64Image($filePath, $photoDecoded);
     }
+
+    /**
+     * Full url to the user's image profile.
+     *
+     * @param string|null $fileName
+     * @return string
+     */
+    public static function getURLProfileImage( ?string $fileName ): string
+    {
+        return  ( ! is_null($fileName) ) ? url(ImageConstant::BASE_PATH_AVATAR_EXTERNAL) . '/' . $fileName : null;
+    }
 }

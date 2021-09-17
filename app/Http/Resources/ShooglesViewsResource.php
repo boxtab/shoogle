@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperAvatar;
 use App\Models\UserHasShoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,7 +22,7 @@ class ShooglesViewsResource extends JsonResource
             'photo' => $this->resource->cover_image,
             'creator' => [
                 'id' => $this->resource->owner->id,
-                'avatar' => $this->resource->owner->avatar,
+                'avatar' => HelperAvatar::getURLProfileImage( $this->resource->owner->profile_image ),
             ],
             'createdAt' => $this->resource->created,
             'lastActivity' => $this->resource->updated,
@@ -36,7 +37,7 @@ class ShooglesViewsResource extends JsonResource
                 ->map(function ($item) {
                     return [
                         'id' => $item->user->id,
-                        'avatar' => $item->user->avatar,
+                        'avatar' => $item->user->profile_image,
                     ];
                 })
                 ->toArray(),

@@ -28,6 +28,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
