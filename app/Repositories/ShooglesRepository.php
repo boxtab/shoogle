@@ -31,6 +31,11 @@ class ShooglesRepository extends Repositories
     protected $model;
 
     /**
+     * @var array
+     */
+    private $shooglesAll;
+
+    /**
      * ShoogleRepository constructor.
      *
      * @param Shoogle $model
@@ -177,7 +182,7 @@ class ShooglesRepository extends Repositories
      */
     public function search(string $search = null, string $order = null, int $page = null, int $pageSize = null)
     {
-        $shoogles = DB::table('shoogles as sh')
+        $shooglesQuery = DB::table('shoogles as sh')
             ->select(DB::raw('
                 sh.id as id,
                 sh.title as title,
@@ -199,7 +204,17 @@ class ShooglesRepository extends Repositories
             })
             ->when( ! is_null($order), function($query) use ($order) {
                 return $query->orderBy('sh.created_at', $order);
-            })
+            });
+
+        $this->shooglesAll = $shooglesQuery
+            ->get()
+            ->toArray();
+
+        $this->shooglesAll = $this->setShooglersCount($this->shooglesAll);
+        $this->shooglesAll = $this->setBuddiesCount($this->shooglesAll);
+        $this->shooglesAll = $this->setSolosCount($this->shooglesAll);
+
+        $shoogles = $shooglesQuery
             ->offset($page * $pageSize - $pageSize)
             ->limit($pageSize)
             ->get()
@@ -215,5 +230,72 @@ class ShooglesRepository extends Repositories
         return $shoogles;
     }
 
+    /**
+     * Number of results found.
+     *
+     * @return int
+     */
+    public function getFindCount(): int
+    {
+        if ( is_null( $this->shooglesAll ) ) {
+            return 0;
+        }
+
+        return count($this->shooglesAll);
+    }
+
+    /**
+     * Community count.
+     *
+     * @return int
+     */
+    public function getCommunityCount(): int
+    {
+        if ( is_null( $this->shooglesAll ) ) {
+            return 0;
+        }
+
+        $communityCount = 0;
+        foreach ( $this->shooglesAll as $shoogle ) {
+            $communityCount += $shoogle->shooglersCount;
+        }
+        return $communityCount;
+    }
+
+    /**
+     * Buddies count.
+     *
+     * @return int
+     */
+    public function getBuddiesCount(): int
+    {
+        if ( is_null( $this->shooglesAll ) ) {
+            return 0;
+        }
+
+        $buddiesCount = 0;
+        foreach ( $this->shooglesAll as $shoogle ) {
+            $buddiesCount += $shoogle->buddiesCount;
+        }
+        return $buddiesCount;
+    }
+
+    /**
+     * Solos count.
+     *
+     * @return int
+     */
+    public function getSolosCount(): int
+    {
+        if ( is_null( $this->shooglesAll ) ) {
+            return 0;
+        }
+
+        $solosCount = 0;
+        foreach ( $this->shooglesAll as $shoogle ) {
+            $solosCount += $shoogle->solosCount;
+        }
+        return $solosCount;
+    }
 }
 

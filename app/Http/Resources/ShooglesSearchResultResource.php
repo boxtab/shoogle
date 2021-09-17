@@ -6,59 +6,96 @@ use App\Models\Shoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Class ShooglesSearchResultResource
+ * @package App\Http\Resources
+ */
 class ShooglesSearchResultResource extends JsonResource
 {
     /**
+     * Number of results found.
+     *
+     * @var int
+     */
+    protected $findCount;
+
+    /**
      * Community count.
+     *
+     * @var int
+     */
+    protected $communityCount;
+
+    /**
+     * Buddies count.
+     *
+     * @var int
+     */
+    protected $buddiesCount;
+
+    /**
+     * Solos count.
+     *
+     * @var int
+     */
+    protected $solosCount;
+
+    /**
+     * Total in the database.
      *
      * @return int
      */
-    public function getCommunityCount(): int
+    public function getCount(): int
     {
-        $communityCount = 0;
-        foreach ($this->resource as $shoogle) {
-            $communityCount += $shoogle->shooglersCount;
-        }
-        return $communityCount;
+        return (int)Shoogle::on()->count();
+    }
+
+    /**
+     * Number of results found.
+     *
+     * @param int $findCount
+     * @return $this
+     */
+    public function setFindCount(int $findCount)
+    {
+        $this->findCount = $findCount;
+        return $this;
+    }
+
+    /**
+     * Community count.
+     *
+     * @param int $communityCount
+     * @return $this
+     */
+    public function setCommunityCount(int $communityCount)
+    {
+        $this->communityCount = $communityCount;
+        return $this;
     }
 
     /**
      * Buddies count.
      *
-     * @return int
+     * @param int $buddiesCount
+     * @return $this
      */
-    public function getBuddiesCount(): int
+    public function setBuddiesCount(int $buddiesCount)
     {
-        $buddiesCount = 0;
-        foreach ($this->resource as $shoogle) {
-            $buddiesCount += $shoogle->buddiesCount;
-        }
-        return $buddiesCount;
+        $this->buddiesCount = $buddiesCount;
+        return $this;
     }
 
     /**
      * Solos count.
      *
-     * @return int
+     * @param int $solosCount
+     * @return $this
      */
-    public function getSolosCount(): int
+    public function setSolosCount(int $solosCount)
     {
-        $solosCount = 0;
-        foreach ($this->resource as $shoogle) {
-            $solosCount += $shoogle->solosCount;
-        }
-        return $solosCount;
-    }
-
-    /**
-     * Counting the total number of shoogles.
-     *
-     * @return int
-     */
-    public function getShoogleCount(): int
-    {
-        return count( $this->resource );
-//        return (int)Shoogle::on()->count();
+        $this->solosCount = $solosCount;
+        return $this;
     }
 
     /**
@@ -72,10 +109,11 @@ class ShooglesSearchResultResource extends JsonResource
         return [
             'items' => ShooglesSearchItemsResource::collection($this->resource),
 
-            'count' => $this->getShoogleCount(),
-            'communityCount' => $this->getCommunityCount(),
-            'buddiesCount' => $this->getBuddiesCount(),
-            'solosCount' => $this->getSolosCount(),
+            'count' => $this->getCount(),
+            'findCount' => $this->findCount,
+            'communityCount' => $this->communityCount,
+            'buddiesCount' => $this->buddiesCount,
+            'solosCount' => $this->solosCount,
         ];
     }
 }

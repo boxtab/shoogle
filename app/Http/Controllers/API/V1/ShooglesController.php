@@ -212,7 +212,16 @@ class ShooglesController extends BaseApiController
             $pageSize
         );
 
-        $searchResultResource = ( ! is_null( $searchResult ) ) ? new ShooglesSearchResultResource($searchResult) : [];
+        if ( is_null( $searchResult ) ) {
+            $searchResultResource = [];
+        } else {
+            $searchResultResource = new ShooglesSearchResultResource( $searchResult );
+            $searchResultResource->setFindCount($this->repository->getFindCount());
+            $searchResultResource->setCommunityCount($this->repository->getCommunityCount());
+            $searchResultResource->setBuddiesCount($this->repository->getBuddiesCount());
+            $searchResultResource->setSolosCount($this->repository->getSolosCount());
+        }
+
         return ApiResponse::returnData($searchResultResource);
     }
 
