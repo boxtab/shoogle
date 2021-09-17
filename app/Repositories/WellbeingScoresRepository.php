@@ -197,4 +197,24 @@ class WellbeingScoresRepository extends Repositories
 
         return $this->getAverageFromArrayUsers($arrayUserId, $from, $to);
     }
+
+    /**
+     * Preservation of wellbeing-scores.
+     *
+     * @param int $userID
+     * @param array $scores
+     */
+    public function storeScores(int $userID, array $scores)
+    {
+        DB::table('wellbeing_scores')->insert([
+            'user_id' => $userID,
+            'social' => $scores['social'],
+            'physical' => $scores['physical'],
+            'mental' => $scores['mental'],
+            'economical' => $scores['economical'],
+            'spiritual' => $scores['spiritual'],
+            'emotional' => $scores['emotional'],
+            'intellectual' => $scores['intellectual'],
+        ]);
+    }
 }

@@ -32,15 +32,24 @@ class WelbeingScoresController extends BaseApiController
         $this->repository = $wellbeingScoresRepository;
     }
 
+    /**
+     * Preservation of wellbeing-scores.
+     *
+     * @param WellbeingScoresStoreRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
     public function store(WellbeingScoresStoreRequest $request, $id)
     {
         try {
             $this->repository->existsUser($id);
+            $this->repository->storeScores($id, $request->all());
+
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData(['test'=>123]);
+        return ApiResponse::returnData([]);
     }
 
     /**

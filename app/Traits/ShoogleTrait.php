@@ -145,6 +145,7 @@ trait ShoogleTrait
         }
 
         $authenticatedUserID = Auth::id();
+
         $shooglersCount = UserHasShoogle::on()
             ->select('shoogle_id', DB::raw('count(user_id) as total'))
             ->where('user_id', '<>', $authenticatedUserID)
