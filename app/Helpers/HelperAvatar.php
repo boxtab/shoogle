@@ -159,9 +159,9 @@ class HelperAvatar
      * Full url to the user's image profile.
      *
      * @param string|null $fileName
-     * @return string
+     * @return string|null
      */
-    public static function getURLProfileImage( ?string $fileName ): string
+    public static function getURLProfileImage( ?string $fileName ): ?string
     {
         return  ( ! is_null($fileName) ) ? url(ImageConstant::BASE_PATH_AVATAR_EXTERNAL) . '/' . $fileName : null;
     }

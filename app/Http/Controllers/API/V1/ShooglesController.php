@@ -122,7 +122,7 @@ class ShooglesController extends BaseApiController
             $this->repository->incrementViews($id);
             $shooglesViewsResource = new ShooglesViewsResource($shoogles);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData($shooglesViewsResource);
