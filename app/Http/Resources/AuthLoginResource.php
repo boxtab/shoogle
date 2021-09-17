@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperAvatar;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
 
@@ -21,7 +22,7 @@ class AuthLoginResource extends JsonResource
             'lastName'  => auth()->user()->last_name,
             'email'     => auth()->user()->email,
             'role'      => count( auth()->user()->getRoleNames() ) !== 0 ? auth()->user()->getRoleNames()[0] : null,
-            'avatar'    => auth()->user()->avatar,
+            'avatar'    => HelperAvatar::getURLProfileImage( auth()->user()->profile_image ),
         ];
     }
 }

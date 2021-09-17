@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperAvatar;
 use App\Models\Buddie;
 use App\Models\BuddyRequest;
 use App\Models\Shoogle;
@@ -26,7 +27,7 @@ class ShooglesResource extends JsonResource
                 'email' => $this->resource->owner->email,
                 'firstName' => $this->resource->owner->first_name,
                 'lastName' => $this->resource->owner->last_name,
-                'profileImage' => $this->resource->owner->profile_image,
+                'profileImage' => HelperAvatar::getURLProfileImage( $this->resource->owner->profile_image ),
             ],
             'createdAt' => $this->resource->created,
             'lastActivity' => $this->resource->updated,
@@ -37,7 +38,7 @@ class ShooglesResource extends JsonResource
                 ->get()
                 ->map(function ($item) {
                     return [
-                        'profile_image' => $item->user->profile_image,
+                        'profile_image' => HelperAvatar::getURLProfileImage( $item->user->profile_image ),
                         'id' => $item->user->id,
                         'firstName' => $item->user->first_name,
                         'lastName' => $item->user->last_name,
@@ -54,12 +55,12 @@ class ShooglesResource extends JsonResource
                         'user1' => [
                             'firstName' => $item->user1->first_name,
                             'lastName' => $item->user1->last_name,
-                            'profileImage' => $item->user1->profile_image,
+                            'profileImage' => HelperAvatar::getURLProfileImage( $item->user1->profile_image ),
                         ],
                         'user2' => [
                             'firstName' => $item->user2->first_name,
                             'lastName' => $item->user2->last_name,
-                            'profileImage' => $item->user2->profile_image,
+                            'profileImage' => HelperAvatar::getURLProfileImage( $item->user2->profile_image ),
                         ],
                     ];
                 })

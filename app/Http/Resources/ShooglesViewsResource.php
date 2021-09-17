@@ -37,7 +37,7 @@ class ShooglesViewsResource extends JsonResource
                 ->map(function ($item) {
                     return [
                         'id' => $item->user->id,
-                        'avatar' => $item->user->profile_image,
+                        'avatar' => HelperAvatar::getURLProfileImage( $item->user->profile_image ),
                     ];
                 })
                 ->toArray(),

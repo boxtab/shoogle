@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
+use App\Helpers\HelperAvatar;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -22,7 +23,7 @@ class UserProfileFrontResource extends JsonResource
     {
         return [
             'id'                => $this->resource->id,
-            'photo'             => $this->resource->avatar,
+            'photo'             => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
             'firstName'         => $this->resource->first_name,
             'lastName'          => $this->resource->last_name,
             'departmentId'      => $this->resource->department_id,

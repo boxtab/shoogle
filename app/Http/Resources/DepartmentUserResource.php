@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperAvatar;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
 
@@ -21,7 +22,7 @@ class DepartmentUserResource extends JsonResource
                 'firstName' => $item->first_name,
                 'lastName' => $item->last_name,
                 'email' => $item->email,
-                'profileImage' => $item->profile_image,
+                'profileImage' => HelperAvatar::getURLProfileImage( $item->profile_image ),
             ];
         });
     }

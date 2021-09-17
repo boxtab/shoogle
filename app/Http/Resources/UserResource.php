@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperAvatar;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -34,7 +35,7 @@ class UserResource extends JsonResource
             'lastName'  => $this->last_name,
             'email'     => $this->email,
             'role'      => count( $this->getRoleNames() ) !== 0 ? $this->getRoleNames()[0] : null,
-            'avatar'    => $this->avatar,
+            'avatar'    => HelperAvatar::getURLProfileImage( $this->avatar ),
         ];
     }
 

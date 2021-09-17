@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperAvatar;
 use App\Models\Shoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +20,7 @@ class UserListResource extends JsonResource
         return $this->resource->map(function ($item) {
             return [
                 'id'            => $item->id,
-                'profileImage'  => $item->profile_image,
+                'profileImage'  => HelperAvatar::getURLProfileImage( $item->profile_image ),
                 'firstName'     => $item->first_name,
                 'lastName'      => $item->last_name,
                 'department'    => $item->department->name,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperAvatar;
 use App\Models\UserHasReward;
 use App\User;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,7 +22,7 @@ class ProfileShowResource extends JsonResource
             'lastName'              => $this->resource->last_name,
             'about'                 => $this->resource->about,
             'rank'                  => $this->resource->rank,
-            'profileImage'          => $this->resource->profile_image,
+            'profileImage'          => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
             'activeShooglesCount'   => $this->resource->activeShooglesCount,
             'inactiveShooglesCount' => $this->resource->inactiveShooglesCount,
             'rewards'               => UserHasRewardCollection::collection(
