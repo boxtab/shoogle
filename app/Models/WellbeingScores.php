@@ -37,6 +37,7 @@ class WellbeingScores extends BaseModel
         'economical',
         'spiritual',
         'emotional',
+        'intellectual',
         'created_at',
         'updated_at',
     ];
@@ -50,6 +51,7 @@ class WellbeingScores extends BaseModel
         'economical' => 'integer',
         'spiritual' => 'integer',
         'emotional' => 'integer',
+        'intellectual' => 'integer',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];

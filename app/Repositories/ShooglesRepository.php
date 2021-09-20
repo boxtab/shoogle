@@ -8,6 +8,7 @@ use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\Models\UserHasShoogle;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\ShoogleCountTrait;
 use App\Traits\ShoogleTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Log;
  */
 class ShooglesRepository extends Repositories
 {
-    use ShoogleTrait;
+    use ShoogleTrait, ShoogleCountTrait;
 
     /**
      * @var Shoogle
@@ -165,6 +166,7 @@ class ShooglesRepository extends Repositories
         $shoogles = $this->setShooglersCount($shoogles);
         $shoogles = $this->setBuddiesCount($shoogles);
         $shoogles = $this->setSolosCount($shoogles);
+
         $shoogles = $this->setBuddy($shoogles);
         $shoogles = $this->setSoloMode($shoogles);
 
@@ -210,9 +212,9 @@ class ShooglesRepository extends Repositories
             ->get()
             ->toArray();
 
-        $this->shooglesAll = $this->setShooglersCount($this->shooglesAll);
-        $this->shooglesAll = $this->setBuddiesCount($this->shooglesAll);
-        $this->shooglesAll = $this->setSolosCount($this->shooglesAll);
+        $this->shooglesAll = $this->setGeneralShooglersCount($this->shooglesAll);
+        $this->shooglesAll = $this->setGeneralBuddiesCount($this->shooglesAll);
+        $this->shooglesAll = $this->setGeneralSolosCount($this->shooglesAll);
 
         $shoogles = $shooglesQuery
             ->offset($page * $pageSize - $pageSize)
@@ -220,9 +222,10 @@ class ShooglesRepository extends Repositories
             ->get()
             ->toArray();
 
-        $shoogles = $this->setShooglersCount($shoogles);
-        $shoogles = $this->setBuddiesCount($shoogles);
-        $shoogles = $this->setSolosCount($shoogles);
+        $shoogles = $this->setGeneralShooglersCount($shoogles);
+        $shoogles = $this->setGeneralBuddiesCount($shoogles);
+        $shoogles = $this->setGeneralSolosCount($shoogles);
+
         $shoogles = $this->setBuddy($shoogles);
         $shoogles = $this->setSoloMode($shoogles);
         $shoogles = $this->setJoined($shoogles);

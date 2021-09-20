@@ -46,12 +46,11 @@ Route::group(['prefix' => 'shared/v1'], function () {
     Route::post('password/reset', [AuthController::class, 'passwordReset']);
 
     // POST /api/shared/v1/user/:id/wellbeing-scores
-    Route::post('user/{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageUser'])
-        ->where('id', '[0-9]+')
+    Route::post('user/wellbeing-scores', [WelbeingScoresController::class, 'averageUser'])
         ->middleware(['auth:api', 'user_already_logged_in', 'cors']);
 
-    // POST /api/shared/v1/user/:id/wellbeing-scores/store
-    Route::post('user/{id}/wellbeing-scores/store', [WelbeingScoresController::class, 'store'])
+    // POST /api/shared/v1/user/wellbeing-scores/store
+    Route::post('user/wellbeing-scores/store', [WelbeingScoresController::class, 'store'])
         ->where('id', '[0-9]+')
         ->middleware(['auth:api', 'user_already_logged_in', 'cors']);
 });

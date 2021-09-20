@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -201,13 +202,12 @@ class WellbeingScoresRepository extends Repositories
     /**
      * Preservation of wellbeing-scores.
      *
-     * @param int $userID
      * @param array $scores
      */
-    public function storeScores(int $userID, array $scores)
+    public function storeScores(array $scores)
     {
-        DB::table('wellbeing_scores')->insert([
-            'user_id' => $userID,
+        $this->model->create([
+            'user_id' => Auth::id(),
             'social' => $scores['social'],
             'physical' => $scores['physical'],
             'mental' => $scores['mental'],
@@ -216,5 +216,15 @@ class WellbeingScoresRepository extends Repositories
             'emotional' => $scores['emotional'],
             'intellectual' => $scores['intellectual'],
         ]);
+//        DB::table('wellbeing_scores')->insert([
+//            'user_id' => Auth::id(),
+//            'social' => $scores['social'],
+//            'physical' => $scores['physical'],
+//            'mental' => $scores['mental'],
+//            'economical' => $scores['economical'],
+//            'spiritual' => $scores['spiritual'],
+//            'emotional' => $scores['emotional'],
+//            'intellectual' => $scores['intellectual'],
+//        ]);
     }
 }

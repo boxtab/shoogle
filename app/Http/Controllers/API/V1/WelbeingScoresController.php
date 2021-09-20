@@ -36,14 +36,12 @@ class WelbeingScoresController extends BaseApiController
      * Preservation of wellbeing-scores.
      *
      * @param WellbeingScoresStoreRequest $request
-     * @param $id
      * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function store(WellbeingScoresStoreRequest $request, $id)
+    public function store(WellbeingScoresStoreRequest $request)
     {
         try {
-            $this->repository->existsUser($id);
-            $this->repository->storeScores($id, $request->all());
+            $this->repository->storeScores($request->all());
 
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -56,14 +54,12 @@ class WelbeingScoresController extends BaseApiController
      * The average of the user wellbeing scores.
      *
      * @param WellbeingScoresAverageRequest $request
-     * @param $id
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function averageUser(WellbeingScoresAverageRequest $request, $id)
+    public function averageUser(WellbeingScoresAverageRequest $request)
     {
         try {
-            $this->repository->existsUser($id);
-            $average = $this->repository->getAverageUser( $id, $request->input('from'), $request->input('to') );
+            $average = $this->repository->getAverageUser( Auth::id(), $request->input('from'), $request->input('to') );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
