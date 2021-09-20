@@ -55,7 +55,6 @@ class ProfileRepository extends Repositories
                 'rank',
                 'profile_image',
             ]);
-        $profile->profile_image = HelperAvatar::getURLProfileImage( $profile->profile_image );
         return $profile;
     }
 
