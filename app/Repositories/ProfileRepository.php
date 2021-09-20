@@ -67,7 +67,6 @@ class ProfileRepository extends Repositories
     public function updateProfile(Request $request)
     {
         $profile = User::on()->where('id', '=', Auth::id() )->first();
-        Log::info($profile);
 
         if ( is_null($profile) ) {
             throw new Exception('The authenticated user profile was not found.', Response::HTTP_NOT_FOUND);

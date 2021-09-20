@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\HelperShoogleStatistic;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
@@ -23,18 +24,9 @@ class TestController extends Controller
 {
     public function index()
     {
-        $collection = collect([
-            ['id'=>1, 'name'=>'Hardik', 'city' => 'Mumbai', 'country' => 'India'],
-            ['id'=>2, 'name'=>'Vimal', 'city' => 'New York', 'country' => 'US'],
-            ['id'=>3, 'name'=>'Harshad', 'city' => 'Gujarat', 'country' => 'India'],
-            ['id'=>4, 'name'=>'Harsukh', 'city' => 'New York', 'country' => 'US'],
-        ]);
+        $shooglersCount = HelperShoogleStatistic::getBuddiesCount(2);
 
-        $grouped = $collection->groupBy(function ($item, $key) {
-            return $item['country'].$item['city'];
-        });
-
-        dd($grouped);
+        dd($shooglersCount);
 
 //        null;
 //        phpinfo();
