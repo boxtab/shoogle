@@ -28,6 +28,7 @@ class ShooglesUserListResource extends JsonResource
             'solosCount'        => $this->resource->solosCount,
             'buddyName'         => $this->resource->buddyName,
             'solo'              => $this->resource->solo,
+            'owner'             => $this->resource->owner,
         ];
     }
 }

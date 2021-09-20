@@ -155,7 +155,8 @@ class ShooglesRepository extends Repositories
                 null as buddiesCount,
                 null as solosCount,
                 null as buddyName,
-                null as solo
+                null as solo,
+                null as owner
             '))
             ->whereIn('sh.id', $shoogleIDs)
             ->offset($page * $pageSize - $pageSize)
@@ -169,6 +170,7 @@ class ShooglesRepository extends Repositories
 
         $shoogles = $this->setBuddy($shoogles);
         $shoogles = $this->setSoloMode($shoogles);
+        $shoogles = $this->setOwner($shoogles);
 
         return $shoogles;
     }

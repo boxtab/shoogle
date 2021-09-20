@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Helpers\HelperMember;
+use App\Helpers\HelperShoogleList;
 use App\Models\Buddie;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use PHPUnit\TextUI\Help;
 
 /**
  * Trait ShoogleTrait
@@ -272,6 +274,26 @@ trait ShoogleTrait
         $response = [];
         foreach ($shoogles as $shoogle) {
             $shoogle->joined = HelperMember::isMember($shoogle->id, $authenticatedUserID);
+            $response[] = $shoogle;
+        }
+        return $response;
+    }
+
+    /**
+     * Is the current user a shoogle creator.
+     *
+     * @param array|null $shoogles
+     * @return array|null
+     */
+    public function setOwner(?array $shoogles): ?array
+    {
+        if ( is_null( $shoogles ) ) {
+            return $shoogles;
+        }
+
+        $response = [];
+        foreach ($shoogles as $shoogle) {
+            $shoogle->owner = HelperShoogleList::isOwner(Auth::id(), $shoogle->id);
             $response[] = $shoogle;
         }
         return $response;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleStatistic;
 use App\Models\Company;
 use App\Models\Invite;
@@ -24,9 +25,8 @@ class TestController extends Controller
 {
     public function index()
     {
-        $shooglersCount = HelperShoogleStatistic::getBuddiesCount(2);
-
-        dd($shooglersCount);
+        $tmp = HelperShoogleList::isOwner(3, 2);
+        dd($tmp);
 
 //        null;
 //        phpinfo();
