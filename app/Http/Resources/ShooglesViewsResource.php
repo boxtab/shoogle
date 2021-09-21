@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Helpers\HelperAvatar;
+use App\Helpers\HelperShoogleStatistic;
 use App\Models\UserHasShoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -44,6 +45,9 @@ class ShooglesViewsResource extends JsonResource
             // mostActiveShooglersCount - this plug
             'mostActiveShooglersCount' => UserHasShoogle::where('shoogle_id', $this->resource->id)->count(),
             'views' => $this->resource->views,
+            'shooglersCount' => HelperShoogleStatistic::getShooglersCount($this->resource->id),
+            'buddiesCount' => HelperShoogleStatistic::getBuddiesCount($this->resource->id),
+            'solosCount' => HelperShoogleStatistic::getSolosCount($this->resource->id),
         ];
     }
 }
