@@ -216,15 +216,5 @@ class WellbeingScoresRepository extends Repositories
             'emotional' => $scores['emotional'],
             'intellectual' => $scores['intellectual'],
         ]);
-//        DB::table('wellbeing_scores')->insert([
-//            'user_id' => Auth::id(),
-//            'social' => $scores['social'],
-//            'physical' => $scores['physical'],
-//            'mental' => $scores['mental'],
-//            'economical' => $scores['economical'],
-//            'spiritual' => $scores['spiritual'],
-//            'emotional' => $scores['emotional'],
-//            'intellectual' => $scores['intellectual'],
-//        ]);
     }
 }

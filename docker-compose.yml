@@ -12,6 +12,8 @@ services:
     image: digitalocean.com/php
     container_name: shoogle_app
     restart: unless-stopped
+#    environment:
+#      - TZ=Europe/Kiev
     tty: true
     command: php-fpm
     working_dir: /var/www
@@ -28,6 +30,8 @@ services:
     image: nginx:alpine
     container_name: shoogle_webserver
     restart: unless-stopped
+#    environment:
+#      - TZ=Europe/Kiev
     tty: true
     ports:
       - "8080:80"
@@ -44,6 +48,7 @@ services:
     container_name: shoogle_db
     restart: unless-stopped
     environment:
+#      - TZ=Europe/Kiev
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     tty: true
     env_file:
