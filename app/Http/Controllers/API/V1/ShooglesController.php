@@ -73,7 +73,7 @@ class ShooglesController extends BaseApiController
     public function create(ShooglesCreateRequest $request)
     {
         try {
-            $this->repository->create([
+            $shoogle = $this->repository->create([
                 'owner_id' => Auth()->user()->id,
                 'wellbeing_category_id' => $request->wellbeingCategoryId,
                 'active' => $request->active,
@@ -88,7 +88,7 @@ class ShooglesController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData([]);
+        return ApiResponse::returnData(['lastInsertId' => $shoogle->id]);
     }
 
     /**
