@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleStatistic;
+use App\Helpers\HelperShooglesViews;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
@@ -25,9 +26,9 @@ class TestController extends Controller
 {
     public function index()
     {
-        $tmp = HelperShoogleList::isOwner(3, 2);
-        dd($tmp);
-
+//        $tmp = HelperShooglesViews::getLastActivityBy(2);
+        return date('Y-m-d H:i:s');
+//        dd($tmp);
 //        null;
 //        phpinfo();
     }

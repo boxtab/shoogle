@@ -14,6 +14,7 @@ services:
     restart: unless-stopped
 #    environment:
 #      - TZ=Europe/Kiev
+#      - TZ=Etc/GMT+3
     tty: true
     command: php-fpm
     working_dir: /var/www
@@ -32,6 +33,7 @@ services:
     restart: unless-stopped
 #    environment:
 #      - TZ=Europe/Kiev
+#      - TZ=Etc/GMT+3
     tty: true
     ports:
       - "8080:80"
@@ -49,6 +51,7 @@ services:
     restart: unless-stopped
     environment:
 #      - TZ=Europe/Kiev
+#      - TZ=Etc/GMT+3
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     tty: true
     env_file:

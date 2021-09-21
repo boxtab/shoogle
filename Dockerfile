@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
+    tzdata \
     netcat
 
 # Clear cache

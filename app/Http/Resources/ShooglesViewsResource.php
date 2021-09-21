@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperShoogleStatistic;
+use App\Helpers\HelperShooglesViews;
 use App\Models\UserHasShoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,10 +29,11 @@ class ShooglesViewsResource extends JsonResource
             'createdAt' => $this->resource->created,
             'lastActivity' => $this->resource->updated,
             // lastActivityBy - this plug
-            'lastActivityBy' => [
-                'id' => $this->resource->owner->id,
-                'avatar' => $this->resource->owner->avatar,
-            ],
+//            'lastActivityBy' => [
+//                'id' => $this->resource->owner->id,
+//                'avatar' => $this->resource->owner->avatar,
+//            ],
+            'lastActivityBy' => HelperShooglesViews::getLastActivityBy($this->resource->id),
             // mostActiveShooglers - this plug
             'mostActiveShooglers' => UserHasShoogle::where('shoogle_id', $this->resource->id)
                 ->get()
