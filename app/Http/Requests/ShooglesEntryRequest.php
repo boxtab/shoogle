@@ -29,7 +29,7 @@ class ShooglesEntryRequest extends ApiRequest
     public function rules()
     {
         return [
-            'userId' => 'required|exists:users,id',
+//            'userId' => 'required|exists:users,id',
             'shoogleId' => 'required|exists:shoogles,id',
             'note' => 'nullable|string',
         ];

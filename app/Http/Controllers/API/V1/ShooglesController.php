@@ -163,12 +163,12 @@ class ShooglesController extends BaseApiController
     {
         try {
             $this->repository->entry(
-                $request->input('userId'),
+                Auth::id(),
                 $request->input('shoogleId'),
                 $request->input('note')
             );
         } catch (Exception $e) {
-            if ($e->getCode() === 23000) {
+            if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('The user is already a member of the shoogle!');
             } else {
                 return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
