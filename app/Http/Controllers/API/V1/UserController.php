@@ -85,12 +85,12 @@ class UserController extends BaseApiController
     public function showFront($id)
     {
         try {
-            $record = $this->findRecordByID($id);
+            $user = $this->findRecordByID($id);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData(new UserProfileFrontResource($record));
+        return ApiResponse::returnData(new UserProfileFrontResource($user));
     }
 
     /**
@@ -103,12 +103,12 @@ class UserController extends BaseApiController
     public function showAdmin($id)
     {
         try {
-            $record = $this->findRecordByID($id);
+            $user = $this->findRecordByID($id);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData(new UserProfileAdminResource($record));
+        return ApiResponse::returnData(new UserProfileAdminResource($user));
     }
 
     /**

@@ -170,14 +170,42 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function getActiveShooglesCountAttribute()
+    /**
+     * The number of shoogles a user has.
+     *
+     * @return int|null
+     */
+    public function getProfileShooglesAttribute(): ?int
     {
-        return 0;
+        return Shoogle::on()
+            ->where('owner_id', '=', $this->id)
+            ->count();
     }
 
-    public function getInactiveShooglesCountAttribute()
+    /**
+     * The number of active shoogles for the user.
+     *
+     * @return int|null
+     */
+    public function getProfileActiveAttribute(): ?int
     {
-        return Shoogle::where('owner_id', $this->id)->count() - $this->getActiveShooglesCountAttribute();
+        return Shoogle::on()
+            ->where('owner_id', '=', $this->id)
+            ->where('active', '=', 1)
+            ->count();
+    }
+
+    /**
+     * The number of inactive shoogles for the user.
+     *
+     * @return int|null
+     */
+    public function getProfileInactiveAttribute(): ?int
+    {
+        return Shoogle::on()
+            ->where('owner_id', '=', $this->id)
+            ->where('active', '=', 0)
+            ->count();
     }
 
     /**

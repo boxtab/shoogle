@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Helpers\HelperAvatar;
+use App\Helpers\HelperReward;
 use App\Models\UserHasReward;
 use App\User;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -23,14 +24,9 @@ class ProfileShowResource extends JsonResource
             'about'                 => $this->resource->about,
             'rank'                  => $this->resource->rank,
             'profileImage'          => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
-            'activeShooglesCount'   => $this->resource->activeShooglesCount,
-            'inactiveShooglesCount' => $this->resource->inactiveShooglesCount,
-            'rewards'               => UserHasRewardCollection::collection(
-                UserHasReward::where('user_id', $this->resource->id)
-                    ->orderBy('created_at', 'desc')
-                    ->limit(4)
-                    ->get()
-            ),
+            'activeShooglesCount'   => $this->resource->profile_active,
+            'inactiveShooglesCount' => $this->resource->profile_inactive,
+            'rewards'               => UserHasRewardCollection::collection( HelperReward::getReward($this->resource->id) ),
         ];
     }
 }
