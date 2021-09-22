@@ -35,15 +35,16 @@ class ShooglesViewsResource extends JsonResource
 //            ],
             'lastActivityBy' => HelperShooglesViews::getLastActivityBy($this->resource->id),
             // mostActiveShooglers - this plug
-            'mostActiveShooglers' => UserHasShoogle::where('shoogle_id', $this->resource->id)
-                ->get()
-                ->map(function ($item) {
-                    return [
-                        'id' => $item->user->id,
-                        'avatar' => HelperAvatar::getURLProfileImage( $item->user->profile_image ),
-                    ];
-                })
-                ->toArray(),
+            'mostActiveShooglers' => HelperShooglesViews::getMostActiveShooglers($this->resource->id),
+//            'mostActiveShooglers' => UserHasShoogle::where('shoogle_id', $this->resource->id)
+//                ->get()
+//                ->map(function ($item) {
+//                    return [
+//                        'id' => $item->user->id,
+//                        'avatar' => HelperAvatar::getURLProfileImage( $item->user->profile_image ),
+//                    ];
+//                })
+//                ->toArray(),
             // mostActiveShooglersCount - this plug
             'mostActiveShooglersCount' => UserHasShoogle::where('shoogle_id', $this->resource->id)->count(),
             'views' => $this->resource->views,

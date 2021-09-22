@@ -57,7 +57,7 @@ class ShoogleViews extends BaseModel
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'owner_id', 'id')
+        return $this->belongsTo(User::class, 'user_id', 'id')
             ->withDefault();
     }
 }

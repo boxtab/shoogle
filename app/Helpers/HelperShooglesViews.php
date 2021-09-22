@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\User;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class HelperShooglesViews
@@ -47,6 +48,42 @@ class HelperShooglesViews
 
         $response['id'] = $userID;
         $response['avatar'] = HelperAvatar::getURLProfileImage($profileImage);
+
+        return $response;
+    }
+
+    /**
+     * Get the latest active shoogla users.
+     *
+     * @param int|null $shoogleID
+     * @return array
+     */
+    public static function getMostActiveShooglers(?int $shoogleID): array
+    {
+        $response = [];
+
+        if ( is_null($shoogleID) ) {
+            return $response;
+        }
+
+        if ( ! Shoogle::on()->where('id', '=', $shoogleID)->exists() ) {
+            return $response;
+        }
+
+        $shooglesViews = ShoogleViews::on()
+            ->whereHas('user')
+            ->where('shoogle_id', '=', $shoogleID)
+            ->orderBy('last_view', 'DESC')
+            ->get()
+            ->map(function($item) {
+                return [
+                    'id' => $item->user_id,
+                    'avatar' => HelperAvatar::getURLProfileImage($item->user->profile_image),
+                ];
+            })
+            ->toArray();
+
+        $response = $shooglesViews;
 
         return $response;
     }
