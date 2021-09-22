@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Helpers\Helper;
 use App\Helpers\HelperRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ShooglesEntryRequest;
 use App\Http\Requests\ShooglesPaginationRequest;
 use App\Http\Requests\ShooglesSearchRequest;
 use App\Http\Requests\ShoogleTurnOnOffRequest;
@@ -149,6 +150,30 @@ class ShooglesController extends BaseApiController
     public function soloNo(int $id = null)
     {
         $this->repository->soloChange($id, false);
+        return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Shoogle entry method.
+     *
+     * @param ShooglesEntryRequest $request
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function entry(ShooglesEntryRequest $request)
+    {
+        try {
+            $this->repository->entry(
+                $request->input('userId'),
+                $request->input('shoogleId'),
+                $request->input('note')
+            );
+        } catch (Exception $e) {
+            if ($e->getCode() === 23000) {
+                return ApiResponse::returnError('The user is already a member of the shoogle!');
+            } else {
+                return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
     }
 

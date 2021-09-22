@@ -123,6 +123,22 @@ class ShooglesRepository extends Repositories
     }
 
     /**
+     * Shoogle entry method.
+     *
+     * @param int $userID
+     * @param int $shoogleId
+     * @param string|null $note
+     */
+    public function entry(int $userID, int $shoogleId, ?string $note): void
+    {
+        UserHasShoogle::on()->create([
+            'user_id' => $userID,
+            'shoogle_id' => $shoogleId,
+            'joined_at' => Carbon::now(),
+        ]);
+    }
+
+    /**
      * Shoogle exit method.
      *
      * @param int $shoogleId

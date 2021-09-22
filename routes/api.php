@@ -134,6 +134,9 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
         // POST /api/front/v1/shoogle/:id/solo/0
         Route::post('{id}/solo/0', [ShooglesController::class, 'soloNo'])->where('id', '[0-9]+');
 
+        // POST /api/front/v1/shoogle/entry
+        Route::post('entry', [ShooglesController::class, 'entry']);
+
         // POST /api/front/v1/shoogle/:id/leave
         Route::post('{id}/leave', [ShooglesController::class, 'leave'])->where('id', '[0-9]+');
 
