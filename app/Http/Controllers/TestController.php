@@ -13,9 +13,11 @@ use App\Models\Shoogle;
 use App\Models\WellbeingScores;
 use App\Repositories\TestRepository;
 use Carbon\Carbon;
+use Database\Seeders\IconRewardsSeeder;
 use Illuminate\Http\Request;
 use App\User;
 use App\Constants\RoleConstant;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Recurr\Rule;
 use Recurr\Transformer\TextTransformer;
@@ -28,23 +30,29 @@ class TestController extends Controller
 {
     public function index()
     {
-//        $rewards = [];
-//        $files = Storage::disk('public')->files(RewardConstant::PATH);
-//        for ($i = 0; $i < count($files); $i++) {
-//            $reward = [
-//                'id' => $i + 1,
-//                'name' => ucfirst( str_replace( '_', ' ', pathinfo($files[$i], PATHINFO_FILENAME) ) ),
+        $tmp = new IconRewardsSeeder();
+        $tmp2 = $tmp->getRewards();
+        dd($tmp2);
+
+/*
+        $rewards = [];
+        $path = public_path(RewardConstant::PATH);
+        $files = scandir($path);
+        $files = array_values( array_diff($files, ['.', '..']) );
+        dd($files);
+
+        for ($i = 0; $i < count($files); $i++) {
+            $reward = [
+                'id' => $i + 1,
+                'name' => ucfirst( str_replace( '_', ' ', pathinfo($files[$i], PATHINFO_FILENAME) ) ),
+                'icon' => $files[$i],
 //                'icon' => substr($files[$i], strlen(RewardConstant::PATH . '/')),
-//                'created_at' => now(),
-//                'updated_at' => now(),
-//            ];
-//            $rewards[] = $reward;
-//        }
-//        dd($files, $rewards);
-//        $tmp = HelperShooglesViews::getLastActivityBy(2);
-//        return date('Y-m-d H:i:s');
-//        dd($tmp);
-//        null;
-//        phpinfo();
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+            $rewards[] = $reward;
+        }
+        dd($rewards);
+*/
     }
 }

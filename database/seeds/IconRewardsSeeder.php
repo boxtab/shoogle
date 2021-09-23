@@ -36,12 +36,16 @@ class IconRewardsSeeder extends Seeder
     private function getRewards()
     {
         $rewards = [];
-        $files = Storage::disk('public')->files(RewardConstant::PATH);
+
+        $path = public_path(RewardConstant::PATH);
+        $files = scandir($path);
+        $files = array_values( array_diff($files, ['.', '..']) );
+
         for ($i = 0; $i < count($files); $i++) {
             $reward = [
                 'id' => $i + 1,
                 'name' => ucfirst( str_replace( '_', ' ', pathinfo($files[$i], PATHINFO_FILENAME) ) ),
-                'icon' => substr($files[$i], strlen(RewardConstant::PATH . '/')),
+                'icon' => $files[$i],
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -58,20 +62,7 @@ class IconRewardsSeeder extends Seeder
     public function run()
     {
         $rows = DB::table('rewards')->upsert( $this->getRewards(), 'id' );
-        echo "Rows: $rows\n";
-
-        /*
-        $rows = DB::table('rewards')->insertOrIgnore([
-            ['id' => 1, 'name' => 'ApplePie', 'icon' => 'ApplePie.png', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'name' => 'BlessUp', 'icon' => 'BlessUp.png', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 3, 'name' => 'Facepalm', 'icon' => 'Facepalm.png', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 4, 'name' => 'HealthcareHero', 'icon' => 'HealthcareHero.png', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 5, 'name' => 'HotDog', 'icon' => 'HotDog.png', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 6, 'name' => 'NarwhalSalute', 'icon' => 'NarwhalSalute.png', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 7, 'name' => 'TreeHug', 'icon' => 'TreeHug.png', 'created_at' => now(), 'updated_at' => now()],
-        ]);
 
         echo "Rows: $rows\n";
-        */
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Constants\ImageConstant;
+use App\Constants\RewardConstant;
 use App\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;

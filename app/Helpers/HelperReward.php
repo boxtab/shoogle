@@ -25,4 +25,15 @@ class HelperReward
             ->limit(RewardConstant::LIMIT)
             ->get();
     }
+
+    /**
+     * Full url to the user reward.
+     *
+     * @param string|null $fileName
+     * @return string|null
+     */
+    public static function getURLReward( ?string $fileName ): ?string
+    {
+        return  ( ! is_null($fileName) ) ? url(RewardConstant::PATH) . '/' . $fileName : null;
+    }
 }
