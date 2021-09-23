@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\RewardConstant;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleStatistic;
 use App\Helpers\HelperShooglesViews;
@@ -15,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\User;
 use App\Constants\RoleConstant;
+use Illuminate\Support\Facades\Storage;
 use Recurr\Rule;
 use Recurr\Transformer\TextTransformer;
 use ReflectionClass;
@@ -26,8 +28,21 @@ class TestController extends Controller
 {
     public function index()
     {
+//        $rewards = [];
+//        $files = Storage::disk('public')->files(RewardConstant::PATH);
+//        for ($i = 0; $i < count($files); $i++) {
+//            $reward = [
+//                'id' => $i + 1,
+//                'name' => ucfirst( str_replace( '_', ' ', pathinfo($files[$i], PATHINFO_FILENAME) ) ),
+//                'icon' => substr($files[$i], strlen(RewardConstant::PATH . '/')),
+//                'created_at' => now(),
+//                'updated_at' => now(),
+//            ];
+//            $rewards[] = $reward;
+//        }
+//        dd($files, $rewards);
 //        $tmp = HelperShooglesViews::getLastActivityBy(2);
-        return date('Y-m-d H:i:s');
+//        return date('Y-m-d H:i:s');
 //        dd($tmp);
 //        null;
 //        phpinfo();

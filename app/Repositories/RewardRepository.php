@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Constants\RewardConstant;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Models\Reward;
@@ -60,7 +61,8 @@ class RewardRepository extends Repositories
         return $this->model
             ->get()
             ->map(function($item) {
-                $item['icon'] = URL::to('/') . '/rewards/' . $item['icon'];
+                $item['icon'] = url('storage') . '/' . RewardConstant::PATH . '/' . $item['icon'];
+//                $item['icon'] = URL::to('/') . '/rewards/' . $item['icon'];
                 return $item;
             });
     }
