@@ -24,6 +24,7 @@ class ProfileShowResource extends JsonResource
             'about'                 => $this->resource->about,
             'rank'                  => $this->resource->rank,
             'profileImage'          => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
+            'shooglesCount'         => $this->resource->profile_shoogles,
             'activeShooglesCount'   => $this->resource->profile_active,
             'inactiveShooglesCount' => $this->resource->profile_inactive,
             'rewards'               => UserHasRewardCollection::collection( HelperReward::getReward($this->resource->id) ),
