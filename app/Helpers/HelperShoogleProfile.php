@@ -3,6 +3,9 @@
 namespace App\Helpers;
 
 use App\Models\Shoogle;
+use App\Models\UserHasShoogle;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperShoogleProfile
@@ -11,26 +14,44 @@ use App\Models\Shoogle;
 class HelperShoogleProfile
 {
     /**
-     * Returns the shoogle from which there was a transition.
+     * Get all shoogles a user participates in.
      *
-     * @param int|null $shoogleID
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @param int|null $userID
+     * @return array
      */
-    public static function getFollowing(?int $shoogleID)
-    {
-        if ( is_null( $shoogleID ) ) {
-            return null;
-        }
-
-        return Shoogle::on()->where('id', '=', $shoogleID)->first('title');
-    }
-
-    public static function getOther(?int $userID)
+    public static function getShooglesByUserID(?int $userID)
     {
         if ( is_null( $userID ) ) {
-            return null;
+            return [];
         }
 
+        $shooglesIDs = HelperShoogle::getShooglesIDsByUserID($userID);
 
+        $shoogles = Shoogle::on()
+            ->select(DB::raw("
+                shoogles.id as id,
+                shoogles.title as title,
+                shoogles.cover_image as coverImage,
+                if((exists (
+                    select * from buddies as b
+                    where b.shoogle_id = shoogles.id
+                      and (
+                        b.user1_id = $userID or b.user2_id = $userID
+                      )
+                )), true, false) as baddies,
+                if((exists (
+                    select * from user_has_shoogle as uhs
+                    where uhs.solo = 1
+                      and uhs.shoogle_id = shoogles.id
+                      and uhs.user_id = $userID
+                )), true, false) as solo
+            "))
+            ->whereIn('id', $shooglesIDs)
+            ->get()
+            ->toArray();
+
+//        dd($shoogles);
+
+        return $shoogles;
     }
 }

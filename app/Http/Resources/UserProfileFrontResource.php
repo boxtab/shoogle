@@ -25,22 +25,16 @@ class UserProfileFrontResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'                => $this->resource->id,
-            'photo'             => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
-            'firstName'         => $this->resource->first_name,
-            'lastName'          => $this->resource->last_name,
-            'companyId'         => $this->resource->company_id,
-            'company'           => $this->resource->company->name,
-            'departmentId'      => $this->resource->department_id,
-            'department'        => $this->resource->department->name,
-            'email'             => $this->resource->email,
-            'rating'            => $this->resource->rank,
-            'rewards'           => UserHasRewardCollection::collection( HelperReward::getReward($this->resource->id) ),
-            'shoogles'          => $this->resource->profile_shoogles,
-            'active'            => $this->resource->profile_active,
-            'inactive'          => $this->resource->profile_inactive,
-            'followingShoogle'  => HelperShoogleProfile::getFollowing(null),
-            'otherShoogles'     => null,
+            'id'                    => $this->resource->id,
+            'profileImage'          => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
+            'firstName'             => $this->resource->first_name,
+            'lastName'              => $this->resource->last_name,
+            'rating'                => $this->resource->rank,
+            'rewards'               => UserHasRewardCollection::collection( HelperReward::getReward($this->resource->id) ),
+            'shooglesCount'         => $this->resource->profile_shoogles,
+            'activeShooglesCount'   => $this->resource->profile_active,
+            'inactiveShooglesCount' => $this->resource->profile_inactive,
+            'shoogles'              => HelperShoogleProfile::getShooglesByUserID($this->resource->id),
         ];
     }
 }
