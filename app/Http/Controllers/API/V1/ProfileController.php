@@ -58,6 +58,7 @@ class ProfileController extends BaseApiController
      */
     public function show()
     {
+        Log::info('test');
         try {
             $profile = $this->repository->getProfile();
         } catch (Exception $e) {
