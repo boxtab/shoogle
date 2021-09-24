@@ -27,9 +27,10 @@ trait ShooglerTrait
      * Returns a list of shooglers ids by shoogle ID.
      *
      * @param int $shoogleID
+     * @param int|null $excludeID
      * @return array
      */
-    public function getShooglersIDsByShoogleID( int $shoogleID ): array
+    public function getShooglersIDsByShoogleID(int $shoogleID, int $excludeID = null ): array
     {
         $owner = Shoogle::on()
             ->select('owner_id as user_id')
@@ -43,6 +44,10 @@ trait ShooglerTrait
                 return $item->user_id;
             })
             ->toArray();
+
+        if ( ! is_null($excludeID) ) {
+            $shoogler = array_diff($shoogler, [$excludeID]);
+        }
 
         return $shoogler;
     }

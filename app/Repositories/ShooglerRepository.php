@@ -10,6 +10,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -56,7 +57,7 @@ class ShooglerRepository extends Repositories
     public function getShooglerList(int $shoogleId, string $search = null, string $filter = null, int $page = null, int $pageSize = null)
     {
         $this->shoogleID = $shoogleId;
-        $shooglersIDs = $this->getShooglersIDsByShoogleID($shoogleId);
+        $shooglersIDs = $this->getShooglersIDsByShoogleID($shoogleId, Auth::id());
 
         $shooglers = DB::table('users as u')
             ->select(DB::raw('
