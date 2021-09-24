@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Constants\RankConstant;
 use App\Helpers\HelperAvatar;
+use App\Helpers\HelperRank;
 use App\Helpers\HelperReward;
 use App\Models\UserHasReward;
 use App\User;
@@ -22,7 +24,7 @@ class ProfileShowResource extends JsonResource
             'firstName'             => $this->resource->first_name,
             'lastName'              => $this->resource->last_name,
             'about'                 => $this->resource->about,
-            'rank'                  => $this->resource->rank,
+            'rank'                  => HelperRank::getRankByNumber( $this->resource->rank ),
             'profileImage'          => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
             'shooglesCount'         => $this->resource->profile_shoogles,
             'activeShooglesCount'   => $this->resource->profile_active,
