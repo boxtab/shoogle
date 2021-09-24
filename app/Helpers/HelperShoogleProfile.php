@@ -48,9 +48,12 @@ class HelperShoogleProfile
             "))
             ->whereIn('id', $shooglesIDs)
             ->get()
+            ->map(function ($item) {
+                $item['baddies'] = (bool)$item['baddies'];
+                $item['solo'] = (bool)$item['solo'];
+                return $item;
+            })
             ->toArray();
-
-//        dd($shoogles);
 
         return $shoogles;
     }
