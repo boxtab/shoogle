@@ -8,6 +8,10 @@ use App\Helpers\HelperShooglesViews;
 use App\Models\UserHasShoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * Class ShooglesViewsResource
+ * @package App\Http\Resources
+ */
 class ShooglesViewsResource extends JsonResource
 {
     /**
@@ -28,26 +32,13 @@ class ShooglesViewsResource extends JsonResource
             ],
             'createdAt' => $this->resource->created,
             'lastActivity' => $this->resource->updated,
-            // lastActivityBy - this plug
-//            'lastActivityBy' => [
-//                'id' => $this->resource->owner->id,
-//                'avatar' => $this->resource->owner->avatar,
-//            ],
             'lastActivityBy' => HelperShooglesViews::getLastActivityBy($this->resource->id),
-            // mostActiveShooglers - this plug
+
             'mostActiveShooglers' => HelperShooglesViews::getMostActiveShooglers($this->resource->id),
-//            'mostActiveShooglers' => UserHasShoogle::where('shoogle_id', $this->resource->id)
-//                ->get()
-//                ->map(function ($item) {
-//                    return [
-//                        'id' => $item->user->id,
-//                        'avatar' => HelperAvatar::getURLProfileImage( $item->user->profile_image ),
-//                    ];
-//                })
-//                ->toArray(),
-            // mostActiveShooglersCount - this plug
-            'mostActiveShooglersCount' => UserHasShoogle::where('shoogle_id', $this->resource->id)->count(),
+            'mostActiveShooglersCount' => count( HelperShooglesViews::getMostActiveShooglers($this->resource->id) ),
+
             'views' => $this->resource->views,
+
             'shooglersCount' => HelperShoogleStatistic::getShooglersCount($this->resource->id),
             'buddiesCount' => HelperShoogleStatistic::getBuddiesCount($this->resource->id),
             'solosCount' => HelperShoogleStatistic::getSolosCount($this->resource->id),

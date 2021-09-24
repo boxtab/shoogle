@@ -42,6 +42,8 @@ use Illuminate\Support\Str;
  */
 class AuthController extends BaseApiController
 {
+    const EXPIRATION_TIME = 30;
+
     /**
      * Get a JWT via given credentials.
      *
@@ -51,7 +53,7 @@ class AuthController extends BaseApiController
     public function login(AuthLoginRequest $request)
     {
         $credentials = $request->only(['email', 'password']);
-        $expirationTime = ['exp' => Carbon::now()->addDays(30)->timestamp];
+        $expirationTime = ['exp' => Carbon::now()->addDays(self::EXPIRATION_TIME)->timestamp];
 
         try {
             $token = JWTAuth::attempt($credentials, $expirationTime);

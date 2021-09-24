@@ -9,10 +9,12 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "ext-gd": "*",
         "ext-json": "*",
         "doctrine/dbal": "^3.1",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
+        "get-stream/stream-chat": "^2.3",
         "guzzlehttp/guzzle": "^7.3",
         "laravel/framework": "^8.0",
         "laravel/sanctum": "^2.11",
@@ -22,8 +24,7 @@
         "simshaun/recurr": "^4.0",
         "spatie/laravel-medialibrary": "^7.0.0",
         "spatie/laravel-permission": "^4.2",
-        "tymon/jwt-auth": "^1.0",
-        "ext-gd": "*"
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",
