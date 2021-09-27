@@ -59,7 +59,7 @@ class ShooglerController extends BaseApiController
 
             $shoogler = $this->repository->getShooglerList(
                 $id,
-                $request->input('query'),
+                $request->input('search'),
                 $request->input('filter'),
                 $page,
                 $pageSize

@@ -29,7 +29,7 @@ class ShooglerIndexRequest extends ApiRequest
     public function rules()
     {
         return [
-            'query'     => ['nullable', 'string'],
+            'search'     => ['nullable', 'string'],
 //            'filter'    => ['nullable', Rule::in(ShooglerFilterEnum::getArrayIndex())],
 //            'filter'    => ['nullable', Rule::in(['recentlyJoined', 'available', 'solo', 'buddied'])],
         ];
