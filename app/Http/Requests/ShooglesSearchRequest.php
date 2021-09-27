@@ -26,8 +26,8 @@ class ShooglesSearchRequest extends ApiRequest
     public function rules()
     {
         return [
-            'search' => ['nullable', 'string', ],
-            'order' => ['nullable', 'string', Rule::in(['asc', 'desc', 'ASC', 'DESC']),],
+            'search'    => ['nullable', 'string', ],
+            'order'     => ['nullable', 'string', Rule::in(['asc', 'desc', 'ASC', 'DESC']),],
         ];
     }
 }

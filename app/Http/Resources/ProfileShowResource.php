@@ -6,6 +6,7 @@ use App\Constants\RankConstant;
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperRank;
 use App\Helpers\HelperReward;
+use App\Helpers\HelperShoogleProfile;
 use App\Models\UserHasReward;
 use App\User;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,15 +21,20 @@ class ProfileShowResource extends JsonResource
      */
     public function toArray($request)
     {
+        $helperShoogleProfile = new HelperShoogleProfile($this->resource->id);
+        $shooglesCount = $helperShoogleProfile->getShooglesCount();
+        $activeShooglesCount = $helperShoogleProfile->getActiveShooglesCount();
+        $inactiveShooglesCount = $helperShoogleProfile->getInactiveShooglesCount();
+
         return [
             'firstName'             => $this->resource->first_name,
             'lastName'              => $this->resource->last_name,
             'about'                 => $this->resource->about,
             'rank'                  => HelperRank::getRankByNumber( $this->resource->rank ),
             'profileImage'          => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
-            'shooglesCount'         => $this->resource->profile_shoogles,
-            'activeShooglesCount'   => $this->resource->profile_active,
-            'inactiveShooglesCount' => $this->resource->profile_inactive,
+            'shooglesCount'         => $shooglesCount,
+            'activeShooglesCount'   => $activeShooglesCount,
+            'inactiveShooglesCount' => $inactiveShooglesCount,
             'rewards'               => UserHasRewardCollection::collection( HelperReward::getReward($this->resource->id) ),
         ];
     }
