@@ -81,7 +81,9 @@ class ShooglesController extends BaseApiController
                 'title' => $request->title,
                 'reminder' => $request->reminder,
                 'reminder_interval' => $request->reminderInterval,
-                'description' => $request->description,
+                'is_reminder' => $request->isReminder,
+                'is_repetitive' => $request->isRepetitive,
+//                'description' => $request->description,
                 'cover_image' => $request->coverImage,
             ]);
 

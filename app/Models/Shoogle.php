@@ -22,6 +22,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool active
  * @property string|null title
  * @property Carbon reminder
+ * @property string|null reminder_interval
+ * @property bool|null is_reminder
+ * @property bool|null is_repetitive
  * @property string|null description
  * @property string cover_image
  * @property Carbon|null created_at
@@ -42,6 +45,8 @@ class Shoogle extends BaseModel
         'title',
         'reminder',
         'reminder_interval',
+        'is_reminder',
+        'is_repetitive',
         'description',
         'cover_image',
         'created_at',
@@ -56,6 +61,8 @@ class Shoogle extends BaseModel
         'title' => 'string:45',
         'reminder' => 'datetime: h:i:s',
         'reminder_interval' => 'string:1024',
+        'is_reminder' => 'boolean',
+        'is_repetitive' => 'boolean',
         'description' => 'string',
         'cover_image' => 'string:256',
         'created_at' => 'datetime:Y-m-d h:i:s',
