@@ -34,6 +34,7 @@ use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use GetStream\StreamChat\Client as StreamClient;
 
 /**
  * Class AuthController.
@@ -42,13 +43,17 @@ use Illuminate\Support\Str;
  */
 class AuthController extends BaseApiController
 {
+    /**
+     * Token lifetime in days.
+     */
     const EXPIRATION_TIME = 30;
 
     /**
      * Get a JWT via given credentials.
      *
      * @param AuthLoginRequest $request
-     * @return JsonResponse
+     * @return JsonResponse|Response
+     * @throws \GetStream\StreamChat\StreamException
      */
     public function login(AuthLoginRequest $request)
     {
@@ -67,7 +72,12 @@ class AuthController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
+        $streamToken = $serverClient->createToken(Auth::id());
+
         $authLoginResource = new AuthLoginResource($token);
+        $authLoginResource->setStreamToken($streamToken);
+
         return ApiResponse::returnData($authLoginResource);
     }
 

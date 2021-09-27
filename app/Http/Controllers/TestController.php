@@ -27,13 +27,20 @@ use ReflectionClass;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationRuleParser;
+use GetStream\StreamChat\Client as StreamClient;
 
 class TestController extends Controller
 {
     public function index()
     {
-        $tmp = HelperShoogle::isMember(60, 19);
-        dd($tmp);
+        $streamApiKey = 'fms7mkz25hdf';
+        $streamApiSecret = 'y8tm6k35avd35txgy4jn27tfagz2yjgxxfwuwrxzm4c43895ehrtz4uh53gqvz5r';
+
+        $server_client = new StreamClient($streamApiKey, $streamApiSecret);
+        $token = $server_client->createToken("john");
+
+        dd($token);
+
 
 //        $tmp = new IconRewardsSeeder();
 //        $tmp2 = $tmp->getRewards();

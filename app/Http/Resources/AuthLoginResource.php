@@ -9,6 +9,21 @@ use Illuminate\Support\Facades\Log;
 class AuthLoginResource extends JsonResource
 {
     /**
+     * @var string
+     */
+    private $streamToken;
+
+    /**
+     * Set stream token.
+     *
+     * @param string|null $streamToken
+     */
+    public function setStreamToken(?string $streamToken)
+    {
+        $this->streamToken = $streamToken;
+    }
+
+    /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -17,12 +32,14 @@ class AuthLoginResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'token'     => $this->resource,
-            'firstName' => auth()->user()->first_name,
-            'lastName'  => auth()->user()->last_name,
-            'email'     => auth()->user()->email,
-            'role'      => count( auth()->user()->getRoleNames() ) !== 0 ? auth()->user()->getRoleNames()[0] : null,
-            'avatar'    => HelperAvatar::getURLProfileImage( auth()->user()->profile_image ),
+            'token'         => $this->resource,
+            'userId'        => auth()->user()->id,
+            'firstName'     => auth()->user()->first_name,
+            'lastName'      => auth()->user()->last_name,
+            'email'         => auth()->user()->email,
+            'role'          => count( auth()->user()->getRoleNames() ) !== 0 ? auth()->user()->getRoleNames()[0] : null,
+            'avatar'        => HelperAvatar::getURLProfileImage( auth()->user()->profile_image ),
+            'streamToken'   => $this->streamToken,
         ];
     }
 }
