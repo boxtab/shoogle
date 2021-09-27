@@ -73,7 +73,8 @@ class AuthController extends BaseApiController
         }
 
         $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
-        $streamToken = $serverClient->createToken(Auth::id());
+        Log::info('user' . Auth::id());
+        $streamToken = $serverClient->createToken('user' . Auth::id());
 
         $authLoginResource = new AuthLoginResource($token);
         $authLoginResource->setStreamToken($streamToken);
