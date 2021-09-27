@@ -15,19 +15,28 @@ use Illuminate\Support\Facades\Log;
 class HelperShoogleProfile
 {
     /**
+     * @var int Shoogles count.
+     */
+    private $shooglesCount = 0;
+
+    public function getShooglesCount()
+    {
+        return $this->shooglesCount;
+    }
+
+    /**
      * Get all shoogles a user participates in.
      *
      * @param int|null $userID
      * @return array
      */
-    public static function getShooglesByUserID(?int $userID)
+    public function getShooglesByUserID(?int $userID)
     {
         if ( is_null( $userID ) ) {
             return [];
         }
 
         $shooglesIDs = HelperShoogle::getShooglesIDsByUserID($userID);
-        $authID = Auth::id();
 
         $shoogles = Shoogle::on()
             ->select(DB::raw("
@@ -57,6 +66,8 @@ class HelperShoogleProfile
                 return $item;
             })
             ->toArray();
+
+        $this->shooglesCount = count($shoogles);
 
         return $shoogles;
     }

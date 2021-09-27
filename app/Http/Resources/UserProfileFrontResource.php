@@ -26,6 +26,10 @@ class UserProfileFrontResource extends JsonResource
      */
     public function toArray($request)
     {
+        $helperShoogleProfile = new HelperShoogleProfile();
+        $shoogles = $helperShoogleProfile->getShooglesByUserID($this->resource->id);
+        $shooglesCount = $helperShoogleProfile->getShooglesCount();
+
         return [
             'id'                    => $this->resource->id,
             'profileImage'          => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
@@ -33,10 +37,10 @@ class UserProfileFrontResource extends JsonResource
             'lastName'              => $this->resource->last_name,
             'rank'                  => HelperRank::getRankByNumber( $this->resource->rank ),
             'rewards'               => UserHasRewardCollection::collection( HelperReward::getReward($this->resource->id) ),
-            'shooglesCount'         => $this->resource->profile_shoogles,
+            'shooglesCount'         => $shooglesCount,
             'activeShooglesCount'   => $this->resource->profile_active,
             'inactiveShooglesCount' => $this->resource->profile_inactive,
-            'shoogles'              => HelperShoogleProfile::getShooglesByUserID($this->resource->id),
+            'shoogles'              => $shoogles,
         ];
     }
 }
