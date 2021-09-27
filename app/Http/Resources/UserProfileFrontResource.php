@@ -26,9 +26,11 @@ class UserProfileFrontResource extends JsonResource
      */
     public function toArray($request)
     {
-        $helperShoogleProfile = new HelperShoogleProfile();
-        $shoogles = $helperShoogleProfile->getShooglesByUserID($this->resource->id);
+        $helperShoogleProfile = new HelperShoogleProfile($this->resource->id);
+        $shoogles = $helperShoogleProfile->getShoogles();
         $shooglesCount = $helperShoogleProfile->getShooglesCount();
+        $activeShooglesCount = $helperShoogleProfile->getActiveShooglesCount();
+        $inactiveShooglesCount = $helperShoogleProfile->getInactiveShooglesCount();
 
         return [
             'id'                    => $this->resource->id,
@@ -38,8 +40,8 @@ class UserProfileFrontResource extends JsonResource
             'rank'                  => HelperRank::getRankByNumber( $this->resource->rank ),
             'rewards'               => UserHasRewardCollection::collection( HelperReward::getReward($this->resource->id) ),
             'shooglesCount'         => $shooglesCount,
-            'activeShooglesCount'   => $this->resource->profile_active,
-            'inactiveShooglesCount' => $this->resource->profile_inactive,
+            'activeShooglesCount'   => $activeShooglesCount,
+            'inactiveShooglesCount' => $inactiveShooglesCount,
             'shoogles'              => $shoogles,
         ];
     }

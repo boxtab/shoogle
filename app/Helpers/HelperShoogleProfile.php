@@ -15,28 +15,87 @@ use Illuminate\Support\Facades\Log;
 class HelperShoogleProfile
 {
     /**
+     * @var array shoogles.
+     */
+    private $shoogles = [];
+
+    /**
      * @var int Shoogles count.
      */
     private $shooglesCount = 0;
 
+    /**
+     * @var int Active shoogles count.
+     */
+    private $activeShooglesCount = 0;
+
+    /**
+     * @var int Inactive Shoogles count.
+     */
+    private $inactiveShooglesCount = 0;
+
+    /**
+     * Get shoogles.
+     *
+     * @return array
+     */
+    public function getShoogles()
+    {
+        return $this->shoogles;
+    }
+
+    /**
+     * Get shoogles count.
+     *
+     * @return int
+     */
     public function getShooglesCount()
     {
         return $this->shooglesCount;
     }
 
     /**
-     * Get all shoogles a user participates in.
+     * Get active shoogles count.
+     *
+     * @return int
+     */
+    public function getActiveShooglesCount()
+    {
+        return $this->activeShooglesCount;
+    }
+
+    /**
+     * Get inactive shoogles count.
+     *
+     * @return int
+     */
+    public function getInactiveShooglesCount()
+    {
+        return $this->inactiveShooglesCount;
+    }
+
+    /**
+     * HelperShoogleProfile constructor.
      *
      * @param int|null $userID
-     * @return array
      */
-    public function getShooglesByUserID(?int $userID)
+    public function __construct(?int $userID)
     {
         if ( is_null( $userID ) ) {
             return [];
         }
 
         $shooglesIDs = HelperShoogle::getShooglesIDsByUserID($userID);
+
+        $this->activeShooglesCount = Shoogle::on()
+            ->whereIn('id', $shooglesIDs)
+            ->where('active', '=', 1)
+            ->count();
+
+        $this->inactiveShooglesCount = Shoogle::on()
+            ->whereIn('id', $shooglesIDs)
+            ->where('active', '=', 0)
+            ->count();;
 
         $shoogles = Shoogle::on()
             ->select(DB::raw("
@@ -67,8 +126,7 @@ class HelperShoogleProfile
             })
             ->toArray();
 
+        $this->shoogles = $shoogles;
         $this->shooglesCount = count($shoogles);
-
-        return $shoogles;
     }
 }
