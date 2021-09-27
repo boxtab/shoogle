@@ -22,7 +22,7 @@ class HelperReward
         return UserHasReward::on()
             ->where('user_id', $userID)
             ->orderBy('created_at', 'desc')
-            ->limit(RewardConstant::LIMIT)
+//            ->limit(RewardConstant::LIMIT)
             ->get();
     }
 

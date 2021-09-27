@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\RewardConstant;
+use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
 use App\Helpers\HelperShoogleStatistic;
@@ -31,7 +32,8 @@ class TestController extends Controller
 {
     public function index()
     {
-        HelperShoogleProfile::getShooglesByUserID(30);
+        $tmp = HelperShoogle::isMember(60, 19);
+        dd($tmp);
 
 //        $tmp = new IconRewardsSeeder();
 //        $tmp2 = $tmp->getRewards();

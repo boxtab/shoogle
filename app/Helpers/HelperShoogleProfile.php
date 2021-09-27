@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -26,6 +27,7 @@ class HelperShoogleProfile
         }
 
         $shooglesIDs = HelperShoogle::getShooglesIDsByUserID($userID);
+        $authID = Auth::id();
 
         $shoogles = Shoogle::on()
             ->select(DB::raw("
@@ -51,6 +53,7 @@ class HelperShoogleProfile
             ->map(function ($item) {
                 $item['baddies'] = (bool)$item['baddies'];
                 $item['solo'] = (bool)$item['solo'];
+                $item['isPresent'] = HelperShoogle::isMember(Auth::id(), $item['id']);
                 return $item;
             })
             ->toArray();
