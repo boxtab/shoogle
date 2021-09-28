@@ -36,4 +36,23 @@ class HelperMember
 
         return ($owner || $userHasShoogle) ? true : false;
     }
+
+    /**
+     * Is the user a member of shoogle.
+     *
+     * @param int|null $shoogleID
+     * @param int|null $userID
+     * @return bool
+     */
+    public static function isMember2(?int $shoogleID, ?int $userID): bool
+    {
+        if ( is_null( $shoogleID ) || is_null( $userID ) ) {
+            return false;
+        }
+
+        return UserHasShoogle::on()
+            ->where('shoogle_id', '=', $shoogleID)
+            ->where('user_id', '=', $userID)
+            ->exists();
+    }
 }

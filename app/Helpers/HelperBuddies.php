@@ -74,4 +74,32 @@ class HelperBuddies
 
         return array_unique($buddiesIDs, SORT_NUMERIC);
     }
+
+    /**
+     * Get friend ID within shoogle.
+     *
+     * @param int|null $shoogleID
+     * @param int|null $userID
+     * @return int|null
+     */
+    public static function getFriendID(?int $shoogleID, ?int $userID): ?int
+    {
+        if ( is_null($shoogleID) || is_null($userID) ) {
+            return null;
+        }
+
+        $friend = Buddie::on()
+            ->where('shoogle_id', '=', $shoogleID)
+            ->where(function ($query) use ($userID) {
+                $query->where('user1_id', '=', $userID)
+                    ->orWhere('user2_id', '=', $userID);
+            })
+            ->first();
+
+        if ( is_null($friend) ) {
+            return null;
+        }
+
+        return $friend->user1_id == $userID ? $friend->user2_id : $friend->user1_id;
+    }
 }

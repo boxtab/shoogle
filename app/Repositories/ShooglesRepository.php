@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperBuddies;
+use App\Helpers\HelperCalendar;
+use App\Helpers\HelperMember;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
 use App\Models\Shoogle;
@@ -331,26 +333,27 @@ class ShooglesRepository extends Repositories
      */
     public function getCalendar(Shoogle $shoogle): array
     {
-        $response = [
+        $friendID = HelperBuddies::getFriendID($shoogle->id, Auth::id());
+        return [
             'profileImage'  => HelperAvatar::getURLProfileImage( Auth::user()->profile_image ),
             'title'         => $shoogle->title,
             'reminder'      => $shoogle->reminder_formatted,
-            'buddiesList'   => User::on()
-//                                ->whereIn('id', HelperBuddies::getFriendsIDList(12, 30))
-                                ->whereIn('id', HelperBuddies::getFriendsIDList($shoogle->id, Auth::id()))
-                                ->get()
-                                ->map(function ($item) {
-                                    return [
-                                        'id' => $item['id'],
-                                        'profileImage' => HelperAvatar::getURLProfileImage( $item['profile_image'] ),
-                                    ];
-                                })
-                                ->toArray(),
+            'buddyName'     => HelperCalendar::getBuddy( $friendID ),
+//            'buddiesList'   => User::on()
+////                                ->whereIn('id', HelperBuddies::getFriendsIDList(12, 30))
+//                                ->whereIn('id', HelperBuddies::getFriendsIDList($shoogle->id, Auth::id()))
+//                                ->get()
+//                                ->map(function ($item) {
+//                                    return [
+//                                        'id' => $item['id'],
+//                                        'profileImage' => HelperAvatar::getURLProfileImage( $item['profile_image'] ),
+//                                    ];
+//                                })
+//                                ->toArray(),
             'buddy'         => HelperBuddies::haveFriends( $shoogle->id, Auth::id() ),
-            'owner'         => HelperShoogle::isOwner(Auth::id(), $shoogle->id),
+            'isOwner'       => HelperShoogle::isOwner(Auth::id(), $shoogle->id),
+            'isMember'      => HelperMember::isMember($shoogle->id, Auth::id()),
         ];
-
-        return $response;
     }
 }
 

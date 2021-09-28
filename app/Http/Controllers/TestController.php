@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\RewardConstant;
 use App\Helpers\HelperBuddies;
+use App\Helpers\HelperCalendar;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
@@ -34,8 +35,9 @@ class TestController extends Controller
 {
     public function index()
     {
-        $buddiesID = HelperBuddies::getFriendsIDList(12, 30);
-        dd($buddiesID);
+        $tmp = HelperCalendar::getBuddy(70);
+        return $tmp;
+//        dd($tmp);
 
         /*
         $streamApiKey = 'fms7mkz25hdf';
