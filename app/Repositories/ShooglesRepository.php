@@ -3,13 +3,17 @@
 namespace App\Repositories;
 
 use App\Helpers\Helper;
+use App\Helpers\HelperAvatar;
+use App\Helpers\HelperBuddies;
 use App\Helpers\HelperRequest;
+use App\Helpers\HelperShoogle;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\Models\UserHasShoogle;
 use App\Support\ApiResponse\ApiResponse;
 use App\Traits\ShoogleCountTrait;
 use App\Traits\ShoogleTrait;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
@@ -317,6 +321,36 @@ class ShooglesRepository extends Repositories
             $solosCount += $shoogle->solosCount;
         }
         return $solosCount;
+    }
+
+    /**
+     * User calendar settings for shoogle.
+     *
+     * @param Shoogle $shoogle
+     * @return array
+     */
+    public function getCalendar(Shoogle $shoogle): array
+    {
+        $response = [
+            'profileImage'  => HelperAvatar::getURLProfileImage( Auth::user()->profile_image ),
+            'title'         => $shoogle->title,
+            'reminder'      => $shoogle->reminder_formatted,
+            'buddiesList'   => User::on()
+//                                ->whereIn('id', HelperBuddies::getFriendsIDList(12, 30))
+                                ->whereIn('id', HelperBuddies::getFriendsIDList($shoogle->id, Auth::id()))
+                                ->get()
+                                ->map(function ($item) {
+                                    return [
+                                        'id' => $item['id'],
+                                        'profileImage' => HelperAvatar::getURLProfileImage( $item['profile_image'] ),
+                                    ];
+                                })
+                                ->toArray(),
+            'buddy'         => HelperBuddies::haveFriends( $shoogle->id, Auth::id() ),
+            'owner'         => HelperShoogle::isOwner(Auth::id(), $shoogle->id),
+        ];
+
+        return $response;
     }
 }
 

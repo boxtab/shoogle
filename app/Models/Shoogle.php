@@ -114,4 +114,14 @@ class Shoogle extends BaseModel
     {
         return $this->hasMany(UserHasShoogle::class, 'shoogle_id', 'id');
     }
+
+    /**
+     * Formatted reminder time.
+     *
+     * @return string|null
+     */
+    public function getReminderFormattedAttribute(): ?string
+    {
+        return Carbon::create($this->reminder)->toTimeString();
+    }
 }

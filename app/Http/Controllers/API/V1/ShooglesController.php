@@ -12,6 +12,7 @@ use App\Http\Requests\ShooglesSearchRequest;
 use App\Http\Requests\ShoogleTurnOnOffRequest;
 use App\Http\Requests\ShoogleUpdateRequest;
 use App\Http\Requests\ShooglesCreateRequest;
+use App\Http\Resources\ShooglesCalendarResource;
 use App\Http\Resources\ShooglesListResource;
 use App\Http\Resources\ShooglesResource;
 use App\Http\Resources\ShooglesSearchResultResource;
@@ -296,6 +297,24 @@ class ShooglesController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return ApiResponse::returnData([]);
+    }
+
+    /**
+     * User calendar settings for shoogle.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function calendar($id)
+    {
+        try {
+            $shoogle = $this->findRecordByID($id);
+            $calendar = $this->repository->getCalendar($shoogle);
+            $shooglesCalendarResource = new ShooglesCalendarResource($calendar);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return ApiResponse::returnData($shooglesCalendarResource);
     }
 
     /**

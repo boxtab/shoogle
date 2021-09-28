@@ -72,4 +72,23 @@ class HelperShoogle
 
         return ( $isOwner || $isUserHasShoogle ) ? true : false;
     }
+
+    /**
+     * Is the user the owner of a shoogle.
+     *
+     * @param int|null $userID
+     * @param int|null $shoogleID
+     * @return bool
+     */
+    public static function isOwner(?int $userID, ?int $shoogleID): bool
+    {
+        if ( is_null($userID) || is_null($shoogleID) ) {
+            return false;
+        }
+
+        return Shoogle::on()
+            ->where('id' , '=', $shoogleID)
+            ->where('owner_id', '=', $userID)
+            ->exists();
+    }
 }

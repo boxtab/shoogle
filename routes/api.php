@@ -143,6 +143,9 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
 
         // DELETE /api/front/v1/shoogle/:id
         Route::delete('{id}', [ShooglesController::class, 'destroy'])->where('id', '[0-9]+');
+
+        // GET /api/front/v1/shoogle/:id/calendar
+        Route::get('{id}/calendar', [ShooglesController::class, 'calendar'])->where('id', '[0-9]+');
     });
 
     /**

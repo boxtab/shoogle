@@ -30,8 +30,8 @@ class BuddyRequest extends ApiRequest
     {
         return [
             'shoogleId' => 'required|integer|exists:shoogles,id',
-            'buddyId' => 'required|integer|exists:users,id',
-            'message' => 'nullable|string|min:2|max:32768',
+            'buddyId'   => 'required|integer|exists:users,id',
+            'message'   => 'nullable|string|min:2|max:32768',
         ];
     }
 }

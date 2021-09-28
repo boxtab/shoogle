@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\RewardConstant;
+use App\Helpers\HelperBuddies;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
@@ -33,6 +34,10 @@ class TestController extends Controller
 {
     public function index()
     {
+        $buddiesID = HelperBuddies::getFriendsIDList(12, 30);
+        dd($buddiesID);
+
+        /*
         $streamApiKey = 'fms7mkz25hdf';
         $streamApiSecret = 'y8tm6k35avd35txgy4jn27tfagz2yjgxxfwuwrxzm4c43895ehrtz4uh53gqvz5r';
 
@@ -40,6 +45,7 @@ class TestController extends Controller
         $token = $server_client->createToken("john");
 
         dd($token);
+        */
 
 
 //        $tmp = new IconRewardsSeeder();
