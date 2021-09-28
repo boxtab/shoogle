@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Helper;
 use App\Helpers\HelperRequest;
+use App\Helpers\HelperStream;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShooglesEntryRequest;
 use App\Http\Requests\ShooglesPaginationRequest;
@@ -32,6 +33,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use GetStream\StreamChat\Client as StreamClient;
 
 /**
  * Class ShooglesController
@@ -83,9 +85,11 @@ class ShooglesController extends BaseApiController
                 'reminder_interval' => $request->reminderInterval,
                 'is_reminder' => $request->isReminder,
                 'is_repetitive' => $request->isRepetitive,
-//                'description' => $request->description,
                 'cover_image' => $request->coverImage,
             ]);
+
+            $shoogle->chat_id = HelperStream::getChatId( $shoogle->id );
+            $shoogle->save();
 
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

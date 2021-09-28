@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool|null is_repetitive
  * @property string|null description
  * @property string cover_image
+ * @property int views
+ * @property string|null chat_id
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  */
@@ -49,6 +51,8 @@ class Shoogle extends BaseModel
         'is_repetitive',
         'description',
         'cover_image',
+        'views',
+        'chat_id',
         'created_at',
         'updated_at',
     ];
@@ -65,6 +69,8 @@ class Shoogle extends BaseModel
         'is_repetitive' => 'boolean',
         'description' => 'string',
         'cover_image' => 'string:256',
+        'views' => 'integer',
+        'chat_id' => 'string',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
