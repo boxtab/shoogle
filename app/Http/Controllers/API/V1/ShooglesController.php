@@ -23,6 +23,7 @@ use App\Models\Company;
 use App\Models\ModelHasRole;
 use App\Models\Shoogle;
 use App\Repositories\ShooglesRepository;
+use App\Services\StreamService;
 use App\Support\ApiRequest\ApiRequest;
 use App\Support\ApiResponse\ApiResponse;
 use App\User;
@@ -89,7 +90,8 @@ class ShooglesController extends BaseApiController
                 'cover_image' => $request->coverImage,
             ]);
 
-            $shoogle->chat_id = HelperStream::getChatId( $shoogle->id );
+            $streamService = new StreamService($shoogle->id);
+            $shoogle->chat_id = $streamService->getChatId();
             $shoogle->save();
 
         } catch (Exception $e) {

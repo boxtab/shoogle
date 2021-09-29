@@ -9,9 +9,11 @@ use App\Helpers\HelperCalendar;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
+use App\Helpers\HelperStream;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\Models\UserHasShoogle;
+use App\Services\StreamService;
 use App\Support\ApiResponse\ApiResponse;
 use App\Traits\ShoogleCountTrait;
 use App\Traits\ShoogleTrait;
@@ -23,6 +25,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use GetStream\StreamChat\Client as StreamClient;
 
 /**
  * Class ShooglesRepository
@@ -134,9 +137,13 @@ class ShooglesRepository extends Repositories
      * @param int $userID
      * @param int $shoogleId
      * @param string|null $note
+     * @throws \GetStream\StreamChat\StreamException
      */
     public function entry(int $userID, int $shoogleId, ?string $note): void
     {
+        $streamService = new StreamService($shoogleId);
+        $streamService->addMembers();
+
         UserHasShoogle::on()->create([
             'user_id' => $userID,
             'shoogle_id' => $shoogleId,
