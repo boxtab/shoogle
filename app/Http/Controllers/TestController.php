@@ -35,7 +35,7 @@ class TestController extends Controller
 {
     public function index()
     {
-        $tmp = HelperCalendar::getBuddy(70);
+        $tmp = HelperBuddies::areFriends(13, 31, 30);
         return $tmp;
 //        dd($tmp);
 

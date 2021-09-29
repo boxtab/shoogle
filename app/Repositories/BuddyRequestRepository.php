@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Constants\RoleConstant;
 use App\Enums\BuddyRequestTypeEnum;
 use App\Helpers\Helper;
+use App\Helpers\HelperBuddies;
 use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\User;
@@ -45,8 +46,12 @@ class BuddyRequestRepository extends Repositories
      * @param int $user2id
      * @param string|null $message
      */
-    public function buddyRequest(int $shoogleId, int $user2id, string $message = null): void
+    public function buddyRequest(int $shoogleId, int $user2id, ?string $message)
     {
+        if ( HelperBuddies::areFriends($shoogleId, Auth::id(), $user2id) ) {
+            return;
+        }
+
         $buddyRequest = BuddyRequest::on()
             ->where('shoogle_id', $shoogleId)
             ->where('user1_id', Auth::id())
