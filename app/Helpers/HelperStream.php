@@ -25,7 +25,8 @@ class HelperStream
 
         $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
         $channel = $serverClient->Channel('messaging', 'shoogleCommunity' . $shoogleId);
-        $channel->create('user' . Auth()->user()->id);
+//        $channel->create('user' . Auth()->user()->id);
+        $channel->create('user' . Auth()->user()->id, ['user1' ,'user' . Auth()->user()->id]);
 
         return $channel->id;
     }
