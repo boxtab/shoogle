@@ -60,7 +60,7 @@ class WellbeingCategoryController extends BaseApiController
                 'name' => $request->input('name')
             ]);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -77,7 +77,7 @@ class WellbeingCategoryController extends BaseApiController
         try {
             $record = $this->findRecordByID($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return ApiResponse::returnData(new WellbeingCategoryResource($record));
     }
@@ -96,13 +96,11 @@ class WellbeingCategoryController extends BaseApiController
             $wellbeingCategory->update([
                 'name' => $request->input('name')
             ]);
-//            $wellbeingCategoryResource = WellbeingCategoryResource::collection(WellbeingCategory::get());
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
-//        return ApiResponse::returnData($wellbeingCategoryResource);
     }
 
     /**
@@ -120,7 +118,7 @@ class WellbeingCategoryController extends BaseApiController
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('The wellbeing categories cannot be deleted there are links to it.');
             } else {
-                return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+                return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 

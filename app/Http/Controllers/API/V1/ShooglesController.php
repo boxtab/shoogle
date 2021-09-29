@@ -78,27 +78,22 @@ class ShooglesController extends BaseApiController
     public function create(ShooglesCreateRequest $request)
     {
         try {
-            $shoogle = $this->repository->create([
-                'owner_id' => Auth()->user()->id,
-                'wellbeing_category_id' => $request->wellbeingCategoryId,
-                'active' => $request->active,
-                'title' => $request->title,
-                'reminder' => $request->reminder,
-                'reminder_interval' => $request->reminderInterval,
-                'is_reminder' => $request->isReminder,
-                'is_repetitive' => $request->isRepetitive,
-                'cover_image' => $request->coverImage,
+            $shoogleId = $this->repository->createShoogle([
+                'owner_id'              => auth()->user()->id,
+                'wellbeing_category_id' => $request->input('wellbeingCategoryId'),
+                'active'                => $request->input('active'),
+                'title'                 => $request->input('title'),
+                'reminder'              => $request->input('reminder'),
+                'reminder_interval'     => $request->input('reminderInterval'),
+                'is_reminder'           => $request->input('isReminder'),
+                'cover_image'           => $request->input('coverImage'),
             ]);
-
-            $streamService = new StreamService($shoogle->id);
-            $shoogle->chat_id = $streamService->getChatId();
-            $shoogle->save();
 
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData(['lastInsertId' => $shoogle->id]);
+        return ApiResponse::returnData(['lastInsertId' => $shoogleId]);
     }
 
     /**
@@ -334,7 +329,7 @@ class ShooglesController extends BaseApiController
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('The shoogle cannot be deleted there are links to it.');
             } else {
-                return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+                return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 

@@ -67,7 +67,7 @@ class InviteController extends BaseApiController
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('A user with this email has been invited already.');
             } else {
-                return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+                return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
         return ApiResponse::returnData([]);
@@ -89,7 +89,7 @@ class InviteController extends BaseApiController
                 'department_id' => $request->input('departmentId'),
             ]);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -107,7 +107,7 @@ class InviteController extends BaseApiController
             $patchFile = $request->file('files')->getRealPath();
             $this->repository->upload($patchFile);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -125,7 +125,7 @@ class InviteController extends BaseApiController
             $invite = $this->findRecordByID($id);
             $inviteResource = new InviteShowResource($invite);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return ApiResponse::returnData($inviteResource);
     }
@@ -145,7 +145,7 @@ class InviteController extends BaseApiController
             }
             $invite->destroy($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);

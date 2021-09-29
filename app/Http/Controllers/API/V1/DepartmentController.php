@@ -58,7 +58,7 @@ class DepartmentController extends BaseApiController
         try {
             $this->repository->createDepartment($request->input('name'));
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -75,7 +75,7 @@ class DepartmentController extends BaseApiController
         try {
             $record = $this->findRecordByID($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return ApiResponse::returnData(new DepartmentDetailResource($record));
     }
@@ -95,7 +95,7 @@ class DepartmentController extends BaseApiController
                 'name' => $request->input('name')
             ]);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -116,7 +116,7 @@ class DepartmentController extends BaseApiController
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('The department cannot be deleted there are links to it.');
             } else {
-                return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+                return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 

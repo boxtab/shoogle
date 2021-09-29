@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class UserHasShoogle
@@ -22,15 +23,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null reminder_interval
  * @property bool|null is_reminder
  * @property bool|null is_repetitive
-  * @property Carbon|null created_at
+ * @property Carbon|null created_at
  * @property Carbon|null updated_at
+ * @property Carbon|null deleted_at
  */
 
 class UserHasShoogle extends BaseModel
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'user_has_shoogle';
+
+    protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'id',
@@ -45,6 +49,7 @@ class UserHasShoogle extends BaseModel
         'is_repetitive',
         'created_at',
         'updated_at',
+        'deleted_at',
     ];
 
     protected $casts = [
@@ -60,6 +65,7 @@ class UserHasShoogle extends BaseModel
         'is_repetitive' => 'boolean',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
+        'deleted_at' => 'datetime:Y-m-d h:i:s',
     ];
 
     /**

@@ -31,8 +31,6 @@ class ShooglesCreateRequest extends ApiRequest
             'reminder'              => ['required', 'min:2', 'date_format:"Y-m-d H:i:s"'],
             'reminderInterval'      => ['nullable', 'string', 'max:1024'],
             'isReminder'            => ['nullable', 'boolean'],
-            'isRepetitive'          => ['nullable', 'boolean'],
-//            'description'           => ['nullable', 'min:2', 'max:9086'],
             'coverImage'            => ['required', 'min:2', 'max:256'],
         ];
     }

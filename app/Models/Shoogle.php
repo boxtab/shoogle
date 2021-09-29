@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null chat_id
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
+ * @property Carbon|null deleted_at
  */
 
 class Shoogle extends BaseModel
@@ -38,6 +39,8 @@ class Shoogle extends BaseModel
     use HasFactory, SoftDeletes;
 
     protected $table = 'shoogles';
+
+    protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'id',
@@ -55,6 +58,7 @@ class Shoogle extends BaseModel
         'chat_id',
         'created_at',
         'updated_at',
+        'deleted_at',
     ];
 
     protected $casts = [
@@ -73,7 +77,17 @@ class Shoogle extends BaseModel
         'chat_id' => 'string',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
+        'deleted_at' => 'datetime:Y-m-d h:i:s',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($userHasShoogle) {
+            $userHasShoogle->userHasShoogle()->delete();
+        });
+    }
 
     /**
      * Shoogle creator.

@@ -68,7 +68,7 @@ class UserController extends BaseApiController
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('Violation of constraint integrity of foreign or unique key!');
             } else {
-                return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+                return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 
@@ -87,7 +87,7 @@ class UserController extends BaseApiController
         try {
             $user = $this->findRecordByID($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData(new UserProfileFrontResource($user));
@@ -105,7 +105,7 @@ class UserController extends BaseApiController
         try {
             $user = $this->findRecordByID($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData(new UserProfileAdminResource($user));
@@ -125,7 +125,7 @@ class UserController extends BaseApiController
             $credentials = $request->only(['firstName', 'lastName', 'email', 'departmentId', 'isCompanyAdmin']);
             $this->repository->update($user, $credentials);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);
@@ -143,7 +143,7 @@ class UserController extends BaseApiController
             $user = $this->findRecordByID($id);
             $user->destroy($id);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData([]);

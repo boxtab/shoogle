@@ -9,7 +9,6 @@ use App\Helpers\HelperCalendar;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
-use App\Helpers\HelperStream;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\Models\UserHasShoogle;
@@ -53,6 +52,47 @@ class ShooglesRepository extends Repositories
     public function __construct(Shoogle $model)
     {
         parent::__construct($model);
+    }
+
+    /**
+     * Create a shoogle.
+     *
+     * @param array $shoogleField
+     * @return int
+     * @throws \GetStream\StreamChat\StreamException
+     */
+    public function createShoogle(array $shoogleField): int
+    {
+        $shoogleId = DB::transaction(function() use ($shoogleField) {
+
+            $shoogleId = $this->model->on()->create([
+                'owner_id'              => $shoogleField['owner_id'],
+                'wellbeing_category_id' => $shoogleField['wellbeing_category_id'],
+                'active'                => $shoogleField['active'],
+                'title'                 => $shoogleField['title'],
+                'cover_image'           => $shoogleField['cover_image'],
+            ])->id;
+
+            UserHasShoogle::on()->create([
+                'user_id'           => $shoogleField['owner_id'],
+                'shoogle_id'        => $shoogleId,
+                'joined_at'         => Carbon::now(),
+                'solo'              => false,
+                'reminder'          => $shoogleField['reminder'],
+                'reminder_interval' => $shoogleField['reminder_interval'],
+                'is_reminder'       => $shoogleField['is_reminder'],
+            ]);
+
+            return $shoogleId;
+        });
+
+
+        $streamService = new StreamService($shoogleId);
+        $this->model->on()
+            ->where('id', '=', $shoogleId)
+            ->update(['chat_id' => $streamService->getChatId()]);
+
+        return $shoogleId;
     }
 
     /**
