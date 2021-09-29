@@ -16,9 +16,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int user_id
  * @property int shoogle_id
  * @property Carbon joined_at
- * @property boolean solo
  * @property Carbon|null left_at
- * @property Carbon|null created_at
+ * @property boolean solo
+ * @property Carbon|null reminder
+ * @property string|null reminder_interval
+ * @property bool|null is_reminder
+ * @property bool|null is_repetitive
+  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  */
 
@@ -35,6 +39,10 @@ class UserHasShoogle extends BaseModel
         'joined_at',
         'left_at',
         'solo',
+        'reminder',
+        'reminder_interval',
+        'is_reminder',
+        'is_repetitive',
         'created_at',
         'updated_at',
     ];
@@ -46,6 +54,10 @@ class UserHasShoogle extends BaseModel
         'joined_at' => 'datetime:Y-m-d h:i:s',
         'left_at' => 'datetime:Y-m-d h:i:s',
         'solo' => 'boolean',
+        'reminder' => 'datetime:Y-m-d h:i:s',
+        'reminder_interval' => 'string:1024',
+        'is_reminder' => 'boolean',
+        'is_repetitive' => 'boolean',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];

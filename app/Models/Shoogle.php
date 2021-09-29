@@ -63,7 +63,7 @@ class Shoogle extends BaseModel
         'wellbeing_category_id' => 'integer',
         'active' => 'boolean',
         'title' => 'string:45',
-        'reminder' => 'datetime: h:i:s',
+        'reminder' => 'datetime:Y-m-d h:i:s',
         'reminder_interval' => 'string:1024',
         'is_reminder' => 'boolean',
         'is_repetitive' => 'boolean',
