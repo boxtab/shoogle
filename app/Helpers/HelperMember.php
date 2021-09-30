@@ -4,6 +4,8 @@ namespace App\Helpers;
 
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
 
 /**
  * Class HelperMember
@@ -24,17 +26,10 @@ class HelperMember
             return false;
         }
 
-        $owner = Shoogle::on()
-            ->where('id', '=', $shoogleID)
-            ->where('owner_id', '=', $userID)
-            ->exists();
-
-        $userHasShoogle = UserHasShoogle::on()
+        return UserHasShoogle::on()
             ->where('shoogle_id', '=', $shoogleID)
             ->where('user_id', '=', $userID)
             ->exists();
-
-        return ($owner || $userHasShoogle) ? true : false;
     }
 
     /**
@@ -54,5 +49,28 @@ class HelperMember
             ->where('shoogle_id', '=', $shoogleID)
             ->where('user_id', '=', $userID)
             ->exists();
+    }
+
+    /**
+     * Returns a member of the shoogle or generates an error.
+     *
+     * @param int|null $userId
+     * @param int|null $shoogleId
+     * @return UserHasShoogle|\Illuminate\Database\Eloquent\Builder|Model|object
+     * @throws \Exception
+     */
+    public static function getMember(?int $userId, ?int $shoogleId): UserHasShoogle
+    {
+        $member = UserHasShoogle::on()
+            ->where('user_id', '=', $userId)
+            ->where('shoogle_id', '=', $shoogleId)
+            ->first();
+
+        if ( is_null( $member ) ) {
+            $message = "By userId $userId and shoogleId $shoogleId, the participant was not found or left shoogle or was deleted";
+            throw new \Exception($message, Response::HTTP_NOT_FOUND);
+        }
+
+        return $member;
     }
 }

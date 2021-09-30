@@ -21,10 +21,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int wellbeing_category_id
  * @property bool active
  * @property string|null title
- * @property Carbon reminder
- * @property string|null reminder_interval
- * @property bool|null is_reminder
- * @property bool|null is_repetitive
  * @property string|null description
  * @property string cover_image
  * @property int views
@@ -48,10 +44,6 @@ class Shoogle extends BaseModel
         'wellbeing_category_id',
         'active',
         'title',
-        'reminder',
-        'reminder_interval',
-        'is_reminder',
-        'is_repetitive',
         'description',
         'cover_image',
         'views',
@@ -67,10 +59,6 @@ class Shoogle extends BaseModel
         'wellbeing_category_id' => 'integer',
         'active' => 'boolean',
         'title' => 'string:45',
-        'reminder' => 'datetime:Y-m-d h:i:s',
-        'reminder_interval' => 'string:1024',
-        'is_reminder' => 'boolean',
-        'is_repetitive' => 'boolean',
         'description' => 'string',
         'cover_image' => 'string:256',
         'views' => 'integer',
@@ -127,15 +115,5 @@ class Shoogle extends BaseModel
     public function userHasShoogle(): HasMany
     {
         return $this->hasMany(UserHasShoogle::class, 'shoogle_id', 'id');
-    }
-
-    /**
-     * Formatted reminder time.
-     *
-     * @return string|null
-     */
-    public function getReminderFormattedAttribute(): ?string
-    {
-        return Carbon::create($this->reminder)->toTimeString();
     }
 }

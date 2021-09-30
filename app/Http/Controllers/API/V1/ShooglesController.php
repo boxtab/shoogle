@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Helper;
+use App\Helpers\HelperMember;
 use App\Helpers\HelperRequest;
+use App\Helpers\HelperShoogle;
 use App\Helpers\HelperStream;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShooglesEntryRequest;
@@ -309,8 +311,10 @@ class ShooglesController extends BaseApiController
     public function calendar($id)
     {
         try {
-            $shoogle = $this->findRecordByID($id);
-            $calendar = $this->repository->getCalendar($shoogle);
+            $shoogle = HelperShoogle::getShoogle($id);
+            $member = HelperMember::getMember(Auth::id(), $id);
+
+            $calendar = $this->repository->getCalendar($shoogle, $member);
             $shooglesCalendarResource = new ShooglesCalendarResource($calendar);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);

@@ -5,10 +5,11 @@ namespace App\Repositories;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperBuddies;
-use App\Helpers\HelperCalendar;
+use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
+use App\Http\Resources\ShoogleBuddyNameResource;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\Models\UserHasShoogle;
@@ -422,30 +423,23 @@ class ShooglesRepository extends Repositories
      * User calendar settings for shoogle.
      *
      * @param Shoogle $shoogle
+     * @param UserHasShoogle $member
      * @return array
      */
-    public function getCalendar(Shoogle $shoogle): array
+    public function getCalendar(Shoogle $shoogle, UserHasShoogle $member): array
     {
-        $friendID = HelperBuddies::getFriendID($shoogle->id, Auth::id());
+        $friend = HelperFriend::getFriend($shoogle->id, Auth::id());
+
         return [
-            'profileImage'  => HelperAvatar::getURLProfileImage( Auth::user()->profile_image ),
-            'title'         => $shoogle->title,
-            'reminder'      => $shoogle->reminder_formatted,
-            'buddyName'     => HelperCalendar::getBuddy( $friendID ),
-//            'buddiesList'   => User::on()
-////                                ->whereIn('id', HelperBuddies::getFriendsIDList(12, 30))
-//                                ->whereIn('id', HelperBuddies::getFriendsIDList($shoogle->id, Auth::id()))
-//                                ->get()
-//                                ->map(function ($item) {
-//                                    return [
-//                                        'id' => $item['id'],
-//                                        'profileImage' => HelperAvatar::getURLProfileImage( $item['profile_image'] ),
-//                                    ];
-//                                })
-//                                ->toArray(),
-            'buddy'         => HelperBuddies::haveFriends( $shoogle->id, Auth::id() ),
-            'isOwner'       => HelperShoogle::isOwner(Auth::id(), $shoogle->id),
-            'isMember'      => HelperMember::isMember($shoogle->id, Auth::id()),
+            'shoogleId'         => $shoogle->id,
+            'title'             => $shoogle->title,
+            'coverImage'        => $shoogle->cover_image,
+            'reminder'          => $member->reminder_formatted,
+            'reminderInterval'  => $member->reminder_interval,
+            'buddyName'         => (new ShoogleBuddyNameResource($friend)),
+            'buddy'             => HelperFriend::haveFriend( $shoogle->id, Auth::id() ),
+            'isOwner'           => HelperShoogle::isOwner(Auth::id(), $shoogle->id),
+            'isMember'          => HelperMember::isMember($shoogle->id, Auth::id()),
         ];
     }
 }

@@ -79,9 +79,9 @@ class UserHasShoogle extends BaseModel
      * When joined.
      * Escape: "2021-08-16T08:02:46.000000Z"
      *
-     * @return mixed
+     * @return string|null
      */
-    public function getJoinedAtFormatAttribute()
+    public function getJoinedAtFormatAttribute(): ?string
     {
         return ( ! is_null($this->joined_at) ) ? $this->joined_at->format('Y-m-d H:i:s') : null;
     }
@@ -90,11 +90,21 @@ class UserHasShoogle extends BaseModel
      * When was the last action.
      * Escape: "2021-08-16T08:02:46.000000Z"
      *
-     * @return mixed
+     * @return string|null
      */
-    public function getLeftAtFormatAttribute()
+    public function getLeftAtFormatAttribute(): ?string
     {
         return ( ! is_null($this->left_at) ) ? $this->left_at->format('Y-m-d H:i:s') : null;
+    }
+
+    /**
+     * Formatted reminder time.
+     *
+     * @return string|null
+     */
+    public function getReminderFormattedAttribute(): ?string
+    {
+        return Carbon::create($this->reminder)->toTimeString();
     }
 
     /**

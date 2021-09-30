@@ -4,7 +4,10 @@ namespace App\Helpers;
 
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use NunoMaduro\Collision\Exceptions\ShouldNotHappen;
 
 /**
  * Class HelperShoogle
@@ -90,5 +93,23 @@ class HelperShoogle
             ->where('id' , '=', $shoogleID)
             ->where('owner_id', '=', $userID)
             ->exists();
+    }
+
+    /**
+     * Return shoogle by identifier or generate an error.
+     *
+     * @param int|null $shoogleId
+     * @return Shoogle|\Illuminate\Database\Eloquent\Builder|Model|object
+     * @throws \Exception
+     */
+    public static function getShoogle(?int $shoogleId): Shoogle
+    {
+        $shoogle = Shoogle::on()->where('id', '=', $shoogleId)->first();
+
+        if ( is_null( $shoogle ) ) {
+            throw new \Exception("Shoogle by ID $shoogleId not found or deleted", Response::HTTP_NOT_FOUND);
+        }
+
+        return $shoogle;
     }
 }
