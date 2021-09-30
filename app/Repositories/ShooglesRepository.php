@@ -177,18 +177,42 @@ class ShooglesRepository extends Repositories
      * @param int $userID
      * @param int $shoogleId
      * @param string|null $note
-     * @throws \GetStream\StreamChat\StreamException
+     * @throws \Exception
      */
     public function entry(int $userID, int $shoogleId, ?string $note): void
     {
-        $streamService = new StreamService($shoogleId);
-        $streamService->addMembers();
+        if ( ! Shoogle::on()->where('id', '=', $shoogleId)->exists() ) {
+            throw new \Exception("Shoogle ID $shoogleId does not exist or has been deleted", Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
-        UserHasShoogle::on()->create([
-            'user_id' => $userID,
-            'shoogle_id' => $shoogleId,
-            'joined_at' => Carbon::now(),
-        ]);
+        $member = UserHasShoogle::on()
+            ->where('user_id', '=', $userID)
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where(function ($query) {
+                $query->whereNotNull('left_at')
+                    ->orWhereNotNull('deleted_at');
+            })
+            ->withTrashed()
+            ->first();
+
+        if ( ! empty($member) ) {
+            $affectedRows = $member->update([
+                'joined_at' => Carbon::now(),
+                'left_at' => null,
+                'deleted_at' => null,
+            ]);
+        } else {
+            $affectedRows = UserHasShoogle::on()->create([
+                'user_id' => $userID,
+                'shoogle_id' => $shoogleId,
+                'joined_at' => Carbon::now(),
+            ])->exists();
+        }
+
+        if ( $affectedRows > 0 ) {
+            $streamService = new StreamService($shoogleId);
+            $streamService->addMembers();
+        }
     }
 
     /**
