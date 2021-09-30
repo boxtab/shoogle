@@ -169,6 +169,10 @@ class ShooglesController extends BaseApiController
             $this->repository->entry(
                 Auth::id(),
                 $request->input('shoogleId'),
+                $request->input('reminder'),
+                $request->input('reminderInterval'),
+                $request->input('isReminder'),
+                $request->input('buddy'),
                 $request->input('note')
             );
         } catch (Exception $e) {

@@ -176,10 +176,21 @@ class ShooglesRepository extends Repositories
      *
      * @param int $userID
      * @param int $shoogleId
+     * @param string|null $reminder
+     * @param string|null $reminderInterval
+     * @param bool|null $isReminder
+     * @param bool|null $buddy
      * @param string|null $note
-     * @throws \Exception
+     * @throws \GetStream\StreamChat\StreamException
      */
-    public function entry(int $userID, int $shoogleId, ?string $note): void
+    public function entry(
+        int $userID,
+        int $shoogleId,
+        ?string $reminder,
+        ?string $reminderInterval,
+        ?bool $isReminder,
+        ?bool $buddy,
+        ?string $note): void
     {
         if ( ! Shoogle::on()->where('id', '=', $shoogleId)->exists() ) {
             throw new \Exception("Shoogle ID $shoogleId does not exist or has been deleted", Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -199,6 +210,12 @@ class ShooglesRepository extends Repositories
             $affectedRows = $member->update([
                 'joined_at' => Carbon::now(),
                 'left_at' => null,
+
+                'solo' => ( ! $buddy ),
+                'reminder' => $reminder,
+                'reminder_interval' => $reminderInterval,
+                'is_reminder' => $isReminder,
+
                 'deleted_at' => null,
             ]);
         } else {
@@ -206,6 +223,11 @@ class ShooglesRepository extends Repositories
                 'user_id' => $userID,
                 'shoogle_id' => $shoogleId,
                 'joined_at' => Carbon::now(),
+
+                'solo' => ( ! $buddy ),
+                'reminder' => $reminder,
+                'reminder_interval' => $reminderInterval,
+                'is_reminder' => $isReminder,
             ])->exists();
         }
 

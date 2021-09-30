@@ -29,9 +29,12 @@ class ShooglesEntryRequest extends ApiRequest
     public function rules()
     {
         return [
-//            'userId' => 'required|exists:users,id',
-            'shoogleId' => 'required|exists:shoogles,id',
-            'note' => 'nullable|string',
+            'shoogleId'         => 'required|exists:shoogles,id',
+            'reminder'          => 'required|date_format:Y-m-d H:i:s',
+            'reminderInterval'  => 'required|string|max:1024',
+            'isReminder'        => 'required|boolean',
+            'buddy'             => 'required|boolean',
+            'note'              => 'nullable|string',
         ];
     }
 }
