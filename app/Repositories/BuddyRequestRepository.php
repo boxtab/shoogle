@@ -150,11 +150,10 @@ class BuddyRequestRepository extends Repositories
 
 
             $streamService = new StreamService($buddyRequest->shoogle_id);
-            $streamService->createChannelForBuddy($buddyRequest->user1_id, $buddyRequest->user2_id);
-            $streamService->createTunnelForBuddy($buddyRequest->user1_id, $buddyRequest->user2_id);
+            $channelId = $streamService->createChannelForBuddy($buddyRequest->user1_id, $buddyRequest->user2_id);
 
             $buddie->update([
-                'chat_id' => $streamService->getChannelId(),
+                'chat_id' => $channelId,
             ]);
         });
     }

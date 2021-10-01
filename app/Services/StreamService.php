@@ -14,8 +14,6 @@ class StreamService
 
     private $shoogleId;
 
-    private $channel;
-
     /**
      * StreamService constructor.
      * @param int $shoogleId
@@ -33,7 +31,9 @@ class StreamService
      */
     public function createChannelForShoogle()
     {
-        $this->channel = $this->serverClient->Channel('messaging', 'shoogleCommunity' . $this->shoogleId);
+        $channel = $this->serverClient->Channel('messaging', 'shoogleCommunity' . $this->shoogleId);
+        $channel->create('user' . Auth()->user()->id, ['user1' ,'user' . Auth()->user()->id]);
+        return $channel->id;
     }
 
     /**
@@ -45,46 +45,8 @@ class StreamService
      */
     public function createChannelForBuddy(int $idOfFirstUser, int $idOfSecondUser)
     {
-        $this->channel = $this->serverClient->Channel('messaging', 'shoogle' . $this->shoogleId . 'Buddy' . $idOfFirstUser . 'with' . $idOfSecondUser);
-    }
-
-    /**
-     * Creating a tunnel for shoogle.
-     */
-    public function createTunnelForShoogle()
-    {
-        $this->channel->create('user' . Auth()->user()->id, ['user1' ,'user' . Auth()->user()->id]);
-    }
-
-    /**
-     * Creating a tunnel for buddies.
-     *
-     * @param int $idOfFirstUser
-     * @param int $idOfSecondUser
-     */
-    public function createTunnelForBuddy(int $idOfFirstUser, int $idOfSecondUser)
-    {
-        $this->channel->create('user' . Auth()->user()->id, ['user' . $idOfFirstUser, 'user' . $idOfSecondUser]);
-    }
-
-    /**
-     * Get Chat ID.
-     *
-     * @return string|null
-     * @throws \GetStream\StreamChat\StreamException
-     */
-    public function getChannelId(): ?string
-    {
-        return $this->channel->id;
-    }
-
-    /**
-     * Join the chat.
-     *
-     * @throws \GetStream\StreamChat\StreamException
-     */
-    public function addMembers()
-    {
-        $this->channel->addMembers(['user' . Auth()->user()->id]);
+        $channel = $this->serverClient->Channel('messaging', 'shoogle' . $this->shoogleId . 'Buddy' . $idOfFirstUser . 'with' . $idOfSecondUser);
+        $channel->create('user' . Auth()->user()->id, ['user' . $idOfFirstUser, 'user' . $idOfSecondUser]);
+        return $channel->id;
     }
 }
