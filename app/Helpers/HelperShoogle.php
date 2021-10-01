@@ -112,4 +112,19 @@ class HelperShoogle
 
         return $shoogle;
     }
+
+    /**
+     * Returns the number of members for a shoogle.
+     *
+     * @param int|null $shoogleId
+     * @return int
+     */
+    public static function getShooglersCount(?int $shoogleId): int
+    {
+        if ( is_null($shoogleId) ) {
+            return 0;
+        }
+
+        return UserHasShoogle::on()->where('shoogle_id', '=', $shoogleId)->count();
+    }
 }

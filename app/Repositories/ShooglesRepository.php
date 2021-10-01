@@ -441,6 +441,7 @@ class ShooglesRepository extends Repositories
             'isOwner'           => HelperShoogle::isOwner( Auth::id(), $shoogle->id ),
             'isMember'          => HelperMember::isMember( $shoogle->id, Auth::id() ),
             'isReminder'        => ( ! is_null($member) ) ? $member->is_reminder : null,
+            'shooglersCount'    => HelperShoogle::getShooglersCount($shoogle->id),
         ];
     }
 
