@@ -248,7 +248,7 @@ class ShooglesRepository extends Repositories
         UserHasShoogle::on()
             ->where('user_id', Auth::id())
             ->where('shoogle_id', $shoogleId)
-            ->delete();
+            ->update(['left_at' => Carbon::now()]);
     }
 
     /**
@@ -428,7 +428,7 @@ class ShooglesRepository extends Repositories
      */
     public function getCalendar(Shoogle $shoogle, UserHasShoogle $member): array
     {
-        $friend = HelperFriend::getFriend($shoogle->id, Auth::id());
+        $friend = HelperFriend::getFriend($shoogle->id, $member->user_id);
 
         return [
             'shoogleId'         => $shoogle->id,
@@ -437,9 +437,9 @@ class ShooglesRepository extends Repositories
             'reminder'          => $member->reminder_formatted,
             'reminderInterval'  => $member->reminder_interval,
             'buddyName'         => (new ShoogleBuddyNameResource($friend)),
-            'buddy'             => HelperFriend::haveFriend( $shoogle->id, Auth::id() ),
-            'isOwner'           => HelperShoogle::isOwner(Auth::id(), $shoogle->id),
-            'isMember'          => HelperMember::isMember($shoogle->id, Auth::id()),
+            'buddy'             => HelperFriend::haveFriend( $shoogle->id, $member->user_id ),
+            'isOwner'           => HelperShoogle::isOwner( $member->user_id, $shoogle->id ),
+            'isMember'          => HelperMember::isMember( $shoogle->id, $member->user_id ),
         ];
     }
 }
