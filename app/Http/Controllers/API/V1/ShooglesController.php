@@ -9,6 +9,7 @@ use App\Helpers\HelperShoogle;
 use App\Helpers\HelperStream;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShooglesEntryRequest;
+use App\Http\Requests\ShoogleSettingRequest;
 use App\Http\Requests\ShooglesPaginationRequest;
 use App\Http\Requests\ShooglesSearchRequest;
 use App\Http\Requests\ShoogleTurnOnOffRequest;
@@ -320,6 +321,27 @@ class ShooglesController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return ApiResponse::returnData($shooglesCalendarResource);
+    }
+
+    /**
+     * Change shoogle member settings.
+     *
+     * @param ShoogleSettingRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function setting(ShoogleSettingRequest $request, int $id)
+    {
+        try {
+            HelperShoogle::getShoogle($id);
+            $member = HelperMember::getMember(Auth::id(), $id);
+            $setting = $request->only(['reminder', 'reminderInterval', 'buddy', 'isReminder']);
+            $this->repository->setSetting($member, $setting);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
     }
 
     /**

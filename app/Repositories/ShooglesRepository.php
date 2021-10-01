@@ -443,5 +443,39 @@ class ShooglesRepository extends Repositories
             'isReminder'        => $member->is_reminder,
         ];
     }
+
+    /**
+     * Setting preferences.
+     *
+     * @param UserHasShoogle $member
+     * @param array $setting
+     */
+    public function setSetting(UserHasShoogle $member, array $setting)
+    {
+        $toSave = false;
+        if ( array_key_exists('reminder', $setting) ) {
+            $member->reminder = $setting['reminder'];
+            $toSave = true;
+        }
+
+        if ( array_key_exists('reminderInterval', $setting) ) {
+            $member->reminder_interval = $setting['reminderInterval'];
+            $toSave = true;
+        }
+
+        if ( array_key_exists('buddy', $setting) ) {
+            $member->solo = ! (bool)$setting['buddy'];
+            $toSave = true;
+        }
+
+        if ( array_key_exists('buddy', $setting) ) {
+            $member->solo = ! (bool)$setting['buddy'];
+            $toSave = true;
+        }
+
+        if ( $toSave ) {
+            $member->save();
+        }
+    }
 }
 

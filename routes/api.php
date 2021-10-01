@@ -146,6 +146,9 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
 
         // GET /api/front/v1/shoogle/:id/calendar
         Route::get('{id}/calendar', [ShooglesController::class, 'calendar'])->where('id', '[0-9]+');
+
+        // POST /api/front/v1/shoogle/:id/setting
+        Route::post('{id}/setting', [ShooglesController::class, 'setting'])->where('id', '[0-9]+');
     });
 
     /**
