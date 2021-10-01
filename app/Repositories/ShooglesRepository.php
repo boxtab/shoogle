@@ -440,6 +440,7 @@ class ShooglesRepository extends Repositories
             'buddy'             => HelperFriend::haveFriend( $shoogle->id, $member->user_id ),
             'isOwner'           => HelperShoogle::isOwner( $member->user_id, $shoogle->id ),
             'isMember'          => HelperMember::isMember( $shoogle->id, $member->user_id ),
+            'isReminder'        => $member->is_reminder,
         ];
     }
 }

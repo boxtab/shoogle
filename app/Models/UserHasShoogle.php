@@ -105,7 +105,7 @@ class UserHasShoogle extends BaseModel
      */
     public function getReminderFormattedAttribute(): ?string
     {
-        return Carbon::create($this->reminder)->toTimeString();
+        return Carbon::create($this->reminder)->toDateTimeString();
     }
 
     /**
