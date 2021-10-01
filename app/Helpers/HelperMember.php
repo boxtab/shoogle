@@ -95,20 +95,19 @@ class HelperMember
      *
      * @param int|null $userId
      * @param int|null $shoogleId
-     * @return UserHasShoogle|\Illuminate\Database\Eloquent\Builder|Model|object
-     * @throws \Exception
+     * @return UserHasShoogle|\Illuminate\Database\Eloquent\Builder|Model|object|null
      */
-    public static function getMember(?int $userId, ?int $shoogleId): UserHasShoogle
+    public static function getMember(?int $userId, ?int $shoogleId)
     {
         $member = UserHasShoogle::on()
             ->where('user_id', '=', $userId)
             ->where('shoogle_id', '=', $shoogleId)
             ->first();
 
-        if ( is_null( $member ) ) {
-            $message = "By userId $userId and shoogleId $shoogleId, the participant was not found or left shoogle or was deleted";
-            throw new \Exception($message, Response::HTTP_NOT_FOUND);
-        }
+//        if ( is_null( $member ) ) {
+//            $message = "By userId $userId and shoogleId $shoogleId, the participant was not found or left shoogle or was deleted";
+//            throw new \Exception($message, Response::HTTP_NOT_FOUND);
+//        }
 
         return $member;
     }

@@ -423,24 +423,24 @@ class ShooglesRepository extends Repositories
      * User calendar settings for shoogle.
      *
      * @param Shoogle $shoogle
-     * @param UserHasShoogle $member
+     * @param UserHasShoogle|null $member
      * @return array
      */
-    public function getCalendar(Shoogle $shoogle, UserHasShoogle $member): array
+    public function getCalendar(Shoogle $shoogle, ?UserHasShoogle $member): array
     {
-        $friend = HelperFriend::getFriend($shoogle->id, $member->user_id);
+        $friend = HelperFriend::getFriend($shoogle->id, Auth::id());
 
         return [
             'shoogleId'         => $shoogle->id,
             'title'             => $shoogle->title,
             'coverImage'        => $shoogle->cover_image,
-            'reminder'          => $member->reminder_formatted,
-            'reminderInterval'  => $member->reminder_interval,
+            'reminder'          => ( ! is_null($member) ) ? $member->reminder_formatted : null,
+            'reminderInterval'  => ( ! is_null($member) ) ? $member->reminder_interval : null,
             'buddyName'         => (new ShoogleBuddyNameResource($friend)),
-            'buddy'             => HelperFriend::haveFriend( $shoogle->id, $member->user_id ),
-            'isOwner'           => HelperShoogle::isOwner( $member->user_id, $shoogle->id ),
-            'isMember'          => HelperMember::isMember( $shoogle->id, $member->user_id ),
-            'isReminder'        => $member->is_reminder,
+            'buddy'             => HelperFriend::haveFriend( $shoogle->id, Auth::id() ),
+            'isOwner'           => HelperShoogle::isOwner( Auth::id(), $shoogle->id ),
+            'isMember'          => HelperMember::isMember( $shoogle->id, Auth::id() ),
+            'isReminder'        => ( ! is_null($member) ) ? $member->is_reminder : null,
         ];
     }
 
