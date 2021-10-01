@@ -8,6 +8,7 @@ use App\Helpers\Helper;
 use App\Helpers\HelperBuddies;
 use App\Models\BuddyRequest;
 use App\Models\Company;
+use App\Services\StreamService;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -130,7 +131,7 @@ class BuddyRequestRepository extends Repositories
             $buddyRequest = BuddyRequest::on()
                 ->where('id', $buddyRequestId)->first();
 
-            Buddie::on()
+            $buddie = Buddie::on()
                 ->where('shoogle_id', $buddyRequest->shoogle_id)
                 ->where('user1_id', $buddyRequest->user1_id)
                 ->where('user2_id', $buddyRequest->user2_id)
@@ -146,12 +147,16 @@ class BuddyRequestRepository extends Repositories
             $buddyRequest->update([
                 'type' => BuddyRequestTypeEnum::CONFIRM,
             ]);
+
+
+            $streamService = new StreamService($buddyRequest->shoogle_id);
+            $streamService->createChannelForBuddy($buddyRequest->user1_id, $buddyRequest->user2_id);
+            $streamService->createTunnelForBuddy($buddyRequest->user1_id, $buddyRequest->user2_id);
+
+            $buddie->update([
+                'chat_id' => $streamService->getChannelId(),
+            ]);
         });
-
-
-        $newChannel = $this->serverClient->Channel('messaging', 'shoogle'.$shoogleId.'Buddy'.$idOfFirstUser.'with'.$idOfSecondUser);
-        $newChannel->create(Auth()->user()->id, [$idOfFirstUser, $idOfSecondUser]);
-        return $newChannel->id;
     }
 
     /**

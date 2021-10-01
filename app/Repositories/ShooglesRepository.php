@@ -89,9 +89,12 @@ class ShooglesRepository extends Repositories
 
 
         $streamService = new StreamService($shoogleId);
+        $streamService->createChannelForShoogle();
+        $streamService->createTunnelForShoogle();
+
         $this->model->on()
             ->where('id', '=', $shoogleId)
-            ->update(['chat_id' => $streamService->getChatId()]);
+            ->update(['chat_id' => $streamService->getChannelId()]);
 
         return $shoogleId;
     }
@@ -234,6 +237,7 @@ class ShooglesRepository extends Repositories
 
         if ( $affectedRows > 0 ) {
             $streamService = new StreamService($shoogleId);
+            $streamService->createChannelForShoogle();
             $streamService->addMembers();
         }
     }

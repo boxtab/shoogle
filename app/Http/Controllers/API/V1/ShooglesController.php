@@ -26,7 +26,6 @@ use App\Models\Company;
 use App\Models\ModelHasRole;
 use App\Models\Shoogle;
 use App\Repositories\ShooglesRepository;
-use App\Services\StreamService;
 use App\Support\ApiRequest\ApiRequest;
 use App\Support\ApiResponse\ApiResponse;
 use App\User;

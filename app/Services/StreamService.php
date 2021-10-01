@@ -12,18 +12,59 @@ class StreamService
 {
     private $serverClient;
 
+    private $shoogleId;
+
     private $channel;
 
     /**
      * StreamService constructor.
-     *
      * @param int $shoogleId
-     * @throws \GetStream\StreamChat\StreamException
      */
     public function __construct(int $shoogleId)
     {
+        $this->shoogleId = $shoogleId;
         $this->serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
-        $this->channel = $this->serverClient->Channel('messaging', 'shoogleCommunity' . $shoogleId);
+    }
+
+    /**
+     * Creating a channel for shoogle.
+     *
+     * @throws \GetStream\StreamChat\StreamException
+     */
+    public function createChannelForShoogle()
+    {
+        $this->channel = $this->serverClient->Channel('messaging', 'shoogleCommunity' . $this->shoogleId);
+    }
+
+    /**
+     * Creating a channel for buddies.
+     *
+     * @param int $idOfFirstUser
+     * @param int $idOfSecondUser
+     * @throws \GetStream\StreamChat\StreamException
+     */
+    public function createChannelForBuddy(int $idOfFirstUser, int $idOfSecondUser)
+    {
+        $this->channel = $this->serverClient->Channel('messaging', 'shoogle' . $this->shoogleId . 'Buddy' . $idOfFirstUser . 'with' . $idOfSecondUser);
+    }
+
+    /**
+     * Creating a tunnel for shoogle.
+     */
+    public function createTunnelForShoogle()
+    {
+        $this->channel->create('user' . Auth()->user()->id, ['user1' ,'user' . Auth()->user()->id]);
+    }
+
+    /**
+     * Creating a tunnel for buddies.
+     *
+     * @param int $idOfFirstUser
+     * @param int $idOfSecondUser
+     */
+    public function createTunnelForBuddy(int $idOfFirstUser, int $idOfSecondUser)
+    {
+        $this->channel->create('user' . Auth()->user()->id, ['user' . $idOfFirstUser, 'user' . $idOfSecondUser]);
     }
 
     /**
@@ -32,9 +73,8 @@ class StreamService
      * @return string|null
      * @throws \GetStream\StreamChat\StreamException
      */
-    public function getChatId(): ?string
+    public function getChannelId(): ?string
     {
-        $this->channel->create('user' . Auth()->user()->id, ['user1' ,'user' . Auth()->user()->id]);
         return $this->channel->id;
     }
 

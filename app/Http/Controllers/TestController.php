@@ -36,8 +36,16 @@ class TestController extends Controller
 {
     public function index()
     {
-        $tmp = HelperMember::getListMemberIDs(21);
-        return $tmp;
+        $shoogleId = 1;
+        $idOfFirstUser = 2;
+        $idOfSecondUser = 3;
+
+        $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
+        $newChannel = $serverClient->Channel('messaging', 'shoogle'.$shoogleId.'Buddy'.$idOfFirstUser.'with'.$idOfSecondUser);
+        $newChannel->create(Auth::id(), [$idOfFirstUser, $idOfSecondUser]);
+        return $newChannel->id;
+
+
 //        dd($tmp);
 
         /*

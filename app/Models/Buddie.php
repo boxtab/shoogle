@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int user2_id
  * @property Carbon connected_at
  * @property Carbon|null disconnect_at
+ * @property string|null chat_id
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  */
@@ -36,6 +37,7 @@ class Buddie extends BaseModel
         'user2_id',
         'connected_at',
         'disconnected_at',
+        'chat_id',
         'created_at',
         'updated_at',
     ];
@@ -47,6 +49,7 @@ class Buddie extends BaseModel
         'user2_id' => 'integer',
         'connected_at' => 'datetime:Y-m-d h:i:s',
         'disconnected_at' => 'datetime:Y-m-d h:i:s',
+        'chat_id' => 'string',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
