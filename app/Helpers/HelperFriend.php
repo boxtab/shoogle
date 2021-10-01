@@ -110,6 +110,7 @@ class HelperFriend
 
         $buddyCount = Buddie::on()
             ->where('shoogle_id', '=', $shoogleID)
+            ->whereNull('disconnected_at')
             ->where(function ($query) use ($userID) {
                 $query->where('user1_id', '=', $userID)
                     ->orWhere('user2_id', '=', $userID);

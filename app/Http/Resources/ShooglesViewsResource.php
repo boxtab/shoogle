@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Helpers\HelperAvatar;
+use App\Helpers\HelperMember;
 use App\Helpers\HelperShoogleStatistic;
 use App\Helpers\HelperShooglesViews;
 use App\Models\UserHasShoogle;
@@ -39,7 +40,7 @@ class ShooglesViewsResource extends JsonResource
 
             'views' => $this->resource->views,
 
-            'shooglersCount' => HelperShoogleStatistic::getShooglersCount($this->resource->id),
+            'shooglersCount' => HelperMember::getMemberCount($this->resource->id),
             'buddiesCount' => HelperShoogleStatistic::getBuddiesCount($this->resource->id),
             'solosCount' => HelperShoogleStatistic::getSolosCount($this->resource->id),
         ];

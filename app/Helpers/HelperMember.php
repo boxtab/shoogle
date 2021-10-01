@@ -33,6 +33,45 @@ class HelperMember
     }
 
     /**
+     * Get a list of shoogle member ids.
+     *
+     * @param int|null $shoogleId
+     * @return array
+     */
+    public static function getListMemberIDs(?int $shoogleId): array
+    {
+        if ( is_null($shoogleId) ) {
+            return [];
+        }
+
+        return UserHasShoogle::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->whereNull('left_at')
+            ->get('user_id')
+            ->map(function ($item) {
+                return $item['user_id'];
+            })
+            ->toArray();
+    }
+
+    /**
+     * Get the number of participants in shoogle.
+     *
+     * @param int|null $shoogleId
+     * @return int
+     */
+    public static function getMemberCount(?int $shoogleId): int
+    {
+        if ( is_null($shoogleId) ) {
+            return 0;
+        }
+
+        return UserHasShoogle::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->count();
+    }
+
+    /**
      * Is the user a member of shoogle.
      *
      * @param int|null $shoogleID

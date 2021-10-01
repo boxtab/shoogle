@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\UserHasShoogleScope;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -127,5 +128,15 @@ class UserHasShoogle extends BaseModel
     {
         return $this->belongsTo(Shoogle::class, 'shoogle_id', 'id')
             ->withDefault();
+    }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new UserHasShoogleScope);
     }
 }

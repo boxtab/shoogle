@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\RewardConstant;
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperFriend;
+use App\Helpers\HelperMember;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
@@ -35,7 +36,7 @@ class TestController extends Controller
 {
     public function index()
     {
-        $tmp = HelperFriend::isFriend(12, 36, 30);
+        $tmp = HelperMember::getListMemberIDs(21);
         return $tmp;
 //        dd($tmp);
 

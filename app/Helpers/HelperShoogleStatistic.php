@@ -62,26 +62,14 @@ class HelperShoogleStatistic
      */
     public static function getBuddiesCount(?int $shoogleID): int
     {
-        $members = self::getMembers($shoogleID);
-        if ( count($members) === 0 ) {
+        if ( is_null($shoogleID) ) {
             return 0;
         }
+        $members = HelperMember::getListMemberIDs($shoogleID);
 
         $buddiesCount = 0;
         foreach ($members as $member) {
-            $buddie = Buddie::on()
-                ->where('shoogle_id', '=', $shoogleID)
-                ->whereNull('disconnected_at')
-                ->where(function ($query) use ($member) {
-                    $query->where('user1_id', '=', $member)
-                        ->orWhere('user2_id', '=', $member);
-
-                })
-                ->count();
-
-            if ( $buddie > 0 ) {
-                $buddiesCount++;
-            }
+            $buddiesCount += (int)HelperMember::isMember($shoogleID, $member);
         }
 
         return $buddiesCount;
@@ -95,14 +83,12 @@ class HelperShoogleStatistic
      */
     public static function getSolosCount(?int $shoogleID): int
     {
-        $members = self::getMembers($shoogleID);
-        if ( count($members) === 0 ) {
+        if ( is_null($shoogleID) ) {
             return 0;
         }
 
         return UserHasShoogle::on()
             ->where('shoogle_id', '=', $shoogleID)
-            ->whereIn('user_id', $members)
             ->where('solo', '<>', 0)
             ->count();
     }
