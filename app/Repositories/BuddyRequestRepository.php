@@ -147,6 +147,11 @@ class BuddyRequestRepository extends Repositories
                 'type' => BuddyRequestTypeEnum::CONFIRM,
             ]);
         });
+
+
+        $newChannel = $this->serverClient->Channel('messaging', 'shoogle'.$shoogleId.'Buddy'.$idOfFirstUser.'with'.$idOfSecondUser);
+        $newChannel->create(Auth()->user()->id, [$idOfFirstUser, $idOfSecondUser]);
+        return $newChannel->id;
     }
 
     /**
