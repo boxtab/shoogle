@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
+use App\Helpers\HelperStream;
 use App\Repositories\InviteRepository;
-use App\Repositories\InviteRepositoryInterface;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\TestRepository;
-use App\Repositories\TestRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,6 +18,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+//        $this->app->singleton(HelperStream::class, function () {
+//            return new HelperStream();
+//        });
+
+//        $this->app->bind(HelperStream::class, function ($app) {
+//            return HelperStream::init();
+//        });
+
         //
 //        $this->app->bind(InviteRepositoryInterface::class, InviteRepository::class);
 //        $this->app->bind(TestRepositoryInterface::class, TestRepository::class);
@@ -26,10 +34,13 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
-     * @return void
+     * @throws \GetStream\StreamChat\StreamException
      */
     public function boot()
     {
+        HelperStream::init();
+
+//        new HelperStream();
         Collection::macro('toAssoc', function() {
             return $this->reduce(function ($assoc, $keyValuePair) {
                 list($key, $value) = $keyValuePair;

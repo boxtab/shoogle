@@ -11,6 +11,7 @@ use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
 use App\Helpers\HelperShoogleStatistic;
 use App\Helpers\HelperShooglesViews;
+use App\Helpers\HelperStream;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
@@ -36,17 +37,19 @@ class TestController extends Controller
 {
     public function index()
     {
-        $shoogleId = 1;
-        $idOfFirstUser = 2;
-        $idOfSecondUser = 3;
+//        new HelperStream();
+//        dd(111);
+//        HelperStream::init();
 
-        $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
-        $newChannel = $serverClient->Channel('messaging', 'shoogle'.$shoogleId.'Buddy'.$idOfFirstUser.'with'.$idOfSecondUser);
-        $newChannel->create(Auth::id(), [$idOfFirstUser, $idOfSecondUser]);
-        return $newChannel->id;
+//        $shoogleId = 1;
+//        $idOfFirstUser = 2;
+//        $idOfSecondUser = 3;
+//        $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
+//        $newChannel = $serverClient->Channel('messaging', 'shoogle'.$shoogleId.'Buddy'.$idOfFirstUser.'with'.$idOfSecondUser);
+//        $newChannel->create(Auth::id(), [$idOfFirstUser, $idOfSecondUser]);
+//        return $newChannel->id;
 
-
-//        dd($tmp);
+        //        dd($tmp);
 
         /*
         $streamApiKey = 'fms7mkz25hdf';

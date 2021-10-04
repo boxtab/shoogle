@@ -26,4 +26,13 @@ return [
 
     'stream_api_secret' => env('STREAM_API_SECRET', 'y8tm6k35avd35txgy4jn27tfagz2yjgxxfwuwrxzm4c43895ehrtz4uh53gqvz5r'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Stream server key.
+    |--------------------------------------------------------------------------
+    |
+    | Stream server key.
+    |
+    */
+    'server_key' => env('SERVER_KEY', 'AAAAXuKRzaE:APA91bHJLypV9-p6yzR6n2dqq6oJIzP_6dlsJDM4HqtgdiaDOKN5PtN_TsKNDTTNtO8O-iOGFNrkJwnxGdAWhWkKVC3XRwMGfE2inX0x6E-5Cwym5gM89ar6FLEs7-FixbOs9rTY4l2u'),
 ];

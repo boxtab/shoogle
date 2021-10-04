@@ -45,25 +45,26 @@ class BuddyRequestRepository extends Repositories
      * Friend request.
      *
      * @param int $shoogleId
-     * @param int $user2id
+     * @param int $user2Id
      * @param string|null $message
+     * @throws \Exception
      */
-    public function buddyRequest(int $shoogleId, int $user2id, ?string $message)
+    public function buddyRequest(int $shoogleId, int $user2Id, ?string $message)
     {
-        if ( HelperBuddies::areFriends($shoogleId, Auth::id(), $user2id) ) {
-            Log::info('enter');
-            return;
+        $user1Id = Auth::id();
+        if ( HelperBuddies::areFriends($shoogleId, $user1Id, $user2Id) ) {
+            throw new \Exception("Users $user1Id and $user2Id of Chat 123 are already friends", Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if ( HelperBuddyRequest::areBuddyRequest($shoogleId, Auth::id(), $user2id) ) {
+        if ( HelperBuddyRequest::areBuddyRequest($shoogleId, $user1Id, $user2Id) ) {
             Log::info('enter2');
             return;
         }
 
         $buddyRequest = BuddyRequest::on()
             ->where('shoogle_id', $shoogleId)
-            ->where('user1_id', Auth::id())
-            ->where('user2_id', $user2id)
+            ->where('user1_id', $user1Id)
+            ->where('user2_id', $user2Id)
             ->exists();
 
         if ( $buddyRequest === true ) {
@@ -72,8 +73,8 @@ class BuddyRequestRepository extends Repositories
 
         BuddyRequest::create([
             'shoogle_id'    => $shoogleId,
-            'user1_id'      => Auth::id(),
-            'user2_id'      => $user2id,
+            'user1_id'      => $user1Id,
+            'user2_id'      => $user2Id,
             'type'          => BuddyRequestTypeEnum::INVITE,
             'message'       => $message,
         ]);

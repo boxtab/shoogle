@@ -25,9 +25,9 @@ class BuddyDisconnectRequest extends ApiRequest
     public function rules()
     {
         return [
-            'buddyId' => 'required|integer|exists:users,id',
+            'buddyId'   => 'required|integer|exists:users,id',
             'shoogleId' => 'required|integer|exists:shoogles,id',
-            'message' => 'nullable|string:1024',
+            'message'   => 'nullable|string:1024',
         ];
     }
 }
