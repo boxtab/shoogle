@@ -6,6 +6,7 @@ use App\Constants\RoleConstant;
 use App\Enums\BuddyRequestTypeEnum;
 use App\Helpers\Helper;
 use App\Helpers\HelperBuddies;
+use App\Helpers\HelperBuddyRequest;
 use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\Services\StreamService;
@@ -50,6 +51,12 @@ class BuddyRequestRepository extends Repositories
     public function buddyRequest(int $shoogleId, int $user2id, ?string $message)
     {
         if ( HelperBuddies::areFriends($shoogleId, Auth::id(), $user2id) ) {
+            Log::info('enter');
+            return;
+        }
+
+        if ( HelperBuddyRequest::areBuddyRequest($shoogleId, Auth::id(), $user2id) ) {
+            Log::info('enter2');
             return;
         }
 
@@ -147,7 +154,6 @@ class BuddyRequestRepository extends Repositories
             $buddyRequest->update([
                 'type' => BuddyRequestTypeEnum::CONFIRM,
             ]);
-
 
             $streamService = new StreamService($buddyRequest->shoogle_id);
             $channelId = $streamService->createChannelForBuddy($buddyRequest->user1_id, $buddyRequest->user2_id);

@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperBuddies;
+use App\Helpers\HelperCalendar;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperRequest;
@@ -439,7 +440,7 @@ class ShooglesRepository extends Repositories
             'reminder'          => ( ! is_null($member) ) ? $member->reminder_formatted : null,
             'reminderInterval'  => ( ! is_null($member) ) ? $member->reminder_interval : null,
             'buddyName'         => (new ShoogleBuddyNameResource($friend)),
-            'buddy'             => HelperFriend::haveFriend( $shoogle->id, Auth::id() ),
+            'buddy'             => HelperCalendar::getBuddy( $shoogle->id, Auth::id() ),
             'isOwner'           => HelperShoogle::isOwner( Auth::id(), $shoogle->id ),
             'isMember'          => HelperMember::isMember( $shoogle->id, Auth::id() ),
             'isReminder'        => ( ! is_null($member) ) ? $member->is_reminder : null,

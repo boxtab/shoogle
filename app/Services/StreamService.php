@@ -31,7 +31,10 @@ class StreamService
      */
     public function createChannelForShoogle()
     {
-        $channel = $this->serverClient->Channel('messaging', 'shoogleCommunity' . $this->shoogleId);
+        $channel = $this->serverClient->Channel(
+            'messaging',
+            'shoogleCommunity' . $this->shoogleId);
+
         $channel->create('user' . Auth()->user()->id, ['user1' ,'user' . Auth()->user()->id]);
         return $channel->id;
     }
@@ -41,11 +44,15 @@ class StreamService
      *
      * @param int $idOfFirstUser
      * @param int $idOfSecondUser
+     * @return string|null
      * @throws \GetStream\StreamChat\StreamException
      */
     public function createChannelForBuddy(int $idOfFirstUser, int $idOfSecondUser)
     {
-        $channel = $this->serverClient->Channel('messaging', 'shoogle' . $this->shoogleId . 'Buddy' . $idOfFirstUser . 'with' . $idOfSecondUser);
+        $channel = $this->serverClient->Channel(
+            'messaging',
+            'shoogle' . $this->shoogleId . 'Buddy' . $idOfFirstUser . 'with' . $idOfSecondUser);
+
         $channel->create('user' . Auth()->user()->id, ['user' . $idOfFirstUser, 'user' . $idOfSecondUser]);
         return $channel->id;
     }
