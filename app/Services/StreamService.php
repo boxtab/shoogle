@@ -56,4 +56,17 @@ class StreamService
         $channel->create('user' . Auth()->user()->id, ['user' . $idOfFirstUser, 'user' . $idOfSecondUser]);
         return $channel->id;
     }
+
+    /**
+     * Creating a channel for journal.
+     *
+     * @throws \GetStream\StreamChat\StreamException
+     */
+    public function createJournalChannel()
+    {
+        $userId = Auth()->user()->id;
+        $channel = $this->serverClient->Channel('messaging', 'shoogle' . $this->shoogleId . 'Journal' . $userId);
+        $channel->create('user' . $userId, ['user' . $userId, 'user1']);
+        return $channel->id;
+    }
 }
