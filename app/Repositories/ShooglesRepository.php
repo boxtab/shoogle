@@ -65,7 +65,7 @@ class ShooglesRepository extends Repositories
      */
     public function createShoogle(array $shoogleField): int
     {
-        $shoogleId = DB::transaction(function() use ($shoogleField) {
+        $shoogle = DB::transaction(function() use ($shoogleField) {
 
             $shoogleId = $this->model->on()->create([
                 'owner_id'              => $shoogleField['owner_id'],
@@ -75,7 +75,7 @@ class ShooglesRepository extends Repositories
                 'cover_image'           => $shoogleField['cover_image'],
             ])->id;
 
-            UserHasShoogle::on()->create([
+            $memberId = UserHasShoogle::on()->create([
                 'user_id'           => $shoogleField['owner_id'],
                 'shoogle_id'        => $shoogleId,
                 'joined_at'         => Carbon::now(),
@@ -85,18 +85,23 @@ class ShooglesRepository extends Repositories
                 'is_reminder'       => $shoogleField['is_reminder'],
             ]);
 
-            return $shoogleId;
+            return ['shoogleId' => $shoogleId, 'memberId' => $memberId];
         });
 
 
-        $streamService = new StreamService($shoogleId);
-        $channelId = $streamService->createChannelForShoogle();
+        $streamService = new StreamService( $shoogle['shoogleId'] );
 
+        $channelShoogleId = $streamService->createChannelForShoogle();
         $this->model->on()
-            ->where('id', '=', $shoogleId)
-            ->update(['chat_id' => $channelId]);
+            ->where('id', '=', $shoogle['shoogleId'])
+            ->update(['chat_id' => $channelShoogleId]);
 
-        return $shoogleId;
+        $channelMemberId = $streamService->createJournalChannel();
+        UserHasShoogle::on()
+            ->where('id', '=', $shoogle['memberId'])
+            ->update(['chat_id' => $channelMemberId]);
+
+        return $shoogle['shoogleId'];
     }
 
     /**
@@ -222,8 +227,9 @@ class ShooglesRepository extends Repositories
 
                 'deleted_at' => null,
             ]);
+            $lastInsertId = $member->id;
         } else {
-            $affectedRows = UserHasShoogle::on()->create([
+            $userHasShoogle = UserHasShoogle::on()->create([
                 'user_id' => $userID,
                 'shoogle_id' => $shoogleId,
                 'joined_at' => Carbon::now(),
@@ -232,12 +238,17 @@ class ShooglesRepository extends Repositories
                 'reminder' => $reminder,
                 'reminder_interval' => $reminderInterval,
                 'is_reminder' => $isReminder,
-            ])->exists();
+            ]);
+            $affectedRows = 1;
+            $lastInsertId = $userHasShoogle->id;
         }
 
         if ( $affectedRows > 0 ) {
             $streamService = new StreamService($shoogleId);
-            $streamService->createChannelForShoogle();
+            $channelId = $streamService->createJournalChannel();
+            UserHasShoogle::on()
+                ->where('id', '=', $lastInsertId)
+                ->update(['chat_id' => $channelId]);
         }
     }
 
