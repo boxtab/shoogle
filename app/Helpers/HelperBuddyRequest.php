@@ -18,6 +18,10 @@ class HelperBuddyRequest
      */
     public static function areBuddyRequest(?int $shoogleID, ?int $user1ID, ?int $user2ID): bool
     {
+        if ( is_null($shoogleID) || is_null($user1ID) || is_null($user2ID) ) {
+            return true;
+        }
+
         return false;
     }
 }

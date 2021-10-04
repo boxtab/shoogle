@@ -184,10 +184,17 @@ class BuddyRequestRepository extends Repositories
      *
      * @param int $buddyId
      * @param int $shoogleId
+     * @param string|null $message
      */
-    public function buddyDisconnect(int $buddyId, int $shoogleId): void
+    public function buddyDisconnect(int $buddyId, int $shoogleId, ?string $message): void
     {
-        DB::transaction( function () use ($buddyId, $shoogleId) {
+        DB::transaction( function () use ($buddyId, $shoogleId, $message) {
+
+            $buddyRequestFields = ['type' => BuddyRequestTypeEnum::DISCONNECT];
+            if ( ! is_null($message) ) {
+                $buddyRequestFields['message'] = $message;
+            }
+
             BuddyRequest::on()
                 ->where('type', '<>', BuddyRequestTypeEnum::DISCONNECT)
                 ->where('shoogle_id', $shoogleId)
@@ -197,9 +204,7 @@ class BuddyRequestRepository extends Repositories
                 ->orWhere(function($query) use ($buddyId) {
                     $query->where('user1_id', Auth::id())->where('user2_id', $buddyId);
                 })
-                ->update([
-                    'type' => BuddyRequestTypeEnum::DISCONNECT,
-                ]);
+                ->update($buddyRequestFields);
 
             Buddie::on()
                 ->whereNull('disconnected_at')

@@ -27,6 +27,7 @@ class BuddyDisconnectRequest extends ApiRequest
         return [
             'buddyId' => 'required|integer|exists:users,id',
             'shoogleId' => 'required|integer|exists:shoogles,id',
+            'message' => 'nullable|string:1024',
         ];
     }
 }
