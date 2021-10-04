@@ -39,6 +39,7 @@ class ShooglesViewsResource extends JsonResource
             'mostActiveShooglersCount' => count( HelperShooglesViews::getMostActiveShooglers($this->resource->id) ),
 
             'views' => $this->resource->views,
+            'chatId' => $this->resource->chat_id,
 
             'shooglersCount' => HelperMember::getMemberCount($this->resource->id),
             'buddiesCount' => HelperShoogleStatistic::getBuddiesCount($this->resource->id),
