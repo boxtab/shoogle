@@ -145,6 +145,18 @@ class BuddyRequestRepository extends Repositories
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        $buddyRequest = BuddyRequest::on()
+            ->where('id', $buddyRequestId)->first();
+
+        $shoogleId = $buddyRequest->shoogle_id;
+        $user1Id = $buddyRequest->user1_id;
+        $user2Id = $buddyRequest->user2_id;
+
+        if ( HelperBuddies::isFriends($shoogleId, $user1Id, $user2Id) ) {
+            throw new \Exception("User id:$user1Id and user id:$user2Id are already friends in shoogle id:$shoogleId",
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         DB::transaction( function () use ($buddyRequestId) {
             $buddyRequest = BuddyRequest::on()
                 ->where('id', $buddyRequestId)->first();

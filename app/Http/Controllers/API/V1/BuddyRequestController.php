@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BuddyConfirmRequest;
 use App\Http\Requests\BuddyDisconnectRequest;
 use App\Http\Requests\BuddyRejectRequest;
-use App\Http\Requests\BuddyRequest;
+use App\Http\Requests\BuddyRequestRequest;
 use App\Http\Resources\BuddyBidResource;
 use App\Repositories\BuddyRequestRepository;
 use App\Repositories\CompanyRepository;
@@ -33,10 +33,10 @@ class BuddyRequestController extends BaseApiController
     /**
      * Friend request.
      *
-     * @param BuddyRequest $request
+     * @param BuddyRequestRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function buddyRequest(BuddyRequest $request)
+    public function buddyRequest(BuddyRequestRequest $request)
     {
         try {
             $shoogleId = $request->input('shoogleId');

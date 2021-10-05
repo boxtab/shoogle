@@ -9,7 +9,7 @@ use App\Support\ApiRequest\ApiRequest;
  * Class BuddyRequest
  * @package App\Http\Requests
  */
-class BuddyRequest extends ApiRequest
+class BuddyRequestRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -16,26 +16,30 @@ class HelperBuddies
     /**
      * Returns true if two users are friends within shoogle.
      *
-     * @param int|null $shoogleID
-     * @param int|null $user1ID
-     * @param int|null $user2ID
+     * @param int|null $shoogleId
+     * @param int|null $user1Id
+     * @param int|null $user2Id
      * @return bool
      */
-    public static function isFriends(?int $shoogleID, ?int $user1ID, ?int $user2ID): bool
+    public static function isFriends(?int $shoogleId, ?int $user1Id, ?int $user2Id): bool
     {
-        if ( is_null($shoogleID) || is_null($user1ID) || is_null($user2ID) ) {
+        if ( is_null($shoogleId) || is_null($user1Id) || is_null($user2Id) ) {
             return false;
         }
 
         $countBuddie = Buddie::on()
-            ->where('shoogle_id', '=', $shoogleID)
-            ->orWhere(function ($query) use ($user1ID, $user2ID) {
-                $query->where('user1_id', '=', $user1ID)
-                    ->where('user2_id', '=', $user2ID);
-            })
-            ->orWhere(function ($query) use ($user1ID, $user2ID) {
-                $query->where('user2_id', '=', $user1ID)
-                    ->where('user1_id', '=', $user2ID);
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where(function ($query) use ($user1Id, $user2Id) {
+
+                $query->where(function ($query) use ($user1Id, $user2Id) {
+                    $query->where('user1_id', '=', $user1Id)
+                        ->where('user2_id', '=', $user2Id);
+                })
+                ->orWhere(function ($query) use ($user1Id, $user2Id) {
+                    $query->where('user2_id', '=', $user1Id)
+                        ->where('user1_id', '=', $user2Id);
+                });
+
             })
             ->count();
 
@@ -45,18 +49,18 @@ class HelperBuddies
     /**
      * The user has friends in the shoogle.
      *
-     * @param int|null $shoogleID
+     * @param int|null $shoogleId
      * @param int|null $userID
      * @return bool
      */
-    public static function haveFriends(?int $shoogleID, ?int $userID): bool
+    public static function haveFriends(?int $shoogleId, ?int $userID): bool
     {
-        if ( is_null($shoogleID) || is_null($userID) ) {
+        if ( is_null($shoogleId) || is_null($userID) ) {
             return false;
         }
 
         $buddyCount = Buddie::on()
-            ->where('shoogle_id', '=', $shoogleID)
+            ->where('shoogle_id', '=', $shoogleId)
             ->where(function ($query) use ($userID) {
                 $query->where('user1_id', '=', $userID)
                     ->orWhere('user2_id', '=', $userID);
@@ -68,17 +72,17 @@ class HelperBuddies
     /**
      * Finds friend IDs within shoogle for a user.
      *
-     * @param int|null $shoogleID
+     * @param int|null $shoogleId
      * @param int|null $userID
      * @return array
      */
-    public static function getFriendsIDList(?int $shoogleID, ?int $userID): array
+    public static function getFriendsIDList(?int $shoogleId, ?int $userID): array
     {
-        if ( is_null($shoogleID) || is_null($userID) ) {
+        if ( is_null($shoogleId) || is_null($userID) ) {
             return [];
         }
         $isShoogle = Shoogle::on()
-            ->where('id', '=', $shoogleID)
+            ->where('id', '=', $shoogleId)
             ->exists();
 
         $isUser = User::on()
@@ -90,7 +94,7 @@ class HelperBuddies
         }
 
         $buddiesIDs = Buddie::on()
-            ->where('shoogle_id', '=', $shoogleID)
+            ->where('shoogle_id', '=', $shoogleId)
             ->where(function ($query) use ($userID) {
                 $query->where('user1_id', '=', $userID)
                     ->orWhere('user2_id', '=', $userID);
@@ -107,18 +111,18 @@ class HelperBuddies
     /**
      * Get friend ID within shoogle.
      *
-     * @param int|null $shoogleID
+     * @param int|null $shoogleId
      * @param int|null $userID
      * @return int|null
      */
-    public static function getFriendID(?int $shoogleID, ?int $userID): ?int
+    public static function getFriendID(?int $shoogleId, ?int $userID): ?int
     {
-        if ( is_null($shoogleID) || is_null($userID) ) {
+        if ( is_null($shoogleId) || is_null($userID) ) {
             return null;
         }
 
         $friend = Buddie::on()
-            ->where('shoogle_id', '=', $shoogleID)
+            ->where('shoogle_id', '=', $shoogleId)
             ->where(function ($query) use ($userID) {
                 $query->where('user1_id', '=', $userID)
                     ->orWhere('user2_id', '=', $userID);
