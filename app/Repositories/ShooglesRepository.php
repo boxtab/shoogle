@@ -14,6 +14,7 @@ use App\Http\Resources\ShoogleBuddyNameResource;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\Models\UserHasShoogle;
+use App\Scopes\UserHasShoogleScope;
 use App\Services\StreamService;
 use App\Support\ApiResponse\ApiResponse;
 use App\Traits\ShoogleCountTrait;
@@ -183,7 +184,7 @@ class ShooglesRepository extends Repositories
     /**
      * Shoogle entry method.
      *
-     * @param int $userID
+     * @param int $userId
      * @param int $shoogleId
      * @param string|null $reminder
      * @param string|null $reminderInterval
@@ -191,9 +192,10 @@ class ShooglesRepository extends Repositories
      * @param bool|null $buddy
      * @param string|null $note
      * @throws \GetStream\StreamChat\StreamException
+     * @throws \Exception
      */
     public function entry(
-        int $userID,
+        int $userId,
         int $shoogleId,
         ?string $reminder,
         ?string $reminderInterval,
@@ -201,36 +203,34 @@ class ShooglesRepository extends Repositories
         ?bool $buddy,
         ?string $note): void
     {
-        if ( ! Shoogle::on()->where('id', '=', $shoogleId)->exists() ) {
-            throw new \Exception("Shoogle ID $shoogleId does not exist or has been deleted", Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
         $member = UserHasShoogle::on()
-            ->where('user_id', '=', $userID)
+            ->where('user_id', '=', $userId)
             ->where('shoogle_id', '=', $shoogleId)
-            ->where(function ($query) {
-                $query->whereNotNull('left_at')
-                    ->orWhereNotNull('deleted_at');
-            })
+            ->withoutGlobalScope(UserHasShoogleScope::class)
             ->withTrashed()
             ->first();
 
-        if ( ! empty($member) ) {
-            $affectedRows = $member->update([
-                'joined_at' => Carbon::now(),
-                'left_at' => null,
+        if ( ! empty( $member ) ) {
+            if ( ! is_null($member->left_at) || ! is_null($member->deleted_at) ) {
+                $affectedRows = $member->update([
+                    'joined_at' => Carbon::now(),
+                    'left_at' => null,
 
-                'solo' => ( ! $buddy ),
-                'reminder' => $reminder,
-                'reminder_interval' => $reminderInterval,
-                'is_reminder' => $isReminder,
+                    'solo' => (!$buddy),
+                    'reminder' => $reminder,
+                    'reminder_interval' => $reminderInterval,
+                    'is_reminder' => $isReminder,
 
-                'deleted_at' => null,
-            ]);
-            $lastInsertId = $member->id;
+                    'deleted_at' => null,
+                ]);
+                $lastInsertId = $member->id;
+            } else {
+                throw new \Exception("The user id:$userId is already a member of the shoogle id:$shoogleId",
+                    Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
         } else {
             $userHasShoogle = UserHasShoogle::on()->create([
-                'user_id' => $userID,
+                'user_id' => $userId,
                 'shoogle_id' => $shoogleId,
                 'joined_at' => Carbon::now(),
 

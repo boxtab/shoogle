@@ -162,7 +162,7 @@ class WellbeingScoresRepository extends Repositories
      */
     public function getAverageShoogle(int $shoogleId, string $from = null, string $to=null): ?object
     {
-        $arrayUserId = UserHasShoogle::where('shoogle_id', $shoogleId)
+        $arrayUserId = UserHasShoogle::on()->where('shoogle_id', $shoogleId)
             ->select('user_id')
             ->get()
             ->map(function ($item) {

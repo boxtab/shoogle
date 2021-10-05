@@ -55,7 +55,6 @@ class BuddyRequestRepository extends Repositories
         $user1Id = Auth::id();
 
         if ( ! HelperMember::isMember($shoogleId, $user1Id) ) {
-            Log::info('test');
             throw new \Exception("User $user1Id is not a member of shoogle $shoogleId",
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -75,23 +74,13 @@ class BuddyRequestRepository extends Repositories
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-//        $buddyRequest = BuddyRequest::on()
-//            ->where('shoogle_id', $shoogleId)
-//            ->where('user1_id', $user1Id)
-//            ->where('user2_id', $user2Id)
-//            ->exists();
-//
-//        if ( $buddyRequest === true ) {
-//            return;
-//        }
-//
-//        BuddyRequest::create([
-//            'shoogle_id'    => $shoogleId,
-//            'user1_id'      => $user1Id,
-//            'user2_id'      => $user2Id,
-//            'type'          => BuddyRequestTypeEnum::INVITE,
-//            'message'       => $message,
-//        ]);
+        BuddyRequest::create([
+            'shoogle_id'    => $shoogleId,
+            'user1_id'      => $user1Id,
+            'user2_id'      => $user2Id,
+            'type'          => BuddyRequestTypeEnum::INVITE,
+            'message'       => $message,
+        ]);
     }
 
     /**
@@ -147,9 +136,15 @@ class BuddyRequestRepository extends Repositories
      * Accept the invitation.
      *
      * @param int $buddyRequestId
+     * @throws \Exception
      */
     public function buddyConfirm(int $buddyRequestId): void
     {
+        if ( ! HelperBuddyRequest::isActualInvite($buddyRequestId) ) {
+            throw new \Exception("The invitation is $buddyRequestId no longer relevant",
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         DB::transaction( function () use ($buddyRequestId) {
             $buddyRequest = BuddyRequest::on()
                 ->where('id', $buddyRequestId)->first();

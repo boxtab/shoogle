@@ -178,12 +178,9 @@ class ShooglesController extends BaseApiController
                 $request->input('note')
             );
         } catch (Exception $e) {
-            if ($e->getCode() == 23000) {
-                return ApiResponse::returnError('The user is already a member of the shoogle!');
-            } else {
-                return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
     }
 

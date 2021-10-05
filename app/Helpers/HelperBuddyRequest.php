@@ -30,14 +30,37 @@ class HelperBuddyRequest
         $countBuddyRequest = BuddyRequest::on()
             ->where('shoogle_id', '=', $shoogleId)
             ->where('type', '<>', BuddyRequestTypeEnum::DISCONNECT)
-            ->orWhere(function ($query) use ($user1Id, $user2Id) {
-                $query->where('user1_id', '=', $user1Id)
-                    ->where('user2_id', '=', $user2Id);
+            ->where(function ($query) use ($user1Id, $user2Id) {
+
+                $query->where(function ($query) use ($user1Id, $user2Id) {
+                    $query->where('user1_id', '=', $user1Id)
+                        ->where('user2_id', '=', $user2Id); })
+                    ->orWhere(function ($query) use ($user1Id, $user2Id) {
+                        $query->where('user2_id', '=', $user1Id)
+                            ->where('user1_id', '=', $user2Id);
+                    });
+
             })
-            ->orWhere(function ($query) use ($user1Id, $user2Id) {
-                $query->where('user2_id', '=', $user1Id)
-                    ->where('user1_id', '=', $user2Id);
-            })
+            ->count();
+
+        return ( $countBuddyRequest > 0 ) ? true : false;
+    }
+
+    /**
+     * Returns true if the invite is still valid.
+     *
+     * @param int|null $buddyRequestId
+     * @return bool
+     */
+    public static function isActualInvite(?int $buddyRequestId): bool
+    {
+        if ( is_null($buddyRequestId) ) {
+            return false;
+        }
+
+        $countBuddyRequest = BuddyRequest::on()
+            ->where('id', '=', $buddyRequestId)
+            ->where('type', '=', BuddyRequestTypeEnum::INVITE)
             ->count();
 
         return ( $countBuddyRequest > 0 ) ? true : false;
