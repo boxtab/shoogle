@@ -3,8 +3,9 @@
 namespace App\Helpers;
 
 use App\Enums\BuddyRequestTypeEnum;
-use App\Http\Requests\BuddyRequest;
+use App\Models\BuddyRequest;
 use App\Models\Buddie;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperBuddyRequest
@@ -20,13 +21,13 @@ class HelperBuddyRequest
      * @param int|null $user2Id
      * @return bool
      */
-    public static function areBuddyRequest(?int $shoogleId, ?int $user1Id, ?int $user2Id): bool
+    public static function isBuddyRequest(?int $shoogleId, ?int $user1Id, ?int $user2Id): bool
     {
         if ( is_null($shoogleId) || is_null($user1Id) || is_null($user2Id) ) {
             return true;
         }
 
-        return BuddyRequest::on()
+        $countBuddyRequest = BuddyRequest::on()
             ->where('shoogle_id', '=', $shoogleId)
             ->where('type', '<>', BuddyRequestTypeEnum::DISCONNECT)
             ->orWhere(function ($query) use ($user1Id, $user2Id) {
@@ -37,6 +38,8 @@ class HelperBuddyRequest
                 $query->where('user2_id', '=', $user1Id)
                     ->where('user1_id', '=', $user2Id);
             })
-            ->exists();
+            ->count();
+
+        return ( $countBuddyRequest > 0 ) ? true : false;
     }
 }

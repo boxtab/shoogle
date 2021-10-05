@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperAvatar;
 use App\Models\Shoogle;
 use App\User;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -28,7 +29,11 @@ class BuddyBidResource extends JsonResource
                     about as about
                 '))
                 ->where('id', $this->resource->buddy)
-                ->first(),
+                ->get()
+                ->map(function ($item) {
+                    $item['profileImage'] = HelperAvatar::getURLProfileImage($item['profileImage']);
+                    return  $item;
+                })->first(),
             'shoogle' => Shoogle::on()
                 ->select(DB::raw('
                     id as id,
@@ -37,6 +42,7 @@ class BuddyBidResource extends JsonResource
                 '))
                 ->where('id', $this->resource->shoogle_id)
                 ->first(),
+            'created_at' => $this->resource->created,
             'message' => $this->resource->message,
         ];
     }

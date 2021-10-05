@@ -6,6 +6,7 @@ use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperMember
@@ -16,20 +17,22 @@ class HelperMember
     /**
      * Whether the user is a member of the shoogle.
      *
-     * @param int|null $shoogleID
-     * @param int|null $userID
+     * @param int|null $shoogleId
+     * @param int|null $userId
      * @return bool
      */
-    public static function isMember(?int $shoogleID, ?int $userID): bool
+    public static function isMember(?int $shoogleId, ?int $userId): bool
     {
-        if ( is_null( $shoogleID ) || is_null( $userID ) ) {
+        if ( is_null( $shoogleId ) || is_null( $userId ) ) {
             return false;
         }
 
-        return UserHasShoogle::on()
-            ->where('shoogle_id', '=', $shoogleID)
-            ->where('user_id', '=', $userID)
-            ->exists();
+        $countUserHasShoogle = UserHasShoogle::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where('user_id', '=', $userId)
+            ->count();
+
+        return ( $countUserHasShoogle > 0 ) ? true : false;
     }
 
     /**

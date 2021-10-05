@@ -7,6 +7,7 @@ use App\Enums\BuddyRequestTypeEnum;
 use App\Helpers\Helper;
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperBuddyRequest;
+use App\Helpers\HelperMember;
 use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\Services\StreamService;
@@ -52,33 +53,45 @@ class BuddyRequestRepository extends Repositories
     public function buddyRequest(int $shoogleId, int $user2Id, ?string $message)
     {
         $user1Id = Auth::id();
-        if ( HelperBuddies::areFriends($shoogleId, $user1Id, $user2Id) ) {
-            throw new \Exception("Users $user1Id and $user2Id of Chat 123 are already friends", Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        if ( ! HelperMember::isMember($shoogleId, $user1Id) ) {
+            Log::info('test');
+            throw new \Exception("User $user1Id is not a member of shoogle $shoogleId",
+                Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if ( HelperBuddyRequest::areBuddyRequest($shoogleId, $user1Id, $user2Id) ) {
-            Log::info('enter2');
-            return;
+        if ( ! HelperMember::isMember($shoogleId, $user2Id) ) {
+            throw new \Exception("User $user2Id is not a member of shoogle $shoogleId",
+                Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $buddyRequest = BuddyRequest::on()
-            ->where('shoogle_id', $shoogleId)
-            ->where('user1_id', $user1Id)
-            ->where('user2_id', $user2Id)
-            ->exists();
-
-        if ( $buddyRequest === true ) {
-            return;
+        if ( ! HelperBuddies::isFriends($shoogleId, $user1Id, $user2Id) ) {
+            throw new \Exception("Users $user1Id and $user2Id of Chat $shoogleId are already friends",
+                Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        BuddyRequest::create([
-            'shoogle_id'    => $shoogleId,
-            'user1_id'      => $user1Id,
-            'user2_id'      => $user2Id,
-            'type'          => BuddyRequestTypeEnum::INVITE,
-            'message'       => $message,
-        ]);
+        if ( HelperBuddyRequest::isBuddyRequest($shoogleId, $user1Id, $user2Id) ) {
+            throw new \Exception("User $user1Id has already sent a friend request to user $user2Id for shoogle $shoogleId",
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
+//        $buddyRequest = BuddyRequest::on()
+//            ->where('shoogle_id', $shoogleId)
+//            ->where('user1_id', $user1Id)
+//            ->where('user2_id', $user2Id)
+//            ->exists();
+//
+//        if ( $buddyRequest === true ) {
+//            return;
+//        }
+//
+//        BuddyRequest::create([
+//            'shoogle_id'    => $shoogleId,
+//            'user1_id'      => $user1Id,
+//            'user2_id'      => $user2Id,
+//            'type'          => BuddyRequestTypeEnum::INVITE,
+//            'message'       => $message,
+//        ]);
     }
 
     /**
@@ -95,6 +108,7 @@ class BuddyRequestRepository extends Repositories
                 id as id,
                 user1_id as buddy,
                 shoogle_id as shoogle_id,
+                created_at as created_at,
                 message as message
             '))
             ->where('user2_id', Auth::id())
@@ -118,6 +132,7 @@ class BuddyRequestRepository extends Repositories
                 id as id,
                 user2_id as buddy,
                 shoogle_id as shoogle_id,
+                created_at as created_at,
                 message as message
             '))
             ->where('user1_id', Auth::id())

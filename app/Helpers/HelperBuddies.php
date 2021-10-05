@@ -21,13 +21,13 @@ class HelperBuddies
      * @param int|null $user2ID
      * @return bool
      */
-    public static function areFriends(?int $shoogleID, ?int $user1ID, ?int $user2ID): bool
+    public static function isFriends(?int $shoogleID, ?int $user1ID, ?int $user2ID): bool
     {
         if ( is_null($shoogleID) || is_null($user1ID) || is_null($user2ID) ) {
             return false;
         }
 
-        return Buddie::on()
+        $countBuddie = Buddie::on()
             ->where('shoogle_id', '=', $shoogleID)
             ->orWhere(function ($query) use ($user1ID, $user2ID) {
                 $query->where('user1_id', '=', $user1ID)
@@ -37,7 +37,9 @@ class HelperBuddies
                 $query->where('user2_id', '=', $user1ID)
                     ->where('user1_id', '=', $user2ID);
             })
-            ->exists();
+            ->count();
+
+        return ( $countBuddie > 0 ) ? true : false;
     }
 
     /**
