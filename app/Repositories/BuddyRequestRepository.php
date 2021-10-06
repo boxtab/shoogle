@@ -67,7 +67,7 @@ class BuddyRequestRepository extends Repositories
         }
 
         if ( HelperBuddies::isFriends($shoogleId, $user1Id, $user2Id) ) {
-            throw new \Exception("Users id:$user1Id and id:$user2Id of Chat id:$shoogleId are already friends",
+            throw new \Exception("Users id:$user1Id and id:$user2Id of shoogle id:$shoogleId are already friends",
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
