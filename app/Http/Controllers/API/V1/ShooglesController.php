@@ -28,6 +28,7 @@ use App\Models\Shoogle;
 use App\Repositories\ShooglesRepository;
 use App\Support\ApiRequest\ApiRequest;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\ShoogleValidationTrait;
 use App\User;
 use Carbon\Carbon;
 use Exception;
@@ -46,6 +47,8 @@ use GetStream\StreamChat\Client as StreamClient;
 
 class ShooglesController extends BaseApiController
 {
+    use ShoogleValidationTrait;
+
     /**
      * ShooglesController constructor.
      * @param ShooglesRepository $shooglesRepository
@@ -167,6 +170,16 @@ class ShooglesController extends BaseApiController
      */
     public function entry(ShooglesEntryRequest $request)
     {
+        $checkReminder = $this->checkReminder(
+            $request->input('reminder'),
+            $request->input('reminderInterval'),
+            $request->input('isReminder')
+        );
+
+        if ( ! is_null($checkReminder) ) {
+            return $checkReminder;
+        }
+
         try {
             $this->repository->entry(
                 Auth::id(),

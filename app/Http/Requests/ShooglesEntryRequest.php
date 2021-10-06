@@ -30,8 +30,8 @@ class ShooglesEntryRequest extends ApiRequest
     {
         return [
             'shoogleId'             => 'required|exists:shoogles,id',
-            'reminder'              => 'required_if:isReminder,==,true|nullable|min:2|date_format:"Y-m-d H:i:s"',
-            'reminderInterval'      => 'required_if:isReminder,==,true|nullable|string|max:1024',
+            'reminder'              => 'nullable|min:2|date_format:"Y-m-d H:i:s"',
+            'reminderInterval'      => 'nullable|string|max:1024',
             'isReminder'            => 'required|boolean',
             'buddy'                 => 'required|boolean',
             'note'                  => 'nullable|string',

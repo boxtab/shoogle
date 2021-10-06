@@ -19,6 +19,7 @@ use App\Services\StreamService;
 use App\Support\ApiResponse\ApiResponse;
 use App\Traits\ShoogleCountTrait;
 use App\Traits\ShoogleTrait;
+use App\Traits\ShoogleValidationTrait;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -158,7 +159,7 @@ class ShooglesRepository extends Repositories
             $shoogle->save();
         }
 
-        ShoogleViews::updateOrCreate(
+        ShoogleViews::on()->updateOrCreate(
             [
                 'shoogle_id' =>  $shoogleId,
                 'user_id' => Auth::id(),
