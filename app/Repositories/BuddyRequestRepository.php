@@ -11,6 +11,7 @@ use App\Helpers\HelperMember;
 use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\Scopes\BuddiesScope;
+use App\Models\Shoogle;
 use App\Services\StreamService;
 use App\User;
 use Carbon\Carbon;
@@ -197,8 +198,9 @@ class BuddyRequestRepository extends Repositories
                 'type' => BuddyRequestTypeEnum::CONFIRM,
             ]);
 
+            $shoogle = Shoogle::on()->where('id', $buddyRequest->shoogle_id)->first();
             $streamService = new StreamService($buddyRequest->shoogle_id);
-            $channelId = $streamService->createChannelForBuddy($buddyRequest->user1_id, $buddyRequest->user2_id);
+            $channelId = $streamService->createChannelForBuddy($shoogle->title ,$buddyRequest->user1_id, $buddyRequest->user2_id);
 
             $buddie->update([
                 'chat_id' => $channelId,
