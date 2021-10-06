@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\RewardConstant;
 use App\Helpers\HelperBuddies;
+use App\Helpers\HelperChat;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperShoogle;
@@ -37,6 +38,30 @@ class TestController extends Controller
 {
     public function index()
     {
+        $tmp = HelperBuddies::isFriends(51, 3, 60);
+
+        if ( is_null($tmp) ) {
+            return 'is null true';
+        }
+
+        if ( $tmp == true ) {
+            return 'is true';
+        }
+
+        if ( $tmp == false ) {
+            return 'is false';
+        }
+
+        return $tmp;
+
+//        $tmp = HelperChat::getBuddyChatId(51, 60);
+//
+//        if ( is_null($tmp) ) {
+//            return 'null - ';
+//        } else {
+//            return $tmp;
+//        }
+
 //        new HelperStream();
 //        dd(111);
 //        HelperStream::init();

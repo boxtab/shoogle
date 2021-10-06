@@ -3,11 +3,13 @@
 namespace App\Http\Resources;
 
 use App\Helpers\HelperAvatar;
+use App\Helpers\HelperChat;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperShoogleStatistic;
 use App\Helpers\HelperShooglesViews;
 use App\Models\UserHasShoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class ShooglesViewsResource
@@ -39,7 +41,10 @@ class ShooglesViewsResource extends JsonResource
             'mostActiveShooglersCount' => count( HelperShooglesViews::getMostActiveShooglers($this->resource->id) ),
 
             'views' => $this->resource->views,
-            'chatId' => $this->resource->chat_id,
+
+            'shoogleChatId' => HelperChat::getShoogleChatId( $this->resource->id ),
+            'journalChatId' => HelperChat::getJournalChatId( $this->resource->id, Auth::id() ),
+            'buddyChatId' => HelperChat::getBuddyChatId( $this->resource->id, Auth::id() ),
 
             'shooglersCount' => HelperMember::getMemberCount($this->resource->id),
             'buddiesCount' => HelperShoogleStatistic::getBuddiesCount($this->resource->id),

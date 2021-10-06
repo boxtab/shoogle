@@ -10,6 +10,7 @@ use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperMember;
 use App\Models\BuddyRequest;
 use App\Models\Company;
+use App\Scopes\BuddiesScope;
 use App\Services\StreamService;
 use App\User;
 use Carbon\Carbon;
@@ -55,22 +56,22 @@ class BuddyRequestRepository extends Repositories
         $user1Id = Auth::id();
 
         if ( ! HelperMember::isMember($shoogleId, $user1Id) ) {
-            throw new \Exception("User $user1Id is not a member of shoogle $shoogleId",
+            throw new \Exception("User id:$user1Id is not a member of shoogle id:$shoogleId",
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if ( ! HelperMember::isMember($shoogleId, $user2Id) ) {
-            throw new \Exception("User $user2Id is not a member of shoogle $shoogleId",
+            throw new \Exception("User id:$user2Id is not a member of shoogle id:$shoogleId",
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if ( ! HelperBuddies::isFriends($shoogleId, $user1Id, $user2Id) ) {
-            throw new \Exception("Users $user1Id and $user2Id of Chat $shoogleId are already friends",
+        if ( HelperBuddies::isFriends($shoogleId, $user1Id, $user2Id) ) {
+            throw new \Exception("Users id:$user1Id and id:$user2Id of Chat id:$shoogleId are already friends",
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if ( HelperBuddyRequest::isBuddyRequest($shoogleId, $user1Id, $user2Id) ) {
-            throw new \Exception("User $user1Id has already sent a friend request to user $user2Id for shoogle $shoogleId",
+            throw new \Exception("User id:$user1Id has already sent a friend request to user id:$user2Id for shoogle id:$shoogleId",
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -161,18 +162,36 @@ class BuddyRequestRepository extends Repositories
             $buddyRequest = BuddyRequest::on()
                 ->where('id', $buddyRequestId)->first();
 
+            $user1Id = $buddyRequest->user1_id;
+            $user2Id = $buddyRequest->user2_id;
             $buddie = Buddie::on()
                 ->where('shoogle_id', $buddyRequest->shoogle_id)
-                ->where('user1_id', $buddyRequest->user1_id)
-                ->where('user2_id', $buddyRequest->user2_id)
-                ->firstOr(function() use($buddyRequest) {
-                    Buddie::on()->create([
-                        'shoogle_id' => $buddyRequest->shoogle_id,
-                        'user1_id' => $buddyRequest->user1_id,
-                        'user2_id' => $buddyRequest->user2_id,
-                        'connected_at' => Carbon::now(),
-                    ]);
-                });
+                ->where(function ($query) use ($user1Id, $user2Id) {
+
+                    $query->where(function ($query) use ($user1Id, $user2Id) {
+                        $query->where('user1_id', '=', $user1Id)
+                            ->where('user2_id', '=', $user2Id);
+                    })
+                        ->orWhere(function ($query) use ($user1Id, $user2Id) {
+                            $query->where('user2_id', '=', $user1Id)
+                                ->where('user1_id', '=', $user2Id);
+                        });
+
+                })
+                ->withoutGlobalScope(BuddiesScope::class)
+                ->whereNotNull('disconnected_at')
+                ->first();
+
+            if ( ! is_null($buddie) ) {
+                $buddie->disconnected_at = null;
+            } else {
+                $buddie = Buddie::on()->create([
+                    'shoogle_id' => $buddyRequest->shoogle_id,
+                    'user1_id' => $buddyRequest->user1_id,
+                    'user2_id' => $buddyRequest->user2_id,
+                    'connected_at' => Carbon::now(),
+                ]);
+            }
 
             $buddyRequest->update([
                 'type' => BuddyRequestTypeEnum::CONFIRM,

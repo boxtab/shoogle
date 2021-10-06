@@ -76,7 +76,7 @@ class ShooglesRepository extends Repositories
                 'cover_image'           => $shoogleField['cover_image'],
             ])->id;
 
-            $memberId = UserHasShoogle::on()->create([
+            $member = UserHasShoogle::on()->create([
                 'user_id'           => $shoogleField['owner_id'],
                 'shoogle_id'        => $shoogleId,
                 'joined_at'         => Carbon::now(),
@@ -86,7 +86,7 @@ class ShooglesRepository extends Repositories
                 'is_reminder'       => $shoogleField['is_reminder'],
             ]);
 
-            return ['shoogleId' => $shoogleId, 'memberId' => $memberId];
+            return ['shoogleId' => $shoogleId, 'memberId' => $member->id];
         });
 
 
@@ -483,8 +483,8 @@ class ShooglesRepository extends Repositories
             $toSave = true;
         }
 
-        if ( array_key_exists('buddy', $setting) ) {
-            $member->solo = ! (bool)$setting['buddy'];
+        if ( array_key_exists('isReminder', $setting) ) {
+            $member->is_reminder = ! (bool)$setting['isReminder'];
             $toSave = true;
         }
 

@@ -62,6 +62,7 @@ class HelperShoogleStatistic
      */
     public static function getBuddiesCount(?int $shoogleID): int
     {
+        Log::info('test');
         if ( is_null($shoogleID) ) {
             return 0;
         }

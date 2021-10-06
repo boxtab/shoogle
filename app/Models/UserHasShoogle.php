@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null reminder_interval
  * @property bool|null is_reminder
  * @property bool|null is_repetitive
+ * @property string|null chat_id
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  * @property Carbon|null deleted_at
@@ -48,6 +49,7 @@ class UserHasShoogle extends BaseModel
         'reminder_interval',
         'is_reminder',
         'is_repetitive',
+        'chat_id',
         'created_at',
         'updated_at',
         'deleted_at',
