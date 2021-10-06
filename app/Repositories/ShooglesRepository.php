@@ -92,7 +92,7 @@ class ShooglesRepository extends Repositories
 
         $streamService = new StreamService( $shoogle['shoogleId'] );
 
-        $channelShoogleId = $streamService->createChannelForShoogle();
+        $channelShoogleId = $streamService->createChannelForShoogle($shoogleField['title']);
         $this->model->on()
             ->where('id', '=', $shoogle['shoogleId'])
             ->update(['chat_id' => $channelShoogleId]);
