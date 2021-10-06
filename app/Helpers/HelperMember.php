@@ -49,7 +49,6 @@ class HelperMember
 
         return UserHasShoogle::on()
             ->where('shoogle_id', '=', $shoogleId)
-            ->whereNull('left_at')
             ->get('user_id')
             ->map(function ($item) {
                 return $item['user_id'];

@@ -50,89 +50,22 @@ class HelperBuddies
      * The user has friends in the shoogle.
      *
      * @param int|null $shoogleId
-     * @param int|null $userID
+     * @param int|null $userId
      * @return bool
      */
-    public static function haveFriends(?int $shoogleId, ?int $userID): bool
+    public static function haveFriends(?int $shoogleId, ?int $userId): bool
     {
-        if ( is_null($shoogleId) || is_null($userID) ) {
+        if ( is_null($shoogleId) || is_null($userId) ) {
             return false;
         }
 
         $buddyCount = Buddie::on()
             ->where('shoogle_id', '=', $shoogleId)
-            ->where(function ($query) use ($userID) {
-                $query->where('user1_id', '=', $userID)
-                    ->orWhere('user2_id', '=', $userID);
+            ->where(function ($query) use ($userId) {
+                $query->where('user1_id', '=', $userId)
+                    ->orWhere('user2_id', '=', $userId);
             })->count('*');
 
         return ( $buddyCount > 0 ) ? true : false;
-    }
-
-    /**
-     * Finds friend IDs within shoogle for a user.
-     *
-     * @param int|null $shoogleId
-     * @param int|null $userID
-     * @return array
-     */
-    public static function getFriendsIDList(?int $shoogleId, ?int $userID): array
-    {
-        if ( is_null($shoogleId) || is_null($userID) ) {
-            return [];
-        }
-        $isShoogle = Shoogle::on()
-            ->where('id', '=', $shoogleId)
-            ->exists();
-
-        $isUser = User::on()
-            ->where('id', '=', $userID)
-            ->exists();
-
-        if ( ! $isShoogle || ! $isUser ) {
-            return [];
-        }
-
-        $buddiesIDs = Buddie::on()
-            ->where('shoogle_id', '=', $shoogleId)
-            ->where(function ($query) use ($userID) {
-                $query->where('user1_id', '=', $userID)
-                    ->orWhere('user2_id', '=', $userID);
-            })
-            ->get()
-            ->map(function ($item) use($userID) {
-                return $item['user1_id'] === $userID ? $item['user2_id'] : $item['user1_id'];
-            })
-            ->toArray();
-
-        return array_unique($buddiesIDs, SORT_NUMERIC);
-    }
-
-    /**
-     * Get friend ID within shoogle.
-     *
-     * @param int|null $shoogleId
-     * @param int|null $userID
-     * @return int|null
-     */
-    public static function getFriendID(?int $shoogleId, ?int $userID): ?int
-    {
-        if ( is_null($shoogleId) || is_null($userID) ) {
-            return null;
-        }
-
-        $friend = Buddie::on()
-            ->where('shoogle_id', '=', $shoogleId)
-            ->where(function ($query) use ($userID) {
-                $query->where('user1_id', '=', $userID)
-                    ->orWhere('user2_id', '=', $userID);
-            })
-            ->first();
-
-        if ( is_null($friend) ) {
-            return null;
-        }
-
-        return $friend->user1_id == $userID ? $friend->user2_id : $friend->user1_id;
     }
 }

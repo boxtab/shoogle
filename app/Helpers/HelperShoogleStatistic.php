@@ -57,20 +57,19 @@ class HelperShoogleStatistic
     /**
      * Returns the number of members for a shoogle who have a friend.
      *
-     * @param int|null $shoogleID
+     * @param int|null $shoogleId
      * @return int
      */
-    public static function getBuddiesCount(?int $shoogleID): int
+    public static function getBuddiesCount(?int $shoogleId): int
     {
-        Log::info('test');
-        if ( is_null($shoogleID) ) {
+        if ( is_null($shoogleId) ) {
             return 0;
         }
-        $members = HelperMember::getListMemberIDs($shoogleID);
+        $members = HelperMember::getListMemberIDs($shoogleId);
 
         $buddiesCount = 0;
         foreach ($members as $member) {
-            $buddiesCount += (int)HelperMember::isMember($shoogleID, $member);
+            $buddiesCount += (int)HelperBuddies::haveFriends($shoogleId, $member);
         }
 
         return $buddiesCount;
