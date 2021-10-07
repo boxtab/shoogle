@@ -37,7 +37,7 @@ class StreamService
             [
                 'name' => $shoogleTitle,
                 'shoogleId' => $this->shoogleId,
-                'type' => 'community'
+                'typeofChannel' => 'community'
             ]
         );
 
@@ -61,7 +61,7 @@ class StreamService
             [
                 'name' => $shoogleTitle,
                 'shoogleId' => $this->shoogleId,
-                'type' => 'buddy'
+                'typeofChannel' => 'buddy'
             ]
         );
 
