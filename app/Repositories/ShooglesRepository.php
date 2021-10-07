@@ -247,6 +247,7 @@ class ShooglesRepository extends Repositories
 
             if ( $affectedRows > 0 ) {
                 $streamService = new StreamService($shoogleId);
+                $streamService->connectUserToChannel($this->model->chat_id);
                 $channelId = $streamService->createJournalChannel();
                 UserHasShoogle::on()
                     ->where('id', '=', $lastInsertId)

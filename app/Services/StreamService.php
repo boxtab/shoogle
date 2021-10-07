@@ -35,7 +35,9 @@ class StreamService
             'messaging',
             'shoogleCommunity' . $this->shoogleId,
             [
-                'name' => $shoogleTitle
+                'name' => $shoogleTitle,
+                'shoogleId' => $this->shoogleId,
+                'typeofChannel' => 'community'
             ]
         );
 
@@ -57,7 +59,9 @@ class StreamService
             'messaging',
             'shoogle' . $this->shoogleId . 'Buddy' . $idOfFirstUser . 'with' . $idOfSecondUser,
             [
-                'name' => $shoogleTitle
+                'name' => $shoogleTitle,
+                'shoogleId' => $this->shoogleId,
+                'typeofChannel' => 'buddy'
             ]
         );
 
@@ -76,5 +80,21 @@ class StreamService
         $channel = $this->serverClient->Channel('messaging', 'shoogle' . $this->shoogleId . 'Journal' . $userId);
         $channel->create('user' . $userId, ['user' . $userId, 'user1']);
         return $channel->id;
+    }
+
+    /**
+     * Connect user to channel
+     *
+     * @param String|null $chatId
+     * @throws \GetStream\StreamChat\StreamException
+     */
+    public function connectUserToChannel(?string $chatId)
+    {
+        if ($chatId == null) {
+            $chatId = 'shoogleCommunity' . $this->shoogleId;
+        }
+        $userId = Auth()->user()->id;
+        $channel = $this->serverClient->Channel('messaging', $chatId);
+        $channel->addMembers(['user' . $userId]);
     }
 }
