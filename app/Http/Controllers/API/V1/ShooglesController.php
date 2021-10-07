@@ -103,7 +103,10 @@ class ShooglesController extends BaseApiController
                 'is_reminder'           => $request->input('isReminder'),
                 'cover_image'           => $request->input('coverImage'),
             ]);
-
+        } catch (\GetStream\StreamChat\StreamException $e) {
+            return ApiResponse::returnError(
+                'The remote service https://getstream.io responded with an error. Shoogle was not created.',
+                Response::HTTP_BAD_GATEWAY);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -176,7 +179,7 @@ class ShooglesController extends BaseApiController
      * Shoogle entry method.
      *
      * @param ShooglesEntryRequest $request
-     * @return \Illuminate\Http\JsonResponse|Response
+     * @return \Illuminate\Http\JsonResponse|Response|null
      */
     public function entry(ShooglesEntryRequest $request)
     {
@@ -201,7 +204,9 @@ class ShooglesController extends BaseApiController
                 $request->input('note')
             );
         } catch (\GetStream\StreamChat\StreamException $e) {
-            return ApiResponse::returnError('The remote service https://getstream.io responded with an error. Unable to enter shoogle.');
+            return ApiResponse::returnError(
+                'The remote service https://getstream.io responded with an error. Unable to enter shoogle.',
+                Response::HTTP_BAD_GATEWAY);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }

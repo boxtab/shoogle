@@ -139,6 +139,7 @@ class BuddyRequestRepository extends Repositories
      *
      * @param int $buddyRequestId
      * @throws \Exception
+     * @throws \GetStream\StreamChat\StreamException
      */
     public function buddyConfirm(int $buddyRequestId): void
     {
