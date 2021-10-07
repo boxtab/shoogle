@@ -77,4 +77,16 @@ class StreamService
         $channel->create('user' . $userId, ['user' . $userId, 'user1']);
         return $channel->id;
     }
+
+    /**
+     * Connect user to channel
+     *
+     * @throws \GetStream\StreamChat\StreamException
+     */
+    public function connectUserToChannel(String $chatId)
+    {
+        $userId = Auth()->user()->id;
+        $channel = $this->serverClient->Channel('messaging', $chatId);
+        $channel->addMembers([$userId]);
+    }
 }
