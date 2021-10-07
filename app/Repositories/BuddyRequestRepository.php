@@ -76,13 +76,27 @@ class BuddyRequestRepository extends Repositories
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        BuddyRequest::create([
-            'shoogle_id'    => $shoogleId,
-            'user1_id'      => $user1Id,
-            'user2_id'      => $user2Id,
-            'type'          => BuddyRequestTypeEnum::INVITE,
-            'message'       => $message,
-        ]);
+        DB::transaction(function () use ($shoogleId, $user1Id, $user2Id, $message) {
+            BuddyRequest::on()->updateOrCreate(
+                [
+                    'shoogle_id'    => $shoogleId,
+                    'user1_id'      => $user1Id,
+                    'user2_id'      => $user2Id,
+                ],
+                [
+                    'type'          => BuddyRequestTypeEnum::INVITE,
+                    'message'       => $message,
+                ]
+            );
+
+            Buddie::on()
+                ->where('shoogle_id', '=', $shoogleId)
+                ->where('user1_id', '=', $user1Id)
+                ->where('user2_id', '=', $user2Id)
+                ->withoutGlobalScope(BuddiesScope::class)
+                ->whereNotNull('disconnected_at')
+                ->update(['disconnected_at' => null]);
+        });
     }
 
     /**
@@ -148,17 +162,17 @@ class BuddyRequestRepository extends Repositories
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $buddyRequest = BuddyRequest::on()
-            ->where('id', $buddyRequestId)->first();
+//        $buddyRequest = BuddyRequest::on()
+//            ->where('id', $buddyRequestId)->first();
 
-        $shoogleId = $buddyRequest->shoogle_id;
-        $user1Id = $buddyRequest->user1_id;
-        $user2Id = $buddyRequest->user2_id;
+//        $shoogleId = $buddyRequest->shoogle_id;
+//        $user1Id = $buddyRequest->user1_id;
+//        $user2Id = $buddyRequest->user2_id;
 
-        if ( HelperBuddies::isFriends($shoogleId, $user1Id, $user2Id) ) {
-            throw new \Exception("User id:$user1Id and user id:$user2Id are already friends in shoogle id:$shoogleId",
-                Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+//        if ( HelperBuddies::isFriends($shoogleId, $user1Id, $user2Id) ) {
+//            throw new \Exception("User id:$user1Id and user id:$user2Id are already friends in shoogle id:$shoogleId",
+//                Response::HTTP_UNPROCESSABLE_ENTITY);
+//        }
 
         DB::transaction( function () use ($buddyRequestId) {
             $buddyRequest = BuddyRequest::on()
@@ -187,12 +201,16 @@ class BuddyRequestRepository extends Repositories
             if ( ! is_null($buddie) ) {
                 $buddie->disconnected_at = null;
             } else {
-                $buddie = Buddie::on()->create([
-                    'shoogle_id' => $buddyRequest->shoogle_id,
-                    'user1_id' => $buddyRequest->user1_id,
-                    'user2_id' => $buddyRequest->user2_id,
-                    'connected_at' => Carbon::now(),
-                ]);
+                $buddie = Buddie::on()->updateOrCreate(
+                    [
+                        'shoogle_id' => $buddyRequest->shoogle_id,
+                        'user1_id' => $buddyRequest->user1_id,
+                        'user2_id' => $buddyRequest->user2_id,
+                    ],
+                    [
+                        'connected_at' => Carbon::now(),
+                    ]
+                );
             }
 
             $buddyRequest->update([
@@ -241,24 +259,35 @@ class BuddyRequestRepository extends Repositories
             }
 
             BuddyRequest::on()
-                ->where('type', '<>', BuddyRequestTypeEnum::DISCONNECT)
                 ->where('shoogle_id', $shoogleId)
-                ->orWhere(function($query) use ($buddyId) {
-                    $query->where('user1_id', $buddyId)->where('user2_id', Auth::id());
-                })
-                ->orWhere(function($query) use ($buddyId) {
-                    $query->where('user1_id', Auth::id())->where('user2_id', $buddyId);
+                ->where(function ($query) use ($buddyId) {
+
+                    $query->where(function($query) use ($buddyId) {
+                            $query->where('user1_id', $buddyId)
+                                ->where('user2_id', Auth::id());
+                        })
+                        ->orWhere(function($query) use ($buddyId) {
+                            $query->where('user1_id', Auth::id())
+                                ->where('user2_id', $buddyId);
+                        });
+
                 })
                 ->update($buddyRequestFields);
 
             Buddie::on()
                 ->whereNull('disconnected_at')
                 ->where('shoogle_id', $shoogleId)
-                ->orWhere(function($query) use ($buddyId) {
-                    $query->where('user1_id', $buddyId)->where('user2_id', Auth::id());
-                })
-                ->orWhere(function($query) use ($buddyId) {
-                    $query->where('user1_id', Auth::id())->where('user2_id', $buddyId);
+                ->where(function ($query) use ($buddyId) {
+
+                    $query->where(function($query) use ($buddyId) {
+                        $query->where('user1_id', $buddyId)
+                            ->where('user2_id', Auth::id());
+                    })
+                        ->orWhere(function($query) use ($buddyId) {
+                            $query->where('user1_id', Auth::id())
+                                ->where('user2_id', $buddyId);
+                        });
+
                 })
                 ->update([
                     'disconnected_at' => Carbon::now(),
