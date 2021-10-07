@@ -211,46 +211,50 @@ class ShooglesRepository extends Repositories
             ->withTrashed()
             ->first();
 
-        if ( ! empty( $member ) ) {
-            if ( ! is_null($member->left_at) || ! is_null($member->deleted_at) ) {
-                $affectedRows = $member->update([
-                    'joined_at' => Carbon::now(),
-                    'left_at' => null,
+        DB::transaction(function() use($member, $userId, $shoogleId, $reminder, $reminderInterval, $isReminder, $buddy) {
 
-                    'solo' => (!$buddy),
+            if ( ! empty( $member ) ) {
+                if ( ! is_null($member->left_at) || ! is_null($member->deleted_at) ) {
+                    $affectedRows = $member->update([
+                        'joined_at' => Carbon::now(),
+                        'left_at' => null,
+
+                        'solo' => (!$buddy),
+                        'reminder' => $reminder,
+                        'reminder_interval' => $reminderInterval,
+                        'is_reminder' => $isReminder,
+
+                        'deleted_at' => null,
+                    ]);
+                    $lastInsertId = $member->id;
+                } else {
+                    throw new \Exception("The user id:$userId is already a member of the shoogle id:$shoogleId",
+                        Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
+            } else {
+                $userHasShoogle = UserHasShoogle::on()->create([
+                    'user_id' => $userId,
+                    'shoogle_id' => $shoogleId,
+                    'joined_at' => Carbon::now(),
+
+                    'solo' => ( ! $buddy ),
                     'reminder' => $reminder,
                     'reminder_interval' => $reminderInterval,
                     'is_reminder' => $isReminder,
-
-                    'deleted_at' => null,
                 ]);
-                $lastInsertId = $member->id;
-            } else {
-                throw new \Exception("The user id:$userId is already a member of the shoogle id:$shoogleId",
-                    Response::HTTP_UNPROCESSABLE_ENTITY);
+                $affectedRows = 1;
+                $lastInsertId = $userHasShoogle->id;
             }
-        } else {
-            $userHasShoogle = UserHasShoogle::on()->create([
-                'user_id' => $userId,
-                'shoogle_id' => $shoogleId,
-                'joined_at' => Carbon::now(),
 
-                'solo' => ( ! $buddy ),
-                'reminder' => $reminder,
-                'reminder_interval' => $reminderInterval,
-                'is_reminder' => $isReminder,
-            ]);
-            $affectedRows = 1;
-            $lastInsertId = $userHasShoogle->id;
-        }
+            if ( $affectedRows > 0 ) {
+                $streamService = new StreamService($shoogleId);
+                $channelId = $streamService->createJournalChannel();
+                UserHasShoogle::on()
+                    ->where('id', '=', $lastInsertId)
+                    ->update(['chat_id' => $channelId]);
+            }
 
-        if ( $affectedRows > 0 ) {
-            $streamService = new StreamService($shoogleId);
-            $channelId = $streamService->createJournalChannel();
-            UserHasShoogle::on()
-                ->where('id', '=', $lastInsertId)
-                ->update(['chat_id' => $channelId]);
-        }
+        });
     }
 
     /**

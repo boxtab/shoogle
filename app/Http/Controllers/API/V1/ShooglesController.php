@@ -200,6 +200,8 @@ class ShooglesController extends BaseApiController
                 $request->input('buddy'),
                 $request->input('note')
             );
+        } catch (\GetStream\StreamChat\StreamException $e) {
+            return ApiResponse::returnError('The remote service https://getstream.io responded with an error. Unable to enter shoogle.');
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
