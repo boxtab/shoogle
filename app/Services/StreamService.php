@@ -35,7 +35,9 @@ class StreamService
             'messaging',
             'shoogleCommunity' . $this->shoogleId,
             [
-                'name' => $shoogleTitle
+                'name' => $shoogleTitle,
+                'shoogleId' => $this->shoogleId,
+                'type' => 'community'
             ]
         );
 
@@ -57,7 +59,9 @@ class StreamService
             'messaging',
             'shoogle' . $this->shoogleId . 'Buddy' . $idOfFirstUser . 'with' . $idOfSecondUser,
             [
-                'name' => $shoogleTitle
+                'name' => $shoogleTitle,
+                'shoogleId' => $this->shoogleId,
+                'type' => 'buddy'
             ]
         );
 
