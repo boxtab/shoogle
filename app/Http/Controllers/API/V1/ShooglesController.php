@@ -82,6 +82,16 @@ class ShooglesController extends BaseApiController
      */
     public function create(ShooglesCreateRequest $request)
     {
+        $checkReminder = $this->checkReminder(
+            $request->input('reminder'),
+            $request->input('reminderInterval'),
+            $request->input('isReminder')
+        );
+
+        if ( ! is_null($checkReminder) ) {
+            return $checkReminder;
+        }
+
         try {
             $shoogleId = $this->repository->createShoogle([
                 'owner_id'              => auth()->user()->id,
