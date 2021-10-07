@@ -22,7 +22,7 @@ class HelperStream
             'firebase_config' => [
                 'server_key' => config('stream.server_key'),
                 'notification_template' => `{"message":{"notification":{"title":"{{ channel.name }}","body":"{{ message.text }}"},"android":{"ttl":"86400s","notification":{"click_action":"FLUTTER_NOTIFICATION_CLICK"}}}}`,
-                'data_template' => `{"shoogleId": "{{ channel.shoogleId }}", "typeofChannel": "{{ channe.typeofChannel }}"}`,
+                'data_template' => `{"shoogleId": "{{ channel.shoogleId }}", "typeofChannel": "{{ channe.typeofChannel }}", "click_action": "FLUTTER_NOTIFICATION_CLICK"}`,
             ],
         ];
         $serverClient->updateAppSettings($settings);
