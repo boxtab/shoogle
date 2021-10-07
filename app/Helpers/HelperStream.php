@@ -21,7 +21,7 @@ class HelperStream
         $settings = [
             'firebase_config' => [
                 'server_key' => config('stream.server_key'),
-                'notification_template' => `{"message":{"notification":{"title":"New messages","body":"You have {{ unread_count }} new message(s) in {{ channel.name }}"},"android":{"ttl":"86400s","notification":{"click_action":"OPEN_ACTIVITY_1"}}}}`,
+                'notification_template' => `{"message":{"notification":{"title":"{{ channel.name }}","body":"{{ message.text }}"},"android":{"ttl":"86400s","notification":{"click_action":"FLUTTER_NOTIFICATION_CLICK"}}}}`,
                 'data_template' => `{"sender":"{{ sender.id }}","channel":{"type": "{{ channel.type }}","id":"{{ channel.id }}"},"message":"{{ message.id }}"}`,
             ],
         ];
