@@ -85,10 +85,14 @@ class StreamService
     /**
      * Connect user to channel
      *
+     * @param String|null $chatId
      * @throws \GetStream\StreamChat\StreamException
      */
-    public function connectUserToChannel(String $chatId)
+    public function connectUserToChannel(?string $chatId)
     {
+        if ($chatId == null) {
+            $chatId = 'shoogleCommunity' . $this->shoogleId;
+        }
         $userId = Auth()->user()->id;
         $channel = $this->serverClient->Channel('messaging', $chatId);
         $channel->addMembers([$userId]);
