@@ -28,8 +28,8 @@ class ShooglesCreateRequest extends ApiRequest
             'wellbeingCategoryId'   => ['required', 'integer', 'exists:wellbeing_categories,id'],
             'active'                => ['required', 'boolean'],
             'title'                 => ['nullable', 'min:2', 'max:45'],
-            'reminder'              => 'required_if:isReminder,==,true|nullable|min:2|date_format:"Y-m-d H:i:s"',
-            'reminderInterval'      => 'required_if:isReminder,==,true|nullable|string|max:1024',
+            'reminder'              => 'nullable|min:2|date_format:"Y-m-d H:i:s"',
+            'reminderInterval'      => 'nullable|string|max:1024',
             'isReminder'            => ['required', 'boolean'],
             'coverImage'            => ['required', 'min:2', 'max:256'],
         ];

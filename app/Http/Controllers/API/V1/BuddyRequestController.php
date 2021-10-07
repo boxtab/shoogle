@@ -99,6 +99,10 @@ class BuddyRequestController extends BaseApiController
         try {
             $buddyRequestId = $request->input('buddyRequestId');
             $this->repository->buddyConfirm($buddyRequestId);
+        } catch (\GetStream\StreamChat\StreamException $e) {
+            return ApiResponse::returnError(
+                'The remote service https://getstream.io responded with an error. Unable to confirm friend request.',
+                Response::HTTP_BAD_GATEWAY);
         } catch (\Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }

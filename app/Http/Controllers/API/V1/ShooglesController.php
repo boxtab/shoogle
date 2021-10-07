@@ -82,6 +82,16 @@ class ShooglesController extends BaseApiController
      */
     public function create(ShooglesCreateRequest $request)
     {
+        $checkReminder = $this->checkReminder(
+            $request->input('reminder'),
+            $request->input('reminderInterval'),
+            $request->input('isReminder')
+        );
+
+        if ( ! is_null($checkReminder) ) {
+            return $checkReminder;
+        }
+
         try {
             $shoogleId = $this->repository->createShoogle([
                 'owner_id'              => auth()->user()->id,
@@ -93,7 +103,10 @@ class ShooglesController extends BaseApiController
                 'is_reminder'           => $request->input('isReminder'),
                 'cover_image'           => $request->input('coverImage'),
             ]);
-
+        } catch (\GetStream\StreamChat\StreamException $e) {
+            return ApiResponse::returnError(
+                'The remote service https://getstream.io responded with an error. Shoogle was not created.',
+                Response::HTTP_BAD_GATEWAY);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -166,7 +179,7 @@ class ShooglesController extends BaseApiController
      * Shoogle entry method.
      *
      * @param ShooglesEntryRequest $request
-     * @return \Illuminate\Http\JsonResponse|Response
+     * @return \Illuminate\Http\JsonResponse|Response|null
      */
     public function entry(ShooglesEntryRequest $request)
     {
@@ -190,6 +203,10 @@ class ShooglesController extends BaseApiController
                 $request->input('buddy'),
                 $request->input('note')
             );
+        } catch (\GetStream\StreamChat\StreamException $e) {
+            return ApiResponse::returnError(
+                'The remote service https://getstream.io responded with an error. Unable to enter shoogle.',
+                Response::HTTP_BAD_GATEWAY);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }

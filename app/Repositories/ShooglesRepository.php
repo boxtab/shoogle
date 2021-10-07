@@ -67,7 +67,7 @@ class ShooglesRepository extends Repositories
      */
     public function createShoogle(array $shoogleField): int
     {
-        $shoogle = DB::transaction(function() use ($shoogleField) {
+        $shoogleId = DB::transaction(function() use ($shoogleField) {
 
             $shoogleId = $this->model->on()->create([
                 'owner_id'              => $shoogleField['owner_id'],
@@ -77,7 +77,7 @@ class ShooglesRepository extends Repositories
                 'cover_image'           => $shoogleField['cover_image'],
             ])->id;
 
-            $member = UserHasShoogle::on()->create([
+            $memberId = UserHasShoogle::on()->create([
                 'user_id'           => $shoogleField['owner_id'],
                 'shoogle_id'        => $shoogleId,
                 'joined_at'         => Carbon::now(),
@@ -85,25 +85,24 @@ class ShooglesRepository extends Repositories
                 'reminder'          => $shoogleField['reminder'],
                 'reminder_interval' => $shoogleField['reminder_interval'],
                 'is_reminder'       => $shoogleField['is_reminder'],
-            ]);
+            ])->id;
 
-            return ['shoogleId' => $shoogleId, 'memberId' => $member->id];
+            $streamService = new StreamService($shoogleId);
+
+            $channelShoogleId = $streamService->createChannelForShoogle($shoogleField['title']);
+            $this->model->on()
+                ->where('id', '=', $shoogleId)
+                ->update(['chat_id' => $channelShoogleId]);
+
+            $channelMemberId = $streamService->createJournalChannel();
+            UserHasShoogle::on()
+                ->where('id', '=', $memberId)
+                ->update(['chat_id' => $channelMemberId]);
+
+            return $shoogleId;
         });
 
-
-        $streamService = new StreamService( $shoogle['shoogleId'] );
-
-        $channelShoogleId = $streamService->createChannelForShoogle($shoogleField['title']);
-        $this->model->on()
-            ->where('id', '=', $shoogle['shoogleId'])
-            ->update(['chat_id' => $channelShoogleId]);
-
-        $channelMemberId = $streamService->createJournalChannel();
-        UserHasShoogle::on()
-            ->where('id', '=', $shoogle['memberId'])
-            ->update(['chat_id' => $channelMemberId]);
-
-        return $shoogle['shoogleId'];
+        return $shoogleId;
     }
 
     /**
@@ -211,46 +210,50 @@ class ShooglesRepository extends Repositories
             ->withTrashed()
             ->first();
 
-        if ( ! empty( $member ) ) {
-            if ( ! is_null($member->left_at) || ! is_null($member->deleted_at) ) {
-                $affectedRows = $member->update([
-                    'joined_at' => Carbon::now(),
-                    'left_at' => null,
+        DB::transaction(function() use($member, $userId, $shoogleId, $reminder, $reminderInterval, $isReminder, $buddy) {
 
-                    'solo' => (!$buddy),
+            if ( ! empty( $member ) ) {
+                if ( ! is_null($member->left_at) || ! is_null($member->deleted_at) ) {
+                    $affectedRows = $member->update([
+                        'joined_at' => Carbon::now(),
+                        'left_at' => null,
+
+                        'solo' => (!$buddy),
+                        'reminder' => $reminder,
+                        'reminder_interval' => $reminderInterval,
+                        'is_reminder' => $isReminder,
+
+                        'deleted_at' => null,
+                    ]);
+                    $lastInsertId = $member->id;
+                } else {
+                    throw new \Exception("The user id:$userId is already a member of the shoogle id:$shoogleId",
+                        Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
+            } else {
+                $userHasShoogle = UserHasShoogle::on()->create([
+                    'user_id' => $userId,
+                    'shoogle_id' => $shoogleId,
+                    'joined_at' => Carbon::now(),
+
+                    'solo' => ( ! $buddy ),
                     'reminder' => $reminder,
                     'reminder_interval' => $reminderInterval,
                     'is_reminder' => $isReminder,
-
-                    'deleted_at' => null,
                 ]);
-                $lastInsertId = $member->id;
-            } else {
-                throw new \Exception("The user id:$userId is already a member of the shoogle id:$shoogleId",
-                    Response::HTTP_UNPROCESSABLE_ENTITY);
+                $affectedRows = 1;
+                $lastInsertId = $userHasShoogle->id;
             }
-        } else {
-            $userHasShoogle = UserHasShoogle::on()->create([
-                'user_id' => $userId,
-                'shoogle_id' => $shoogleId,
-                'joined_at' => Carbon::now(),
 
-                'solo' => ( ! $buddy ),
-                'reminder' => $reminder,
-                'reminder_interval' => $reminderInterval,
-                'is_reminder' => $isReminder,
-            ]);
-            $affectedRows = 1;
-            $lastInsertId = $userHasShoogle->id;
-        }
+            if ( $affectedRows > 0 ) {
+                $streamService = new StreamService($shoogleId);
+                $channelId = $streamService->createJournalChannel();
+                UserHasShoogle::on()
+                    ->where('id', '=', $lastInsertId)
+                    ->update(['chat_id' => $channelId]);
+            }
 
-        if ( $affectedRows > 0 ) {
-            $streamService = new StreamService($shoogleId);
-            $channelId = $streamService->createJournalChannel();
-            UserHasShoogle::on()
-                ->where('id', '=', $lastInsertId)
-                ->update(['chat_id' => $channelId]);
-        }
+        });
     }
 
     /**
