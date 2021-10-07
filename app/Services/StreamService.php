@@ -95,6 +95,6 @@ class StreamService
         }
         $userId = Auth()->user()->id;
         $channel = $this->serverClient->Channel('messaging', $chatId);
-        $channel->addMembers([$userId]);
+        $channel->addMembers(['user' . $userId]);
     }
 }
