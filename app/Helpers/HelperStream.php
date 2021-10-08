@@ -21,13 +21,17 @@ class HelperStream
         $settings = [
             'firebase_config' => [
                 'server_key' => config('stream.server_key'),
-                'notification_template' => `
-{
-            "title": "{{ channel.name }}",
-            "body": "{{ message.text }}",
-            "click_action": "FLUTTER_NOTIFICATION_CLICK"
-}
- `
+                'notification_template' => [
+                    "title" => "{{ channel.name }}",
+                    "body" => "te{{ message.text }}",
+                    "click_action" => "FLUTTER_NOTIFICATION_CLICK",
+                ],
+//{
+//            "title": "{{ channel.name }}",
+//            "body": "te{{ message.text }}",
+//            "click_action": "FLUTTER_NOTIFICATION_CLICK"
+//}
+
             ],
         ];
         $serverClient->updateAppSettings($settings);
