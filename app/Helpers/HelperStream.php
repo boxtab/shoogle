@@ -19,11 +19,11 @@ class HelperStream
     {
         $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
         $settings = [
-            'firebase_config' => [
+            'firebase_config' => array(
                 'server_key' => config('stream.server_key'),
-                'notification_template' => `{"message":{"notification":{"title":"{{ channel.name }}","body":"{{ message.text }}"},"android":{"ttl":"86400s","notification":{"click_action":"FLUTTER_NOTIFICATION_CLICK"}}}}`,
-                'data_template' => `{"shoogleId": "{{ channel.shoogleId }}", "typeofChannel": "{{ channe.typeofChannel }}", "click_action": "FLUTTER_NOTIFICATION_CLICK"}`,
-            ],
+                'notification_template' => '{"title": "{{ channel.name }}","body": "{{ message.text }}","click_action": "FLUTTER_NOTIFICATION_CLICK"}',
+                'data_template' => '{"shoogleId": "{{ channel.shoogleId }}", "typeofChannel": "{{ channel.typeofChannel }}"}',
+            ),
         ];
         $serverClient->updateAppSettings($settings);
     }
