@@ -7,6 +7,7 @@ use App\Helpers\HelperBuddies;
 use App\Helpers\HelperChat;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperNotific;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
@@ -26,7 +27,10 @@ use App\User;
 use App\Constants\RoleConstant;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Recurr\Exception\InvalidRRule;
 use Recurr\Rule;
+use Recurr\Transformer\ArrayTransformer;
+use Recurr\Transformer\Constraint\BetweenConstraint;
 use Recurr\Transformer\TextTransformer;
 use ReflectionClass;
 use Spatie\Permission\Models\Role;
@@ -38,21 +42,53 @@ class TestController extends Controller
 {
     public function index()
     {
-        $tmp = HelperBuddies::isFriends(51, 3, 60);
+        $rruleString = 'RRULE:FREQ=WEEKLY;COUNT=30;INTERVAL=1;WKST=MO';
 
-        if ( is_null($tmp) ) {
-            return 'is null true';
+        // определяешь граничные даты, чтобы не получать лишние даты.
+        // потому что RRuleв теории может вернуть дат на 10 лет вперед
+        $startDate = new \DateTime('today midnight');
+        $endDate = new \DateTime('today +1 years 23:59:59');
+
+
+        // скармливаешь строку "RRULE:... " либе
+        try {
+            $rule = new Rule($rruleString, new \DateTime('today midnight'));
+        } catch (InvalidRRule $e) {
         }
 
-        if ( $tmp == true ) {
-            return 'is true';
-        }
+        // так надо :-)
 
-        if ( $tmp == false ) {
-            return 'is false';
-        }
+        $transformer = new ArrayTransformer();
+        $constraint = new BetweenConstraint($startDate, $endDate);
 
-        return $tmp;
+        // тут уже будет массив объектов, в которые должно происходить событие.
+        // Объекты, кажется специфические, но из каждого можно получить метку времени.
+        $eventsDates = $transformer->transform($rule, $constraint);
+
+        dd($eventsDates);
+
+        /*
+        foreach ($eventsDates as $eventDate) {
+            $startDate = $eventDate->getStart();
+        }
+        */
+
+//        HelperNotific::push(60, 60, 53);
+//        $tmp = HelperBuddies::isFriends(51, 3, 60);
+//
+//        if ( is_null($tmp) ) {
+//            return 'is null true';
+//        }
+//
+//        if ( $tmp == true ) {
+//            return 'is true';
+//        }
+//
+//        if ( $tmp == false ) {
+//            return 'is false';
+//        }
+//
+//        return $tmp;
 
 //        $tmp = HelperChat::getBuddyChatId(51, 60);
 //

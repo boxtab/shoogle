@@ -23,7 +23,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon|null reminder
  * @property string|null reminder_interval
  * @property bool|null is_reminder
- * @property bool|null is_repetitive
+ * @property Carbon|null last_notification
+ * @property Carbon|null in_process
  * @property string|null chat_id
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
@@ -48,7 +49,8 @@ class UserHasShoogle extends BaseModel
         'reminder',
         'reminder_interval',
         'is_reminder',
-        'is_repetitive',
+        'last_notification',
+        'in_process',
         'chat_id',
         'created_at',
         'updated_at',
@@ -65,7 +67,9 @@ class UserHasShoogle extends BaseModel
         'reminder' => 'datetime:Y-m-d h:i:s',
         'reminder_interval' => 'string:1024',
         'is_reminder' => 'boolean',
-        'is_repetitive' => 'boolean',
+        'last_notification' => 'datetime:Y-m-d h:i:s',
+        'in_process' => 'datetime:Y-m-d h:i:s',
+        'chat_id' => 'string:1024',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
         'deleted_at' => 'datetime:Y-m-d h:i:s',
@@ -108,6 +112,26 @@ class UserHasShoogle extends BaseModel
     public function getReminderFormattedAttribute(): ?string
     {
         return ( ! is_null($this->reminder) ) ? $this->reminder->format('Y-m-d H:i:s') : null;
+    }
+
+    /**
+     * Formatted last notification.
+     *
+     * @return string|null
+     */
+    public function getLastNotificationFormattedAttribute(): ?string
+    {
+        return ( ! is_null($this->last_notification) ) ? $this->last_notification->format('Y-m-d H:i:s') : null;
+    }
+
+    /**
+     * Formatted in process.
+     *
+     * @return string|null
+     */
+    public function getInProcessFormattedAttribute(): ?string
+    {
+        return ( ! is_null($this->in_process) ) ? $this->in_process->format('Y-m-d H:i:s') : null;
     }
 
     /**
