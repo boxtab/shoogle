@@ -23,22 +23,9 @@ class HelperStream
                 'server_key' => config('stream.server_key'),
                 'notification_template' => `
 {
-    "message": {
-        "notification": {
             "title": "{{ channel.name }}",
-            "body": "{{ message.text }}"
-        },
-        "data": {
-            "shoogleId": "{{ channel.shoogleId }}",
-            "typeofChannel": "{{ channel.typeofChannel }}"
-        },
-        "android": {
-            "ttl": "86400s",
-            "notification": {
-                "click_action": "FLUTTER_NOTIFICATION_CLICK"
-            }
-        }
-    }
+            "body": "{{ message.text }}",
+            "click_action": "FLUTTER_NOTIFICATION_CLICK"
 }
  `
             ],
