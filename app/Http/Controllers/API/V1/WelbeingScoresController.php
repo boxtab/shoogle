@@ -41,7 +41,17 @@ class WelbeingScoresController extends BaseApiController
     public function store(WellbeingScoresStoreRequest $request)
     {
         try {
-            $this->repository->storeScores($request->all());
+            $scores = $request->only([
+                'social',
+                'physical',
+                'mental',
+                'economical',
+                'spiritual',
+                'emotional',
+                'intellectual',
+            ]);
+
+            $this->repository->storeScores(Auth::id(), $scores);
 
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -58,10 +68,10 @@ class WelbeingScoresController extends BaseApiController
      */
     public function averageUserFront(WellbeingScoresAverageRequest $request)
     {
-        $userID = Auth::id();
+        $userId = Auth::id();
         $from = $request->input('from');
         $to = $request->input('to');
-        return $this->getAverageUser($userID, $from, $to);
+        return $this->getAverageUser($userId, $from, $to);
     }
 
     /**
@@ -82,15 +92,15 @@ class WelbeingScoresController extends BaseApiController
     /**
      * The average of the user wellbeing scores.
      *
-     * @param int $userID
+     * @param int $userId
      * @param string|null $from
      * @param string|null $to
      * @return \Illuminate\Http\JsonResponse|Response
      */
-    private function getAverageUser(int $userID, ?string $from, ?string $to)
+    private function getAverageUser(int $userId, ?string $from, ?string $to)
     {
         try {
-            $average = $this->repository->getAverageUser( $userID, $from, $to );
+            $average = $this->repository->getAverageUser( $userId, $from, $to );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -133,6 +143,45 @@ class WelbeingScoresController extends BaseApiController
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);
+        return ApiResponse::returnData($wellbeingScoresAverageResource);
+    }
+
+    /**
+     * Get Arithmetic Average by Company ID.
+     *
+     * @param WellbeingScoresAverageRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function getAverageCompanyId(WellbeingScoresAverageRequest $request, $id)
+    {
+        try {
+            $this->repository->existsCompany($id);
+            $average = $this->repository->getAverageCompanyId($id, $request->input('from'), $request->input('to'));
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);
+        return ApiResponse::returnData($wellbeingScoresAverageResource);
+    }
+
+    /**
+     * Get Arithmetic Average by Department ID.
+     *
+     * @param WellbeingScoresAverageRequest $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function getAverageDepartmentId(WellbeingScoresAverageRequest $request, $id)
+    {
+        try {
+            $this->repository->existsDepartment($id);
+            $average = $this->repository->getDepartmentCompanyId($id, $request->input('from'), $request->input('to'));
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);
         return ApiResponse::returnData($wellbeingScoresAverageResource);
     }

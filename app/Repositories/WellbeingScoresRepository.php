@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
+use App\Models\Company;
+use App\Models\Department;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
@@ -43,27 +45,42 @@ class WellbeingScoresRepository extends Repositories
      * @param int $id
      * @throws Exception
      */
-    public function existsUser(int $id): void
+    public function existsShoogle(int $id): void
     {
-        $user = User::find($id);
+        $user = Shoogle::on()->find($id);
 
         if ( is_null( $user ) ) {
-            throw new Exception('User not found for this ID', Response::HTTP_NOT_FOUND);
+            throw new Exception('Shoogle not found for this ID', Response::HTTP_NOT_FOUND);
         }
     }
 
     /**
-     * If the user does not exist then throw an exception.
+     * Company if a company exists by identifier.
      *
-     * @param int $id
+     * @param int|null $id
      * @throws Exception
      */
-    public function existsShoogle(int $id): void
+    public function existsCompany(?int $id): void
     {
-        $user = Shoogle::find($id);
+        $company = Company::on()->find($id);
 
-        if ( is_null( $user ) ) {
-            throw new Exception('Shoogle not found for this ID', Response::HTTP_NOT_FOUND);
+        if ( is_null( $company ) ) {
+            throw new Exception('No company found by ID.', Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Department if a company exists by identifier.
+     *
+     * @param int|null $id
+     * @throws Exception
+     */
+    public function existsDepartment(?int $id): void
+    {
+        $department = Department::on()->find($id);
+
+        if ( is_null( $department ) ) {
+            throw new Exception('No department found by ID.', Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -77,7 +94,7 @@ class WellbeingScoresRepository extends Repositories
      */
     public function getAverageUser(int $userId, string $from = null, string $to = null): ?object
     {
-        $selection = $this->model
+        $selection = $this->model->on()
             ->select(DB::raw('
                     social,
                     physical,
@@ -94,13 +111,13 @@ class WellbeingScoresRepository extends Repositories
             ->get();
 
         $average = [
-            'social' => collect($selection)->average('social'),
-            'physical' => collect($selection)->average('physical'),
-            'mental' => collect($selection)->average('mental'),
-            'economical' => collect($selection)->average('economical'),
-            'spiritual' => collect($selection)->average('spiritual'),
-            'emotional' => collect($selection)->average('emotional'),
-            'intellectual' => collect($selection)->average('intellectual'),
+            'social'        => collect($selection)->average('social'),
+            'physical'      => collect($selection)->average('physical'),
+            'mental'        => collect($selection)->average('mental'),
+            'economical'    => collect($selection)->average('economical'),
+            'spiritual'     => collect($selection)->average('spiritual'),
+            'emotional'     => collect($selection)->average('emotional'),
+            'intellectual'  => collect($selection)->average('intellectual'),
         ];
 
         return (object)$average;
@@ -162,7 +179,8 @@ class WellbeingScoresRepository extends Repositories
      */
     public function getAverageShoogle(int $shoogleId, string $from = null, string $to=null): ?object
     {
-        $arrayUserId = UserHasShoogle::on()->where('shoogle_id', $shoogleId)
+        $arrayUserId = UserHasShoogle::on()
+            ->where('shoogle_id', '=', $shoogleId)
             ->select('user_id')
             ->get()
             ->map(function ($item) {
@@ -187,7 +205,8 @@ class WellbeingScoresRepository extends Repositories
             throw new \Exception('Company ID not found', Response::HTTP_NOT_FOUND);
         }
 
-        $arrayUserId = User::where('company_id', $this->companyId)
+        $arrayUserId = User::on()
+            ->where('company_id', $this->companyId)
             ->select('id')
             ->distinct()
             ->get()
@@ -202,19 +221,66 @@ class WellbeingScoresRepository extends Repositories
     /**
      * Preservation of wellbeing-scores.
      *
+     * @param int $userId
      * @param array $scores
      */
-    public function storeScores(array $scores)
+    public function storeScores(int $userId, array $scores)
     {
-        $this->model->create([
-            'user_id' => Auth::id(),
-            'social' => $scores['social'],
-            'physical' => $scores['physical'],
-            'mental' => $scores['mental'],
-            'economical' => $scores['economical'],
-            'spiritual' => $scores['spiritual'],
-            'emotional' => $scores['emotional'],
-            'intellectual' => $scores['intellectual'],
+        $this->model->on()->create([
+            'user_id'       => $userId,
+            'social'        => $scores['social'],
+            'physical'      => $scores['physical'],
+            'mental'        => $scores['mental'],
+            'economical'    => $scores['economical'],
+            'spiritual'     => $scores['spiritual'],
+            'emotional'     => $scores['emotional'],
+            'intellectual'  => $scores['intellectual'],
         ]);
+    }
+
+    /**
+     * Get Arithmetic Average by Company ID.
+     *
+     * @param int $companyId
+     * @param string|null $from
+     * @param string|null $to
+     * @return object|null
+     */
+    public function getAverageCompanyId(int $companyId, ?string $from, ?string $to): ?object
+    {
+        $arrayUserId = User::on()
+            ->where('company_id', $companyId)
+            ->select('id')
+            ->distinct()
+            ->get()
+            ->map(function ($item) {
+                return $item->id;
+            })
+            ->toArray();
+
+        return $this->getAverageFromArrayUsers($arrayUserId, $from, $to);
+    }
+
+    /**
+     * Get Arithmetic Average by Department ID.
+     *
+     * @param int $departmentId
+     * @param string|null $from
+     * @param string|null $to
+     * @return object|null
+     */
+    public function getDepartmentCompanyId(int $departmentId, ?string $from, ?string $to): ?object
+    {
+        $arrayUserId = User::on()
+            ->where('department_id', '=', $departmentId)
+            ->select('id')
+            ->distinct()
+            ->get()
+            ->map(function ($item) {
+                return $item->id;
+            })
+            ->toArray();
+
+        return $this->getAverageFromArrayUsers($arrayUserId, $from, $to);
     }
 }

@@ -45,13 +45,8 @@ Route::group(['prefix' => 'shared/v1'], function () {
     // POST /api/shared/v1/password/reset
     Route::post('password/reset', [AuthController::class, 'passwordReset']);
 
-    // POST /api/shared/v1/user/:id/wellbeing-scores
-//    Route::post('user/wellbeing-scores', [WelbeingScoresController::class, 'averageUser'])
-//        ->middleware(['auth:api', 'user_already_logged_in', 'cors']);
-
     // POST /api/shared/v1/user/wellbeing-scores/store
     Route::post('user/wellbeing-scores/store', [WelbeingScoresController::class, 'store'])
-        ->where('id', '[0-9]+')
         ->middleware(['auth:api', 'user_already_logged_in', 'cors']);
 });
 
@@ -212,7 +207,8 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         Route::post('{id}', [ShooglesController::class, 'turnOnOff'])->where('id', '[0-9]+');
 
         // POST /api/admin/v1/shoogle/:id/wellbeing-scores
-        Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageShoogle'])->where('id', '[0-9]+');
+        Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageShoogle'])
+            ->where('id', '[0-9]+');
 
         // POST /api/admin/v1/shoogle/wellbeing-scores
         Route::post('wellbeing-scores', [WelbeingScoresController::class, 'averageCompany']);
@@ -262,6 +258,18 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
     });
 
     /**
+     * Entity: Company
+     * Table: companies
+     */
+    Route::group(['prefix' => 'company', 'middleware' => ['admin.superadmin']], function () {
+
+        // POST /api/admin/v1/company/:id/wellbeing-scores
+        Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'getAverageCompanyId'])
+            ->where('id', '[0-9]+');
+
+    });
+
+    /**
      * Entity: Invite
      * Table: invites
      */
@@ -307,7 +315,7 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         // DELETE /api/admin/v1/user/:id
         Route::delete('{id}', [UserController::class, 'destroy'])->where('id', '[0-9]+')->middleware(['admin.superadmin']);
 
-        // POST /api/admin/v1/user/wellbeing-scores
+        // POST /api/admin/v1/user/:id/wellbeing-scores
         Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'averageUserAdmin'])
             ->where('id', '[0-9]+')
             ->middleware(['admin.superadmin']);
@@ -357,5 +365,8 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         // DELETE /api/admin/v1/department/:id
         Route::delete('{id}', [DepartmentController::class, 'destroy'])->where('id', '[0-9]+');
 
+        // POST /api/admin/v1/department/:id/wellbeing-scores
+        Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'getAverageDepartmentId'])
+            ->where('id', '[0-9]+');
     });
 });
