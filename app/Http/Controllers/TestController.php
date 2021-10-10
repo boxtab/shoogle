@@ -20,6 +20,7 @@ use App\Models\ModelHasRole;
 use App\Models\Shoogle;
 use App\Models\WellbeingScores;
 use App\Repositories\TestRepository;
+use App\Services\NotificClientService;
 use Carbon\Carbon;
 use Database\Seeders\IconRewardsSeeder;
 use Illuminate\Http\Request;
@@ -42,7 +43,11 @@ class TestController extends Controller
 {
     public function index()
     {
-        $rruleString = 'RRULE:FREQ=WEEKLY;COUNT=30;INTERVAL=1;WKST=MO';
+        $notificClientService = new NotificClientService();
+        $notificClientService->run();
+
+        /*
+        $rruleString = 'RRULE:FREQ=DAILY;COUNT=7;INTERVAL=2;WKST=MO';
 
         // определяешь граничные даты, чтобы не получать лишние даты.
         // потому что RRuleв теории может вернуть дат на 10 лет вперед
@@ -65,13 +70,17 @@ class TestController extends Controller
         // Объекты, кажется специфические, но из каждого можно получить метку времени.
         $eventsDates = $transformer->transform($rule, $constraint);
 
-        dd($eventsDates);
-
-        /*
+        $arrayStartDate = [];
         foreach ($eventsDates as $eventDate) {
             $startDate = $eventDate->getStart();
+            $arrayStartDate[] = $startDate;
         }
         */
+
+
+
+
+
 
 //        HelperNotific::push(60, 60, 53);
 //        $tmp = HelperBuddies::isFriends(51, 3, 60);

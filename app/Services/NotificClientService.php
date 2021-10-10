@@ -18,10 +18,16 @@ class NotificClientService
         $notificService = new NotificService();
         $lineUsers = $notificService->getLineUsers();
 
-        foreach ($lineUsers as $lineUser) {
+        $userHasShoogleId = $notificService->getUserHasShoogleIds($lineUsers);
+//        $notificService->unlockUserHasShoogle($userHasShoogleId);
 
-            Log::info($lineUser['reminder_interval']);
+        dd($userHasShoogleId);
+//        dd($lineUsers);
 
-        }
+//        foreach ($lineUsers as $lineUser) {
+//
+//            Log::info($lineUser['reminder_interval']);
+//
+//        }
     }
 }
