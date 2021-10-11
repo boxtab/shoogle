@@ -18,11 +18,13 @@ use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
 use App\Models\Shoogle;
+use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
 use App\Repositories\TestRepository;
 use App\Services\NotificClientService;
 use Carbon\Carbon;
 use Database\Seeders\IconRewardsSeeder;
+use DateTime;
 use Illuminate\Http\Request;
 use App\User;
 use App\Constants\RoleConstant;
@@ -43,8 +45,29 @@ class TestController extends Controller
 {
     public function index()
     {
-        $notificClientService = new NotificClientService();
-        $notificClientService->run();
+        $str = '';
+
+        if ( is_null($str) ) {
+            echo 'is_null' . PHP_EOL;
+        }
+
+        if ( empty($str) ) {
+            echo 'empty' . PHP_EOL;
+        }
+
+
+//        $reminder = '2021-10-11 11:01:42';
+//        $d1 = strtotime($reminder);
+//        $d2 = Carbon::now()->timestamp;
+//        dd($d1, $d2);
+
+
+
+//        $time = date('H:i:s', strtotime($reminder));
+//        dd($time);
+
+//        $notificClientService = new NotificClientService();
+//        $notificClientService->run();
 
         /*
         $rruleString = 'RRULE:FREQ=DAILY;COUNT=7;INTERVAL=2;WKST=MO';

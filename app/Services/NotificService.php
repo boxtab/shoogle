@@ -111,6 +111,7 @@ class NotificService
      */
     public function needToSend($reminder, string $reminderInterval, $lastNotification): bool
     {
-        return true;
+        $time = date('H:i:s', strtotime($reminder));
+        return false;
     }
 }
