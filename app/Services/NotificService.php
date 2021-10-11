@@ -77,6 +77,38 @@ class NotificService
             ->update(['in_process' => null]);
     }
 
+    /**
+     * Date the time of the last notification.
+     *
+     * @param int $userHasShoogleId
+     */
+    public function putNowLastNotification(int $userHasShoogleId)
+    {
+        UserHasShoogle::on()
+            ->where('id', '=', $userHasShoogleId)
+            ->update(['last_notification' => Carbon::now()]);
+    }
+
+    /**
+     * Date unlock time.
+     *
+     * @param int $userHasShoogleId
+     */
+    public function putNowInProcess(int $userHasShoogleId)
+    {
+        UserHasShoogle::on()
+            ->where('id', '=', $userHasShoogleId)
+            ->update(['in_process' => Carbon::now()]);
+    }
+
+    /**
+     * Do I need to send a notification?
+     *
+     * @param $reminder
+     * @param string $reminderInterval
+     * @param $lastNotification
+     * @return bool
+     */
     public function needToSend($reminder, string $reminderInterval, $lastNotification): bool
     {
         return true;

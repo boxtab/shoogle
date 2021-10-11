@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\HelperNotific;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -19,15 +20,24 @@ class NotificClientService
         $lineUsers = $notificService->getLineUsers();
 
         $userHasShoogleId = $notificService->getUserHasShoogleIds($lineUsers);
-//        $notificService->unlockUserHasShoogle($userHasShoogleId);
+        $notificService->lockUserHasShoogle($userHasShoogleId);
 
-        dd($userHasShoogleId);
-//        dd($lineUsers);
+        foreach ($lineUsers as $lineUser) {
 
-//        foreach ($lineUsers as $lineUser) {
-//
-//            Log::info($lineUser['reminder_interval']);
-//
-//        }
+            $needToSend = $notificService->needToSend($lineUser['reminder'], $lineUser['reminder_interval'], $lineUser['last_notification']);
+            if ( $needToSend ) {
+                HelperNotific::push($lineUser['user_id'], $lineUser['shoogle_id'], $lineUser['id']);
+                $notificService->putNowLastNotification($lineUser['id']);
+            }
+        }
+
+        $notificService->unlockUserHasShoogle($userHasShoogleId);
+//        'id',
+//        'user_id',
+//        'shoogle_id',
+//        'reminder',
+//        'reminder_interval',
+//        'last_notification',
+//        'in_process',
     }
 }
