@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperChat;
+use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperShoogleStatistic;
 use App\Helpers\HelperShooglesViews;
@@ -25,6 +26,8 @@ class ShooglesViewsResource extends JsonResource
      */
     public function toArray($request)
     {
+        $friend = HelperFriend::getFriend($this->resource->id, Auth::id());
+
         return [
             'id' => $this->resource->id,
             'title' => $this->resource->title,
@@ -49,6 +52,8 @@ class ShooglesViewsResource extends JsonResource
             'shooglersCount' => HelperMember::getMemberCount($this->resource->id),
             'buddiesCount' => HelperShoogleStatistic::getBuddiesCount($this->resource->id),
             'solosCount' => HelperShoogleStatistic::getSolosCount($this->resource->id),
+
+            'buddyName' => (new ShoogleViewsBuddyNameResource($friend)),
         ];
     }
 }
