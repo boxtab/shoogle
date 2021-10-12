@@ -198,7 +198,7 @@ class InviteRepository extends Repositories
 
         while ($countVarEnv < count(EnvConstant::$emailInvite)) {
 
-            if ( empty( env( EnvConstant::$emailInvite[$countVarEnv] ) ) ) {
+            if ( is_null( config( 'mail.invite.' . EnvConstant::$emailInvite[$countVarEnv] ) ) ) {
                 $credentials = EnvConstant::$emailInvite[$countVarEnv];
                 break;
             }

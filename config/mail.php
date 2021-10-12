@@ -118,6 +118,15 @@ return [
     'invite' => [
         'email_from' => env('INVITE_EMAIL_FROM', 'support@shoogle.com'),
         'subject' => env('INVITE_SUBJECT', 'We invite you to the system shoogle.'),
+
+        'MAIL_MAILER' => env('MAIL_MAILER'),
+        'MAIL_HOST' => env('MAIL_HOST'),
+        'MAIL_PORT' => env('MAIL_PORT'),
+        'MAIL_USERNAME' => env('MAIL_USERNAME'),
+        'MAIL_PASSWORD' => env('MAIL_PASSWORD'),
+        'MAIL_ENCRYPTION' => env('MAIL_ENCRYPTION'),
+        'MAIL_FROM_ADDRESS' => env('MAIL_FROM_ADDRESS'),
+        'MAIL_FROM_NAME' => env('MAIL_FROM_NAME'),
     ],
 
     /*
