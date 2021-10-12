@@ -9,7 +9,7 @@ namespace App\Constants;
 class EnvConstant
 {
     public static $emailInvite = [
-        'MAIL_MAILER',
+//        'MAIL_MAILER',
         'MAIL_HOST',
         'MAIL_PORT',
         'MAIL_USERNAME',
