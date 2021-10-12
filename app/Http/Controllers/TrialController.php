@@ -13,9 +13,6 @@ class TrialController extends Controller
 //        $income = Carbon::now();
         $income = '2021-10-11 16:40:00';
 
-        $tmp = gettype($income);
-
-        dd($tmp);
 
         /*
         $dateStart = '2021-10-11 16:40:00';

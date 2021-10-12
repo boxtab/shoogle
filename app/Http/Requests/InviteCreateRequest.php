@@ -26,7 +26,7 @@ class InviteCreateRequest extends ApiRequest
     {
         return [
             'email'         => 'required|email:rfc,dns',
-            'departmentId'  => 'nullable|integer|exists:departments,id',
+            'departmentId'  => 'required|integer|exists:departments,id',
         ];
     }
 }

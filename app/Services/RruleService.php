@@ -89,8 +89,18 @@ class RruleService
         return $this->eventDates;
     }
 
-    public function eventHasCome(string $date)
+    /**
+     * @param string $date
+     * @return bool
+     */
+    public function eventHasCome(string $date): bool
     {
-        return array_search();
+        $key = array_search($date, $this->eventDates);
+
+        if ( $key === false ) {
+            return false;
+        }
+
+
     }
 }

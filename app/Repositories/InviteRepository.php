@@ -2,10 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Constants\EnvConstant;
 use App\Http\Requests\InviteCSVRequest;
 use App\Mail\API\V1\InviteMail;
 use App\Models\Department;
 use App\Models\Invite;
+use App\Support\ApiResponse\ApiResponse;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
@@ -14,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Exception;
 
 /**
  * Class InviteRepository
@@ -65,14 +68,15 @@ class InviteRepository extends Repositories
      *
      * @param string $email
      * @param int|null $departmentId
+     * @throws Exception
      */
     public function create(string $email, ?int $departmentId): void
     {
         if ( $this->noCompany() ) {
-            return;
+            throw new Exception('The authenticated user does not have a company ID!', Response::HTTP_NOT_FOUND);
         }
 
-        $invite = $this->model->create([
+        $invite = $this->model->on()->create([
             'email' => $email,
             'is_used' => 0,
             'created_by' => Auth::user()->id,
@@ -80,8 +84,10 @@ class InviteRepository extends Repositories
             'department_id' => $departmentId,
         ]);
 
-        if ( ! is_null($invite) ) {
+        if ( ! is_null( $invite ) ) {
             $this->sendInvitationsToEmail([$email]);
+        } else {
+            throw new Exception('An invitation record was not created in the table!', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -143,24 +149,43 @@ class InviteRepository extends Repositories
 
     /**
      * Send invitations to email.
-     *
      * @param array $listEmail
+     * @throws Exception
      */
     private function sendInvitationsToEmail(array $listEmail): void
     {
         if ( empty( $listEmail ) ) {
-            return;
+            throw new Exception('Email list to send is empty!', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        if ( ! $this->isCredentialsEmail() ) {
-            return;
+
+        $credentialsEmail = $this->isCredentialsEmail();
+        if ( $credentialsEmail !== false ) {
+            throw new Exception("$credentialsEmail variable not found in environment file!", Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $inviteMail = new InviteMail();
-        foreach ($listEmail as $email) {
-            $inviteMail->to($email);
+        if ( empty( config('mail.invite.email_from') ) ) {
+            throw new Exception("The environment file does not specify from whom to send mail!", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        if ( empty( config('mail.invite.subject') ) ) {
+            throw new Exception("The email subject is not specified in the environment file!", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        try {
+            $inviteMail = new InviteMail();
+            $inviteMail->to($listEmail[0]);
             Mail::send($inviteMail);
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+            throw new Exception("EMAIL NOT SENT! $error", Response::HTTP_BAD_GATEWAY);
         }
+
+//        $inviteMail = new InviteMail();
+//        foreach ($listEmail as $email) {
+//            $inviteMail->to($email);
+//            Mail::send($inviteMail);
+//        }
     }
 
     /**
@@ -170,40 +195,18 @@ class InviteRepository extends Repositories
      */
     private function isCredentialsEmail()
     {
-        $credentials = true;
+        $credentials = false;
+        $countVarEnv = 0;
 
-        if ( empty( env('MAIL_MAILER') ) ) {
-            $credentials = false;
+        while ($countVarEnv < count(EnvConstant::$emailInvite)) {
+
+            if ( empty( env( EnvConstant::$emailInvite[$countVarEnv] ) ) ) {
+                $credentials = EnvConstant::$emailInvite[$countVarEnv];
+                break;
+            }
+            $countVarEnv++;
+
         }
-
-        if ( empty( env('MAIL_HOST') ) ) {
-            $credentials = false;
-        }
-
-        if ( empty( env('MAIL_PORT') ) ) {
-            $credentials = false;
-        }
-
-        if ( empty( env('MAIL_USERNAME') ) ) {
-            $credentials = false;
-        }
-
-        if ( empty( env('MAIL_PASSWORD') ) ) {
-            $credentials = false;
-        }
-
-        if ( empty( env('MAIL_ENCRYPTION') ) ) {
-            $credentials = false;
-        }
-
-        if ( empty( env('MAIL_FROM_ADDRESS') ) ) {
-            $credentials = false;
-        }
-
-        if ( empty( env('MAIL_FROM_NAME') ) ) {
-            $credentials = false;
-        }
-
         return $credentials;
     }
 }
