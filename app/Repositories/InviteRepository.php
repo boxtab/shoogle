@@ -72,23 +72,21 @@ class InviteRepository extends Repositories
      */
     public function create(string $email, ?int $departmentId): void
     {
-        if ( $this->noCompany() ) {
-            throw new Exception('The authenticated user does not have a company ID!', Response::HTTP_NOT_FOUND);
-        }
+        DB::transaction(function () use ($email, $departmentId) {
+            if ( $this->noCompany() ) {
+                throw new Exception('The authenticated user does not have a company ID!', Response::HTTP_NOT_FOUND);
+            }
 
-        $invite = $this->model->on()->create([
-            'email' => $email,
-            'is_used' => 0,
-            'created_by' => Auth::user()->id,
-            'companies_id' => $this->companyId,
-            'department_id' => $departmentId,
-        ]);
+            $this->model->on()->create([
+                'email' => $email,
+                'is_used' => 0,
+                'created_by' => Auth::user()->id,
+                'companies_id' => $this->companyId,
+                'department_id' => $departmentId,
+            ]);
 
-        if ( ! is_null( $invite ) ) {
             $this->sendInvitationsToEmail([$email]);
-        } else {
-            throw new Exception('An invitation record was not created in the table!', Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        });
     }
 
     /**
