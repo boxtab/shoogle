@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
+use App\Helpers\HelperAvatar;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthPasswordForgotRequest;
@@ -89,6 +90,7 @@ class AuthController extends BaseApiController
      */
     public function signup(AuthSignupRequest $request)
     {
+        /*
         try {
             $invite = Invite::where('email', $request->email)->firstorFail();
         } catch (Exception $e) {
@@ -104,24 +106,37 @@ class AuthController extends BaseApiController
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
+        */
 
         try {
-            $credentials = $request->only(['email','password']);
+            $credentials = $request->only(['email','password', 'firstName', 'lastName', 'about', 'profileImage']);
 
-            $user = DB::transaction( function () use ( $credentials, $invite ) {
+            $user = DB::transaction( function () use ( $credentials/*, $invite*/ ) {
 
-                $user = User::create([
-                    'company_id' => $invite->companies_id,
-                    'department_id' => $invite->department_id,
+                $user = User::on()->create([
+//                    'company_id' => $invite->companies_id,
+//                    'department_id' => $invite->department_id,
+
+                    'company_id' => 1,
+                    'department_id' => 1,
+
                     'password' => bcrypt($credentials['password']),
                     'email' => $credentials['email'],
+                    'first_name' => $credentials['firstName'],
+                    'last_name' => $credentials['lastName'],
+                    'about' => $credentials['about'],
                 ]);
 
                 $user->assignRole(RoleConstant::USER);
 
-                DB::table('invites')
-                    ->where('id', $invite->id)
-                    ->update(['is_used' => 1]);
+//                DB::table('invites')
+//                    ->where('id', $invite->id)
+//                    ->update(['is_used' => 1]);
+
+                if ( ! empty( $credentials['profileImage'] ) ) {
+                    $profile = User::on()->where('id', '=', $user->id )->first();
+                    HelperAvatar::saveAvatar($credentials['profileImage'], $profile);
+                }
 
                 return $user;
             });

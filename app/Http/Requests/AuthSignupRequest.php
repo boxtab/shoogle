@@ -25,8 +25,12 @@ class AuthSignupRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email'     => 'required|email:rfc,dns|unique:users,email|min:5|max:255',
-            'password'  => 'required|min:6|max:64',
+            'email'         => 'required|email:rfc,dns|unique:users,email|min:5|max:255',
+            'password'      => 'required|min:6|max:64',
+            'firstName'     => 'nullable|min:1|max:255',
+            'lastName'      => 'nullable|min:1|max:255',
+            'profileImage'  => 'nullable',
+            'about'         => 'nullable|min:1|max:16384',
         ];
     }
 }

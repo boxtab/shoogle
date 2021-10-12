@@ -36,6 +36,7 @@ class AuthResource extends JsonResource
             'token'     => $this->token,
             'firstName' => $this->first_name,
             'lastName'  => $this->last_name,
+            'about'     => $this->about,
             'email'     => $this->email,
             'role'      => count( $this->getRoleNames() ) !== 0 ? $this->getRoleNames()[0] : null,
             'avatar'    => HelperAvatar::getURLProfileImage( $this->profile_image ),

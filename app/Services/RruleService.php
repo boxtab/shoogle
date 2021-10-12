@@ -18,7 +18,7 @@ class RruleService
 
     private $rruleString = '';
 
-    private $eventsDates = [];
+    private $eventDates = [];
 
     /**
      * @return string
@@ -61,7 +61,7 @@ class RruleService
      * @throws \Recurr\Exception\InvalidWeekday
      * @throws \Exception
      */
-    public function generateEventsDates()
+    public function generateEventsDates(): void
     {
         $beginDate = new \DateTime($this->getYesterday($this->dateStart));
         $endDate = new \DateTime($this->getPlusOneYear($this->dateStart));
@@ -74,30 +74,23 @@ class RruleService
         $transformer = new ArrayTransformer();
         $constraint = new BetweenConstraint($beginDate, $endDate);
 
-        $this->eventsDates = $transformer->transform($rule, $constraint);
+        $eventsDatesObject = $transformer->transform($rule, $constraint);
+
+        foreach ($eventsDatesObject as $eventDate) {
+            $this->eventDates[] = $eventDate->getStart()->format('Y-m-d');
+        }
     }
 
     /**
      * @return array
      */
-    public function getEventsDatesTimestamp()
+    public function getEventDates(): array
     {
-        $eventsDatesTimestamp = [];
-        foreach ($this->eventsDates as $eventDate) {
-            $eventsDatesTimestamp[] = $eventDate->getStart()->getTimestamp();
-        }
-        return $eventsDatesTimestamp;
+        return $this->eventDates;
     }
 
-    /**
-     * @return array
-     */
-    public function getEventsDatesDatetime()
+    public function eventHasCome(string $date)
     {
-        $eventsDatesTimestamp = [];
-        foreach ($this->eventsDates as $eventDate) {
-            $eventsDatesTimestamp[] = $eventDate->getStart()->format('Y-m-d') . ' ' . $this->getTime();
-        }
-        return $eventsDatesTimestamp;
+        return array_search();
     }
 }

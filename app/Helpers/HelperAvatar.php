@@ -145,7 +145,7 @@ class HelperAvatar
         if ( ! ($fileExtension === 'jpg' || $fileExtension === 'png') ) {
             throw new Exception('The file extension must be jpg or png', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        $fileName = 'id' . Auth::id() . '-' . Str::uuid()->toString() . '.' . $fileExtension;
+        $fileName = 'id' . $user->id . '-' . Str::uuid()->toString() . '.' . $fileExtension;
 
         self::deleteAvatar($user);
 
