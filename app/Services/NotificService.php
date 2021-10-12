@@ -38,6 +38,8 @@ class NotificService
                 'last_notification',
                 'in_process',
             ])->toArray();
+        // Отсекать единичное событие которое еще не наступило
+        // last_notification если меньше суток то пропускать
     }
 
     /**
@@ -112,6 +114,22 @@ class NotificService
     public function needToSend($reminder, string $reminderInterval, $lastNotification): bool
     {
         $time = date('H:i:s', strtotime($reminder));
+        $nowTimestamp = Carbon::now()->timestamp;
+        $reminderTimestamp = strtotime($reminder);
+        $lastNotificationTimestamp = strtotime($lastNotification);
+
+        if ( empty($reminderInterval) && empty($lastNotification) ) {
+            if ( $reminderTimestamp <= $nowTimestamp ) {
+                return true;
+            }
+        }
+
+        if ( ! empty($reminderInterval) ) {
+            if ( empty ($lastNotification) || $lastNotificationTimestamp < $nowTimestamp ) {
+                // Нужно ли повторять?
+            }
+        }
+
         return false;
     }
 }

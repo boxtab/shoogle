@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\RewardConstant;
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperChat;
+use App\Helpers\HelperDateTime;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperNotific;
@@ -24,6 +25,7 @@ use App\Repositories\TestRepository;
 use App\Services\NotificClientService;
 use Carbon\Carbon;
 use Database\Seeders\IconRewardsSeeder;
+use DateInterval;
 use DateTime;
 use Illuminate\Http\Request;
 use App\User;
@@ -45,38 +47,13 @@ class TestController extends Controller
 {
     public function index()
     {
-        $str = '';
-
-        if ( is_null($str) ) {
-            echo 'is_null' . PHP_EOL;
-        }
-
-        if ( empty($str) ) {
-            echo 'empty' . PHP_EOL;
-        }
-
-
-//        $reminder = '2021-10-11 11:01:42';
-//        $d1 = strtotime($reminder);
-//        $d2 = Carbon::now()->timestamp;
-//        dd($d1, $d2);
-
-
-
-//        $time = date('H:i:s', strtotime($reminder));
-//        dd($time);
-
-//        $notificClientService = new NotificClientService();
-//        $notificClientService->run();
-
-        /*
-        $rruleString = 'RRULE:FREQ=DAILY;COUNT=7;INTERVAL=2;WKST=MO';
+        $dateStart = '2021-10-11 16:40:00';
+        $rruleString = 'RRULE:FREQ=DAILY;COUNT=3;INTERVAL=2;WKST=MO';
 
         // определяешь граничные даты, чтобы не получать лишние даты.
         // потому что RRuleв теории может вернуть дат на 10 лет вперед
-        $startDate = new \DateTime('today midnight');
-        $endDate = new \DateTime('today +1 years 23:59:59');
-
+        $startDate = new \DateTime(HelperDateTime::getYesterday($dateStart));
+        $endDate = new \DateTime(HelperDateTime::getPlusOneYear($dateStart));
 
         // скармливаешь строку "RRULE:... " либе
         try {
@@ -96,9 +73,10 @@ class TestController extends Controller
         $arrayStartDate = [];
         foreach ($eventsDates as $eventDate) {
             $startDate = $eventDate->getStart();
-            $arrayStartDate[] = $startDate;
+            $arrayStartDate[] = $startDate->format('Y-m-d');
         }
-        */
+
+        dd($arrayStartDate);
 
 
 

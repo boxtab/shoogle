@@ -14,8 +14,9 @@ class HelperRrule
      * @throws \Recurr\Exception\InvalidRRule
      * @throws \Recurr\Exception\InvalidWeekday
      */
-    public function getArrayTimestamp(?string $rruleString)
+    public function getArrayTimestamp(string $dateStart, string $rruleString)
     {
+        $dateStart = date('Y-m-d');
         $startDate = new \DateTime('today midnight');
         $endDate = new \DateTime('today +1 years 23:59:59');
         $rule = new Rule($rruleString, new \DateTime('today midnight'));

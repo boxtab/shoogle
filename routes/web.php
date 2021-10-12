@@ -18,3 +18,5 @@ Route::get('/', function () {
 });
 
 Route::get('/test', ['as' => 'test.test', 'uses' => 'TestController@index']);
+
+Route::get('/trial', ['uses' => 'TrialController@index']);

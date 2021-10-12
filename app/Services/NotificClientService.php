@@ -29,6 +29,7 @@ class NotificClientService
                 HelperNotific::push($lineUser['user_id'], $lineUser['shoogle_id'], $lineUser['id']);
                 $notificService->putNowLastNotification($lineUser['id']);
             }
+            // анлок для каждой записи
         }
 
         $notificService->unlockUserHasShoogle($userHasShoogleId);
