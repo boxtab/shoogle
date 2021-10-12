@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Constants\RewardConstant;
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperChat;
+use App\Helpers\HelperDateTime;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperNotific;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
@@ -17,16 +19,23 @@ use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
 use App\Models\Shoogle;
+use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
 use App\Repositories\TestRepository;
+use App\Services\NotificClientService;
 use Carbon\Carbon;
 use Database\Seeders\IconRewardsSeeder;
+use DateInterval;
+use DateTime;
 use Illuminate\Http\Request;
 use App\User;
 use App\Constants\RoleConstant;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Recurr\Exception\InvalidRRule;
 use Recurr\Rule;
+use Recurr\Transformer\ArrayTransformer;
+use Recurr\Transformer\Constraint\BetweenConstraint;
 use Recurr\Transformer\TextTransformer;
 use ReflectionClass;
 use Spatie\Permission\Models\Role;
@@ -38,21 +47,58 @@ class TestController extends Controller
 {
     public function index()
     {
-        $tmp = HelperBuddies::isFriends(51, 3, 60);
+        $dateStart = '2021-10-11 16:40:00';
+        $rruleString = 'RRULE:FREQ=DAILY;COUNT=3;INTERVAL=2;WKST=MO';
 
-        if ( is_null($tmp) ) {
-            return 'is null true';
+        // определяешь граничные даты, чтобы не получать лишние даты.
+        // потому что RRuleв теории может вернуть дат на 10 лет вперед
+        $startDate = new \DateTime(HelperDateTime::getYesterday($dateStart));
+        $endDate = new \DateTime(HelperDateTime::getPlusOneYear($dateStart));
+
+        // скармливаешь строку "RRULE:... " либе
+        try {
+            $rule = new Rule($rruleString, new \DateTime('today midnight'));
+        } catch (InvalidRRule $e) {
         }
 
-        if ( $tmp == true ) {
-            return 'is true';
+        // так надо :-)
+
+        $transformer = new ArrayTransformer();
+        $constraint = new BetweenConstraint($startDate, $endDate);
+
+        // тут уже будет массив объектов, в которые должно происходить событие.
+        // Объекты, кажется специфические, но из каждого можно получить метку времени.
+        $eventsDates = $transformer->transform($rule, $constraint);
+
+        $arrayStartDate = [];
+        foreach ($eventsDates as $eventDate) {
+            $startDate = $eventDate->getStart();
+            $arrayStartDate[] = $startDate->format('Y-m-d');
         }
 
-        if ( $tmp == false ) {
-            return 'is false';
-        }
+        dd($arrayStartDate);
 
-        return $tmp;
+
+
+
+
+
+//        HelperNotific::push(60, 60, 53);
+//        $tmp = HelperBuddies::isFriends(51, 3, 60);
+//
+//        if ( is_null($tmp) ) {
+//            return 'is null true';
+//        }
+//
+//        if ( $tmp == true ) {
+//            return 'is true';
+//        }
+//
+//        if ( $tmp == false ) {
+//            return 'is false';
+//        }
+//
+//        return $tmp;
 
 //        $tmp = HelperChat::getBuddyChatId(51, 60);
 //

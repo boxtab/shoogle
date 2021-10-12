@@ -162,18 +162,6 @@ class BuddyRequestRepository extends Repositories
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-//        $buddyRequest = BuddyRequest::on()
-//            ->where('id', $buddyRequestId)->first();
-
-//        $shoogleId = $buddyRequest->shoogle_id;
-//        $user1Id = $buddyRequest->user1_id;
-//        $user2Id = $buddyRequest->user2_id;
-
-//        if ( HelperBuddies::isFriends($shoogleId, $user1Id, $user2Id) ) {
-//            throw new \Exception("User id:$user1Id and user id:$user2Id are already friends in shoogle id:$shoogleId",
-//                Response::HTTP_UNPROCESSABLE_ENTITY);
-//        }
-
         DB::transaction( function () use ($buddyRequestId) {
             $buddyRequest = BuddyRequest::on()
                 ->where('id', $buddyRequestId)->first();
@@ -231,15 +219,27 @@ class BuddyRequestRepository extends Repositories
      * Reject friend request.
      *
      * @param int $buddyRequestId
+     * @throws \Exception
      */
     public function buddyReject(int $buddyRequestId): void
     {
-        BuddyRequest::on()
+        $buddyRequest = BuddyRequest::on()
             ->where('id', $buddyRequestId)
-            ->where('type', BuddyRequestTypeEnum::INVITE)
-            ->update([
-                'type' => BuddyRequestTypeEnum::REJECT,
-            ]);
+            ->first();
+
+        if ( $buddyRequest->type !== BuddyRequestTypeEnum::INVITE ) {
+            throw new \Exception("The type of invitation must be invite!",
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if ( $buddyRequest->user2_id !== Auth::id() ) {
+            throw new \Exception("Only the one who received it can cancel the invitation!",
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $buddyRequest->update([
+            'type' => BuddyRequestTypeEnum::REJECT,
+        ]);
     }
 
     /**
