@@ -41,7 +41,7 @@ class StreamService
             ]
         );
 
-        $channel->create('user' . Auth()->user()->id, ['user1' ,'user' . Auth()->user()->id]);
+        $channel->create('user' . Auth()->user()->id, ['systemuser' ,'user' . Auth()->user()->id]);
         return $channel->id;
     }
 
@@ -78,7 +78,7 @@ class StreamService
     {
         $userId = Auth()->user()->id;
         $channel = $this->serverClient->Channel('messaging', 'shoogle' . $this->shoogleId . 'Journal' . $userId);
-        $channel->create('user' . $userId, ['user' . $userId, 'user1']);
+        $channel->create('user' . $userId, ['user' . $userId, 'systemuser']);
         return $channel->id;
     }
 
