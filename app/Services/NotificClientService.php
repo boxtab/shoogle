@@ -19,8 +19,8 @@ class NotificClientService
         $notificService = new NotificService();
         $lineUsers = $notificService->getLineUsers();
 
-        $userHasShoogleId = $notificService->getUserHasShoogleIds($lineUsers);
-        $notificService->lockUserHasShoogle($userHasShoogleId);
+        $userHasShoogleIds = $notificService->getUserHasShoogleIds($lineUsers);
+        $notificService->lockUserHasShoogle($userHasShoogleIds);
 
         foreach ($lineUsers as $lineUser) {
 
@@ -29,10 +29,10 @@ class NotificClientService
                 HelperNotific::push($lineUser['user_id'], $lineUser['shoogle_id'], $lineUser['id']);
                 $notificService->putNowLastNotification($lineUser['id']);
             }
-            // анлок для каждой записи
+            $notificService->unlockUserHasShoogle($lineUser['id']);
         }
 
-        $notificService->unlockUserHasShoogle($userHasShoogleId);
+
 //        'id',
 //        'user_id',
 //        'shoogle_id',

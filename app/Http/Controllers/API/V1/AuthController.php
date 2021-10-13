@@ -93,7 +93,6 @@ class AuthController extends BaseApiController
      */
     public function signup(AuthSignupRequest $request)
     {
-        /*
         try {
             $invite = Invite::where('email', $request->email)->firstorFail();
         } catch (Exception $e) {
@@ -109,19 +108,15 @@ class AuthController extends BaseApiController
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
-        */
 
         try {
             $credentials = $request->only(['email','password', 'firstName', 'lastName', 'about', 'profileImage']);
 
-            $user = DB::transaction( function () use ( $credentials/*, $invite*/ ) {
+            $user = DB::transaction( function () use ( $credentials, $invite ) {
 
                 $user = User::on()->create([
-//                    'company_id' => $invite->companies_id,
-//                    'department_id' => $invite->department_id,
-
-                    'company_id' => 1,
-                    'department_id' => 1,
+                    'company_id' => $invite->companies_id,
+                    'department_id' => $invite->department_id,
 
                     'password' => bcrypt($credentials['password']),
                     'email' => $credentials['email'],
@@ -132,9 +127,9 @@ class AuthController extends BaseApiController
 
                 $user->assignRole(RoleConstant::USER);
 
-//                DB::table('invites')
-//                    ->where('id', $invite->id)
-//                    ->update(['is_used' => 1]);
+                DB::table('invites')
+                    ->where('id', $invite->id)
+                    ->update(['is_used' => 1]);
 
                 if ( ! empty( $credentials['profileImage'] ) ) {
                     $profile = User::on()->where('id', '=', $user->id )->first();

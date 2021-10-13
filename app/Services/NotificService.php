@@ -29,6 +29,12 @@ class NotificService
         return UserHasShoogle::on()
             ->where('is_reminder', '=', true)
             ->whereNotNull('reminder')
+            ->where(function ($query) {
+                $query->whereNotNull('reminder_interval')
+                    ->orWhere(function ($query) {
+
+                    });
+            })
             ->get([
                 'id',
                 'user_id',
@@ -70,12 +76,12 @@ class NotificService
     /**
      * Unblock processed members.
      *
-     * @param array $userHasShoogleIds
+     * @param int $userHasShoogleId
      */
-    public function unlockUserHasShoogle(array $userHasShoogleIds)
+    public function unlockUserHasShoogle(int $userHasShoogleId)
     {
         UserHasShoogle::on()
-            ->whereIn('id', $userHasShoogleIds)
+            ->whereIn('id', '=', $userHasShoogleId)
             ->update(['in_process' => null]);
     }
 

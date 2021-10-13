@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\HelperDateTime;
+use Carbon\Carbon;
 use Recurr\Exception\InvalidRRule;
 use Recurr\Rule;
 use Recurr\Transformer\ArrayTransformer;
@@ -101,6 +102,13 @@ class RruleService
             return false;
         }
 
+        $now = Carbon::now()->timestamp;
+        $eventDate = strtotime($date . ' ' . $this->getTime());
 
+        if ( $now >= $eventDate ) {
+            return true;
+        }
+
+        return false;
     }
 }
