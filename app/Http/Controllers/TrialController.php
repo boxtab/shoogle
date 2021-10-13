@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\HelperNotific;
+use App\Services\NotificClientService;
 use App\Services\RruleService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -10,21 +12,12 @@ class TrialController extends Controller
 {
     public function index()
     {
-//        $income = Carbon::now();
-        $income = '2021-10-11 16:40:00';
+        $dateStart = '2021-10-01 15:10:00';
 
-
-        /*
-        $dateStart = '2021-10-11 16:40:00';
-        $rruleString = 'RRULE:FREQ=DAILY;COUNT=3;INTERVAL=2;WKST=MO';
-
-        $rruleService = new RruleService($dateStart, $rruleString);
-        $rruleService->generateEventsDates();
-        $eventsDate = $rruleService->getEventsDatesDatetime();
-
-        dd($eventsDate);
-
-        return 123;
-        */
+        $dateMidnight = (new \DateTime($dateStart))->format('Y-m-d') . ' 00:00:00';
+        $datePlusYear = date('Y-m-d H:i:s', strtotime('+1 year', strtotime($dateStart)));
+        dd($dateStart, $dateMidnight, $datePlusYear);
+//        $notificClientService = new NotificClientService();
+//        $notificClientService->run();
     }
 }

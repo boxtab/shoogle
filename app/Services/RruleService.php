@@ -19,43 +19,21 @@ class RruleService
 
     private $rruleString = '';
 
-    private $eventDates = [];
+    private $lastNotification;
 
-    /**
-     * @return string
-     */
-    private function getTime(): string
-    {
-        return date('H:i:s', strtotime($this->dateStart));
-    }
-
-    /**
-     * @param string $datetime
-     * @return string
-     */
-    private function getYesterday(string $datetime): string
-    {
-        return date('Y-m-d H:i:s', strtotime('-1 day', strtotime($datetime)));
-    }
-
-    /**
-     * @param string $datetime
-     * @return string
-     */
-    private function getPlusOneYear(string $datetime): string
-    {
-        return date('Y-m-d H:i:s', strtotime('+1 year', strtotime($datetime)));
-    }
+    private $eventsDateTime = [];
 
     /**
      * RruleService constructor.
      * @param string $dateStart
      * @param string $rruleString
+     * @param string|null $lastNotification
      */
-    public function __construct(string $dateStart, string $rruleString)
+    public function __construct(string $dateStart, string $rruleString, ?string $lastNotification)
     {
         $this->dateStart = $dateStart;
         $this->rruleString = $rruleString;
+        $this->lastNotification = $lastNotification;
     }
 
     /**
@@ -64,11 +42,14 @@ class RruleService
      */
     public function generateEventsDates(): void
     {
-        $beginDate = new \DateTime($this->getYesterday($this->dateStart));
-        $endDate = new \DateTime($this->getPlusOneYear($this->dateStart));
+        $dateMidnight = (new \DateTime($this->dateStart))->format('Y-m-d') . ' 00:00:00';
+        $datePlusYear = date('Y-m-d H:i:s', strtotime('+1 year', strtotime($this->dateStart)));
+
+        $beginDate = new \DateTime($dateMidnight);
+        $endDate = new \DateTime($datePlusYear);
 
         try {
-            $rule = new Rule( $this->rruleString, new \DateTime('today midnight') );
+            $rule = new Rule( $this->rruleString, new \DateTime($this->dateStart) );
         } catch (InvalidRRule $e) {
         }
 
@@ -78,32 +59,64 @@ class RruleService
         $eventsDatesObject = $transformer->transform($rule, $constraint);
 
         foreach ($eventsDatesObject as $eventDate) {
-            $this->eventDates[] = $eventDate->getStart()->format('Y-m-d');
+            $this->eventsDateTime[] = $eventDate->getStart()->format('Y-m-d H:i:s');
         }
     }
 
     /**
      * @return array
      */
-    public function getEventDates(): array
+    public function getEventsDateTime(): array
     {
-        return $this->eventDates;
+        return $this->eventsDateTime;
     }
 
     /**
-     * @param string $date
-     * @return bool
+     * @return array
+     * @throws \Exception
      */
-    public function eventHasCome(string $date): bool
+    public function getEventsDate(): array
     {
-        $key = array_search($date, $this->eventDates);
+        $eventsDate = [];
+        foreach ($this->eventsDateTime as $eventDateTime) {
+            $eventsDate[] = (new \DateTime($eventDateTime))->format('Y-m-d');
+        }
+        return $eventsDate;
+    }
 
+    /**
+     * @return array
+     */
+    public function getEventsTimestamp(): array
+    {
+        $eventsTimestamp = [];
+        foreach ($this->eventsDateTime as $eventDateTime) {
+            $eventsTimestamp[] = strtotime($eventDateTime);
+        }
+        return $eventsTimestamp;
+    }
+
+    /**
+     * @param string|null $date
+     * @return bool
+     * @throws \Exception
+     */
+    public function eventHasCome(): bool
+    {
+        $lastNotificationDate = (new \DateTime($this->lastNotification))->format('Y-m-d');
+        $currentDate = Carbon::now()->toDateString();
+
+        if ( $lastNotificationDate === $currentDate ) {
+            return false;
+        }
+
+        $key = array_search($currentDate, $this->getEventsDate());
         if ( $key === false ) {
             return false;
         }
 
         $now = Carbon::now()->timestamp;
-        $eventDate = strtotime($date . ' ' . $this->getTime());
+        $eventDate = strtotime($this->getEventsTimestamp()[$key]);
 
         if ( $now >= $eventDate ) {
             return true;

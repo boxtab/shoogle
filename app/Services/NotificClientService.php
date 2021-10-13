@@ -13,6 +13,7 @@ class NotificClientService
 {
     /**
      * Start sending notifications.
+     * @throws \Exception
      */
     public function run(): void
     {
@@ -23,7 +24,6 @@ class NotificClientService
         $notificService->lockUserHasShoogle($userHasShoogleIds);
 
         foreach ($lineUsers as $lineUser) {
-
             $needToSend = $notificService->needToSend($lineUser['reminder'], $lineUser['reminder_interval'], $lineUser['last_notification']);
             if ( $needToSend ) {
                 HelperNotific::push($lineUser['user_id'], $lineUser['shoogle_id'], $lineUser['id']);
@@ -31,6 +31,7 @@ class NotificClientService
             }
             $notificService->unlockUserHasShoogle($lineUser['id']);
         }
+
 
 
 //        'id',

@@ -2,32 +2,30 @@
 
 namespace App\Helpers;
 
+use App\Services\RruleService;
+use Recurr\Exception\InvalidWeekday;
 use Recurr\Rule;
 use Recurr\Transformer\ArrayTransformer;
 use Recurr\Transformer\Constraint\BetweenConstraint;
 
+/**
+ * Class HelperRrule
+ * @package App\Helpers
+ */
 class HelperRrule
 {
     /**
-     * @param string|null $rruleString
-     * @return \DateTime|\DateTimeInterface
-     * @throws \Recurr\Exception\InvalidRRule
-     * @throws \Recurr\Exception\InvalidWeekday
+     * @param string $dateStart
+     * @param string $rruleString
+     * @param string|null $lastNotification
+     * @return bool
+     * @throws InvalidWeekday
      */
-    public function getArrayTimestamp(string $dateStart, string $rruleString)
+    public static function eventHasCome(string $dateStart, string $rruleString, ?string $lastNotification): bool
     {
-        $dateStart = date('Y-m-d');
-        $startDate = new \DateTime('today midnight');
-        $endDate = new \DateTime('today +1 years 23:59:59');
-        $rule = new Rule($rruleString, new \DateTime('today midnight'));
-        $transformer = new ArrayTransformer();
-        $constraint = new BetweenConstraint($startDate, $endDate);
-        $eventsDates = $transformer->transform($rule, $constraint);
+        $rruleService = new RruleService($dateStart, $rruleString, $lastNotification);
+        $rruleService->generateEventsDates();
 
-        foreach ($eventsDates as $eventDate) {
-            $startDate = $eventDate->getStart();
-        }
-
-        return $startDate;
+        return $rruleService->eventHasCome();
     }
 }

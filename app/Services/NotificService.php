@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\HelperRrule;
 use App\Models\UserHasShoogle;
 use Carbon\Carbon;
 
@@ -32,7 +33,7 @@ class NotificService
             ->where(function ($query) {
                 $query->whereNotNull('reminder_interval')
                     ->orWhere(function ($query) {
-
+                        $query->whereDate('reminder', '<', Carbon::now());
                     });
             })
             ->get([
@@ -81,7 +82,7 @@ class NotificService
     public function unlockUserHasShoogle(int $userHasShoogleId)
     {
         UserHasShoogle::on()
-            ->whereIn('id', '=', $userHasShoogleId)
+            ->where('id', '=', $userHasShoogleId)
             ->update(['in_process' => null]);
     }
 
@@ -112,28 +113,26 @@ class NotificService
     /**
      * Do I need to send a notification?
      *
-     * @param $reminder
-     * @param string $reminderInterval
-     * @param $lastNotification
+     * @param string $reminder
+     * @param string|null $reminderInterval
+     * @param string|null $lastNotification
      * @return bool
      */
-    public function needToSend($reminder, string $reminderInterval, $lastNotification): bool
+    public function needToSend(string $reminder, ?string $reminderInterval, ?string $lastNotification): bool
     {
-        $time = date('H:i:s', strtotime($reminder));
         $nowTimestamp = Carbon::now()->timestamp;
         $reminderTimestamp = strtotime($reminder);
-        $lastNotificationTimestamp = strtotime($lastNotification);
 
-        if ( empty($reminderInterval) && empty($lastNotification) ) {
-            if ( $reminderTimestamp <= $nowTimestamp ) {
-                return true;
+        // если событие единичное
+        if ( empty( $reminderInterval ) ) {
+            if ( empty( $lastNotification ) ) {
+                if ( $nowTimestamp >= $reminderTimestamp ) {
+                    return true;
+                }
             }
-        }
-
-        if ( ! empty($reminderInterval) ) {
-            if ( empty ($lastNotification) || $lastNotificationTimestamp < $nowTimestamp ) {
-                // Нужно ли повторять?
-            }
+        } else {
+//            return false;
+            return HelperRrule::eventHasCome($reminder, $reminderInterval, $lastNotification);
         }
 
         return false;

@@ -23,6 +23,7 @@ use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
 use App\Repositories\TestRepository;
 use App\Services\NotificClientService;
+use App\Services\RruleService;
 use Carbon\Carbon;
 use Database\Seeders\IconRewardsSeeder;
 use DateInterval;
@@ -33,6 +34,7 @@ use App\Constants\RoleConstant;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Recurr\Exception\InvalidRRule;
+use Recurr\Exception\InvalidWeekday;
 use Recurr\Rule;
 use Recurr\Transformer\ArrayTransformer;
 use Recurr\Transformer\Constraint\BetweenConstraint;
@@ -47,115 +49,36 @@ class TestController extends Controller
 {
     public function index()
     {
-        $dateStart = '2021-10-11 16:40:00';
+        $dateStart = '2021-10-01 15:10:00';
         $rruleString = 'RRULE:FREQ=DAILY;COUNT=3;INTERVAL=2;WKST=MO';
 
-        // определяешь граничные даты, чтобы не получать лишние даты.
-        // потому что RRuleв теории может вернуть дат на 10 лет вперед
-        $startDate = new \DateTime(HelperDateTime::getYesterday($dateStart));
-        $endDate = new \DateTime(HelperDateTime::getPlusOneYear($dateStart));
-
-        // скармливаешь строку "RRULE:... " либе
+        $rruleService = new RruleService($dateStart, $rruleString);
         try {
-            $rule = new Rule($rruleString, new \DateTime('today midnight'));
-        } catch (InvalidRRule $e) {
+            $rruleService->generateEventsDates();
+        } catch (InvalidWeekday $e) {
+        } catch (\Exception $e) {
         }
 
-        // так надо :-)
+        $eventsDateTime = $rruleService->getEventsDateTime();
+        $eventsDate = $rruleService->getEventsDate();
+        $eventsTimestamp = $rruleService->getEventsTimestamp();
 
-        $transformer = new ArrayTransformer();
-        $constraint = new BetweenConstraint($startDate, $endDate);
-
-        // тут уже будет массив объектов, в которые должно происходить событие.
-        // Объекты, кажется специфические, но из каждого можно получить метку времени.
-        $eventsDates = $transformer->transform($rule, $constraint);
-
-        $arrayStartDate = [];
-        foreach ($eventsDates as $eventDate) {
-            $startDate = $eventDate->getStart();
-            $arrayStartDate[] = $startDate->format('Y-m-d');
-        }
-
-        dd($arrayStartDate);
-
-
-
-
-
-
-//        HelperNotific::push(60, 60, 53);
-//        $tmp = HelperBuddies::isFriends(51, 3, 60);
-//
-//        if ( is_null($tmp) ) {
-//            return 'is null true';
-//        }
-//
-//        if ( $tmp == true ) {
-//            return 'is true';
-//        }
-//
-//        if ( $tmp == false ) {
-//            return 'is false';
-//        }
-//
-//        return $tmp;
-
-//        $tmp = HelperChat::getBuddyChatId(51, 60);
-//
-//        if ( is_null($tmp) ) {
-//            return 'null - ';
-//        } else {
-//            return $tmp;
-//        }
-
-//        new HelperStream();
-//        dd(111);
-//        HelperStream::init();
-
-//        $shoogleId = 1;
-//        $idOfFirstUser = 2;
-//        $idOfSecondUser = 3;
-//        $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
-//        $newChannel = $serverClient->Channel('messaging', 'shoogle'.$shoogleId.'Buddy'.$idOfFirstUser.'with'.$idOfSecondUser);
-//        $newChannel->create(Auth::id(), [$idOfFirstUser, $idOfSecondUser]);
-//        return $newChannel->id;
-
-        //        dd($tmp);
+        dd($eventsDateTime, $eventsDate, $eventsTimestamp);
 
         /*
-        $streamApiKey = 'fms7mkz25hdf';
-        $streamApiSecret = 'y8tm6k35avd35txgy4jn27tfagz2yjgxxfwuwrxzm4c43895ehrtz4uh53gqvz5r';
+        $startDate = new \DateTime('2021-10-01 00:00:00');
+        $endDate = new \DateTime('2022-10-01 15:10:00');
+        $rule = new Rule($rruleString, new \DateTime('2021-10-01 15:10:00'));
+        $transformer = new ArrayTransformer();
+        $constraint = new BetweenConstraint($startDate, $endDate);
+        $eventsDates = $transformer->transform($rule, $constraint);
 
-        $server_client = new StreamClient($streamApiKey, $streamApiSecret);
-        $token = $server_client->createToken("john");
-
-        dd($token);
-        */
-
-
-//        $tmp = new IconRewardsSeeder();
-//        $tmp2 = $tmp->getRewards();
-//        dd($tmp2);
-
-/*
-        $rewards = [];
-        $path = public_path(RewardConstant::PATH);
-        $files = scandir($path);
-        $files = array_values( array_diff($files, ['.', '..']) );
-        dd($files);
-
-        for ($i = 0; $i < count($files); $i++) {
-            $reward = [
-                'id' => $i + 1,
-                'name' => ucfirst( str_replace( '_', ' ', pathinfo($files[$i], PATHINFO_FILENAME) ) ),
-                'icon' => $files[$i],
-//                'icon' => substr($files[$i], strlen(RewardConstant::PATH . '/')),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-            $rewards[] = $reward;
+        $eventDateArray = [];
+        foreach ($eventsDates as $eventDate) {
+            $eventDateArray[] = $eventDate->getStart();
         }
-        dd($rewards);
-*/
+
+        dd($eventDateArray);
+        */
     }
 }
