@@ -13,6 +13,15 @@ class NotificClientService
 {
     /**
      * Start sending notifications.
+     *
+        'id',
+        'user_id',
+        'shoogle_id',
+        'reminder',
+        'reminder_interval',
+        'last_notification',
+        'in_process',
+     *
      * @throws \Exception
      */
     public function run(): void
@@ -31,15 +40,5 @@ class NotificClientService
             }
             $notificService->unlockUserHasShoogle($lineUser['id']);
         }
-
-
-
-//        'id',
-//        'user_id',
-//        'shoogle_id',
-//        'reminder',
-//        'reminder_interval',
-//        'last_notification',
-//        'in_process',
     }
 }

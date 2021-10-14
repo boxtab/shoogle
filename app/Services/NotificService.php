@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\HelperNow;
 use App\Helpers\HelperRrule;
 use App\Models\UserHasShoogle;
 use Carbon\Carbon;
@@ -12,14 +13,6 @@ use Carbon\Carbon;
  */
 class NotificService
 {
-    /**
-     * NotificService constructor.
-     */
-    public function __construct()
-    {
-        null;
-    }
-
     /**
      * Get a list of users needing notification.
      *
@@ -33,7 +26,8 @@ class NotificService
             ->where(function ($query) {
                 $query->whereNotNull('reminder_interval')
                     ->orWhere(function ($query) {
-                        $query->whereDate('reminder', '<', Carbon::now());
+//                        $query->whereDate('reminder', '<', Carbon::now());
+                        $query->whereDate('reminder', '<', HelperNow::getCarbon());
                     });
             })
             ->get([
@@ -45,8 +39,8 @@ class NotificService
                 'last_notification',
                 'in_process',
             ])->toArray();
-        // Отсекать единичное событие которое еще не наступило
-        // last_notification если меньше суток то пропускать
+        // Cut off a single event that has not yet occurred
+        // last_notification skip if less than a day
     }
 
     /**
@@ -71,7 +65,7 @@ class NotificService
     {
         UserHasShoogle::on()
             ->whereIn('id', $userHasShoogleIds)
-            ->update(['in_process' => Carbon::now()]);
+            ->update(['in_process' => HelperNow::getCarbon()]);
     }
 
     /**
@@ -95,19 +89,7 @@ class NotificService
     {
         UserHasShoogle::on()
             ->where('id', '=', $userHasShoogleId)
-            ->update(['last_notification' => Carbon::now()]);
-    }
-
-    /**
-     * Date unlock time.
-     *
-     * @param int $userHasShoogleId
-     */
-    public function putNowInProcess(int $userHasShoogleId)
-    {
-        UserHasShoogle::on()
-            ->where('id', '=', $userHasShoogleId)
-            ->update(['in_process' => Carbon::now()]);
+            ->update(['last_notification' => HelperNow::getCarbon()]);
     }
 
     /**
@@ -117,13 +99,15 @@ class NotificService
      * @param string|null $reminderInterval
      * @param string|null $lastNotification
      * @return bool
+     * @throws \Recurr\Exception\InvalidWeekday
      */
     public function needToSend(string $reminder, ?string $reminderInterval, ?string $lastNotification): bool
     {
-        $nowTimestamp = Carbon::now()->timestamp;
+        $nowTimestamp = HelperNow::getTimestamp();
+//        $nowTimestamp = Carbon::now()->timestamp;
         $reminderTimestamp = strtotime($reminder);
 
-        // если событие единичное
+        // if the event is single
         if ( empty( $reminderInterval ) ) {
             if ( empty( $lastNotification ) ) {
                 if ( $nowTimestamp >= $reminderTimestamp ) {
@@ -131,7 +115,6 @@ class NotificService
                 }
             }
         } else {
-//            return false;
             return HelperRrule::eventHasCome($reminder, $reminderInterval, $lastNotification);
         }
 

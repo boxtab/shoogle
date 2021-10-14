@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Constants\RewardConstant;
+use App\Helpers\Helper;
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperChat;
 use App\Helpers\HelperDateTime;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperNotific;
+use App\Helpers\HelperNow;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
@@ -49,6 +51,8 @@ class TestController extends Controller
 {
     public function index()
     {
+        dd(Carbon::now(), Carbon::now()->timestamp, HelperNow::getCarbon());
+        /*
         $dateStart = '2021-10-01 15:10:00';
         $rruleString = 'RRULE:FREQ=DAILY;COUNT=3;INTERVAL=2;WKST=MO';
 
@@ -64,6 +68,7 @@ class TestController extends Controller
         $eventsTimestamp = $rruleService->getEventsTimestamp();
 
         dd($eventsDateTime, $eventsDate, $eventsTimestamp);
+        */
 
         /*
         $startDate = new \DateTime('2021-10-01 00:00:00');

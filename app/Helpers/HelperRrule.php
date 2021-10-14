@@ -20,6 +20,7 @@ class HelperRrule
      * @param string|null $lastNotification
      * @return bool
      * @throws InvalidWeekday
+     * @throws \Exception
      */
     public static function eventHasCome(string $dateStart, string $rruleString, ?string $lastNotification): bool
     {

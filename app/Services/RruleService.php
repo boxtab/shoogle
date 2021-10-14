@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Helpers\HelperDateTime;
+use App\Helpers\HelperNow;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Recurr\Exception\InvalidRRule;
 use Recurr\Rule;
 use Recurr\Transformer\ArrayTransformer;
@@ -104,7 +106,8 @@ class RruleService
     public function eventHasCome(): bool
     {
         $lastNotificationDate = (new \DateTime($this->lastNotification))->format('Y-m-d');
-        $currentDate = Carbon::now()->toDateString();
+        $currentDate = HelperNow::getDate();
+//        $currentDate = Carbon::now()->toDateString();
 
         if ( $lastNotificationDate === $currentDate ) {
             return false;
@@ -115,8 +118,10 @@ class RruleService
             return false;
         }
 
-        $now = Carbon::now()->timestamp;
-        $eventDate = strtotime($this->getEventsTimestamp()[$key]);
+        $now = HelperNow::getTimestamp();
+//        $now = Carbon::now()->timestamp;
+
+        $eventDate = $this->getEventsTimestamp()[$key];
 
         if ( $now >= $eventDate ) {
             return true;

@@ -23,6 +23,8 @@ class HelperNotific
             'user_id' => $userId,
             'shoogle_id' => $shoogleId,
             'user_has_shoogle_id' => $userHasShoogleId,
+            'created_at' => HelperNow::getCarbon(),
+            'updated_at' => HelperNow::getCarbon(),
         ]);
     }
 }
