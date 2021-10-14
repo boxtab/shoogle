@@ -44,11 +44,12 @@ class ProfileController extends BaseApiController
     {
         try {
             $this->repository->updateProfile($request);
+            $profile = $this->repository->getProfile( Auth::id() );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData([]);
+        return ApiResponse::returnData(new ProfileShowResource($profile));
     }
 
     /**
@@ -59,7 +60,7 @@ class ProfileController extends BaseApiController
     public function show()
     {
         try {
-            $profile = $this->repository->getProfile();
+            $profile = $this->repository->getProfile( Auth::id() );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }

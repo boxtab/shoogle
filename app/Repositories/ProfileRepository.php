@@ -42,11 +42,12 @@ class ProfileRepository extends Repositories
     /**
      * Returns the user profile.
      *
-     * @return mixed
+     * @param int $userId
+     * @return \Illuminate\Database\Eloquent\Builder|Model
      */
-    public function getProfile()
+    public function getProfile(int $userId)
     {
-        $profile = $this->model->where('id', Auth::id())
+        return $this->model->on()->where('id', '=', $userId)
             ->firstOrFail([
                 'id',
                 'first_name',
@@ -55,7 +56,6 @@ class ProfileRepository extends Repositories
                 'rank',
                 'profile_image',
             ]);
-        return $profile;
     }
 
     /**
