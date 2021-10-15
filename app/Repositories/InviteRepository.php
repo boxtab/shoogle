@@ -178,12 +178,6 @@ class InviteRepository extends Repositories
             $error = $e->getMessage();
             throw new Exception("EMAIL NOT SENT! $error", Response::HTTP_BAD_GATEWAY);
         }
-
-//        $inviteMail = new InviteMail();
-//        foreach ($listEmail as $email) {
-//            $inviteMail->to($email);
-//            Mail::send($inviteMail);
-//        }
     }
 
     /**

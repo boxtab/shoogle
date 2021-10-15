@@ -13,7 +13,6 @@ use App\Support\ApiResponse\ApiResponse;
 use App\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\API\V1\InviteMail;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Invite;

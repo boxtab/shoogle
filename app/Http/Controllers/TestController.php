@@ -51,7 +51,9 @@ class TestController extends Controller
 {
     public function index()
     {
-        dd(Carbon::now(), Carbon::now()->timestamp, HelperNow::getCarbon());
+        return view('emails.invite');
+
+//        dd(Carbon::now(), Carbon::now()->timestamp, HelperNow::getCarbon());
         /*
         $dateStart = '2021-10-01 15:10:00';
         $rruleString = 'RRULE:FREQ=DAILY;COUNT=3;INTERVAL=2;WKST=MO';
