@@ -12,6 +12,7 @@
         "ext-gd": "*",
         "ext-json": "*",
         "doctrine/dbal": "^3.1",
+        "fedeisas/laravel-mail-css-inliner": "^4.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "get-stream/stream-chat": "^2.3",
