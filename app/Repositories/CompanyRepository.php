@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Models\Company;
+use App\Traits\CompanyTrait;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
@@ -19,6 +20,7 @@ use \Illuminate\Database\Eloquent\ModelNotFoundException;
  */
 class CompanyRepository extends Repositories
 {
+    use CompanyTrait;
     /**
      * @var Company
      */
@@ -143,6 +145,7 @@ class CompanyRepository extends Repositories
 
             $user->assignRole(RoleConstant::COMPANY_ADMIN);
 
+            $this->sendInvitationToNewCompany($credentials['email']);
         });
     }
 

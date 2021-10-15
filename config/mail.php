@@ -109,6 +109,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Basic email distribution settings
+    |--------------------------------------------------------------------------
+    | Please edit these parameters in the environment file.
+    |
+    */
+
+    'email' => [
+        'mail_mailer' => env('MAIL_MAILER'),
+        'mail_host' => env('MAIL_HOST'),
+        'mail_port' => env('MAIL_PORT'),
+        'mail_username' => env('MAIL_USERNAME'),
+        'mail_password' => env('MAIL_PASSWORD'),
+        'mail_encryption' => env('MAIL_ENCRYPTION'),
+        'mail_from_address' => env('MAIL_FROM_ADDRESS'),
+        'mail_from_name' => env('MAIL_FROM_NAME'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Addresses for sending invitations
     |--------------------------------------------------------------------------
     | Please edit these parameters in the environment file.
@@ -118,15 +137,6 @@ return [
     'invite' => [
         'email_from' => env('INVITE_EMAIL_FROM', 'support@shoogle.com'),
         'subject' => env('INVITE_SUBJECT', 'We invite you to the system shoogle.'),
-
-        'MAIL_MAILER' => env('MAIL_MAILER'),
-        'MAIL_HOST' => env('MAIL_HOST'),
-        'MAIL_PORT' => env('MAIL_PORT'),
-        'MAIL_USERNAME' => env('MAIL_USERNAME'),
-        'MAIL_PASSWORD' => env('MAIL_PASSWORD'),
-        'MAIL_ENCRYPTION' => env('MAIL_ENCRYPTION'),
-        'MAIL_FROM_ADDRESS' => env('MAIL_FROM_ADDRESS'),
-        'MAIL_FROM_NAME' => env('MAIL_FROM_NAME'),
     ],
 
     /*
@@ -141,4 +151,18 @@ return [
         'email_from' => env('PASSWORD_RECOVERY_EMAIL_FROM', 'support@shoogle.com'),
         'subject' => env('PASSWORD_RECOVERY_SUBJECT', 'Password recovery'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Send an invitation to a new company.
+    |--------------------------------------------------------------------------
+    | Please edit these parameters in the environment file.
+    |
+    */
+
+    'new_company' => [
+        'email_from' => env('NEW_COMPANY_EMAIL_FROM', 'support@shoogle.com'),
+        'subject' => env('NEW_COMPANY_SUBJECT', 'You were invited to a new company.'),
+    ],
+
 ];
