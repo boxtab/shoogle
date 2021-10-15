@@ -6,17 +6,25 @@ var plumber = require('gulp-plumber');
 var sourcemaps = require('gulp-sourcemaps');
 var cleanCSS = require('gulp-clean-css');
 
-var paths = {
+const { series } = require('gulp');
+
+var pathsInvite = {
     styles: {
-        src: 'resources/scss/style.scss',
-        watch: 'resources/scss/**/*.scss',
+        src: 'resources/scss/invite-email/invite.scss',
         dest: 'public/css',
     },
 };
 
-function buildStyles() {
+var pathsNewCompany = {
+    styles: {
+        src: 'resources/scss/new-company-email/new-company.scss',
+        dest: 'public/css',
+    },
+};
+
+function buildStylesInvite() {
     return gulp
-        .src(paths.styles.src)
+        .src(pathsInvite.styles.src)
         .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(
@@ -28,14 +36,28 @@ function buildStyles() {
         )
         .pipe(cleanCSS({compatibility: 'ie8'}))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest(paths.styles.dest));
+        .pipe(gulp.dest(pathsInvite.styles.dest));
 }
 
-exports.buildStyles = buildStyles;
-
-function watch() {
-    gulp.watch(paths.styles.watch, buildStyles);
+function buildStylesNewCompany() {
+    return gulp
+        .src(pathsNewCompany.styles.src)
+        .pipe(plumber())
+        .pipe(sourcemaps.init())
+        .pipe(
+            sass({
+                outputStyle: 'compressed',
+                sourceMap: true,
+                errLogToConsole: true,
+            })
+        )
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(pathsNewCompany.styles.dest));
 }
 
-exports.watch = watch;
-exports.default = buildStyles;
+exports.buildStylesInvite = buildStylesInvite;
+exports.buildStylesNewCompany = buildStylesNewCompany;
+
+
+exports.default = series(buildStylesInvite, buildStylesNewCompany);

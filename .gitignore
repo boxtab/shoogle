@@ -4,7 +4,7 @@
 #/public/images
 #/public/css
 /public/js
-/public/fonts
+#/public/fonts
 /public/img
 /public/uploads/*
 /public/thumbnails/*

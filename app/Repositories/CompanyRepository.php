@@ -131,11 +131,11 @@ class CompanyRepository extends Repositories
     {
         DB::transaction( function () use ($credentials) {
 
-            $company = Company::create([
+            $company = Company::on()->create([
                 'name' => $credentials['companyName'],
             ]);
 
-            $user = User::create([
+            $user = User::on()->create([
                 'company_id'    => $company->id,
                 'first_name'    => $credentials['firstName'],
                 'last_name'     => $credentials['lastName'],

@@ -258,3 +258,13 @@ Answer the questions:
 First Name?
 Email?
 Password ?
+
+
+### Cron task.
+
+`docker-compose exec app php artisan notific:push`
+
+Starts sending notifications. 
+Checks the shoogle member table. 
+For those who have enabled the mode of sending notifications and sending has not yet occurred, 
+a message will be sent. 
