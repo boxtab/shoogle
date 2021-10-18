@@ -61,7 +61,6 @@ class ShooglerController extends BaseApiController
                 $id,
                 $request->input('search'),
                 $request->input('filter'),
-                $request->input('order'),
                 $page,
                 $pageSize
             );

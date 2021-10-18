@@ -49,17 +49,15 @@ class ShooglerRepository extends Repositories
      * @param int $shoogleId
      * @param string|null $search
      * @param string|null $filter
-     * @param string|null $order
      * @param int|null $page
      * @param int|null $pageSize
      * @return array|null
      * @throws \ReflectionException
      */
-    public function getShooglerList(int $shoogleId, ?string $search, ?string $filter, ?string $order, ?int $page, ?int $pageSize)
+    public function getShooglerList(int $shoogleId, ?string $search, ?string $filter, ?int $page, ?int $pageSize)
     {
         $this->shoogleID = $shoogleId;
         $shooglersIDs = $this->getShooglersIDsByShoogleID($shoogleId, Auth::id());
-        $orderProcessed = ( $order === 'oldest' ? 'asc' : 'desc' );
 
         $shooglers = DB::table('users as u')
             ->select(DB::raw('
@@ -76,7 +74,6 @@ class ShooglerRepository extends Repositories
             ->when( ! is_null($search), function($query) use ($search) {
                 return $query->whereRaw("CONCAT(u.first_name, ' ', u.last_name) LIKE '%$search%'");
             })
-            ->orderBy('u.created_at', $orderProcessed)
             ->offset($page * $pageSize - $pageSize)
             ->limit($pageSize)
             ->get()

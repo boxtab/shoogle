@@ -32,7 +32,6 @@ class ShooglerIndexRequest extends ApiRequest
             'search'     => ['nullable', 'string'],
 //            'filter'    => ['nullable', Rule::in(ShooglerFilterEnum::getArrayIndex())],
             'filter'    => ['nullable', Rule::in(['recentlyJoined', 'available', 'solo', 'buddied']),],
-            'order'     => ['nullable', Rule::in(['oldest', 'newest', 'popular']),],
         ];
     }
 }

@@ -314,13 +314,24 @@ class ShooglesRepository extends Repositories
      * Search by shoogles.
      *
      * @param string|null $search
-     * @param string|null $order
+     * @param string|null $filterIncome
      * @param int|null $page
      * @param int|null $pageSize
      * @return array
      */
-    public function search(string $search = null, string $order = null, int $page = null, int $pageSize = null)
+    public function search(string $search = null, string $filterIncome = null, int $page = null, int $pageSize = null)
     {
+        switch ($filterIncome) {
+            case 'oldest':
+                $filter = 'asc';
+                break;
+            case 'newest':
+                $filter = 'desc';
+                break;
+            default:
+                $filter = null;
+        }
+
         $shooglesQuery = DB::table('shoogles as sh')
             ->select(DB::raw('
                 sh.id as id,
@@ -341,8 +352,8 @@ class ShooglesRepository extends Repositories
                         ->orWhere('wc.name', 'LIKE', '%' . $search . '%');
                 });
             })
-            ->when( ! is_null($order), function($query) use ($order) {
-                return $query->orderBy('sh.created_at', $order);
+            ->when( ! is_null($filter), function($query) use ($filter) {
+                return $query->orderBy('sh.created_at', $filter);
             });
 
         $this->shooglesAll = $shooglesQuery
