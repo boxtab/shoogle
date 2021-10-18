@@ -120,6 +120,7 @@ class AuthController extends BaseApiController
                     'first_name' => isset($credentials['firstName']) ? $credentials['firstName'] : null,
                     'last_name' => isset($credentials['lastName']) ? $credentials['lastName'] : null,
                     'about' => isset($credentials['about']) ? $credentials['about'] : null,
+                    'rank' => 1,
                 ]);
 
                 $user->assignRole(RoleConstant::USER);
