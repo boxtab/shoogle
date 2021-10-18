@@ -22,7 +22,7 @@ class ShooglerRepository extends Repositories
 {
     use ShooglerTrait;
 
-    const OUTDATED = 1;
+    const OUTDATED = 3;
 
     /**
      * @var Shoogle
@@ -72,10 +72,7 @@ class ShooglerRepository extends Repositories
             '))
             ->whereIn('u.id', $shooglersIDs)
             ->when( ! is_null($search), function($query) use ($search) {
-                return $query->where(function ($query) use ($search) {
-                    return $query->where('u.first_name', 'LIKE', '%' . $search . '%')
-                    ->orWhere('u.email', 'LIKE', '%' . $search . '%');
-                });
+                return $query->whereRaw("CONCAT(u.first_name, ' ', u.last_name) LIKE '%$search%'");
             })
             ->offset($page * $pageSize - $pageSize)
             ->limit($pageSize)

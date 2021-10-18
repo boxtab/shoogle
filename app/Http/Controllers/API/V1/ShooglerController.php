@@ -52,7 +52,7 @@ class ShooglerController extends BaseApiController
         }
 
         try {
-            $shoogle = Shoogle::find($id);
+            $shoogle = Shoogle::on()->find($id);
             if ( is_null( $shoogle ) ) {
                 throw new \Exception('Shoogle not found for this ID', Response::HTTP_NOT_FOUND);
             }

@@ -32,13 +32,8 @@ trait ShooglerTrait
      */
     public function getShooglersIDsByShoogleID(int $shoogleID, int $excludeID = null ): array
     {
-        $owner = Shoogle::on()
-            ->select('owner_id as user_id')
-            ->where('id', '=', $shoogleID);
-
         $shoogler = UserHasShoogle::on()
             ->where('shoogle_id', '=', $shoogleID)
-            ->union($owner)
             ->get('user_id')
             ->map(function ($item) {
                 return $item->user_id;
