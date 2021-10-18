@@ -99,10 +99,9 @@ class BuddyRequestRepository extends Repositories
                 ->whereNotNull('disconnected_at')
                 ->update(['disconnected_at' => null]);
 
-            if ( ! empty($message) ) {
-                $helper = new HelperNotifications();
-                $helper->sendNotificationToUser($user2Id, $message);
-            }
+            $helper = new HelperNotifications();
+            $helper->sendNotificationToUser($user2Id, $message);
+
         });
     }
 
@@ -303,10 +302,8 @@ class BuddyRequestRepository extends Repositories
                     'disconnected_at' => Carbon::now(),
                 ]);
 
-            if ( ! empty( $message ) ) {
-                $helper = new HelperNotifications();
-                $helper->sendNotificationToUser($buddyId, $message);
-            }
+            $helper = new HelperNotifications();
+            $helper->sendNotificationToUser($buddyId, $message);
         });
     }
 }
