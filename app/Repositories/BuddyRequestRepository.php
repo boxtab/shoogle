@@ -8,6 +8,7 @@ use App\Helpers\Helper;
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperNotifications;
 use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\Scopes\BuddiesScope;
@@ -96,6 +97,11 @@ class BuddyRequestRepository extends Repositories
                 ->withoutGlobalScope(BuddiesScope::class)
                 ->whereNotNull('disconnected_at')
                 ->update(['disconnected_at' => null]);
+
+            if ( ! empty($message) ) {
+                $helper = new HelperNotifications();
+                $helper->sendNotificationToUser($user2Id, $message);
+            }
         });
     }
 
@@ -292,6 +298,11 @@ class BuddyRequestRepository extends Repositories
                 ->update([
                     'disconnected_at' => Carbon::now(),
                 ]);
+
+            if ( ! empty( $message ) ) {
+                $helper = new HelperNotifications();
+                $helper->sendNotificationToUser($buddyId, $message);
+            }
         });
     }
 }
