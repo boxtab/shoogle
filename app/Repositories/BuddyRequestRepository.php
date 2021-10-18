@@ -246,6 +246,9 @@ class BuddyRequestRepository extends Repositories
         $buddyRequest->update([
             'type' => BuddyRequestTypeEnum::REJECT,
         ]);
+
+        $helper = new HelperNotifications();
+        $helper->sendNotificationToUser($buddyRequest->user2_id, 'Friend request was rejected');
     }
 
     /**
