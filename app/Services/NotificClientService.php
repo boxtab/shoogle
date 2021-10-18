@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\NotificationTextConstant;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNotifications;
 use Illuminate\Support\Facades\Log;
@@ -38,7 +39,7 @@ class NotificClientService
             if ( $needToSend ) {
 
                 $helper = new HelperNotifications();
-                $helper->sendNotificationToUser($lineUser['user_id'], 'testNotification2');
+                $helper->sendNotificationToUser($lineUser['user_id'], NotificationTextConstant::SCHEDULER);
 
                 /*
                  * Do not delete, temporarily commented out.

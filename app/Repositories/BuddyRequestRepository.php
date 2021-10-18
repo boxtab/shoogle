@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Constants\NotificationTextConstant;
 use App\Constants\RoleConstant;
 use App\Enums\BuddyRequestTypeEnum;
 use App\Helpers\Helper;
@@ -248,7 +249,7 @@ class BuddyRequestRepository extends Repositories
         ]);
 
         $helper = new HelperNotifications();
-        $helper->sendNotificationToUser($buddyRequest->user2_id, 'Friend request was rejected');
+        $helper->sendNotificationToUser($buddyRequest->user2_id, NotificationTextConstant::BUDDY_REJECT);
     }
 
     /**
