@@ -25,7 +25,8 @@
         "simshaun/recurr": "^5.0",
         "spatie/laravel-medialibrary": "^7.0.0",
         "spatie/laravel-permission": "^4.2",
-        "tymon/jwt-auth": "^1.0"
+        "tymon/jwt-auth": "^1.0",
+      "ext-curl": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",

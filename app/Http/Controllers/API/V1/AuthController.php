@@ -91,7 +91,7 @@ class AuthController extends BaseApiController
     public function signup(AuthSignupRequest $request)
     {
         try {
-            $invite = Invite::where('email', $request->email)->firstorFail();
+            $invite = Invite::on()->where('email', $request->email)->firstorFail();
         } catch (Exception $e) {
             return ApiResponse::returnError(
                 ['email' => 'Email is not in the invite list'],
