@@ -2,6 +2,7 @@
 
 use Database\Seeders\GuardApiSeeder;
 use Database\Seeders\IconRewardsSeeder;
+use Database\Seeders\NotificationsTypeSeeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\SuperAdminSeeder;
 use Database\Seeders\AdminSeeder;
@@ -23,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(GuardApiSeeder::class);
         $this->call(SuperAdminSeeder::class);
         $this->call(AdminSeeder::class);
+        $this->call(NotificationsTypeSeeder::class);
     }
 }

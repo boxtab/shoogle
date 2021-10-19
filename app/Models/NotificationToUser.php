@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class NotificationToUser
  * @package App\Models
+ *
+ * @property int id
+ * @property int user_id
+ * @property int type_id
+ * @property boolean viewed
+ * @property string|null notification
+ * @property Carbon|null created_at
+ * @property Carbon|null updated_at
+ *
  */
 class NotificationToUser extends BaseModel
 {
@@ -20,6 +30,8 @@ class NotificationToUser extends BaseModel
     protected $fillable = [
         'id',
         'user_id',
+        'type_id',
+        'viewed',
         'notification',
         'created_at',
         'updated_at',
@@ -28,9 +40,20 @@ class NotificationToUser extends BaseModel
     protected $casts = [
         'id' => 'integer',
         'user_id' => 'integer',
+        'type_id' => 'integer',
+        'viewed' => 'boolean',
         'notification' => 'string:8192',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
+    ];
+
+    /**
+     * Default value for model attribute.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'viewed' => 0,
     ];
 
     /**
@@ -42,5 +65,26 @@ class NotificationToUser extends BaseModel
     {
         return $this->belongsTo(User::class, 'user_id', 'id')
             ->withDefault();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(NotificationsType::class, 'type_id', 'id')
+            ->withDefault();
+    }
+
+    /**
+     * @param $value
+     */
+    public function setViewedAttribute($value)
+    {
+        if ( $value === false || $value === 0 ) {
+            $this->attributes['viewed'] = 0;
+        } else {
+            $this->attributes['viewed'] = 1;
+        }
     }
 }

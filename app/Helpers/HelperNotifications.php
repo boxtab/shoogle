@@ -12,8 +12,14 @@ use GetStream\StreamChat\StreamException;
  */
 class HelperNotifications
 {
+    /**
+     * @var StreamClient
+     */
     public $streamClient;
 
+    /**
+     * HelperNotifications constructor.
+     */
     public function __construct()
     {
         $this->streamClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
@@ -23,10 +29,11 @@ class HelperNotifications
      * Creating a channel for shoogle.
      *
      * @param int $userId
+     * @param int $typeId
      * @param string $message
      * @throws StreamException
      */
-    public function sendNotificationToUser(int $userId, string $message)
+    public function sendNotificationToUser(int $userId, int $typeId, string $message)
     {
         $listDevices = $this->streamClient->getDevices('user' . $userId);
         foreach ($listDevices['devices'] as $device) {
@@ -34,7 +41,7 @@ class HelperNotifications
             $this->sendGCM($message, $device['id']);
         }
 
-        $this->recordNotification($userId, $message);
+        $this->recordNotification($userId, $typeId, $message);
     }
 
     /**
@@ -83,16 +90,18 @@ class HelperNotifications
      * Record notification.
      *
      * @param int|null $userId
+     * @param int|null $typeId
      * @param string|null $message
      */
-    private function recordNotification(?int $userId, ?string $message): void
+    private function recordNotification(?int $userId, ?int $typeId, ?string $message): void
     {
-        if ( is_null( $userId ) ) {
-            return null;
+        if ( is_null( $userId ) || is_null( $typeId ) ) {
+            return;
         }
 
         NotificationToUser::on()->create([
             'user_id' => $userId,
+            'type_id' => $typeId,
             'notification' => $message,
         ]);
     }

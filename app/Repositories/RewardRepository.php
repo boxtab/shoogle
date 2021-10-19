@@ -2,9 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Constants\NotificationsTypeConstant;
+use App\Constants\NotificationTextConstant;
 use App\Constants\RewardConstant;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
+use App\Helpers\HelperNotifications;
 use App\Helpers\HelperReward;
 use App\Models\Reward;
 use App\Models\UserHasReward;
@@ -46,10 +49,31 @@ class RewardRepository extends Repositories
      */
     public function assign(int $userId, int $rewardId): void
     {
-        UserHasReward::updateOrCreate(
-            ['user_id' => $userId, 'reward_id' => $rewardId],
-            ['given_by_user_id' => Auth::id()]
-        );
+        DB::transaction( function () use ($userId, $rewardId) {
+
+            UserHasReward::on()->updateOrCreate(
+                [
+                    'user_id' => $userId,
+                    'reward_id' => $rewardId
+                ],
+                [
+                    'given_by_user_id' => Auth::id()
+                ]
+            );
+
+            $rewardName = Reward::on()
+                ->where('id', '=', $rewardId)
+                ->select('name')
+                ->first()
+                ->name;
+
+            $helper = new HelperNotifications();
+            $helper->sendNotificationToUser(
+                $userId,
+                NotificationsTypeConstant::REWARD_ASSIGN_ID,
+                "You received an award: $rewardName"
+            );
+        });
     }
 
     /**

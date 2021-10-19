@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\NotificationsTypeConstant;
 use App\Constants\NotificationTextConstant;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNotifications;
@@ -35,11 +36,20 @@ class NotificClientService
         $notificService->lockUserHasShoogle($userHasShoogleIds);
 
         foreach ($lineUsers as $lineUser) {
-            $needToSend = $notificService->needToSend($lineUser['reminder'], $lineUser['reminder_interval'], $lineUser['last_notification']);
+            $needToSend = $notificService->needToSend(
+                $lineUser['reminder'],
+                $lineUser['reminder_interval'],
+                $lineUser['last_notification']
+            );
+
             if ( $needToSend ) {
 
                 $helper = new HelperNotifications();
-                $helper->sendNotificationToUser($lineUser['user_id'], NotificationTextConstant::SCHEDULER);
+                $helper->sendNotificationToUser(
+                    $lineUser['user_id'],
+                    NotificationsTypeConstant::SCHEDULER_ID,
+                    NotificationTextConstant::SCHEDULER
+                );
 
                 /*
                  * Do not delete, temporarily commented out.

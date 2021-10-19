@@ -2,8 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Constants\NotificationsTypeConstant;
 use App\Models\NotificationToUser;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class NotificationToUserRepository
@@ -25,4 +29,57 @@ class NotificationToUserRepository extends Repositories
         parent::__construct($model);
     }
 
+    /**
+     * The entire list of notifications.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getList()
+    {
+        return $this->model->on()
+            ->leftJoin('users', 'users.id', '=', 'notifications_to_user.user_id')
+            ->leftJoin('notifications_type', 'notifications_type.id', '=', 'notifications_to_user.type_id')
+            ->get([
+                'notifications_to_user.id as id',
+                'notifications_to_user.user_id as user_id',
+                'users.first_name as first_name',
+                'users.last_name as last_name',
+                'notifications_type.name as type',
+                'notifications_to_user.notification as notification',
+                'notifications_to_user.created_at as created_at',
+            ]);
+    }
+
+    /**
+     * Checking for the existence of a user.
+     *
+     * @param int|null $userId
+     * @throws \Exception
+     */
+    public function checkExistenceUser(?int $userId)
+    {
+        if ( is_null($userId) ) {
+            throw new \Exception("User ID not specified", Response::HTTP_NOT_FOUND);
+        }
+
+        $user = User::on()->where('id', '=', $userId)->first();
+        if ( is_null( $user ) ) {
+            throw new \Exception("User ID: $userId not found", Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Mark as read.
+     *
+     * @param int $userId
+     */
+    public function viewed(int $userId)
+    {
+        NotificationToUser::on()
+            ->where('user_id', '=', $userId)
+            ->where('type_id', '<>', NotificationsTypeConstant::BUDDY_REQUEST_ID)
+            ->update([
+                'viewed' => 1,
+            ]);
+    }
 }

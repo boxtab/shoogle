@@ -5,6 +5,7 @@ use App\Http\Controllers\API\V1\BuddyRequestController;
 use App\Http\Controllers\API\V1\CompanyController;
 use App\Http\Controllers\API\V1\DepartmentController;
 use App\Http\Controllers\API\V1\InviteController;
+use App\Http\Controllers\API\V1\NotificationToUserController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\RewardController;
 use App\Http\Controllers\API\V1\ShooglerController;
@@ -186,6 +187,19 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
         Route::post('disconnect', [BuddyRequestController::class, 'buddyDisconnect']);
     });
 
+
+    /**
+     * Entity: Notifications
+     * Table: notifications_to_user
+     */
+    Route::group(['prefix' => 'notification'], function () {
+
+        // GET /api/front/v1/notification/:userId
+        Route::get('/{userId}', [NotificationToUserController::class, 'viewed'])
+            ->where('userId', '[0-9]+');
+
+    });
+
 });
 
 
@@ -348,7 +362,7 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
      * Entity: Department
      * Table: departments
      */
-    Route::group(['prefix' => 'department', 'middlewar' => ['admin.superadmin']], function () {
+    Route::group(['prefix' => 'department', 'middleware' => ['admin.superadmin']], function () {
 
         // POST /api/admin/v1/department
         Route::post('', [DepartmentController::class, 'create']);
@@ -368,5 +382,16 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         // POST /api/admin/v1/department/:id/wellbeing-scores
         Route::post('{id}/wellbeing-scores', [WelbeingScoresController::class, 'getAverageDepartmentId'])
             ->where('id', '[0-9]+');
+    });
+
+    /**
+     * Entity: Notifications
+     * Table: notifications_to_user
+     */
+    Route::group(['prefix' => 'notification', 'middleware' => ['admin.superadmin']], function () {
+
+        // GET /api/admin/v1/notification
+        Route::get('', [NotificationToUserController::class, 'index']);
+
     });
 });

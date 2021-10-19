@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Constants\NotificationsTypeConstant;
 use App\Constants\NotificationTextConstant;
 use App\Constants\RoleConstant;
 use App\Enums\BuddyRequestTypeEnum;
@@ -100,7 +101,7 @@ class BuddyRequestRepository extends Repositories
                 ->update(['disconnected_at' => null]);
 
             $helper = new HelperNotifications();
-            $helper->sendNotificationToUser($user2Id, $message);
+            $helper->sendNotificationToUser($user2Id, NotificationsTypeConstant::BUDDY_REQUEST_ID, $message);
 
         });
     }
@@ -211,6 +212,13 @@ class BuddyRequestRepository extends Repositories
                 'type' => BuddyRequestTypeEnum::CONFIRM,
             ]);
 
+            $helper = new HelperNotifications();
+            $helper->sendNotificationToUser(
+                $buddyRequest->user1_id,
+                NotificationsTypeConstant::BUDDY_CONFIRM_ID,
+                NotificationTextConstant::BUDDY_CONFIRM
+            );
+
             $shoogle = Shoogle::on()->where('id', $buddyRequest->shoogle_id)->first();
             $streamService = new StreamService($buddyRequest->shoogle_id);
             $channelId = $streamService->createChannelForBuddy($shoogle->title ,$buddyRequest->user1_id, $buddyRequest->user2_id);
@@ -248,7 +256,11 @@ class BuddyRequestRepository extends Repositories
         ]);
 
         $helper = new HelperNotifications();
-        $helper->sendNotificationToUser($buddyRequest->user2_id, NotificationTextConstant::BUDDY_REJECT);
+        $helper->sendNotificationToUser(
+            $buddyRequest->user2_id,
+            NotificationsTypeConstant::BUDDY_REJECT_ID,
+            NotificationTextConstant::BUDDY_REJECT
+        );
     }
 
     /**
@@ -303,7 +315,7 @@ class BuddyRequestRepository extends Repositories
                 ]);
 
             $helper = new HelperNotifications();
-            $helper->sendNotificationToUser($buddyId, $message);
+            $helper->sendNotificationToUser($buddyId, NotificationsTypeConstant::BUDDY_DISCONNECT_ID, $message);
         });
     }
 }
