@@ -345,6 +345,7 @@ class ShooglesRepository extends Repositories
                 null as joined
             '))
             ->leftJoin('wellbeing_categories as wc', 'sh.wellbeing_category_id', '=', 'wc.id')
+            ->whereNull('deleted_at')
             ->when( ! is_null($search), function($query) use ($search) {
                 return $query->where(function ($query) use ($search) {
                     return $query->where('sh.title', 'LIKE', '%' . $search . '%')
