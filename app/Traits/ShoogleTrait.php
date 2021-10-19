@@ -32,14 +32,6 @@ trait ShoogleTrait
             return [];
         }
 
-        $listIDsShoogles = Shoogle::on()
-            ->where('owner_id', '=', $userID)
-            ->get('id')
-            ->map(function ($item) {
-                return $item->id;
-            })
-            ->toArray();
-
         $listIDsUserHasShoogle = UserHasShoogle::on()
             ->where('user_id', '=', $userID)
             ->get('shoogle_id')
@@ -48,10 +40,7 @@ trait ShoogleTrait
             })
             ->toArray();
 
-        $shoogleIDs = array_merge( $listIDsShoogles, $listIDsUserHasShoogle );
-        $uniqueShoogleIDs = array_unique( $shoogleIDs );
-
-        return $uniqueShoogleIDs;
+        return array_unique( $listIDsUserHasShoogle );
     }
 
     /**

@@ -29,16 +29,13 @@ class HelperShoogleStatistic
             return [];
         }
 
-        $ownerID = Shoogle::on()->where('id', '=', $shoogleID)->first('owner_id')->owner_id;
-        $userHasShoogle = UserHasShoogle::on()
+        return UserHasShoogle::on()
             ->where('shoogle_id', '=', $shoogleID)
             ->get('user_id')
             ->map(function ($item) {
                 return $item['user_id'];
             })
             ->toArray();
-
-        return array_unique( array_merge([$ownerID], $userHasShoogle) );
     }
 
     /**
