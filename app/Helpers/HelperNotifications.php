@@ -18,6 +18,11 @@ class HelperNotifications
     public $streamClient;
 
     /**
+     * @var NotificationToUser
+     */
+    private $notificationToUser;
+
+    /**
      * HelperNotifications constructor.
      */
     public function __construct()
@@ -99,10 +104,20 @@ class HelperNotifications
             return;
         }
 
-        NotificationToUser::on()->create([
+        $this->notificationToUser = NotificationToUser::on()->create([
             'user_id' => $userId,
             'type_id' => $typeId,
             'notification' => $message,
         ]);
+    }
+
+    /**
+     * Get notification ID.
+     *
+     * @return int
+     */
+    public function getNotificationToUserId(): int
+    {
+        return $this->notificationToUser->id;
     }
 }

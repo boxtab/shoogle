@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\NotificationListResource;
 use App\Http\Resources\NotificationToUserResource;
 use App\Models\NotificationToUser;
 use App\Repositories\NotificationToUserRepository;
@@ -13,6 +14,7 @@ use App\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
@@ -61,6 +63,22 @@ class NotificationToUserController extends BaseApiController
         }
 
         return ApiResponse::returnData([]);
+    }
+
+    /**
+     * List of notifications.
+     */
+    public function listNotifications()
+    {
+        try {
+            $listNotification = $this->repository->getListNotifications( Auth::id() );
+            $listNotificationResource = NotificationListResource::collection($listNotification);
+
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::returnData( $listNotificationResource );
     }
 
 }

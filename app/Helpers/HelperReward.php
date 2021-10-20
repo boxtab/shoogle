@@ -36,4 +36,13 @@ class HelperReward
     {
         return  ( ! is_null($fileName) ) ? url(RewardConstant::PATH) . '/' . $fileName : null;
     }
+
+    public static function getAwarded(?int $userHasRewardId)
+    {
+        if ( is_null($userHasRewardId) ) {
+            return null;
+        }
+
+        return UserHasReward::on()->where('id', '=', $userHasRewardId)->first();
+    }
 }

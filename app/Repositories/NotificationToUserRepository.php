@@ -82,4 +82,26 @@ class NotificationToUserRepository extends Repositories
                 'viewed' => 1,
             ]);
     }
+
+    /**
+     * Get a list of notifications.
+     *
+     * @param int|null $userId
+     * @return array|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getListNotifications(?int $userId)
+    {
+        if ( is_null( $userId ) ) {
+            return [];
+        }
+
+        return $this->model->on()
+            ->leftJoin('notifications_type', 'notifications_type.id', '=', 'notifications_to_user.type_id')
+            ->where('user_id', '=', $userId)
+            ->get([
+                'notifications_to_user.id as id',
+                'notifications_type.name as typeNotificationText',
+                'notifications_to_user.created_at as createdAt',
+            ]);
+    }
 }

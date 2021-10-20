@@ -51,7 +51,7 @@ class RewardRepository extends Repositories
     {
         DB::transaction( function () use ($userId, $rewardId) {
 
-            UserHasReward::on()->updateOrCreate(
+            $userHasReward = UserHasReward::on()->updateOrCreate(
                 [
                     'user_id' => $userId,
                     'reward_id' => $rewardId
@@ -67,12 +67,16 @@ class RewardRepository extends Repositories
                 ->first()
                 ->name;
 
-            $helper = new HelperNotifications();
-            $helper->sendNotificationToUser(
+            $helperNotification = new HelperNotifications();
+            $helperNotification->sendNotificationToUser(
                 $userId,
                 NotificationsTypeConstant::REWARD_ASSIGN_ID,
                 "You received an award: $rewardName"
             );
+
+            $userHasReward->update([
+                'notification_id' => $helperNotification->getNotificationToUserId(),
+            ]);
         });
     }
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +16,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int user_id
  * @property int reward_id
  * @property int given_by_user_id
+ * @property int notification_id
+ * @property Carbon|null created_at
+ * @property Carbon|null updated_at
+ *
  */
 
 class UserHasReward extends BaseModel
@@ -28,6 +33,7 @@ class UserHasReward extends BaseModel
         'user_id',
         'reward_id',
         'given_by_user_id',
+        'notification_id',
         'created_at',
         'updated_at',
     ];
@@ -37,6 +43,7 @@ class UserHasReward extends BaseModel
         'user_id' => 'integer',
         'reward_id' => 'integer',
         'given_by_user_id' => 'integer',
+        'notification_id' => 'integer',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
@@ -55,6 +62,14 @@ class UserHasReward extends BaseModel
     public function reward(): BelongsTo
     {
         return $this->belongsTo(Reward::class, 'reward_id', 'id')->withDefault();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function notification(): BelongsTo
+    {
+        return $this->belongsTo(NotificationToUser::class, 'notification_id', 'id')->withDefault();
     }
 
     /**
