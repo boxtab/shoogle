@@ -200,6 +200,10 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
 
         // GET /api/front/v1/notification/list
         Route::get('list', [NotificationToUserController::class, 'listNotifications']);
+
+        // DELETE /api/front/v1/notification/:id
+        Route::delete('{id}', [NotificationToUserController::class, 'delete'])
+            ->where('id', '[0-9]+');
     });
 
 });

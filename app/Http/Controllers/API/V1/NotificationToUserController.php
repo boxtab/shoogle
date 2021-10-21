@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\NotificationListResource;
 use App\Http\Resources\NotificationToUserResource;
 use App\Models\NotificationToUser;
+use App\Models\Shoogle;
 use App\Repositories\NotificationToUserRepository;
 use App\Repositories\RewardRepository;
 use App\Support\ApiResponse\ApiResponse;
@@ -67,6 +68,8 @@ class NotificationToUserController extends BaseApiController
 
     /**
      * List of notifications.
+     *
+     * @return \Illuminate\Http\JsonResponse|Response
      */
     public function listNotifications()
     {
@@ -81,4 +84,30 @@ class NotificationToUserController extends BaseApiController
         return ApiResponse::returnData( $listNotificationResource );
     }
 
+    /**
+     * Artificial removal of the notification. Sets a read mark.
+     *
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function delete($id)
+    {
+        try {
+            $notificationToUser = NotificationToUser::on()->where('id', '=', $id)->first();
+
+            if ( is_null( $notificationToUser ) ) {
+                throw new \Exception("Notification by ID $id not found or deleted", Response::HTTP_NOT_FOUND);
+            }
+
+            if ( $notificationToUser->user_id !== Auth::id() ) {
+                throw new \Exception("Notification ID:$id does not belong to the current user", Response::HTTP_NOT_FOUND);
+            }
+
+            $this->repository->delete($id);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::returnData([]);
+    }
 }

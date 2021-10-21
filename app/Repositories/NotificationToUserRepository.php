@@ -104,4 +104,18 @@ class NotificationToUserRepository extends Repositories
                 'notifications_to_user.created_at as createdAt',
             ]);
     }
+
+    /**
+     * Artificial removal of the notification. Sets a read mark.
+     *
+     * @param int $notificationId
+     */
+    public function delete(int $notificationId)
+    {
+        NotificationToUser::on()
+            ->where('id', '=', $notificationId)
+            ->update([
+                'viewed' => 1,
+            ]);
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Scopes\BuddiesScope;
+use App\Scopes\NotificationToUserScope;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -113,5 +115,15 @@ class NotificationToUser extends BaseModel
         } else {
             $this->attributes['viewed'] = 1;
         }
+    }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new NotificationToUserScope);
     }
 }
