@@ -8,6 +8,7 @@ use App\Mail\API\V1\ResetPasswordMail;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\ModelHasRole;
+use App\Models\NotificationToUser;
 use App\Models\Role;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
@@ -150,6 +151,14 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     public function shoogleViews(): hasMany
     {
         return $this->hasMany(ShoogleViews::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function notificationsFromUser(): HasMany
+    {
+        return $this->hasMany(NotificationToUser::class, 'from_user_id', 'id');
     }
 
     /**

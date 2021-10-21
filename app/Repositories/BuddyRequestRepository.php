@@ -80,7 +80,8 @@ class BuddyRequestRepository extends Repositories
         }
 
         DB::transaction(function () use ($shoogleId, $user1Id, $user2Id, $message) {
-            BuddyRequest::on()->updateOrCreate(
+
+            $buddyRequest = BuddyRequest::on()->updateOrCreate(
                 [
                     'shoogle_id'    => $shoogleId,
                     'user1_id'      => $user1Id,
@@ -100,8 +101,11 @@ class BuddyRequestRepository extends Repositories
                 ->whereNotNull('disconnected_at')
                 ->update(['disconnected_at' => null]);
 
-            $helper = new HelperNotifications();
-            $helper->sendNotificationToUser($user2Id, NotificationsTypeConstant::BUDDY_REQUEST_ID, $message);
+            $helperNotification = new HelperNotifications();
+            $helperNotification->sendNotificationToUser($user2Id, NotificationsTypeConstant::BUDDY_REQUEST_ID, $message);
+            $buddyRequest->update([
+                'notification_id' => $helperNotification->getNotificationToUserId(),
+            ]);
 
         });
     }

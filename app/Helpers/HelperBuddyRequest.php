@@ -65,4 +65,13 @@ class HelperBuddyRequest
 
         return ( $countBuddyRequest > 0 ) ? true : false;
     }
+
+    public static function getNotification(?int $notificationId)
+    {
+        if ( is_null($notificationId) ) {
+            return null;
+        }
+
+        return BuddyRequest::on();
+    }
 }

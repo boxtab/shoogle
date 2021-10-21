@@ -17,6 +17,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int type_id
  * @property boolean viewed
  * @property string|null notification
+ * @property int|null shoogle_id
+ * @property int|null from_user_id
+ * @property string|null from_message
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  *
@@ -33,6 +36,9 @@ class NotificationToUser extends BaseModel
         'type_id',
         'viewed',
         'notification',
+        'shoogle_id',
+        'from_user_id',
+        'from_message',
         'created_at',
         'updated_at',
     ];
@@ -43,6 +49,9 @@ class NotificationToUser extends BaseModel
         'type_id' => 'integer',
         'viewed' => 'boolean',
         'notification' => 'string:8192',
+        'shoogle_id' => 'integer',
+        'from_user_id' => 'integer',
+        'from_message' => 'string',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
@@ -73,6 +82,24 @@ class NotificationToUser extends BaseModel
     public function type(): BelongsTo
     {
         return $this->belongsTo(NotificationsType::class, 'type_id', 'id')
+            ->withDefault();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function shoogle(): BelongsTo
+    {
+        return $this->belongsTo(Shoogle::class, 'shoogle_id', 'id')
+            ->withDefault();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function fromUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'from_user_id', 'id')
             ->withDefault();
     }
 

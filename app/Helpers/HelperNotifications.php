@@ -120,4 +120,6 @@ class HelperNotifications
     {
         return $this->notificationToUser->id;
     }
+
+//    public function recordNotificationDetail(?int $shoogleId)
 }

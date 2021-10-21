@@ -116,4 +116,12 @@ class Shoogle extends BaseModel
     {
         return $this->hasMany(UserHasShoogle::class, 'shoogle_id', 'id');
     }
+
+    /**
+     * @return HasMany
+     */
+    public function notificationsShoogle(): HasMany
+    {
+        return $this->hasMany(NotificationToUser::class, 'shoogle_id', 'id');
+    }
 }
