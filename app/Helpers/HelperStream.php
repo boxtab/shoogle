@@ -21,8 +21,8 @@ class HelperStream
         $settings = [
             'firebase_config' => array(
                 'server_key' => config('stream.server_key'),
-                'notification_template' => '{"title": "{{ channel.name }}","body": "{{ message.text }}","click_action": "FLUTTER_NOTIFICATION_CLICK"}',
-                'data_template' => '{"shoogleId": "{{ channel.shoogleId }}", "typeofChannel": "{{ channel.typeofChannel }}"}',
+                'notification_template' => '{"title": "{{ channel.name }}","body": "{{ message.text }}","image": "{{ channel.imageUrl }}","click_action": "FLUTTER_NOTIFICATION_CLICK"}',
+                'data_template' => '{"typeofChannel": "{{ channel.typeofChannel }}", "shoogleId": "{{ channel.shoogleId }}"}',
             ),
         ];
         $serverClient->updateAppSettings($settings);

@@ -29,7 +29,7 @@ class StreamService
      *
      * @throws \GetStream\StreamChat\StreamException
      */
-    public function createChannelForShoogle(String $shoogleTitle)
+    public function createChannelForShoogle(string $shoogleTitle, string $shoogleImageUrl)
     {
         $channel = $this->serverClient->Channel(
             'messaging',
@@ -37,11 +37,12 @@ class StreamService
             [
                 'name' => $shoogleTitle,
                 'shoogleId' => $this->shoogleId,
-                'typeofChannel' => 'community'
+                'typeofChannel' => 'community',
+                'imageUrl' => $shoogleImageUrl
             ]
         );
 
-        $channel->create('user' . Auth()->user()->id, ['systemuser' ,'user' . Auth()->user()->id]);
+        $channel->create('user' . Auth()->user()->id, ['systemuser', 'user' . Auth()->user()->id]);
         return $channel->id;
     }
 
@@ -53,7 +54,7 @@ class StreamService
      * @return string|null
      * @throws \GetStream\StreamChat\StreamException
      */
-    public function createChannelForBuddy(String $shoogleTitle, int $idOfFirstUser, int $idOfSecondUser)
+    public function createChannelForBuddy(string $shoogleTitle, int $idOfFirstUser, int $idOfSecondUser, string $shoogleImageUrl)
     {
         $channel = $this->serverClient->Channel(
             'messaging',
@@ -61,7 +62,8 @@ class StreamService
             [
                 'name' => $shoogleTitle,
                 'shoogleId' => $this->shoogleId,
-                'typeofChannel' => 'buddy'
+                'typeofChannel' => 'buddy',
+                'imageUrl' => $shoogleImageUrl
             ]
         );
 
