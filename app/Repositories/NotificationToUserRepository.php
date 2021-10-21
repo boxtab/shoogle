@@ -108,12 +108,12 @@ class NotificationToUserRepository extends Repositories
     /**
      * Artificial removal of the notification. Sets a read mark.
      *
-     * @param int $notificationId
+     * @param array $listNotificationIDs
      */
-    public function delete(int $notificationId)
+    public function delete(array $listNotificationIDs)
     {
         NotificationToUser::on()
-            ->where('id', '=', $notificationId)
+            ->whereIn('id', $listNotificationIDs)
             ->update([
                 'viewed' => 1,
             ]);
