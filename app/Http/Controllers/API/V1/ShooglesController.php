@@ -269,7 +269,7 @@ class ShooglesController extends BaseApiController
 
         $searchResult = $this->repository->search(
             $request->input('search'),
-            $request->input('order'),
+            $request->input('filter'),
             $page,
             $pageSize
         );

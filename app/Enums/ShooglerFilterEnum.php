@@ -11,10 +11,10 @@ use ReflectionClass;
  */
 final class ShooglerFilterEnum extends Enum
 {
-    const RECENTLY_JOINED = 'recentlyJoined';
-    const AVAILABLE = 'available';
-    const SOLO = 'solo';
-    const BUDDIED = 'buddied';
+    const RECENTLY_JOINED = 'RECENTLY_JOINED';
+    const AVAILABLE = 'AVAILABLE';
+    const SOLO = 'SOLO';
+    const BUDDIED = 'BUDDIED';
 
     /**
      * Return constants as an array.
