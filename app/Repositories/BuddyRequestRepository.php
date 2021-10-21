@@ -223,7 +223,7 @@ class BuddyRequestRepository extends Repositories
 
             $shoogle = Shoogle::on()->where('id', $buddyRequest->shoogle_id)->first();
             $streamService = new StreamService($buddyRequest->shoogle_id);
-            $channelId = $streamService->createChannelForBuddy($shoogle->title ,$buddyRequest->user1_id, $buddyRequest->user2_id);
+            $channelId = $streamService->createChannelForBuddy($shoogle->title ,$buddyRequest->user1_id, $buddyRequest->user2_id, $shoogle->cover_image);
 
             $buddie->update([
                 'chat_id' => $channelId,

@@ -61,16 +61,18 @@ class HelperNotifications
 
         $notificationData = array(
             'title' => 'Notification',
-            'sound' => "default",
             'data' => $data,
             'body' => $message,
-            'color' => "#79bc64"
+//            'image' => 'https://images.unsplash.com/photo-1633857275114-4effece78b0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyNTg5OTl8MHwxfHJhbmRvbXx8fHx8fHx8fDE2MzM5NDYwMDc&ixlib=rb-1.2.1&q=80&w=400&w=1080&h=720'
         );
         $fields = array(
             'to' => $id,
             'notification' => $notificationData,
             'data' => $data,
-            "priority" => "normal",
+            'content-available' => true,
+            'priority' => "high",
+            'badge' => 1,
+            "apns-priority" => "10",
         );
         $fields = json_encode($fields);
 
