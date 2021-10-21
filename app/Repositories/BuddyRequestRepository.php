@@ -81,7 +81,7 @@ class BuddyRequestRepository extends Repositories
 
         DB::transaction(function () use ($shoogleId, $user1Id, $user2Id, $message) {
 
-            $buddyRequest = BuddyRequest::on()->updateOrCreate(
+            BuddyRequest::on()->updateOrCreate(
                 [
                     'shoogle_id'    => $shoogleId,
                     'user1_id'      => $user1Id,
@@ -103,9 +103,7 @@ class BuddyRequestRepository extends Repositories
 
             $helperNotification = new HelperNotifications();
             $helperNotification->sendNotificationToUser($user2Id, NotificationsTypeConstant::BUDDY_REQUEST_ID, $message);
-            $buddyRequest->update([
-                'notification_id' => $helperNotification->getNotificationToUserId(),
-            ]);
+            $helperNotification->recordNotificationDetail($shoogleId, $user1Id, $message);
 
         });
     }
@@ -164,7 +162,6 @@ class BuddyRequestRepository extends Repositories
      *
      * @param int $buddyRequestId
      * @throws \Exception
-     * @throws \GetStream\StreamChat\StreamException
      */
     public function buddyConfirm(int $buddyRequestId): void
     {
@@ -216,12 +213,13 @@ class BuddyRequestRepository extends Repositories
                 'type' => BuddyRequestTypeEnum::CONFIRM,
             ]);
 
-            $helper = new HelperNotifications();
-            $helper->sendNotificationToUser(
+            $helperNotification = new HelperNotifications();
+            $helperNotification->sendNotificationToUser(
                 $buddyRequest->user1_id,
                 NotificationsTypeConstant::BUDDY_CONFIRM_ID,
                 NotificationTextConstant::BUDDY_CONFIRM
             );
+            $helperNotification->recordNotificationDetail($buddyRequest->shoogle_id, $buddyRequest->user1_id);
 
             $shoogle = Shoogle::on()->where('id', $buddyRequest->shoogle_id)->first();
             $streamService = new StreamService($buddyRequest->shoogle_id);
@@ -259,12 +257,13 @@ class BuddyRequestRepository extends Repositories
             'type' => BuddyRequestTypeEnum::REJECT,
         ]);
 
-        $helper = new HelperNotifications();
-        $helper->sendNotificationToUser(
+        $helperNotification = new HelperNotifications();
+        $helperNotification->sendNotificationToUser(
             $buddyRequest->user2_id,
             NotificationsTypeConstant::BUDDY_REJECT_ID,
             NotificationTextConstant::BUDDY_REJECT
         );
+        $helperNotification->recordNotificationDetail($buddyRequest->shoogle_id, $buddyRequest->user2_id);
     }
 
     /**
@@ -318,8 +317,9 @@ class BuddyRequestRepository extends Repositories
                     'disconnected_at' => Carbon::now(),
                 ]);
 
-            $helper = new HelperNotifications();
-            $helper->sendNotificationToUser($buddyId, NotificationsTypeConstant::BUDDY_DISCONNECT_ID, $message);
+            $helperNotification = new HelperNotifications();
+            $helperNotification->sendNotificationToUser($buddyId, NotificationsTypeConstant::BUDDY_DISCONNECT_ID, $message);
+            $helperNotification->recordNotificationDetail($shoogleId, Auth::id(), $message);
         });
     }
 }

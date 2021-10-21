@@ -20,7 +20,7 @@ class HelperNotifications
     /**
      * @var NotificationToUser
      */
-    private $notificationToUser;
+    private $notificationToUser = null;
 
     /**
      * HelperNotifications constructor.
@@ -121,5 +121,24 @@ class HelperNotifications
         return $this->notificationToUser->id;
     }
 
-//    public function recordNotificationDetail(?int $shoogleId)
+    /**
+     * Recording additional information for notifications.
+     *
+     * @param int|null $shoogleId
+     * @param int|null $fromUserId
+     * @param string|null $fromMessage
+     * @return null
+     */
+    public function recordNotificationDetail(?int $shoogleId = null, ?int $fromUserId = null, ?string $fromMessage = null)
+    {
+        if ( is_null( $this->notificationToUser ) ) {
+            return null;
+        }
+
+        $this->notificationToUser->update([
+            'shoogle_id' => $shoogleId,
+            'from_user_id' => $fromUserId,
+            'from_message' => $fromMessage,
+        ]);
+    }
 }
