@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperReward;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class NotificationListResource extends JsonResource
@@ -18,7 +19,7 @@ class NotificationListResource extends JsonResource
             'id' => $this->resource->id,
             'typeNotificationText' => $this->resource->typeNotificationText,
             'createdAt' => $this->resource->createdAt,
-            'reward' => null,
+            'reward' => RewardResource::make( HelperReward::getAwarded($this->resource->id) ),
         ];
     }
 }

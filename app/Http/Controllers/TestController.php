@@ -11,6 +11,7 @@ use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNow;
+use App\Helpers\HelperReward;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
@@ -51,6 +52,8 @@ class TestController extends Controller
 {
     public function index()
     {
+        $tmp = HelperReward::getAwarded(null);
+        dd($tmp);
         return view('emails.invite');
 
 //        dd(Carbon::now(), Carbon::now()->timestamp, HelperNow::getCarbon());

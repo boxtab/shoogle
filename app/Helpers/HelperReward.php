@@ -37,12 +37,29 @@ class HelperReward
         return  ( ! is_null($fileName) ) ? url(RewardConstant::PATH) . '/' . $fileName : null;
     }
 
-    public static function getAwarded(?int $userHasRewardId)
+    /**
+     * Reward information.
+     *
+     * @param int|null $notificationId
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public static function getAwarded(?int $notificationId)
     {
-        if ( is_null($userHasRewardId) ) {
+        if ( is_null($notificationId) ) {
             return null;
         }
 
-        return UserHasReward::on()->where('id', '=', $userHasRewardId)->first();
+        return UserHasReward::on()
+            ->leftJoin('users', 'users.id', '=', 'user_has_reward.given_by_user_id')
+            ->leftJoin('rewards', 'rewards.id', '=', 'user_has_reward.reward_id')
+            ->select([
+                'users.profile_image as profileImage',
+                'users.first_name as firstName',
+                'users.last_name as lastName',
+                'rewards.name as rewardName',
+                'rewards.icon as rewardIcon',
+            ])
+            ->where('notification_id', '=', $notificationId)
+            ->first();
     }
 }
