@@ -397,7 +397,7 @@ class ShooglesRepository extends Repositories
     }
 
     /**
-     * Community count.
+     * Unique number of communities.
      *
      * @return int
      */
@@ -407,11 +407,21 @@ class ShooglesRepository extends Repositories
             return 0;
         }
 
-        $communityCount = 0;
+        $shoogleIDs = [];
         foreach ( $this->shooglesAll as $shoogle ) {
-            $communityCount += $shoogle->shooglersCount;
+            $shoogleIDs[] = $shoogle->id;
         }
-        return $communityCount;
+
+        $membersIDs = UserHasShoogle::on()
+            ->whereIn('shoogle_id', $shoogleIDs)
+            ->get('user_id')
+            ->map(function ($item) {
+                return $item->user_id;
+            })
+            ->toArray();
+        $membersIDs = array_unique($membersIDs);
+
+        return count($membersIDs);
     }
 
     /**
