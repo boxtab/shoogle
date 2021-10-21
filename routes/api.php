@@ -202,7 +202,7 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
         Route::get('list', [NotificationToUserController::class, 'listNotifications']);
 
         // DELETE /api/front/v1/notification
-        Route::delete('{id}', [NotificationToUserController::class, 'delete']);
+        Route::delete('', [NotificationToUserController::class, 'delete']);
     });
 
 });
