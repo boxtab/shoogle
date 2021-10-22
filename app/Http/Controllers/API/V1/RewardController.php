@@ -44,7 +44,11 @@ class RewardController extends BaseApiController
 
             $this->repository->assign($userId, $rewardId);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+            if ($e->getCode() == 23000) {
+                return ApiResponse::returnError('This reward has already been assigned to the user.');
+            } else {
+                return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
         }
 
         return ApiResponse::returnData([], ResponseAlias::HTTP_NO_CONTENT);
