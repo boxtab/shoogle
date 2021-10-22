@@ -44,7 +44,7 @@ class BuddyRequestController extends BaseApiController
             $message = $request->input('message');
             $this->repository->buddyRequest($shoogleId, $user2id, $message);
         } catch (\Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage());
         }
 
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
