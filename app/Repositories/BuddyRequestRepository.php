@@ -13,6 +13,7 @@ use App\Helpers\HelperMember;
 use App\Helpers\HelperNotifications;
 use App\Models\BuddyRequest;
 use App\Models\Company;
+use App\Models\UserHasShoogle;
 use App\Scopes\BuddiesScope;
 use App\Models\Shoogle;
 use App\Services\StreamService;
@@ -234,6 +235,13 @@ class BuddyRequestRepository extends Repositories
             $buddie->update([
                 'chat_id' => $channelId,
             ]);
+
+            UserHasShoogle::on()
+                ->where('user_id', '=', $buddyRequest->user1_id)
+                ->where('shoogle_id', '=', $buddyRequest->shoogle_id)
+                ->update([
+                    'solo' => 0,
+                ]);
         });
     }
 
