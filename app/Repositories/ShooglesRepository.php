@@ -121,7 +121,7 @@ class ShooglesRepository extends Repositories
                 'users.first_name as users_first_name, ' .
                 'users.last_name as users_last_name, ' .
                 'users.profile_image as users_profile_image, ' .
-                '(select count(uhs.user_id) from user_has_shoogle as uhs where uhs.shoogle_id = shoogles.id) + 1 as shooglers, ' .
+                '(select count(uhs.user_id) from user_has_shoogle as uhs where uhs.shoogle_id = shoogles.id) as shooglers, ' .
                 'departments.name as departments_name '
             ))
             ->leftJoin('users', 'users.id', '=', 'shoogles.owner_id')
