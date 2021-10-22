@@ -7,6 +7,7 @@ use App\Mail\API\V1\InviteMail;
 use App\Mail\API\V1\ResetPasswordMail;
 use App\Models\Company;
 use App\Models\Department;
+use App\Models\Invite;
 use App\Models\ModelHasRole;
 use App\Models\NotificationToUser;
 use App\Models\Role;
@@ -48,6 +49,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null avatar
  * @property int|null rank
  * @property string|null profile_image
+ * @property int|null invite_id
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  * @property Carbon|null deleted_at
@@ -74,6 +76,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         'avatar',
         'rank',
         'profile_image',
+        'invite_id',
     ];
 
     /**
@@ -107,6 +110,15 @@ class User extends Authenticatable implements JWTSubject, HasMedia
      */
     protected $guard_name = 'api';
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($user) {
+            $user->invite()->delete();
+        });
+    }
+
     /**
      * User from the company.
      *
@@ -127,6 +139,16 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     {
         return $this->belongsTo(Department::class, 'department_id', 'id')
             ->withDefault();
+    }
+
+    /**
+     * User from the invite.
+     *
+     * @return belongsTo
+     */
+    public function invite(): belongsTo
+    {
+        return $this->belongsTo(Invite::class, 'invite_id', 'id');
     }
 
     /**

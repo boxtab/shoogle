@@ -121,6 +121,7 @@ class AuthController extends BaseApiController
                     'last_name' => isset($credentials['lastName']) ? $credentials['lastName'] : null,
                     'about' => isset($credentials['about']) ? $credentials['about'] : null,
                     'rank' => 1,
+                    'invite_id' => $invite->id,
                 ]);
 
                 $user->assignRole(RoleConstant::USER);
@@ -140,7 +141,11 @@ class AuthController extends BaseApiController
             $authResource = new AuthResource($user);
             $authResource->setToken($token);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage());
+            if ($e->getCode() == 23000) {
+                return ApiResponse::returnError('Foreign key error. Integrity constraint violation.');
+            } else {
+                return ApiResponse::returnError($e->getMessage());
+            }
         }
 
         return ApiResponse::returnData($authResource);

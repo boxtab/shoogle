@@ -52,9 +52,11 @@ class TestController extends Controller
 {
     public function index()
     {
-        $tmp = HelperReward::getAwarded(null);
-        dd($tmp);
-        return view('emails.invite');
+        User::on()->where('id', '=', 98)->delete();
+
+//        $tmp = HelperReward::getAwarded(null);
+//        dd($tmp);
+//        return view('emails.invite');
 
 //        dd(Carbon::now(), Carbon::now()->timestamp, HelperNow::getCarbon());
         /*
