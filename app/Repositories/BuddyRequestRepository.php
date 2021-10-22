@@ -102,7 +102,13 @@ class BuddyRequestRepository extends Repositories
                 ->update(['disconnected_at' => null]);
 
             $helperNotification = new HelperNotifications();
-            $helperNotification->sendNotificationToUser($user2Id, NotificationsTypeConstant::BUDDY_REQUEST_ID, $message);
+
+            $userName = Auth::user()->first_name . ' ' . Auth::user()->last_name;
+            $helperNotification->sendNotificationToUser(
+                $user2Id,
+                NotificationsTypeConstant::BUDDY_REQUEST_ID,
+                ( ! is_null( $message ) ) ? $message : "$userName has invited you to buddy up"
+            );
             $helperNotification->recordNotificationDetail($shoogleId, $user1Id, $message);
 
         });
