@@ -34,7 +34,7 @@ class RewardController extends BaseApiController
      * Assign a reward to a user.
      *
      * @param RewardAssignRequest $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|Response
      */
     public function assign(RewardAssignRequest $request)
     {
@@ -43,12 +43,13 @@ class RewardController extends BaseApiController
             $rewardId = $request->input('rewardId');
 
             $this->repository->assign($userId, $rewardId);
+
+        } catch (\GetStream\StreamChat\StreamException $e) {
+            return ApiResponse::returnError(
+                'The remote service https://getstream.io responded with an error.',
+                Response::HTTP_BAD_GATEWAY);
         } catch (Exception $e) {
-            if ($e->getCode() == 23000) {
-                return ApiResponse::returnError('This reward has already been assigned to the user.');
-            } else {
-                return ApiResponse::returnError($e->getMessage());
-            }
+            return ApiResponse::returnError($e->getMessage());
         }
 
         return ApiResponse::returnData([], ResponseAlias::HTTP_NO_CONTENT);

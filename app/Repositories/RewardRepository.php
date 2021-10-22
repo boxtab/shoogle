@@ -46,16 +46,21 @@ class RewardRepository extends Repositories
      *
      * @param int $userId
      * @param int $rewardId
+     * @throws \GetStream\StreamChat\StreamException
      */
     public function assign(int $userId, int $rewardId): void
     {
         DB::transaction( function () use ($userId, $rewardId) {
 
-            $userHasReward = UserHasReward::on()->create([
-                'user_id' => $userId,
-                'reward_id' => $rewardId,
-                'given_by_user_id' => Auth::id(),
-            ]);
+            $userHasReward = UserHasReward::on()->updateOrCreate(
+                [
+                    'user_id' => $userId,
+                    'reward_id' => $rewardId
+                ],
+                [
+                    'given_by_user_id' => Auth::id()
+                ]
+            );
 
             $rewardName = Reward::on()
                 ->where('id', '=', $rewardId)

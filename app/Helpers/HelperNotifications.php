@@ -129,7 +129,7 @@ class HelperNotifications
      * @param int|null $shoogleId
      * @param int|null $fromUserId
      * @param string|null $fromMessage
-     * @return null
+     * @return null|void
      */
     public function recordNotificationDetail(?int $shoogleId = null, ?int $fromUserId = null, ?string $fromMessage = null)
     {
