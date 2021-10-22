@@ -34,7 +34,7 @@ class RewardController extends BaseApiController
      * Assign a reward to a user.
      *
      * @param RewardAssignRequest $request
-     * @return \Illuminate\Http\JsonResponse|Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function assign(RewardAssignRequest $request)
     {

@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\NotificationToUser;
 use GetStream\StreamChat\Client as StreamClient;
 use GetStream\StreamChat\StreamException;
+use Illuminate\Http\Response;
 
 /**
  * Class HelperStream
@@ -53,6 +54,7 @@ class HelperNotifications
      * @param $message
      * @param $id
      * @param array $data
+     * @throws \Exception
      */
     private function sendGCM($message, $id, $data = [])
     {
@@ -81,16 +83,20 @@ class HelperNotifications
             'Content-Type: application/json'
         );
 
+        try {
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
 
-        $result = curl_exec($ch);
-        curl_close($ch);
+            $result = curl_exec($ch);
+            curl_close($ch);
+        } catch (\Exception $e) {
+            throw new \Exception('Function RsendGCM error.', Response::HTTP_BAD_GATEWAY);
+        }
     }
 
     /**
