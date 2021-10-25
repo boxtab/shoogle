@@ -22,6 +22,7 @@ use App\Traits\ShoogleTrait;
 use App\Traits\ShoogleValidationTrait;
 use App\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -261,13 +262,39 @@ class ShooglesRepository extends Repositories
      * Shoogle exit method.
      *
      * @param int $shoogleId
+     * @throws Exception
      */
     public function leave(int $shoogleId)
     {
-        UserHasShoogle::on()
-            ->where('user_id', Auth::id())
-            ->where('shoogle_id', $shoogleId)
-            ->update(['left_at' => Carbon::now()]);
+        $shoogle = Shoogle::on()->where('id', '=', $shoogleId)->first();
+
+        if ( is_null($shoogle) ) {
+            throw new Exception("Project ID $shoogleId does not exist.", Response::HTTP_NOT_FOUND);
+        }
+
+        if ( ! HelperShoogle::isMember( Auth::id(), $shoogleId ) ) {
+            throw new Exception("You are not a member of the shoogle.", Response::HTTP_NOT_FOUND);
+        }
+
+        DB::transaction(function () use ($shoogle) {
+
+//            UserHasShoogle::on()
+//                ->where('user_id', Auth::id())
+//                ->where('shoogle_id', $shoogle->id)
+//                ->update(['left_at' => Carbon::now()]);
+//
+//            $buddyId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
+//
+//            if ( ! is_null( $buddyId ) ) {
+//
+//            }
+
+        });
+
+//        UserHasShoogle::on()
+//            ->where('user_id', Auth::id())
+//            ->where('shoogle_id', $shoogleId)
+//            ->update(['left_at' => Carbon::now()]);
     }
 
     /**

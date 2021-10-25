@@ -59,21 +59,12 @@ class HelperShoogle
             return false;
         }
 
-        $ownerCount = Shoogle::on()
-            ->where('id' , '=', $shoogleID)
-            ->where('owner_id', '=', $userID)
-            ->count();
-        $isOwner = ($ownerCount > 0) ? 1 : 0;
-
-
         $userHasShoogleCount = UserHasShoogle::on()
             ->where('shoogle_id', '=', $shoogleID)
             ->where('user_id', '=', $userID)
-            ->whereNull('left_at')
-            ->exists();
-        $isUserHasShoogle = ($userHasShoogleCount > 0) ? 1 : 0;
+            ->count();
 
-        return ( $isOwner || $isUserHasShoogle ) ? true : false;
+        return ($userHasShoogleCount > 0) ? true : false;
     }
 
     /**

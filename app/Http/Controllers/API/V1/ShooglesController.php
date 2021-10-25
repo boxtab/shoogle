@@ -217,12 +217,18 @@ class ShooglesController extends BaseApiController
     /**
      * Shoogle exit method.
      *
-     * @param int|null $id
+     * @param int|null $shoogleId
      * @return \Illuminate\Http\JsonResponse|Response
+     * @throws Exception
      */
-    public function leave(int $id = null)
+    public function leave(?int $shoogleId)
     {
-        $this->repository->leave($id);
+        try {
+            $this->repository->leave($shoogleId);
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage());
+        }
+
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
     }
 

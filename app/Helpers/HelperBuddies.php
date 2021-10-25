@@ -68,4 +68,40 @@ class HelperBuddies
 
         return ( $buddyCount > 0 ) ? true : false;
     }
+
+    /**
+     * Get friend ID. If a friend is not found then null.
+     *
+     * @param int|null $shoogleId
+     * @param int|null $userId
+     * @return int|null
+     */
+    public static function getBuddyId(?int $shoogleId, ?int $userId): ?int
+    {
+        if ( is_null($shoogleId) || is_null($userId) ) {
+            return null;
+        }
+
+        $user1Id = Buddie::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where('user2_id', '=', $userId)
+            ->first('user1_id')
+            ->user1_id;
+
+        if ( ! is_null( $user1Id ) ) {
+            return $user1Id;
+        }
+
+        $user2Id = Buddie::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where('user1_id', '=', $userId)
+            ->first('user2_id')
+            ->user2_id;
+
+        if ( ! is_null( $user2Id ) ) {
+            return $user2Id;
+        }
+
+        return null;
+    }
 }
