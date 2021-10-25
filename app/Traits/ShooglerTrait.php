@@ -43,7 +43,6 @@ trait ShooglerTrait
         if ( ! is_null($excludeID) ) {
             $shoogler = array_diff($shoogler, [$excludeID]);
         }
-
         return $shoogler;
     }
 
@@ -176,9 +175,10 @@ trait ShooglerTrait
         switch ($filter) {
             case ShooglerFilterEnum::RECENTLY_JOINED:
                 $shooglerMatches = (function ($shoogler) {
-                    $carbonJoinedAt = Carbon::parse($shoogler->joinedAt);
-                    $carbonNow = Carbon::now();
-                    return ( $carbonJoinedAt->diff($carbonNow)->days < self::OUTDATED ) ? true : false;
+//                    $carbonJoinedAt = Carbon::parse($shoogler->joinedAt);
+//                    $carbonNow = Carbon::now();
+//                    return ( $carbonJoinedAt->diff($carbonNow)->days < self::OUTDATED ) ? true : false;
+                    return true;
                 });
                 break;
             case ShooglerFilterEnum::AVAILABLE:
@@ -217,5 +217,21 @@ trait ShooglerTrait
             }
         }
         return $response;
+    }
+
+    /**
+     * Sort by the date the shoogler joined the shoogle.
+     *
+     * @param array|null $shooglers
+     * @return array|null
+     */
+    private function sortedRecentlyJoined(?array $shooglers): ?array
+    {
+        if ( is_null($shooglers) ) {
+            return null;
+        }
+
+        $collection = collect($shooglers);
+        return $collection->sortByDesc('joinedAt')->toArray();
     }
 }

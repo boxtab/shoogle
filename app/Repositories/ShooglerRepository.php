@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\ShooglerFilterEnum;
 use App\Helpers\Helper;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
@@ -83,6 +84,11 @@ class ShooglerRepository extends Repositories
         $shooglers = $this->setSolo($shooglers);
         $shooglers = $this->setJoinedAt($shooglers);
         $shooglers = $this->filter($shooglers, $filter);
+
+
+        if ( $filter === ShooglerFilterEnum::RECENTLY_JOINED ) {
+            $shooglers = $this->sortedRecentlyJoined($shooglers);
+        }
 
         return $shooglers;
     }
