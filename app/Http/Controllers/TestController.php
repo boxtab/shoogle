@@ -52,7 +52,8 @@ class TestController extends Controller
 {
     public function index()
     {
-        User::on()->where('id', '=', 98)->delete();
+//        dd(123);
+        User::on()->where('id', '=', 102)->delete();
 
 //        $tmp = HelperReward::getAwarded(null);
 //        dd($tmp);

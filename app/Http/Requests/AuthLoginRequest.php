@@ -26,7 +26,7 @@ class AuthLoginRequest extends ApiRequest
     {
         return [
             'email'     => 'required|email:rfc,dns|min:4|max:255|exists:users,email',
-            'password'  => 'required|min:2|max:64',
+            'password'  => 'required|min:6|max:64',
         ];
     }
 

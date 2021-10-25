@@ -49,7 +49,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null avatar
  * @property int|null rank
  * @property string|null profile_image
- * @property int|null invite_id
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  * @property Carbon|null deleted_at
@@ -76,7 +75,6 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         'avatar',
         'rank',
         'profile_image',
-        'invite_id',
     ];
 
     /**
@@ -114,8 +112,8 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     {
         parent::boot();
 
-        static::deleting(function($user) {
-            $user->invite()->delete();
+        static::deleting(function($inviteUser) {
+            $inviteUser->inviteUser()->delete();
         });
     }
 
@@ -139,16 +137,6 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     {
         return $this->belongsTo(Department::class, 'department_id', 'id')
             ->withDefault();
-    }
-
-    /**
-     * User from the invite.
-     *
-     * @return belongsTo
-     */
-    public function invite(): belongsTo
-    {
-        return $this->belongsTo(Invite::class, 'invite_id', 'id');
     }
 
     /**
@@ -181,6 +169,14 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     public function notificationsFromUser(): HasMany
     {
         return $this->hasMany(NotificationToUser::class, 'from_user_id', 'id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function inviteUser(): HasMany
+    {
+        return $this->hasMany(Invite::class, 'user_id', 'id');
     }
 
     /**

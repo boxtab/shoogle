@@ -121,14 +121,16 @@ class AuthController extends BaseApiController
                     'last_name' => isset($credentials['lastName']) ? $credentials['lastName'] : null,
                     'about' => isset($credentials['about']) ? $credentials['about'] : null,
                     'rank' => 1,
-                    'invite_id' => $invite->id,
                 ]);
 
                 $user->assignRole(RoleConstant::USER);
 
                 DB::table('invites')
                     ->where('id', $invite->id)
-                    ->update(['is_used' => 1]);
+                    ->update([
+                        'is_used' => 1,
+                        'user_id' => $user->id,
+                    ]);
 
                 if ( ! empty( $credentials['profileImage'] ) ) {
                     $profile = User::on()->where('id', '=', $user->id )->first();
