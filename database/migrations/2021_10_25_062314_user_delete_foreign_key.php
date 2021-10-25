@@ -16,7 +16,7 @@ class UserDeleteForeignKey extends Migration
         Schema::table('users', function (Blueprint $table) {
 
             Schema::disableForeignKeyConstraints();
-            $table->dropForeign('users_invite_id_foreign_custom');
+//            $table->dropForeign('users_invite_id_foreign_custom');
 
 
             if (Schema::hasColumn('users', 'users_invite_id_foreign')) {
