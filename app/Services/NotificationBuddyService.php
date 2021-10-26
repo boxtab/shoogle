@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use App\Constants\NotificationsTypeConstant;
 use App\Helpers\HelperAvatar;
 use App\Models\BuddyRequest;
 use App\Models\Notification;
 use App\Models\NotificationToUser;
 use App\Models\Shoogle;
 use App\User;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class NotificationBuddyService
@@ -24,7 +26,7 @@ class NotificationBuddyService
      * NotificationBuddyService constructor.
      * @param int|null $notificationId
      */
-    public function __construct(?int $notificationId)
+    public function __construct( ?int $notificationId )
     {
         $this->notification = NotificationToUser::on()
             ->where('id', '=', $notificationId)
@@ -38,7 +40,30 @@ class NotificationBuddyService
      */
     public function isNull(): bool
     {
-        return is_null($this->notification) ? true : false;
+        if ( is_null( $this->notification ) ) {
+            return true;
+        }
+
+        $response = false;
+
+        if (
+             $this->notification->type_id === NotificationsTypeConstant::BUDDY_REQUEST_ID ||
+             $this->notification->type_id === NotificationsTypeConstant::BUDDY_CONFIRM_ID ||
+             $this->notification->type_id === NotificationsTypeConstant::BUDDY_REJECT_ID ||
+             $this->notification->type_id === NotificationsTypeConstant::BUDDY_DISCONNECT_ID
+        ) {
+            $response = true;
+        }
+
+        if ( is_null( $this->notification->shoogle_id ) ) {
+            $response = true;
+        }
+
+        if ( is_null( $this->notification->from_user_id ) ) {
+            $response = true;
+        }
+
+        return $response;
     }
 
     /**
@@ -80,6 +105,10 @@ class NotificationBuddyService
      */
     public function getBuddy(): ?array
     {
+        if ( is_null( $this->notification ) ) {
+            return null;
+        }
+
         $buddy = User::on()->where('id', '=', $this->notification->from_user_id)->first();
 
         if ( is_null($buddy) ) {
@@ -102,6 +131,10 @@ class NotificationBuddyService
      */
     public function getShoogle(): ?array
     {
+        if ( is_null( $this->notification ) ) {
+            return null;
+        }
+
         $shoogle = Shoogle::on()->where('id', '=', $this->notification->shoogle_id)->first();
 
         if ( is_null($shoogle) ) {
