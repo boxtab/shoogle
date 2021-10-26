@@ -228,7 +228,7 @@ class BuddyRequestRepository extends Repositories
             );
             $helperNotification->recordNotificationDetail(
                 $buddyRequest->shoogle_id,
-                $buddyRequest->user1_id,
+                $buddyRequest->user2_id,
                 NotificationTextConstant::BUDDY_CONFIRM,
                 $buddyRequest->id,
                 $buddie->id
@@ -279,7 +279,7 @@ class BuddyRequestRepository extends Repositories
 
         $helperNotification = new HelperNotifications();
         $helperNotification->sendNotificationToUser(
-            $buddyRequest->user2_id,
+            $buddyRequest->user1_id,
             NotificationsTypeConstant::BUDDY_REJECT_ID,
             NotificationTextConstant::BUDDY_REJECT
         );
