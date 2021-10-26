@@ -41,6 +41,8 @@ class NotificationToUser extends BaseModel
         'shoogle_id',
         'from_user_id',
         'from_message',
+        'buddy_request_id',
+        'buddy_id',
         'created_at',
         'updated_at',
     ];
@@ -54,6 +56,8 @@ class NotificationToUser extends BaseModel
         'shoogle_id' => 'integer',
         'from_user_id' => 'integer',
         'from_message' => 'string',
+        'buddy_request_id' => 'integer',
+        'buddy_id' => 'integer',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
@@ -102,6 +106,24 @@ class NotificationToUser extends BaseModel
     public function fromUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'from_user_id', 'id')
+            ->withDefault();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function buddyRequest(): BelongsTo
+    {
+        return $this->belongsTo(BuddyRequest::class, 'buddy_request_id', 'id')
+            ->withDefault();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function buddie(): BelongsTo
+    {
+        return $this->belongsTo(Buddie::class, 'buddy_id', 'id')
             ->withDefault();
     }
 

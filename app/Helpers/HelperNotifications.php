@@ -135,18 +135,29 @@ class HelperNotifications
      * @param int|null $shoogleId
      * @param int|null $fromUserId
      * @param string|null $fromMessage
-     * @return null|void
+     * @param int|null $buddyRequestId
+     * @param int|null $buddyId
+     * @return null
      */
-    public function recordNotificationDetail(?int $shoogleId = null, ?int $fromUserId = null, ?string $fromMessage = null)
+    public function recordNotificationDetail(
+        ?int $shoogleId = null,
+        ?int $fromUserId = null,
+        ?string $fromMessage = null,
+        ?int $buddyRequestId = null,
+        ?int $buddyId = null)
     {
         if ( is_null( $this->notificationToUser ) ) {
             return null;
         }
 
         $this->notificationToUser->update([
-            'shoogle_id' => $shoogleId,
-            'from_user_id' => $fromUserId,
-            'from_message' => $fromMessage,
+            'shoogle_id'        => $shoogleId,
+            'from_user_id'      => $fromUserId,
+            'from_message'      => $fromMessage,
+            'buddy_request_id'  => $buddyRequestId,
+            'buddy_id'          => $buddyId,
         ]);
+
+        return null;
     }
 }

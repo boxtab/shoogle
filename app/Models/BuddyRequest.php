@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class BuddyRequest
@@ -76,5 +77,13 @@ class BuddyRequest extends BaseModel
     {
         return $this->belongsTo(Shoogle::class, 'shoogle_id', 'id')
             ->withDefault();
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function buddyRequest(): HasMany
+    {
+        return $this->hasMany(NotificationToUser::class, 'buddy_request_id', 'id');
     }
 }

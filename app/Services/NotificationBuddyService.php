@@ -44,26 +44,22 @@ class NotificationBuddyService
             return true;
         }
 
-        $response = false;
-
         if (
-             $this->notification->type_id === NotificationsTypeConstant::BUDDY_REQUEST_ID ||
-             $this->notification->type_id === NotificationsTypeConstant::BUDDY_CONFIRM_ID ||
-             $this->notification->type_id === NotificationsTypeConstant::BUDDY_REJECT_ID ||
-             $this->notification->type_id === NotificationsTypeConstant::BUDDY_DISCONNECT_ID
+            (
+                 $this->notification->type_id === NotificationsTypeConstant::BUDDY_REQUEST_ID ||
+                 $this->notification->type_id === NotificationsTypeConstant::BUDDY_CONFIRM_ID ||
+                 $this->notification->type_id === NotificationsTypeConstant::BUDDY_REJECT_ID ||
+                 $this->notification->type_id === NotificationsTypeConstant::BUDDY_DISCONNECT_ID
+            )
+            &&
+            ( ! is_null( $this->notification->shoogle_id ) )
+            &&
+            ( ! is_null( $this->notification->from_user_id ) )
         ) {
-            $response = true;
+            return false;
         }
 
-        if ( is_null( $this->notification->shoogle_id ) ) {
-            $response = true;
-        }
-
-        if ( is_null( $this->notification->from_user_id ) ) {
-            $response = true;
-        }
-
-        return $response;
+        return true;
     }
 
     /**
@@ -73,29 +69,7 @@ class NotificationBuddyService
      */
     public function getBuddyRequestId(): ?int
     {
-        $userId = $this->notification->user_id;
-        $fromUserId = $this->notification->from_user_id;
-
-        $buddyRequest = BuddyRequest::on()
-            ->where('shoogle_id', '=', $this->notification->shoogle_id)
-            ->where(function ($query) use ($userId, $fromUserId) {
-
-                $query->where(function ($query) use ($userId, $fromUserId) {
-                    $query->where('user1_id', '=', $userId)
-                        ->where('user2_id', '=', $fromUserId);
-                })
-                ->orWhere(function ($query) use ($userId, $fromUserId) {
-                    $query->where('user1_id', '=', $fromUserId)
-                        ->where('user2_id', '=', $userId);
-                });
-
-            })->first();
-
-        if ( is_null($buddyRequest) ) {
-            return null;
-        }
-
-        return $buddyRequest->id;
+        return $this->notification->buddy_request_id;
     }
 
     /**

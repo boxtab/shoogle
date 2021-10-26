@@ -29,6 +29,7 @@ class HelperNotificationBuddy
 
         $notificationBuddyService = new NotificationBuddyService($notificationId);
         if ( $notificationBuddyService->isNull() ) {
+            Log::info('yes null');
             return null;
         }
 

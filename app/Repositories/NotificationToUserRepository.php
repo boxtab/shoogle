@@ -98,7 +98,6 @@ class NotificationToUserRepository extends Repositories
         return $this->model->on()
             ->leftJoin('notifications_type', 'notifications_type.id', '=', 'notifications_to_user.type_id')
             ->where('user_id', '=', $userId)
-            ->where('notifications_to_user.id', '=', 2)
             ->get([
                 'notifications_to_user.id as id',
                 'notifications_type.name as typeNotificationText',
