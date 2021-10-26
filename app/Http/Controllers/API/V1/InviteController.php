@@ -47,7 +47,11 @@ class InviteController extends BaseApiController
      */
     public function index()
     {
-        $listInvite = $this->repository->getList();
+        try {
+            $listInvite = $this->repository->getList();
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage());
+        }
 
         return ApiResponse::returnData(new InviteListResource($listInvite));
     }
@@ -66,7 +70,7 @@ class InviteController extends BaseApiController
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('A user with this email has been invited already.');
             } else {
-                return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+                return ApiResponse::returnError($e->getMessage());
             }
         }
         return ApiResponse::returnData([]);
