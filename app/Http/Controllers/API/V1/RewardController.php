@@ -49,7 +49,11 @@ class RewardController extends BaseApiController
                 'The remote service https://getstream.io responded with an error.',
                 Response::HTTP_BAD_GATEWAY);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage());
+            if ($e->getCode() == 23000) {
+                return ApiResponse::returnError('You have given this award to this user already');
+            } else {
+                return ApiResponse::returnError($e->getMessage());
+            }
         }
 
         return ApiResponse::returnData([], ResponseAlias::HTTP_NO_CONTENT);
