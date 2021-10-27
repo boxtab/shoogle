@@ -84,7 +84,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'info@shoogle.io'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
@@ -122,7 +122,7 @@ return [
         'mail_username' => env('MAIL_USERNAME'),
         'mail_password' => env('MAIL_PASSWORD'),
         'mail_encryption' => env('MAIL_ENCRYPTION'),
-        'mail_from_address' => env('MAIL_FROM_ADDRESS'),
+        'mail_from_address' => env('MAIL_FROM_ADDRESS', 'info@shoogle.com'),
         'mail_from_name' => env('MAIL_FROM_NAME'),
     ],
 
@@ -135,7 +135,7 @@ return [
     */
 
     'invite' => [
-        'email_from' => env('INVITE_EMAIL_FROM', 'support@shoogle.com'),
+        'email_from' => env('MAIL_FROM_ADDRESS', 'info@shoogle.com'),
         'subject' => env('INVITE_SUBJECT', 'We invite you to the system shoogle.'),
     ],
 
@@ -148,7 +148,7 @@ return [
     */
 
     'password-recovery' => [
-        'email_from' => env('PASSWORD_RECOVERY_EMAIL_FROM', 'support@shoogle.com'),
+        'email_from' => env('MAIL_FROM_ADDRESS', 'info@shoogle.com'),
         'subject' => env('PASSWORD_RECOVERY_SUBJECT', 'Password recovery'),
     ],
 
@@ -161,7 +161,7 @@ return [
     */
 
     'new_company' => [
-        'email_from' => env('NEW_COMPANY_EMAIL_FROM', 'support@shoogle.com'),
+        'email_from' => env('MAIL_FROM_ADDRESS', 'info@shoogle.com'),
         'subject' => env('NEW_COMPANY_SUBJECT', 'You were invited to a new company.'),
     ],
 
