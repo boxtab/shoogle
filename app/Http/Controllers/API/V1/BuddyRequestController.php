@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Enums\BuddyRequestTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BuddyConfirmRequest;
 use App\Http\Requests\BuddyDisconnectRequest;
 use App\Http\Requests\BuddyRejectRequest;
 use App\Http\Requests\BuddyRequestRequest;
 use App\Http\Resources\BuddyBidResource;
+use App\Models\BuddyRequest;
 use App\Repositories\BuddyRequestRepository;
 use App\Repositories\CompanyRepository;
 use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -120,9 +123,24 @@ class BuddyRequestController extends BaseApiController
     {
         try {
             $buddyRequestId = $request->input('buddyRequestId');
-            $this->repository->buddyReject($buddyRequestId);
+
+            $buddyRequest = BuddyRequest::on()
+                ->where('id', '=', $buddyRequestId)
+                ->first();
+
+            if ( $buddyRequest->type !== BuddyRequestTypeEnum::INVITE ) {
+                throw new \Exception("The type of invitation must be invite!",
+                    \Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            if ( $buddyRequest->user2_id !== Auth::id() ) {
+                throw new \Exception("Only the one who received it can cancel the invitation!",
+                    Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $this->repository->buddyReject($buddyRequest);
         } catch (\Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage());
         }
 
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);

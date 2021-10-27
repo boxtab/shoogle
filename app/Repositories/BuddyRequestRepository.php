@@ -19,6 +19,7 @@ use App\Models\Shoogle;
 use App\Services\StreamService;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Database\Concerns\BuildsQueries;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -27,6 +28,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use \Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Buddie;
+use PhpParser\Builder;
+use Tymon\JWTAuth\Providers\Auth\Illuminate;
 
 /**
  * Class BuddyRequestRepository
@@ -254,25 +257,11 @@ class BuddyRequestRepository extends Repositories
     /**
      * Reject friend request.
      *
-     * @param int $buddyRequestId
-     * @throws \Exception
+     * @param \Illuminate\Database\Eloquent\Model|object|static|null $buddyRequest
+     * @throws \GetStream\StreamChat\StreamException
      */
-    public function buddyReject(int $buddyRequestId): void
+    public function buddyReject(BuddyRequest $buddyRequest): void
     {
-        $buddyRequest = BuddyRequest::on()
-            ->where('id', $buddyRequestId)
-            ->first();
-
-        if ( $buddyRequest->type !== BuddyRequestTypeEnum::INVITE ) {
-            throw new \Exception("The type of invitation must be invite!",
-                Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        if ( $buddyRequest->user2_id !== Auth::id() ) {
-            throw new \Exception("Only the one who received it can cancel the invitation!",
-                Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
         $buddyRequest->update([
             'type' => BuddyRequestTypeEnum::REJECT,
         ]);
@@ -345,8 +334,8 @@ class BuddyRequestRepository extends Repositories
                 ->first();
 
             $buddie->update([
-                    'disconnected_at' => Carbon::now(),
-                ]);
+                'disconnected_at' => Carbon::now(),
+            ]);
 
             $helperNotification = new HelperNotifications();
             $helperNotification->sendNotificationToUser($buddyId, NotificationsTypeConstant::BUDDY_DISCONNECT_ID, $message);

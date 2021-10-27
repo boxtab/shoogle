@@ -3,10 +3,14 @@
 namespace App\Repositories;
 
 use App\Constants\NotificationsTypeConstant;
+use App\Enums\BuddyRequestTypeEnum;
+use App\Models\BuddyRequest;
 use App\Models\NotificationToUser;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -112,10 +116,41 @@ class NotificationToUserRepository extends Repositories
      */
     public function delete(array $listNotificationIDs)
     {
-        NotificationToUser::on()
-            ->whereIn('id', $listNotificationIDs)
-            ->update([
-                'viewed' => 1,
-            ]);
+        DB::transaction(function () use ($listNotificationIDs) {
+
+            foreach ( $listNotificationIDs as $listNotificationID ) {
+
+                $notificationToUser = NotificationToUser::on()
+                    ->where('id', '=', $listNotificationID)
+                    ->first();
+
+                $notificationToUser->update([
+                    'viewed' => 1,
+                ]);
+
+                if ( $notificationToUser->type_id === NotificationsTypeConstant::BUDDY_REQUEST_ID ) {
+
+                    $buddyRequest = BuddyRequest::on()
+                        ->where('id', '=', $notificationToUser->buddy_request_id)
+                        ->first();
+
+                    if (  is_null( $buddyRequest ) ) {
+                        continue;
+                    }
+
+                    if ( $buddyRequest->type !== BuddyRequestTypeEnum::INVITE ) {
+                        continue;
+                    }
+
+                    if ( $buddyRequest->user2_id !== Auth::id() ) {
+                        continue;
+                    }
+                    $buddyRequestModel = new BuddyRequest();
+                    $buddyRequestRepository = new BuddyRequestRepository($buddyRequestModel);
+                    $buddyRequestRepository->buddyReject($buddyRequest);
+                }
+
+            }
+        });
     }
 }
