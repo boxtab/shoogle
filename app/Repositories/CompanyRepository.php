@@ -135,15 +135,37 @@ class CompanyRepository extends Repositories
                 'name' => $credentials['companyName'],
             ]);
 
-            $user = User::on()->create([
-                'company_id'    => $company->id,
-                'first_name'    => $credentials['firstName'],
-                'last_name'     => $credentials['lastName'],
-                'email'         => $credentials['email'],
-                'password'      => bcrypt($credentials['password']),
-            ]);
+            $user = User::withTrashed()
+                ->where('email', '=', $credentials['email'])
+                ->first();
 
-            $user->assignRole(RoleConstant::COMPANY_ADMIN);
+            if ( ! is_null( $user ) ) {
+                $user->restore();
+                $user->update([
+                    'company_id'        => $company->id,
+                    'department_id'     => null,
+                    'first_name'        => $credentials['firstName'],
+                    'last_name'         => $credentials['lastName'],
+                    'about'             => null,
+                    'email'             => $credentials['email'],
+                    'email_verified_at' => null,
+                    'password'          => bcrypt($credentials['password']),
+                    'remember_token'    => null,
+                    'avatar'            => null,
+                    'rank'              => null,
+                    'profile_image'     => null,
+                ]);
+            } else {
+                $user = User::on()->create([
+                    'company_id'    => $company->id,
+                    'first_name'    => $credentials['firstName'],
+                    'last_name'     => $credentials['lastName'],
+                    'email'         => $credentials['email'],
+                    'password'      => bcrypt($credentials['password']),
+                ]);
+
+                $user->assignRole(RoleConstant::COMPANY_ADMIN);
+            }
 
             $this->sendInvitationToNewCompany($credentials['email']);
         });
@@ -217,11 +239,11 @@ class CompanyRepository extends Repositories
     public function destroy(Company $company): void
     {
         DB::transaction( function () use ($company) {
-            $user = User::where('company_id', $company->id)->first();
-            $user->roles()->detach();
+//            $user = User::where('company_id', $company->id)->first();
+//            $user->roles()->detach();
 
-            User::where('company_id', $company->id)->delete();
-            Company::where('id', $company->id)->delete();
+            User::on()->where('company_id', '=', $company->id)->delete();
+            Company::on()->where('id', '=', $company->id)->delete();
         });
     }
 }

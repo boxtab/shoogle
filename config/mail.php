@@ -162,7 +162,7 @@ return [
 
     'new_company' => [
         'email_from' => env('MAIL_FROM_ADDRESS', 'info@shoogle.com'),
-        'subject' => env('NEW_COMPANY_SUBJECT', 'You were invited to a new company.'),
+        'subject' => env('NEW_COMPANY_SUBJECT', "Your company's account has been created."),
     ],
 
 ];
