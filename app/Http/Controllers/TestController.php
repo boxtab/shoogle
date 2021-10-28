@@ -52,15 +52,17 @@ class TestController extends Controller
 {
     public function index()
     {
-        $shoogler = UserHasShoogle::on()
-            ->where('shoogle_id', '=', 65)
-            ->get('user_id')
+        $usersIDs = User::on()
+            ->where('company_id', '=', 9)
+            ->get('id')
             ->map(function ($item) {
-                return $item->user_id;
+                return $item->id;
             })
             ->toArray();
 
-        dd($shoogler);
+        dd($usersIDs);
+
+//        User::on()->where('id', '=', 102)->delete();
 
 //        dd(123);
 //        User::on()->where('id', '=', 102)->delete();

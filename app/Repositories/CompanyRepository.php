@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Models\Company;
+use App\Models\Invite;
 use App\Traits\CompanyTrait;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -239,8 +240,15 @@ class CompanyRepository extends Repositories
     public function destroy(Company $company): void
     {
         DB::transaction( function () use ($company) {
-//            $user = User::where('company_id', $company->id)->first();
-//            $user->roles()->detach();
+            $usersIDs = User::on()
+                ->where('company_id', '=', $company->id)
+                ->get('id')
+                ->map(function ($item) {
+                    return $item->id;
+                })
+                ->toArray();
+
+            Invite::on()->whereIn('user_id', $usersIDs)->delete();
 
             User::on()->where('company_id', '=', $company->id)->delete();
             Company::on()->where('id', '=', $company->id)->delete();

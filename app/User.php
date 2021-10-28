@@ -108,14 +108,21 @@ class User extends Authenticatable implements JWTSubject, HasMedia
      */
     protected $guard_name = 'api';
 
-    protected static function boot()
-    {
-        parent::boot();
+//    protected static function boot()
+//    {
+//        parent::boot();
+//
+//        static::deleted(function($inviteUser) {
+//            Log::info('test');
+//            $inviteUser->inviteUser()->delete();
+//        });
+//    }
 
-        static::deleting(function($inviteUser) {
-            $inviteUser->inviteUser()->delete();
-        });
-    }
+//    public function delete()
+//    {
+//        $this->inviteUser()->delete();
+//        return parent::delete();
+//    }
 
     /**
      * User from the company.
