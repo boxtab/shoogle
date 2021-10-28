@@ -80,6 +80,7 @@ class CompanyRepository extends Repositories
                     ) as contact_person_email,
                     (select count(uc.id) from users as uc where uc.company_id = c.id) as users_count
                 from companies as c
+                where c.deleted_at is not null
                 order by c.name ' . $order . '
             '));
     }
