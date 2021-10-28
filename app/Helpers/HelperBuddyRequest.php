@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Enums\BuddyRequestTypeEnum;
 use App\Models\BuddyRequest;
 use App\Models\Buddie;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -64,5 +65,52 @@ class HelperBuddyRequest
             ->count();
 
         return ( $countBuddyRequest > 0 ) ? true : false;
+    }
+
+    /**
+     * Returns a friend request.
+     *
+     * @param int|null $shoogleId
+     * @param int|null $userId
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public static function getBuddyRequest(?int $shoogleId, ?int $userId)
+    {
+        if ( is_null($shoogleId) || is_null($userId) ) {
+            return null;
+        }
+
+        $user1Id = BuddyRequest::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where('user2_id', '=', $userId)
+            ->first();
+
+        if ( ! is_null( $user1Id ) ) {
+            return $user1Id;
+        }
+
+        $user2Id = BuddyRequest::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where('user1_id', '=', $userId)
+            ->first();
+
+        if ( ! is_null( $user2Id ) ) {
+            return $user2Id;
+        }
+
+        return null;
+    }
+
+    /**
+     * Changes the status of a friend request.
+     *
+     * @param $buddyRequest
+     * @param $status
+     */
+    public static function setStatusBuddyRequest($buddyRequest, $status)
+    {
+        if ( ! is_null($buddyRequest) ) {
+            $buddyRequest->status = $status;
+        }
     }
 }

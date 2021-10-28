@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Buddie;
 use App\Models\Shoogle;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -103,5 +104,51 @@ class HelperBuddies
         }
 
         return null;
+    }
+
+    /**
+     * Get a buddy.
+     *
+     * @param int|null $shoogleId
+     * @param int|null $userId
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public static function getBuddy(?int $shoogleId, ?int $userId)
+    {
+        if ( is_null($shoogleId) || is_null($userId) ) {
+            return null;
+        }
+
+        $user1Id = Buddie::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where('user2_id', '=', $userId)
+            ->first();
+
+        if ( ! is_null( $user1Id ) ) {
+            return $user1Id;
+        }
+
+        $user2Id = Buddie::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where('user1_id', '=', $userId)
+            ->first();
+
+        if ( ! is_null( $user2Id ) ) {
+            return $user2Id;
+        }
+
+        return null;
+    }
+
+    /**
+     * Cancels friendship.
+     *
+     * @param $buddy
+     */
+    public static function setDisconnectedBuddy($buddy)
+    {
+        if ( ! is_null($buddy) ) {
+            $buddy->disconnected = Carbon::now();
+        }
     }
 }

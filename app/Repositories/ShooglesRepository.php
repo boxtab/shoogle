@@ -2,12 +2,17 @@
 
 namespace App\Repositories;
 
+use App\Constants\NotificationsTypeConstant;
+use App\Constants\NotificationTextConstant;
+use App\Enums\BuddyRequestTypeEnum;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperBuddies;
+use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperCalendar;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperNotifications;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
 use App\Http\Resources\ShoogleBuddyNameResource;
@@ -283,18 +288,25 @@ class ShooglesRepository extends Repositories
                 ->where('shoogle_id', $shoogle->id)
                 ->update(['left_at' => Carbon::now()]);
 
-            $buddyId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
+            $buddy = HelperBuddies::getBuddy($shoogle->id, Auth::id());
+            HelperBuddies::setDisconnectedBuddy($buddy);
 
+            $buddyRequest = HelperBuddyRequest::getBuddyRequest($shoogle->id, Auth::id());
+            HelperBuddyRequest::setStatusBuddyRequest($buddyRequest, BuddyRequestTypeEnum::DISCONNECT);
+
+            $buddyId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
             if ( ! is_null( $buddyId ) ) {
 
+                $helperNotification = new HelperNotifications();
+
+                $helperNotification->sendNotificationToUser(
+                    $buddyId,
+                    NotificationsTypeConstant::BUDDY_DISCONNECT_ID,
+                    NotificationTextConstant::BUDDY_DISCONNECT
+                );
+                $helperNotification->recordNotificationDetail($shoogle->id, Auth::id() );
             }
-
         });
-
-//        UserHasShoogle::on()
-//            ->where('user_id', Auth::id())
-//            ->where('shoogle_id', $shoogleId)
-//            ->update(['left_at' => Carbon::now()]);
     }
 
     /**
