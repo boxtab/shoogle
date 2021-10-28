@@ -21,9 +21,12 @@ $mobileBig: 680px;
 $font-size: 14px;
 $font-size-title: 18px;
 $font-size-h1: 48px;
-$font-size-Min: 7px;
-$font-size-title-Min: 9px;
-$font-size-h1-Min: 24px;
+// $font-size-Min: 7px;
+// $font-size-title-Min: 9px;
+// $font-size-h1-Min: 24px;
+$font-size-Min: $font-size;
+$font-size-title-Min: $font-size-title;
+$font-size-h1-Min: $font-size-h1;
 
 // Color
 $color-theme: #173f5f;
