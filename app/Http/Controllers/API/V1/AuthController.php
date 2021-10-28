@@ -139,9 +139,11 @@ class AuthController extends BaseApiController
 
                 return $user;
             });
+
             $token = JWTAuth::fromUser($user);
             $authResource = new AuthResource($user);
             $authResource->setToken($token);
+
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('Foreign key error. Integrity constraint violation.');

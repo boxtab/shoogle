@@ -113,7 +113,6 @@ class User extends Authenticatable implements JWTSubject, HasMedia
 //        parent::boot();
 //
 //        static::deleted(function($inviteUser) {
-//            Log::info('test');
 //            $inviteUser->inviteUser()->delete();
 //        });
 //    }

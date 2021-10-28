@@ -278,16 +278,16 @@ class ShooglesRepository extends Repositories
 
         DB::transaction(function () use ($shoogle) {
 
-//            UserHasShoogle::on()
-//                ->where('user_id', Auth::id())
-//                ->where('shoogle_id', $shoogle->id)
-//                ->update(['left_at' => Carbon::now()]);
-//
-//            $buddyId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
-//
-//            if ( ! is_null( $buddyId ) ) {
-//
-//            }
+            UserHasShoogle::on()
+                ->where('user_id', Auth::id())
+                ->where('shoogle_id', $shoogle->id)
+                ->update(['left_at' => Carbon::now()]);
+
+            $buddyId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
+
+            if ( ! is_null( $buddyId ) ) {
+
+            }
 
         });
 
