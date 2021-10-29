@@ -47,15 +47,16 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationRuleParser;
 use GetStream\StreamChat\Client as StreamClient;
+use Illuminate\Support\Facades\Schema;
 
 class TestController extends Controller
 {
     public function index()
     {
-        $invite = Invite::on()->where('email', 'test7@gmail.com')->firstorFail();
+        $sm = Schema::getConnection()->getDoctrineSchemaManager();
+        $doctrineTable = $sm->listTableDetails('users');
 
-//        dd( gettype($invite) );
-        dd($invite);
+        dd($doctrineTable);
 
 //        $usersIDs = User::on()
 //            ->where('company_id', '=', 9)
