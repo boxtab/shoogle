@@ -18,7 +18,7 @@ class InviteListResource extends JsonResource
             return [
                 'id'            => $item->id,
                 'email'         => $item->email,
-                'status'        => ( $item->is_used === 0 ) ? 'Pending' : 'Accepted',
+                'status'        => ( $item->is_used == 0 ) ? 'Pending' : 'Accepted',
                 'companies_id'  => $item->companies_id,
                 'department'    => $item->department,
                 'created_at'    => date('Y-m-d H:i:s', strtotime($item->created_at)),
