@@ -9,6 +9,7 @@ use App\Helpers\HelperChat;
 use App\Helpers\HelperDateTime;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperMigration;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNow;
 use App\Helpers\HelperReward;
@@ -34,6 +35,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use App\User;
 use App\Constants\RoleConstant;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Recurr\Exception\InvalidRRule;
@@ -53,10 +55,23 @@ class TestController extends Controller
 {
     public function index()
     {
-        $sm = Schema::getConnection()->getDoctrineSchemaManager();
-        $doctrineTable = $sm->listTableDetails('users');
 
-        dd($doctrineTable);
+        $test = HelperMigration::hasUniqueKeyInTable('users', 'users_email_uaanique');
+        dd($test);
+
+//        $keyExists = DB::select(
+//            DB::raw(
+//                "
+//                SHOW KEYS
+//        FROM users
+//        WHERE Key_name='users_email_unique'
+//        "
+//            )
+//        );
+//
+//        dd($keyExists[0]->Key_name);
+
+
 
 //        $usersIDs = User::on()
 //            ->where('company_id', '=', 9)

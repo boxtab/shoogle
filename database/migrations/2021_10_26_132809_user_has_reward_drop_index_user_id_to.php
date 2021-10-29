@@ -32,7 +32,14 @@ class UserHasRewardDropIndexUserIdTo extends Migration
     public function down()
     {
         Schema::table('user_has_reward', function (Blueprint $table) {
-            $table->index('user_has_reward_user_id_foreign');
+
+            $sm = Schema::getConnection()->getDoctrineSchemaManager();
+            $doctrineTable = $sm->listTableDetails('user_has_reward');
+
+            if ( ! $doctrineTable->hasIndex('user_has_reward_user_id_foreign') ) {
+                $table->index('user_has_reward_user_id_foreign');
+            }
+
         });
     }
 }

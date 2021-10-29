@@ -14,7 +14,13 @@ class UserHasRewardDropIndexewardId extends Migration
     public function up()
     {
         Schema::table('user_has_reward', function (Blueprint $table) {
-            $table->dropIndex('user_has_reward_reward_id_foreign');
+
+            $sm = Schema::getConnection()->getDoctrineSchemaManager();
+            $doctrineTable = $sm->listTableDetails('user_has_reward');
+            if ( $doctrineTable->hasIndex('user_has_reward_reward_id_foreign') ) {
+                $table->dropIndex('user_has_reward_reward_id_foreign');
+            }
+
         });
     }
 
@@ -26,7 +32,14 @@ class UserHasRewardDropIndexewardId extends Migration
     public function down()
     {
         Schema::table('user_has_reward', function (Blueprint $table) {
-            $table->index('user_has_reward_reward_id_foreign');
+
+            $sm = Schema::getConnection()->getDoctrineSchemaManager();
+            $doctrineTable = $sm->listTableDetails('user_has_reward');
+
+            if ( ! $doctrineTable->hasIndex('user_has_reward_reward_id_foreign') ) {
+                $table->index('user_has_reward_reward_id_foreign');
+            }
+
         });
     }
 }
