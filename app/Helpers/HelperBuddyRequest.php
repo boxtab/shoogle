@@ -105,12 +105,17 @@ class HelperBuddyRequest
      * Changes the status of a friend request.
      *
      * @param $buddyRequest
-     * @param $status
+     * @param $type
      */
-    public static function setStatusBuddyRequest($buddyRequest, $status)
+    public static function setTypeBuddyRequest($buddyRequest, $type)
     {
         if ( ! is_null($buddyRequest) ) {
-            $buddyRequest->status = $status;
+            BuddyRequest::on()
+                ->where('id', '=', $buddyRequest->id)
+                ->update([
+                    'type' => $type,
+                ]);
+//            $buddyRequest->type = $type;
         }
     }
 }

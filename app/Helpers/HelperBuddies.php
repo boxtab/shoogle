@@ -83,24 +83,22 @@ class HelperBuddies
             return null;
         }
 
-        $user1Id = Buddie::on()
+        $buddie1 = Buddie::on()
             ->where('shoogle_id', '=', $shoogleId)
             ->where('user2_id', '=', $userId)
-            ->first('user1_id')
-            ->user1_id;
+            ->first('user1_id');
 
-        if ( ! is_null( $user1Id ) ) {
-            return $user1Id;
+        if ( ! is_null( $buddie1 ) ) {
+            return $buddie1->user1_id;
         }
 
-        $user2Id = Buddie::on()
+        $buddie2 = Buddie::on()
             ->where('shoogle_id', '=', $shoogleId)
             ->where('user1_id', '=', $userId)
-            ->first('user2_id')
-            ->user2_id;
+            ->first('user2_id');
 
-        if ( ! is_null( $user2Id ) ) {
-            return $user2Id;
+        if ( ! is_null( $buddie2 ) ) {
+            return $buddie2->user2_id;
         }
 
         return null;
@@ -145,7 +143,7 @@ class HelperBuddies
      *
      * @param $buddy
      */
-    public static function setDisconnectedBuddy($buddy)
+    public static function setDisconnectedBuddy(&$buddy)
     {
         if ( ! is_null($buddy) ) {
             $buddy->disconnected = Carbon::now();

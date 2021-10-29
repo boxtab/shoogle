@@ -55,9 +55,8 @@ class TestController extends Controller
 {
     public function index()
     {
-
-        $test = HelperMigration::hasUniqueKeyInTable('users', 'users_email_uaanique');
-        dd($test);
+        $buddy = HelperBuddies::getBuddy(82, 31);
+        HelperBuddies::setDisconnectedBuddy($buddy);
 
 //        $keyExists = DB::select(
 //            DB::raw(

@@ -292,7 +292,7 @@ class ShooglesRepository extends Repositories
             HelperBuddies::setDisconnectedBuddy($buddy);
 
             $buddyRequest = HelperBuddyRequest::getBuddyRequest($shoogle->id, Auth::id());
-            HelperBuddyRequest::setStatusBuddyRequest($buddyRequest, BuddyRequestTypeEnum::DISCONNECT);
+            HelperBuddyRequest::setTypeBuddyRequest($buddyRequest, BuddyRequestTypeEnum::DISCONNECT);
 
             $buddyId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
             if ( ! is_null( $buddyId ) ) {
@@ -302,7 +302,7 @@ class ShooglesRepository extends Repositories
                 $helperNotification->sendNotificationToUser(
                     $buddyId,
                     NotificationsTypeConstant::BUDDY_DISCONNECT_ID,
-                    NotificationTextConstant::BUDDY_DISCONNECT
+                    Auth::user()->first_name . ' ' . Auth::user()->first_name . ' left ' . $shoogle->title . '.  You are no longer buddied.'
                 );
                 $helperNotification->recordNotificationDetail($shoogle->id, Auth::id() );
             }
