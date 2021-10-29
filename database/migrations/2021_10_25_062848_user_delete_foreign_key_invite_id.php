@@ -24,9 +24,9 @@ class UserDeleteForeignKeyInviteId extends Migration
             $sm = Schema::getConnection()->getDoctrineSchemaManager();
             $doctrineTable = $sm->listTableDetails('users');
 
-            if ( $doctrineTable->hasIndex('users_invite_id_foreign_custom') ) {
-                $table->dropIndex('users_invite_id_foreign_custom');
-            }
+//            if ( $doctrineTable->hasIndex('users_invite_id_foreign_custom') ) {
+//                $table->dropIndex('users_invite_id_foreign_custom');
+//            }
             if ( $doctrineTable->hasIndex('users_department_id_foreign') ) {
                 $table->dropIndex('users_department_id_foreign');
             }
