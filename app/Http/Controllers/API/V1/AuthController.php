@@ -15,6 +15,7 @@ use App\Http\Resources\AuthLoginResource;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\UserResource;
 use App\Models\Invite;
+use App\Repositories\AuthRepository;
 use App\User;
 use Carbon\Carbon;
 //use Symfony\Component\HttpFoundation\Request;
@@ -50,6 +51,15 @@ class AuthController extends BaseApiController
     const EXPIRATION_TIME = 30;
 
     /**
+     * AuthController constructor.
+     * @param AuthRepository $authRepository
+     */
+    public function __construct(AuthRepository $authRepository)
+    {
+        $this->repository = $authRepository;
+    }
+
+    /**
      * Get a JWT via given credentials.
      *
      * @param AuthLoginRequest $request
@@ -83,7 +93,7 @@ class AuthController extends BaseApiController
     }
 
     /**
-     * User Authentication.
+     * User creation.
      *
      * @param AuthSignupRequest $request
      * @return JsonResponse|object
@@ -107,38 +117,9 @@ class AuthController extends BaseApiController
         }
 
         try {
+
             $credentials = $request->only(['email','password', 'firstName', 'lastName', 'about', 'profileImage']);
-
-            $user = DB::transaction( function () use ( $credentials, $invite ) {
-
-                $user = User::on()->create([
-                    'company_id' => $invite->companies_id,
-                    'department_id' => $invite->department_id,
-
-                    'password' => bcrypt($credentials['password']),
-                    'email' => $credentials['email'],
-                    'first_name' => isset($credentials['firstName']) ? $credentials['firstName'] : null,
-                    'last_name' => isset($credentials['lastName']) ? $credentials['lastName'] : null,
-                    'about' => isset($credentials['about']) ? $credentials['about'] : null,
-                    'rank' => 1,
-                ]);
-
-                $user->assignRole(RoleConstant::USER);
-
-                DB::table('invites')
-                    ->where('id', $invite->id)
-                    ->update([
-                        'is_used' => 1,
-                        'user_id' => $user->id,
-                    ]);
-
-                if ( ! empty( $credentials['profileImage'] ) ) {
-                    $profile = User::on()->where('id', '=', $user->id )->first();
-                    HelperAvatar::saveAvatar($credentials['profileImage'], $profile);
-                }
-
-                return $user;
-            });
+            $user = $this->repository->signup($credentials, $invite);
 
             $token = JWTAuth::fromUser($user);
             $authResource = new AuthResource($user);

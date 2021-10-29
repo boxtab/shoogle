@@ -52,15 +52,20 @@ class TestController extends Controller
 {
     public function index()
     {
-        $usersIDs = User::on()
-            ->where('company_id', '=', 9)
-            ->get('id')
-            ->map(function ($item) {
-                return $item->id;
-            })
-            ->toArray();
+        $invite = Invite::on()->where('email', 'test7@gmail.com')->firstorFail();
 
-        dd($usersIDs);
+//        dd( gettype($invite) );
+        dd($invite);
+
+//        $usersIDs = User::on()
+//            ->where('company_id', '=', 9)
+//            ->get('id')
+//            ->map(function ($item) {
+//                return $item->id;
+//            })
+//            ->toArray();
+//
+//        dd($usersIDs);
 
 //        User::on()->where('id', '=', 102)->delete();
 
