@@ -118,4 +118,27 @@ class HelperShoogle
 
         return UserHasShoogle::on()->where('shoogle_id', '=', $shoogleId)->count();
     }
+
+    /**
+     * Get shoogle title by id.
+     *
+     * @param int|null $shoogleId
+     * @return string
+     */
+    public static function getTitle(?int $shoogleId): string
+    {
+        if ( is_null( $shoogleId ) ) {
+            return 'No shoogle ID passed.';
+        }
+
+        $shoogle = Shoogle::on()
+            ->where('id', '=', $shoogleId)
+            ->first();
+
+        if ( is_null( $shoogle ) ) {
+            return 'No shoogle found with this ID.';
+        }
+
+        return $shoogle->title;
+    }
 }

@@ -11,6 +11,8 @@ use App\Helpers\HelperBuddies;
 use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperNotifications;
+use App\Helpers\HelperShoogle;
+use App\Helpers\HelperUser;
 use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\Models\UserHasShoogle;
@@ -223,11 +225,15 @@ class BuddyRequestRepository extends Repositories
                 'type' => BuddyRequestTypeEnum::CONFIRM,
             ]);
 
+            $userName = HelperUser::getFullName( $buddyRequest->user2_id );
+            $shoogleTitle = HelperShoogle::getTitle( $buddyRequest->shoogle_id );
+            $messageText = "$userName has accepted your invitation to buddy up in $shoogleTitle.";
+
             $helperNotification = new HelperNotifications();
             $helperNotification->sendNotificationToUser(
                 $buddyRequest->user1_id,
                 NotificationsTypeConstant::BUDDY_CONFIRM_ID,
-                NotificationTextConstant::BUDDY_CONFIRM
+                $messageText
             );
             $helperNotification->recordNotificationDetail(
                 $buddyRequest->shoogle_id,
@@ -266,11 +272,15 @@ class BuddyRequestRepository extends Repositories
             'type' => BuddyRequestTypeEnum::REJECT,
         ]);
 
+        $user2Name = HelperUser::getFullName( $buddyRequest->user2_id );
+        $shoogleTitle = HelperShoogle::getTitle( $buddyRequest->shoogle_id );
+        $messageText = "$user2Name has rejected your invitation to buddy up in $shoogleTitle .";
+
         $helperNotification = new HelperNotifications();
         $helperNotification->sendNotificationToUser(
             $buddyRequest->user1_id,
             NotificationsTypeConstant::BUDDY_REJECT_ID,
-            NotificationTextConstant::BUDDY_REJECT
+            $messageText
         );
         $helperNotification->recordNotificationDetail(
             $buddyRequest->shoogle_id,
@@ -337,8 +347,12 @@ class BuddyRequestRepository extends Repositories
                 'disconnected_at' => Carbon::now(),
             ]);
 
+            $userName = HelperUser::getFullName( Auth::id() );
+            $shoogleTitle = HelperShoogle::getTitle( $shoogleId );
+            $messageText = "$userName left $shoogleTitle. You are no longer buddied.";
+
             $helperNotification = new HelperNotifications();
-            $helperNotification->sendNotificationToUser($buddyId, NotificationsTypeConstant::BUDDY_DISCONNECT_ID, $message);
+            $helperNotification->sendNotificationToUser($buddyId, NotificationsTypeConstant::BUDDY_DISCONNECT_ID, $messageText);
 
             $buddyRequestId = ( ! is_null( $buddyRequest ) ) ? $buddyRequest->id : null;
             $buddieId = ( ! is_null( $buddie ) ) ? $buddie->id : null;

@@ -19,6 +19,7 @@ use App\Helpers\HelperShoogleProfile;
 use App\Helpers\HelperShoogleStatistic;
 use App\Helpers\HelperShooglesViews;
 use App\Helpers\HelperStream;
+use App\Helpers\HelperUser;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
@@ -55,8 +56,10 @@ class TestController extends Controller
 {
     public function index()
     {
-        $buddy = HelperBuddies::getBuddy(82, 31);
-        HelperBuddies::setDisconnectedBuddy($buddy);
+        $tmp = HelperShoogle::getTitle(31);
+
+
+        dd($tmp);
 
 //        $keyExists = DB::select(
 //            DB::raw(
