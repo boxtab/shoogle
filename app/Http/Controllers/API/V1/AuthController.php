@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API\V1;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
+use App\Helpers\HelperRole;
 use App\Http\Controllers\API\BaseApiController;
+use App\Http\Requests\AuthCodeRequest;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthPasswordForgotRequest;
 use App\Http\Requests\AuthPasswordResetRequest;
@@ -14,11 +16,15 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Resources\AuthLoginResource;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\UserResource;
+use App\Mail\API\V1\ResetPasswordMail;
+use App\Mail\API\V1\ResetPasswordMobileMail;
 use App\Models\Invite;
 use App\Repositories\AuthRepository;
+use App\Services\PasswordRecoveryService;
 use App\User;
 use Carbon\Carbon;
 //use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -101,7 +107,10 @@ class AuthController extends BaseApiController
     public function signup(AuthSignupRequest $request)
     {
         try {
-            $invite = Invite::on()->where('email', $request->email)->firstorFail();
+            $invite = Invite::on()
+                ->where('email', $request->email)
+                ->firstorFail();
+
         } catch (Exception $e) {
             return ApiResponse::returnError(
                 ['email' => 'Email is not in the invite list'],
@@ -161,16 +170,41 @@ class AuthController extends BaseApiController
      */
     public function passwordForgot(AuthPasswordForgotRequest $request)
     {
-        $status = null;
+        $email = $request->get('email');
+        $user = User::on()
+            ->where('email', '=', $email)
+            ->first();
 
-        $status = Password::sendResetLink([
-            'email' => $request->get('email'),
-        ]);
+        if ( is_null( $user ) ) {
+            return ApiResponse::returnError(['email' => 'There is no user with this email address.'],
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
-        if ( $status === Password::RESET_LINK_SENT ) {
-            return ApiResponse::returnData(['status' => __($status)]);
+        $roleName = HelperRole::getRoleByEmail( $email );
+
+        if ( $roleName == RoleConstant::SUPER_ADMIN || $roleName == RoleConstant::COMPANY_ADMIN ) {
+
+            $status = null;
+            $status = Password::sendResetLink([
+                'email' => $email,
+            ]);
+
+            if ( $status === Password::RESET_LINK_SENT ) {
+                return ApiResponse::returnData(['status' => __($status)]);
+            } else {
+                return ApiResponse::returnError(__($status));
+            }
+
         } else {
-            return ApiResponse::returnError(__($status));
+
+            $code = PasswordRecoveryService::getCode($email);
+
+            $resetPasswordMobileMail = new ResetPasswordMobileMail($code);
+            $resetPasswordMobileMail->to($email);
+            Mail::send($resetPasswordMobileMail);
+
+            return ApiResponse::returnData([]);
+
         }
     }
 
@@ -206,5 +240,14 @@ class AuthController extends BaseApiController
         } else {
             return ApiResponse::returnError(__($status));
         }
+    }
+
+    public function codeValidation(AuthCodeRequest $request)
+    {
+        $code = $request->get('code');
+//        if ( Hash::check() ) {
+//            $code =
+//        }
+        return ApiResponse::returnData(['return' => $code]);
     }
 }

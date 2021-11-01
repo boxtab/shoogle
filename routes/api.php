@@ -41,7 +41,7 @@ Route::group(['prefix' => 'shared/v1'], function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
 
     // POST /api/shared/v1/password/forgot
-    Route::post('password/forgot', [AuthController::class, 'passwordForgot'])->name('password.reset');
+    Route::post('password/forgot', [AuthController::class, 'passwordForgot']);
 
     // POST /api/shared/v1/password/reset
     Route::post('password/reset', [AuthController::class, 'passwordReset']);
@@ -49,6 +49,9 @@ Route::group(['prefix' => 'shared/v1'], function () {
     // POST /api/shared/v1/user/wellbeing-scores/store
     Route::post('user/wellbeing-scores/store', [WelbeingScoresController::class, 'store'])
         ->middleware(['auth:api', 'user_already_logged_in', 'cors']);
+
+    // POST /api/shared/v1/code-validation/:id
+    Route::post('code-validation', [AuthController::class, 'codeValidation']);
 });
 
 

@@ -7,25 +7,24 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ResetPasswordMail extends Mailable
+class ResetPasswordMobileMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
-     * Password reset link.
+     * Recovery code.
      *
-     * @var string
+     * @var int
      */
-    private $link;
+    private $code;
 
     /**
-     * Create a new message instance.
-     * @param string $link
-     * @return void
+     * ResetPasswordMobileMail constructor.
+     * @param int $code
      */
-    public function __construct(string $link)
+    public function __construct(int $code)
     {
-        $this->link = $link;
+        $this->code = $code;
     }
 
     /**
@@ -37,7 +36,7 @@ class ResetPasswordMail extends Mailable
     {
         return $this->from( config('mail.password-recovery.email_from') )
             ->subject( config('mail.password-recovery.subject') )
-            ->view('emails.reset-password')
-            ->with('link', $this->link);
+            ->view('emails.reset-password-mobile')
+            ->with('code', $this->code);
     }
 }

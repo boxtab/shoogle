@@ -45,6 +45,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string email
  * @property Carbon|null email_verified_at
  * @property string password
+ * @property string|null password_recovery_code
  * @property string|null remember_token
  * @property string|null avatar
  * @property int|null rank
@@ -72,6 +73,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         'about',
         'email',
         'password',
+        'password_recovery_code',
         'avatar',
         'rank',
         'profile_image',

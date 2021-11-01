@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Support\ApiRequest\ApiRequest;
 
-class AuthLoginRequest extends ApiRequest
+class AuthCodeRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,7 @@ class AuthLoginRequest extends ApiRequest
     public function rules()
     {
         return [
-            'email'     => 'required|email:rfc,dns|min:4|max:255|exists:users,email',
-            'password'  => 'required|min:6|max:64',
+            'code' => 'required|integer|digits:5',
         ];
     }
 }

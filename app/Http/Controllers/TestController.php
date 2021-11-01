@@ -13,6 +13,7 @@ use App\Helpers\HelperMigration;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNow;
 use App\Helpers\HelperReward;
+use App\Helpers\HelperRole;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
@@ -28,6 +29,7 @@ use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
 use App\Repositories\TestRepository;
 use App\Services\NotificClientService;
+use App\Services\PasswordRecoveryService;
 use App\Services\RruleService;
 use Carbon\Carbon;
 use Database\Seeders\IconRewardsSeeder;
@@ -38,6 +40,7 @@ use App\User;
 use App\Constants\RoleConstant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Recurr\Exception\InvalidRRule;
 use Recurr\Exception\InvalidWeekday;
@@ -51,15 +54,26 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationRuleParser;
 use GetStream\StreamChat\Client as StreamClient;
 use Illuminate\Support\Facades\Schema;
+use App\Facades\PasswordRecoveryFacade;
+
+
 
 class TestController extends Controller
 {
     public function index()
     {
-        $tmp = HelperShoogle::getTitle(31);
 
-
+        $tmp = HelperRole::getRoleByEmail('fox3@gmail.com');
+//        $tmp = HelperRole::getRoleByEmail('superadmin@gmail.com');
+//        $tmp = HelperRole::getRoleByEmail('admin@gmail.com');
         dd($tmp);
+
+
+//        $result = Hash::check('92597', '$2y$10$cRdoqE4ApeOxvxEKMtuc4.WXBoV1JZ.1TMhlAn2c.JekymnSUkKQ2');
+//        dd($result);
+
+//        $tmp = PasswordRecoveryService::getCode();
+//        dd($tmp);
 
 //        $keyExists = DB::select(
 //            DB::raw(
