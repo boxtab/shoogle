@@ -135,6 +135,10 @@ class AuthController extends BaseApiController
             $authResource = new AuthResource($user);
             $authResource->setToken($token);
 
+            $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
+            $streamToken = $serverClient->createToken('user' . $user->id);
+            $authResource->setStreamToken($streamToken);
+
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('Foreign key error. Integrity constraint violation.');

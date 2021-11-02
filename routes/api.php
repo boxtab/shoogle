@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\BuddyRequestController;
+use App\Http\Controllers\API\V1\CommunityLevelController;
 use App\Http\Controllers\API\V1\CompanyController;
 use App\Http\Controllers\API\V1\DepartmentController;
 use App\Http\Controllers\API\V1\InviteController;
@@ -402,4 +403,16 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
         Route::get('', [NotificationToUserController::class, 'index']);
 
     });
+
+    /**
+     * Entity: Wellbeing scores
+     * Table: wellbeing_scores
+     */
+    Route::group(['prefix' => 'community-data', 'middleware' => ['admin.superadmin']], function () {
+
+        // POST api/admin/v1/community-data/statistic
+        Route::post('statistic', [CommunityLevelController::class, 'statistic']);
+
+    });
+
 });

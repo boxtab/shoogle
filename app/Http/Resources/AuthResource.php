@@ -13,6 +13,11 @@ class AuthResource extends JsonResource
     private $token;
 
     /**
+     * @var string
+     */
+    private $streamToken;
+
+    /**
      * Set token.
      *
      * @param $token
@@ -25,6 +30,16 @@ class AuthResource extends JsonResource
     }
 
     /**
+     * Set stream token.
+     *
+     * @param string|null $streamToken
+     */
+    public function setStreamToken(?string $streamToken)
+    {
+        $this->streamToken = $streamToken;
+    }
+
+    /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -33,13 +48,15 @@ class AuthResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'token'     => $this->token,
-            'firstName' => $this->first_name,
-            'lastName'  => $this->last_name,
-            'about'     => $this->about,
-            'email'     => $this->email,
-            'role'      => count( $this->getRoleNames() ) !== 0 ? $this->getRoleNames()[0] : null,
-            'avatar'    => HelperAvatar::getURLProfileImage( $this->profile_image ),
+            'token'         => $this->token,
+            'userId'        => $this->id,
+            'firstName'     => $this->first_name,
+            'lastName'      => $this->last_name,
+            'email'         => $this->email,
+            'role'          => count( $this->getRoleNames() ) !== 0 ? $this->getRoleNames()[0] : null,
+            'about'         => $this->about,
+            'avatar'        => HelperAvatar::getURLProfileImage( $this->profile_image ),
+            'streamToken'   => $this->streamToken,
         ];
     }
 }
