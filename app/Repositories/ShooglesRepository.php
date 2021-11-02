@@ -550,7 +550,7 @@ class ShooglesRepository extends Repositories
         }
 
         if ( array_key_exists('isReminder', $setting) ) {
-            $member->is_reminder = ! (bool)$setting['isReminder'];
+            $member->is_reminder = (bool)$setting['isReminder'];
             $toSave = true;
         }
 
