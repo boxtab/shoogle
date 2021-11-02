@@ -24,7 +24,6 @@ class AuthPasswordResetRequest extends ApiRequest
      */
     public function rules()
     {
-//        $this->request->set('password_confirmation', $this->request->get('passwordConfirmation'));
         return [
             'email' => 'required|email:rfc,dns|min:5|max:255',
             'token' => 'required',

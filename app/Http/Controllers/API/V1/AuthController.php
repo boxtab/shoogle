@@ -24,6 +24,7 @@ use App\Services\PasswordRecoveryService;
 use App\User;
 use Carbon\Carbon;
 //use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Http\JsonResponse;
@@ -199,11 +200,22 @@ class AuthController extends BaseApiController
 
             $code = PasswordRecoveryService::getCode($email);
 
+            // Create Password Reset Token
+            DB::table('password_resets')->updateOrInsert(
+                [
+                    'email' => $email,
+                ],
+                [
+                    'token' => Str::random(60),
+                    'created_at' => Carbon::now()
+                ]
+            );
+
             $resetPasswordMobileMail = new ResetPasswordMobileMail($code);
             $resetPasswordMobileMail->to($email);
             Mail::send($resetPasswordMobileMail);
 
-            return ApiResponse::returnData([]);
+            return ApiResponse::returnData(['code' => $code]);
 
         }
     }
@@ -220,34 +232,88 @@ class AuthController extends BaseApiController
             ->where('email', $request->input('email'))
             ->first();
 
-        if ( ! ( $passwordResets && Hash::check($request->input('token'), $passwordResets->token) ) ) {
-            return ApiResponse::returnError('Invalid token');
-        }
-
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) use ($request) {
-                $user->forceFill([
-                    'password' => bcrypt($password)
-                ])->setRememberToken(Str::random(60));
-
-                $user->save();
+        if ( HelperRole::getRoleByEmail( $request->input('email') ) == 'super-admin' ||
+            HelperRole::getRoleByEmail( $request->input('email') ) == 'company-admin')
+        {
+            if ( ! ( $passwordResets && Hash::check($request->input('token'), $passwordResets->token) ) ) {
+                return ApiResponse::returnError('Invalid token.');
             }
-        );
+            $status = Password::reset(
+                $request->only('email', 'password', 'password_confirmation', 'token'),
+                function ($user, $password) {
+                    $user->forceFill([
+                        'password' => bcrypt($password)
+                    ])->setRememberToken(Str::random(60));
 
-        if ( $status === Password::RESET_LINK_SENT ) {
-            return ApiResponse::returnData(['status' => __($status)]);
-        } else {
-            return ApiResponse::returnError(__($status));
+                    $user->save();
+                }
+            );
+
+            if ( $status === Password::RESET_LINK_SENT ) {
+                return ApiResponse::returnData(['status' => __($status)]);
+            } else {
+                return ApiResponse::returnError(__($status));
+            }
         }
+
+        if ( $passwordResets->token != $request->input('token')) {
+            return ApiResponse::returnError('Invalid token user.');
+        }
+
+        User::on()
+            ->where('email', '=', $request->input('email'))
+            ->first()
+            ->update([
+                'password' => bcrypt($request->input('password')),
+            ]);
+
+        return ApiResponse::returnData(['status' => 'Data updated.']);
     }
 
+    /**
+     * Checking the validation code.
+     *
+     * @param AuthCodeRequest $request
+     * @return JsonResponse|Response
+     */
     public function codeValidation(AuthCodeRequest $request)
     {
         $code = $request->get('code');
-//        if ( Hash::check() ) {
-//            $code =
-//        }
-        return ApiResponse::returnData(['return' => $code]);
+        $recoveryCode = User::on()
+            ->where('password_recovery_code', '=', $code)
+            ->get();
+
+        if ( count($recoveryCode) === 1 ) {
+
+            User::on()
+                ->where('password_recovery_code', '=', $code)
+                ->update([
+                    'password_recovery_code' => null
+                ]);
+
+            $email = $recoveryCode->first()->email;
+            $passwordResetsCount = \App\Models\PasswordReset::on()
+                ->where('email', '=', $email)
+                ->count();
+
+            if ( $passwordResetsCount !== 1 ) {
+                ApiResponse::returnError('Recovery code not found.');
+            }
+
+            $passwordResets = \App\Models\PasswordReset::on()
+                ->where('email', '=', $email)
+                ->first();
+
+            if ( ! is_null($passwordResets) ) {
+                $token = $passwordResets->token;
+//                $token = bcrypt($passwordResets->token);
+//                $token = Hash::make($passwordResets->token);
+                return ApiResponse::returnData(['token' => $token]);
+            }
+
+            ApiResponse::returnError('Token not found.');
+        }
+
+        return ApiResponse::returnError('Invalid recovery code.');
     }
 }

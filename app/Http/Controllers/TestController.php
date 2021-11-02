@@ -38,9 +38,11 @@ use DateTime;
 use Illuminate\Http\Request;
 use App\User;
 use App\Constants\RoleConstant;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Storage;
 use Recurr\Exception\InvalidRRule;
 use Recurr\Exception\InvalidWeekday;
@@ -62,11 +64,28 @@ class TestController extends Controller
 {
     public function index()
     {
+        $data = 'tyGE9cSXdwDD6HjMx5sw0JziLRSaHzRd5NhwZZwd3RwANZGxnTeytTd4mRv4';
+        $front = '$2y$10$OxJyQT1M6bxbQxhJqgDvHO6KXZdnPHUt0u5fMEhWEDQygDoMRRUo6';
 
-        $tmp = HelperRole::getRoleByEmail('fox3@gmail.com');
+//        $token = bcrypt($data);
+                $token = Hash::make($data);
+//                dd($token);
+
+        $tmp = Hash::check($front, $data);
+        dd($tmp);
+
+//        $tmp = \App\Models\PasswordReset::on()->where('email', '=', 'fox3@gmail.com')->count();
+//        dd($tmp);
+//        $code = 19782;
+//        $recoveryCode = User::on()->where('password_recovery_code', '=', $code)->get();
+//        dd( count($recoveryCode) );
+
+
+
+//        $tmp = HelperRole::getRoleByEmail('fox3@gmail.com');
 //        $tmp = HelperRole::getRoleByEmail('superadmin@gmail.com');
 //        $tmp = HelperRole::getRoleByEmail('admin@gmail.com');
-        dd($tmp);
+//        dd($tmp);
 
 
 //        $result = Hash::check('92597', '$2y$10$cRdoqE4ApeOxvxEKMtuc4.WXBoV1JZ.1TMhlAn2c.JekymnSUkKQ2');

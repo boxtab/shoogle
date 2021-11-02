@@ -20,7 +20,8 @@ class PasswordRecoveryService
     {
         do {
             $code = mt_rand(10000, 99999);
-            $hashCode = bcrypt($code);
+//            $hashCode = bcrypt($code);
+            $hashCode = $code;
             $user = User::on()
                 ->where('password_recovery_code', '=', $hashCode)
                 ->first();
