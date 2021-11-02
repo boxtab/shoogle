@@ -40,9 +40,9 @@ class NotificPush extends Command
      */
     public function handle()
     {
-        $this->info('Sending notifications');
         $notificClientService = new NotificClientService();
-        $notificClientService->run();
+        $countSendNotific = $notificClientService->run();
+        $this->info("Sending notification(s) $countSendNotific");
 
         return 0;
     }

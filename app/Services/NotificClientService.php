@@ -27,8 +27,9 @@ class NotificClientService
      *
      * @throws \Exception
      */
-    public function run(): void
+    public function run()
     {
+        $countSendNotific = 0;
         $notificService = new NotificService();
         $lineUsers = $notificService->getLineUsers();
 
@@ -50,7 +51,7 @@ class NotificClientService
                     NotificationsTypeConstant::SCHEDULER_ID,
                     NotificationTextConstant::SCHEDULER
                 );
-
+                $countSendNotific++;
                 /*
                  * Do not delete, temporarily commented out.
                  */
@@ -60,5 +61,7 @@ class NotificClientService
             }
             $notificService->unlockUserHasShoogle($lineUser['id']);
         }
+
+        return $countSendNotific;
     }
 }
