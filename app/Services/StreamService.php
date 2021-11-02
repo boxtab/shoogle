@@ -90,13 +90,48 @@ class StreamService
      * @param String|null $chatId
      * @throws \GetStream\StreamChat\StreamException
      */
-    public function connectUserToChannel(?string $chatId)
+    public function connectUserToChannel(?string $chatId, ?string $message)
     {
         if ($chatId == null) {
             $chatId = 'shoogleCommunity' . $this->shoogleId;
         }
-        $userId = Auth()->user()->id;
+        $userId = 'user' . Auth()->user()->id;
         $channel = $this->serverClient->Channel('messaging', $chatId);
-        $channel->addMembers(['user' . $userId]);
+        $channel->addMembers([$userId]);
+        if (isset($message)) {
+            $channel->sendMessage(["text" => $message], $userId);
+        }
+    }
+
+    /**
+     * Connect user to channel
+     *
+     * @param String|null $chatId
+     * @throws \GetStream\StreamChat\StreamException
+     */
+    public function disconnectUserFromShoogleChannels()
+    {
+        $userId = 'user' . Auth()->user()->id;
+
+        $channel = $this->serverClient->Channel(
+            'messaging',
+            'shoogleCommunity' . $this->shoogleId
+        );
+        $channel->removeMembers([$userId]);
+
+        $channel = $this->serverClient->Channel('messaging', 'shoogle' . $this->shoogleId . 'Journal' . Auth()->user()->id);
+        $channel->delete();
+    }
+
+    /**
+     * Connect user to channel
+     *
+     * @param String $chatId
+     * @throws \GetStream\StreamChat\StreamException
+     */
+    public function removeBuddyChat(string $chatId)
+    {
+        $channel = $this->serverClient->Channel('messaging', $chatId);
+        $channel->delete();
     }
 }

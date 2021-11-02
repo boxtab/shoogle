@@ -211,7 +211,7 @@ class ShooglesRepository extends Repositories
             ->withTrashed()
             ->first();
 
-        DB::transaction(function() use($member, $userId, $shoogleId, $reminder, $reminderInterval, $isReminder, $buddy) {
+        DB::transaction(function() use($member, $userId, $shoogleId, $reminder, $reminderInterval, $isReminder, $buddy, $note) {
 
             if ( ! empty( $member ) ) {
                 if ( ! is_null($member->left_at) || ! is_null($member->deleted_at) ) {
@@ -248,7 +248,7 @@ class ShooglesRepository extends Repositories
 
             if ( $affectedRows > 0 ) {
                 $streamService = new StreamService($shoogleId);
-                $streamService->connectUserToChannel($this->model->chat_id);
+                $streamService->connectUserToChannel($this->model->chat_id, $note);
                 $channelId = $streamService->createJournalChannel();
                 UserHasShoogle::on()
                     ->where('id', '=', $lastInsertId)
