@@ -42,7 +42,7 @@ class NotificPush extends Command
     {
         $notificClientService = new NotificClientService();
         $countSendNotific = $notificClientService->run();
-        $this->info("Sending notification(s) $countSendNotific");
+        $this->info("$countSendNotific notification(s) sent");
 
         return 0;
     }
