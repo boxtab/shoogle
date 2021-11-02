@@ -7,6 +7,7 @@ use App\Models\NotificationToUser;
 use App\Models\Shoogle;
 use App\Services\NotificationBuddyService;
 use App\User;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperNotificationBuddy

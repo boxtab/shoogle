@@ -45,7 +45,7 @@ class NotificationToUserController extends BaseApiController
             $listNotificationsToUser = $this->repository->getList();
             $notificationToUserResource = NotificationToUserResource::collection($listNotificationsToUser);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage());
         }
 
         return ApiResponse::returnData($notificationToUserResource);
@@ -82,7 +82,7 @@ class NotificationToUserController extends BaseApiController
             $listNotificationResource = NotificationListResource::collection($listNotification);
 
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage());
         }
 
         return ApiResponse::returnData( $listNotificationResource );

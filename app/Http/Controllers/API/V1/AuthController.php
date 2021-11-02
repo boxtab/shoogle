@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API\V1;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
+use App\Helpers\HelperRole;
 use App\Http\Controllers\API\BaseApiController;
+use App\Http\Requests\AuthCodeRequest;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthPasswordForgotRequest;
 use App\Http\Requests\AuthPasswordResetRequest;
@@ -14,10 +16,16 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Resources\AuthLoginResource;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\UserResource;
+use App\Mail\API\V1\ResetPasswordMail;
+use App\Mail\API\V1\ResetPasswordMobileMail;
 use App\Models\Invite;
+use App\Repositories\AuthRepository;
+use App\Services\PasswordRecoveryService;
 use App\User;
 use Carbon\Carbon;
 //use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +56,15 @@ class AuthController extends BaseApiController
      * Token lifetime in days.
      */
     const EXPIRATION_TIME = 30;
+
+    /**
+     * AuthController constructor.
+     * @param AuthRepository $authRepository
+     */
+    public function __construct(AuthRepository $authRepository)
+    {
+        $this->repository = $authRepository;
+    }
 
     /**
      * Get a JWT via given credentials.
@@ -83,7 +100,7 @@ class AuthController extends BaseApiController
     }
 
     /**
-     * User Authentication.
+     * User creation.
      *
      * @param AuthSignupRequest $request
      * @return JsonResponse|object
@@ -91,7 +108,10 @@ class AuthController extends BaseApiController
     public function signup(AuthSignupRequest $request)
     {
         try {
-            $invite = Invite::on()->where('email', $request->email)->firstorFail();
+            $invite = Invite::on()
+                ->where('email', $request->email)
+                ->firstorFail();
+
         } catch (Exception $e) {
             return ApiResponse::returnError(
                 ['email' => 'Email is not in the invite list'],
@@ -107,41 +127,14 @@ class AuthController extends BaseApiController
         }
 
         try {
+
             $credentials = $request->only(['email','password', 'firstName', 'lastName', 'about', 'profileImage']);
+            $user = $this->repository->signup($credentials, $invite);
 
-            $user = DB::transaction( function () use ( $credentials, $invite ) {
-
-                $user = User::on()->create([
-                    'company_id' => $invite->companies_id,
-                    'department_id' => $invite->department_id,
-
-                    'password' => bcrypt($credentials['password']),
-                    'email' => $credentials['email'],
-                    'first_name' => isset($credentials['firstName']) ? $credentials['firstName'] : null,
-                    'last_name' => isset($credentials['lastName']) ? $credentials['lastName'] : null,
-                    'about' => isset($credentials['about']) ? $credentials['about'] : null,
-                    'rank' => 1,
-                ]);
-
-                $user->assignRole(RoleConstant::USER);
-
-                DB::table('invites')
-                    ->where('id', $invite->id)
-                    ->update([
-                        'is_used' => 1,
-                        'user_id' => $user->id,
-                    ]);
-
-                if ( ! empty( $credentials['profileImage'] ) ) {
-                    $profile = User::on()->where('id', '=', $user->id )->first();
-                    HelperAvatar::saveAvatar($credentials['profileImage'], $profile);
-                }
-
-                return $user;
-            });
             $token = JWTAuth::fromUser($user);
             $authResource = new AuthResource($user);
             $authResource->setToken($token);
+
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('Foreign key error. Integrity constraint violation.');
@@ -178,16 +171,52 @@ class AuthController extends BaseApiController
      */
     public function passwordForgot(AuthPasswordForgotRequest $request)
     {
-        $status = null;
+        $email = $request->get('email');
+        $user = User::on()
+            ->where('email', '=', $email)
+            ->first();
 
-        $status = Password::sendResetLink([
-            'email' => $request->get('email'),
-        ]);
+        if ( is_null( $user ) ) {
+            return ApiResponse::returnError(['email' => 'There is no user with this email address.'],
+                Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
-        if ( $status === Password::RESET_LINK_SENT ) {
-            return ApiResponse::returnData(['status' => __($status)]);
+        $roleName = HelperRole::getRoleByEmail( $email );
+
+        if ( $roleName == RoleConstant::SUPER_ADMIN || $roleName == RoleConstant::COMPANY_ADMIN ) {
+
+            $status = null;
+            $status = Password::sendResetLink([
+                'email' => $email,
+            ]);
+
+            if ( $status === Password::RESET_LINK_SENT ) {
+                return ApiResponse::returnData(['status' => __($status)]);
+            } else {
+                return ApiResponse::returnError(__($status));
+            }
+
         } else {
-            return ApiResponse::returnError(__($status));
+
+            $code = PasswordRecoveryService::getCode($email);
+
+            // Create Password Reset Token
+            DB::table('password_resets')->updateOrInsert(
+                [
+                    'email' => $email,
+                ],
+                [
+                    'token' => Str::random(60),
+                    'created_at' => Carbon::now()
+                ]
+            );
+
+            $resetPasswordMobileMail = new ResetPasswordMobileMail($code);
+            $resetPasswordMobileMail->to($email);
+            Mail::send($resetPasswordMobileMail);
+
+            return ApiResponse::returnData(['code' => $code]);
+
         }
     }
 
@@ -203,25 +232,88 @@ class AuthController extends BaseApiController
             ->where('email', $request->input('email'))
             ->first();
 
-        if ( ! ( $passwordResets && Hash::check($request->input('token'), $passwordResets->token) ) ) {
-            return ApiResponse::returnError('Invalid token');
-        }
-
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) use ($request) {
-                $user->forceFill([
-                    'password' => bcrypt($password)
-                ])->setRememberToken(Str::random(60));
-
-                $user->save();
+        if ( HelperRole::getRoleByEmail( $request->input('email') ) == 'super-admin' ||
+            HelperRole::getRoleByEmail( $request->input('email') ) == 'company-admin')
+        {
+            if ( ! ( $passwordResets && Hash::check($request->input('token'), $passwordResets->token) ) ) {
+                return ApiResponse::returnError('Invalid token.');
             }
-        );
+            $status = Password::reset(
+                $request->only('email', 'password', 'password_confirmation', 'token'),
+                function ($user, $password) {
+                    $user->forceFill([
+                        'password' => bcrypt($password)
+                    ])->setRememberToken(Str::random(60));
 
-        if ( $status === Password::RESET_LINK_SENT ) {
-            return ApiResponse::returnData(['status' => __($status)]);
-        } else {
-            return ApiResponse::returnError(__($status));
+                    $user->save();
+                }
+            );
+
+            if ( $status === Password::RESET_LINK_SENT ) {
+                return ApiResponse::returnData(['status' => __($status)]);
+            } else {
+                return ApiResponse::returnError(__($status));
+            }
         }
+
+        if ( $passwordResets->token != $request->input('token')) {
+            return ApiResponse::returnError('Invalid token user.');
+        }
+
+        User::on()
+            ->where('email', '=', $request->input('email'))
+            ->first()
+            ->update([
+                'password' => bcrypt($request->input('password')),
+            ]);
+
+        return ApiResponse::returnData(['status' => 'Data updated.']);
+    }
+
+    /**
+     * Checking the validation code.
+     *
+     * @param AuthCodeRequest $request
+     * @return JsonResponse|Response
+     */
+    public function codeValidation(AuthCodeRequest $request)
+    {
+        $code = $request->get('code');
+        $recoveryCode = User::on()
+            ->where('password_recovery_code', '=', $code)
+            ->get();
+
+        if ( count($recoveryCode) === 1 ) {
+
+            User::on()
+                ->where('password_recovery_code', '=', $code)
+                ->update([
+                    'password_recovery_code' => null
+                ]);
+
+            $email = $recoveryCode->first()->email;
+            $passwordResetsCount = \App\Models\PasswordReset::on()
+                ->where('email', '=', $email)
+                ->count();
+
+            if ( $passwordResetsCount !== 1 ) {
+                ApiResponse::returnError('Recovery code not found.');
+            }
+
+            $passwordResets = \App\Models\PasswordReset::on()
+                ->where('email', '=', $email)
+                ->first();
+
+            if ( ! is_null($passwordResets) ) {
+                $token = $passwordResets->token;
+//                $token = bcrypt($passwordResets->token);
+//                $token = Hash::make($passwordResets->token);
+                return ApiResponse::returnData(['token' => $token]);
+            }
+
+            ApiResponse::returnError('Token not found.');
+        }
+
+        return ApiResponse::returnError('Invalid recovery code.');
     }
 }

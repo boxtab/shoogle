@@ -2,12 +2,17 @@
 
 namespace App\Repositories;
 
+use App\Constants\NotificationsTypeConstant;
+use App\Constants\NotificationTextConstant;
+use App\Enums\BuddyRequestTypeEnum;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperBuddies;
+use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperCalendar;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperNotifications;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
 use App\Http\Resources\ShoogleBuddyNameResource;
@@ -278,23 +283,30 @@ class ShooglesRepository extends Repositories
 
         DB::transaction(function () use ($shoogle) {
 
-//            UserHasShoogle::on()
-//                ->where('user_id', Auth::id())
-//                ->where('shoogle_id', $shoogle->id)
-//                ->update(['left_at' => Carbon::now()]);
-//
-//            $buddyId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
-//
-//            if ( ! is_null( $buddyId ) ) {
-//
-//            }
+            UserHasShoogle::on()
+                ->where('user_id', Auth::id())
+                ->where('shoogle_id', $shoogle->id)
+                ->update(['left_at' => Carbon::now()]);
 
+            $buddy = HelperBuddies::getBuddy($shoogle->id, Auth::id());
+            HelperBuddies::setDisconnectedBuddy($buddy);
+
+            $buddyRequest = HelperBuddyRequest::getBuddyRequest($shoogle->id, Auth::id());
+            HelperBuddyRequest::setTypeBuddyRequest($buddyRequest, BuddyRequestTypeEnum::DISCONNECT);
+
+            $buddyId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
+            if ( ! is_null( $buddyId ) ) {
+
+                $helperNotification = new HelperNotifications();
+
+                $helperNotification->sendNotificationToUser(
+                    $buddyId,
+                    NotificationsTypeConstant::BUDDY_DISCONNECT_ID,
+                    Auth::user()->first_name . ' ' . Auth::user()->first_name . ' left ' . $shoogle->title . '.  You are no longer buddied.'
+                );
+                $helperNotification->recordNotificationDetail($shoogle->id, Auth::id() );
+            }
         });
-
-//        UserHasShoogle::on()
-//            ->where('user_id', Auth::id())
-//            ->where('shoogle_id', $shoogleId)
-//            ->update(['left_at' => Carbon::now()]);
     }
 
     /**

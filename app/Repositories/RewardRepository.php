@@ -52,15 +52,11 @@ class RewardRepository extends Repositories
     {
         DB::transaction( function () use ($userId, $rewardId) {
 
-            $userHasReward = UserHasReward::on()->updateOrCreate(
-                [
-                    'user_id' => $userId,
-                    'reward_id' => $rewardId
-                ],
-                [
-                    'given_by_user_id' => Auth::id()
-                ]
-            );
+            $userHasReward = UserHasReward::on()->create([
+                'user_id' => $userId,
+                'reward_id' => $rewardId,
+                'given_by_user_id' => Auth::id(),
+            ]);
 
             $rewardName = Reward::on()
                 ->where('id', '=', $rewardId)

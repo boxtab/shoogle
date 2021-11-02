@@ -9,15 +9,18 @@ use App\Helpers\HelperChat;
 use App\Helpers\HelperDateTime;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperMigration;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNow;
 use App\Helpers\HelperReward;
+use App\Helpers\HelperRole;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
 use App\Helpers\HelperShoogleStatistic;
 use App\Helpers\HelperShooglesViews;
 use App\Helpers\HelperStream;
+use App\Helpers\HelperUser;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
@@ -26,6 +29,7 @@ use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
 use App\Repositories\TestRepository;
 use App\Services\NotificClientService;
+use App\Services\PasswordRecoveryService;
 use App\Services\RruleService;
 use Carbon\Carbon;
 use Database\Seeders\IconRewardsSeeder;
@@ -34,7 +38,11 @@ use DateTime;
 use Illuminate\Http\Request;
 use App\User;
 use App\Constants\RoleConstant;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Storage;
 use Recurr\Exception\InvalidRRule;
 use Recurr\Exception\InvalidWeekday;
@@ -47,20 +55,70 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationRuleParser;
 use GetStream\StreamChat\Client as StreamClient;
+use Illuminate\Support\Facades\Schema;
+use App\Facades\PasswordRecoveryFacade;
+
+
 
 class TestController extends Controller
 {
     public function index()
     {
-        $shoogler = UserHasShoogle::on()
-            ->where('shoogle_id', '=', 65)
-            ->get('user_id')
-            ->map(function ($item) {
-                return $item->user_id;
-            })
-            ->toArray();
+        $data = 'tyGE9cSXdwDD6HjMx5sw0JziLRSaHzRd5NhwZZwd3RwANZGxnTeytTd4mRv4';
+        $front = '$2y$10$OxJyQT1M6bxbQxhJqgDvHO6KXZdnPHUt0u5fMEhWEDQygDoMRRUo6';
 
-        dd($shoogler);
+//        $token = bcrypt($data);
+                $token = Hash::make($data);
+//                dd($token);
+
+        $tmp = Hash::check($front, $data);
+        dd($tmp);
+
+//        $tmp = \App\Models\PasswordReset::on()->where('email', '=', 'fox3@gmail.com')->count();
+//        dd($tmp);
+//        $code = 19782;
+//        $recoveryCode = User::on()->where('password_recovery_code', '=', $code)->get();
+//        dd( count($recoveryCode) );
+
+
+
+//        $tmp = HelperRole::getRoleByEmail('fox3@gmail.com');
+//        $tmp = HelperRole::getRoleByEmail('superadmin@gmail.com');
+//        $tmp = HelperRole::getRoleByEmail('admin@gmail.com');
+//        dd($tmp);
+
+
+//        $result = Hash::check('92597', '$2y$10$cRdoqE4ApeOxvxEKMtuc4.WXBoV1JZ.1TMhlAn2c.JekymnSUkKQ2');
+//        dd($result);
+
+//        $tmp = PasswordRecoveryService::getCode();
+//        dd($tmp);
+
+//        $keyExists = DB::select(
+//            DB::raw(
+//                "
+//                SHOW KEYS
+//        FROM users
+//        WHERE Key_name='users_email_unique'
+//        "
+//            )
+//        );
+//
+//        dd($keyExists[0]->Key_name);
+
+
+
+//        $usersIDs = User::on()
+//            ->where('company_id', '=', 9)
+//            ->get('id')
+//            ->map(function ($item) {
+//                return $item->id;
+//            })
+//            ->toArray();
+//
+//        dd($usersIDs);
+
+//        User::on()->where('id', '=', 102)->delete();
 
 //        dd(123);
 //        User::on()->where('id', '=', 102)->delete();

@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Models\Company;
+use App\Models\Invite;
 use App\Traits\CompanyTrait;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -79,6 +80,7 @@ class CompanyRepository extends Repositories
                     ) as contact_person_email,
                     (select count(uc.id) from users as uc where uc.company_id = c.id) as users_count
                 from companies as c
+                where c.deleted_at is null
                 order by c.name ' . $order . '
             '));
     }
@@ -135,15 +137,37 @@ class CompanyRepository extends Repositories
                 'name' => $credentials['companyName'],
             ]);
 
-            $user = User::on()->create([
-                'company_id'    => $company->id,
-                'first_name'    => $credentials['firstName'],
-                'last_name'     => $credentials['lastName'],
-                'email'         => $credentials['email'],
-                'password'      => bcrypt($credentials['password']),
-            ]);
+            $user = User::withTrashed()
+                ->where('email', '=', $credentials['email'])
+                ->first();
 
-            $user->assignRole(RoleConstant::COMPANY_ADMIN);
+            if ( ! is_null( $user ) ) {
+                $user->restore();
+                $user->update([
+                    'company_id'        => $company->id,
+                    'department_id'     => null,
+                    'first_name'        => $credentials['firstName'],
+                    'last_name'         => $credentials['lastName'],
+                    'about'             => null,
+                    'email'             => $credentials['email'],
+                    'email_verified_at' => null,
+                    'password'          => bcrypt($credentials['password']),
+                    'remember_token'    => null,
+                    'avatar'            => null,
+                    'rank'              => null,
+                    'profile_image'     => null,
+                ]);
+            } else {
+                $user = User::on()->create([
+                    'company_id'    => $company->id,
+                    'first_name'    => $credentials['firstName'],
+                    'last_name'     => $credentials['lastName'],
+                    'email'         => $credentials['email'],
+                    'password'      => bcrypt($credentials['password']),
+                ]);
+
+                $user->assignRole(RoleConstant::COMPANY_ADMIN);
+            }
 
             $this->sendInvitationToNewCompany($credentials['email']);
         });
@@ -217,11 +241,18 @@ class CompanyRepository extends Repositories
     public function destroy(Company $company): void
     {
         DB::transaction( function () use ($company) {
-            $user = User::where('company_id', $company->id)->first();
-            $user->roles()->detach();
+            $usersIDs = User::on()
+                ->where('company_id', '=', $company->id)
+                ->get('id')
+                ->map(function ($item) {
+                    return $item->id;
+                })
+                ->toArray();
 
-            User::where('company_id', $company->id)->delete();
-            Company::where('id', $company->id)->delete();
+            Invite::on()->whereIn('user_id', $usersIDs)->delete();
+
+            User::on()->where('company_id', '=', $company->id)->delete();
+            Company::on()->where('id', '=', $company->id)->delete();
         });
     }
 }

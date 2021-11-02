@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
+use App\Models\Invite;
 use App\Models\ModelHasRole;
 use App\Models\Role;
 use App\User;
@@ -113,5 +114,18 @@ class UserRepository extends Repositories
                     ->update(['role_id' => $roleId]);
             }
         }
+    }
+
+    /**
+     * Delete user by ID.
+     *
+     * @param int $userId
+     */
+    public function delete(int $userId)
+    {
+        DB::transaction( function () use ($userId) {
+            Invite::on()->where('user_id', '=', $userId)->delete();
+            User::on()->where('id', '=', $userId)->delete();
+        });
     }
 }

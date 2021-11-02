@@ -183,7 +183,7 @@ trait ShooglerTrait
                 break;
             case ShooglerFilterEnum::AVAILABLE:
                 $shooglerMatches = (function ($shoogler) {
-                    if ( $shoogler->baddies === false ) {
+                    if ( $shoogler->baddies === false && $shoogler->solo === false ) {
                         return true;
                     } else {
                         return false;

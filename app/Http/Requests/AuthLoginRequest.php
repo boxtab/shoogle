@@ -29,19 +29,4 @@ class AuthLoginRequest extends ApiRequest
             'password'  => 'required|min:6|max:64',
         ];
     }
-
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array
-     */
-//    public function messages(): array
-//    {
-//        return [
-//            'email.required'    => 'Please enter email.',
-//            'email.exists'      => 'Email not registered.',
-//            'email.email'       => 'Please enter valid email.',
-//            'password.required' => 'Enter your password.',
-//        ];
-//    }
 }

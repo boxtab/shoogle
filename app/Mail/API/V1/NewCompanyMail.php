@@ -28,7 +28,7 @@ class NewCompanyMail extends Mailable
      */
     public function build()
     {
-        return $this->from( config('mail.new_company.email_from') )
+        return $this->from($address = config('mail.new_company.email_from'), $name = 'Shoogle')
             ->subject( config('mail.new_company.subject') )
             ->view('emails.new-company');
     }

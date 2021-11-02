@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Buddie;
 use App\Models\Shoogle;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -82,11 +83,44 @@ class HelperBuddies
             return null;
         }
 
+        $buddie1 = Buddie::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where('user2_id', '=', $userId)
+            ->first('user1_id');
+
+        if ( ! is_null( $buddie1 ) ) {
+            return $buddie1->user1_id;
+        }
+
+        $buddie2 = Buddie::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->where('user1_id', '=', $userId)
+            ->first('user2_id');
+
+        if ( ! is_null( $buddie2 ) ) {
+            return $buddie2->user2_id;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get a buddy.
+     *
+     * @param int|null $shoogleId
+     * @param int|null $userId
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public static function getBuddy(?int $shoogleId, ?int $userId)
+    {
+        if ( is_null($shoogleId) || is_null($userId) ) {
+            return null;
+        }
+
         $user1Id = Buddie::on()
             ->where('shoogle_id', '=', $shoogleId)
             ->where('user2_id', '=', $userId)
-            ->first('user1_id')
-            ->user1_id;
+            ->first();
 
         if ( ! is_null( $user1Id ) ) {
             return $user1Id;
@@ -95,13 +129,24 @@ class HelperBuddies
         $user2Id = Buddie::on()
             ->where('shoogle_id', '=', $shoogleId)
             ->where('user1_id', '=', $userId)
-            ->first('user2_id')
-            ->user2_id;
+            ->first();
 
         if ( ! is_null( $user2Id ) ) {
             return $user2Id;
         }
 
         return null;
+    }
+
+    /**
+     * Cancels friendship.
+     *
+     * @param $buddy
+     */
+    public static function setDisconnectedBuddy(&$buddy)
+    {
+        if ( ! is_null($buddy) ) {
+            $buddy->disconnected = Carbon::now();
+        }
     }
 }

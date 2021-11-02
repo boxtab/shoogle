@@ -65,7 +65,6 @@ class CompanyController extends BaseApiController
     public function show(int $id)
     {
         try {
-
             $company = $this->findRecordByID($id);
             $adminCompany = $this->repository->getAdminByCompanyId($id);
 
@@ -163,7 +162,10 @@ class CompanyController extends BaseApiController
      */
     public function own()
     {
-        $company = Company::where('id', Auth::user()->company_id)->first('name');
+        $company = Company::on()
+            ->where('id', '=', Auth::user()->company_id)
+            ->first('name');
+
         $data = ! is_null($company) ? $company : ['name' => null];
 
         return ApiResponse::returnData($data);

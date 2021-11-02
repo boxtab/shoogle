@@ -39,7 +39,5 @@ class ResetPasswordMail extends Mailable
             ->subject( config('mail.password-recovery.subject') )
             ->view('emails.reset-password')
             ->with('link', $this->link);
-
-//        return $this->view('view.name');
     }
 }

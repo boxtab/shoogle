@@ -12,6 +12,7 @@ use App\Http\Resources\UserListResource;
 use App\Http\Resources\UserProfileAdminResource;
 use App\Http\Resources\UserProfileFrontResource;
 use App\Http\Resources\UserProfileResource;
+use App\Models\Invite;
 use App\Repositories\DepartmentRepository;
 use App\Repositories\UserRepository;
 use App\Support\ApiResponse\ApiResponse;
@@ -141,7 +142,17 @@ class UserController extends BaseApiController
     {
         try {
             $user = $this->findRecordByID($id);
-            $user->destroy($id);
+
+            if ( Auth::user()->roles()->first()->name === RoleConstant::COMPANY_ADMIN) {
+                if ( $user->company_id !== Auth::user()->company_id ) {
+                    throw new Exception(
+                        "The administrator of a company cannot delete a user who is not a member of this company",
+                        Response::HTTP_FORBIDDEN
+                    );
+                }
+            }
+
+            $this->repository->delete( $user->id );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }

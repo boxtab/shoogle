@@ -11,6 +11,8 @@ use App\Helpers\HelperBuddies;
 use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperNotifications;
+use App\Helpers\HelperShoogle;
+use App\Helpers\HelperUser;
 use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\Models\UserHasShoogle;
@@ -19,6 +21,7 @@ use App\Models\Shoogle;
 use App\Services\StreamService;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Database\Concerns\BuildsQueries;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -27,6 +30,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use \Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Buddie;
+use PhpParser\Builder;
+use Tymon\JWTAuth\Providers\Auth\Illuminate;
 
 /**
  * Class BuddyRequestRepository
@@ -82,7 +87,7 @@ class BuddyRequestRepository extends Repositories
 
         DB::transaction(function () use ($shoogleId, $user1Id, $user2Id, $message) {
 
-            BuddyRequest::on()->updateOrCreate(
+            $buddyRequest = BuddyRequest::on()->updateOrCreate(
                 [
                     'shoogle_id'    => $shoogleId,
                     'user1_id'      => $user1Id,
@@ -110,7 +115,7 @@ class BuddyRequestRepository extends Repositories
                 NotificationsTypeConstant::BUDDY_REQUEST_ID,
                 ( ! is_null( $message ) ) ? $message : "$userName has invited you to buddy up"
             );
-            $helperNotification->recordNotificationDetail($shoogleId, $user1Id, $message);
+            $helperNotification->recordNotificationDetail($shoogleId, $user1Id, $message, $buddyRequest->id);
 
         });
     }
@@ -220,13 +225,23 @@ class BuddyRequestRepository extends Repositories
                 'type' => BuddyRequestTypeEnum::CONFIRM,
             ]);
 
+            $userName = HelperUser::getFullName( $buddyRequest->user2_id );
+            $shoogleTitle = HelperShoogle::getTitle( $buddyRequest->shoogle_id );
+            $messageText = "$userName has accepted your invitation to buddy up in $shoogleTitle.";
+
             $helperNotification = new HelperNotifications();
             $helperNotification->sendNotificationToUser(
                 $buddyRequest->user1_id,
                 NotificationsTypeConstant::BUDDY_CONFIRM_ID,
-                NotificationTextConstant::BUDDY_CONFIRM
+                $messageText
             );
-            $helperNotification->recordNotificationDetail($buddyRequest->shoogle_id, $buddyRequest->user1_id);
+            $helperNotification->recordNotificationDetail(
+                $buddyRequest->shoogle_id,
+                $buddyRequest->user2_id,
+                NotificationTextConstant::BUDDY_CONFIRM,
+                $buddyRequest->id,
+                $buddie->id
+            );
 
             $shoogle = Shoogle::on()->where('id', $buddyRequest->shoogle_id)->first();
             $streamService = new StreamService($buddyRequest->shoogle_id);
@@ -248,36 +263,31 @@ class BuddyRequestRepository extends Repositories
     /**
      * Reject friend request.
      *
-     * @param int $buddyRequestId
-     * @throws \Exception
+     * @param \Illuminate\Database\Eloquent\Model|object|static|null $buddyRequest
+     * @throws \GetStream\StreamChat\StreamException
      */
-    public function buddyReject(int $buddyRequestId): void
+    public function buddyReject(BuddyRequest $buddyRequest): void
     {
-        $buddyRequest = BuddyRequest::on()
-            ->where('id', $buddyRequestId)
-            ->first();
-
-        if ( $buddyRequest->type !== BuddyRequestTypeEnum::INVITE ) {
-            throw new \Exception("The type of invitation must be invite!",
-                Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        if ( $buddyRequest->user2_id !== Auth::id() ) {
-            throw new \Exception("Only the one who received it can cancel the invitation!",
-                Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
         $buddyRequest->update([
             'type' => BuddyRequestTypeEnum::REJECT,
         ]);
 
+        $user2Name = HelperUser::getFullName( $buddyRequest->user2_id );
+        $shoogleTitle = HelperShoogle::getTitle( $buddyRequest->shoogle_id );
+        $messageText = "$user2Name has rejected your invitation to buddy up in $shoogleTitle .";
+
         $helperNotification = new HelperNotifications();
         $helperNotification->sendNotificationToUser(
-            $buddyRequest->user2_id,
+            $buddyRequest->user1_id,
             NotificationsTypeConstant::BUDDY_REJECT_ID,
-            NotificationTextConstant::BUDDY_REJECT
+            $messageText
         );
-        $helperNotification->recordNotificationDetail($buddyRequest->shoogle_id, $buddyRequest->user2_id);
+        $helperNotification->recordNotificationDetail(
+            $buddyRequest->shoogle_id,
+            $buddyRequest->user2_id,
+            NotificationTextConstant::BUDDY_REJECT,
+            $buddyRequest->id
+        );
     }
 
     /**
@@ -296,7 +306,7 @@ class BuddyRequestRepository extends Repositories
                 $buddyRequestFields['message'] = $message;
             }
 
-            BuddyRequest::on()
+            $buddyRequest = BuddyRequest::on()
                 ->where('shoogle_id', $shoogleId)
                 ->where(function ($query) use ($buddyId) {
 
@@ -310,9 +320,12 @@ class BuddyRequestRepository extends Repositories
                         });
 
                 })
-                ->update($buddyRequestFields);
+                ->orderBy('created_at', 'DESC')
+                ->first();
 
-            Buddie::on()
+            $buddyRequest->update($buddyRequestFields);
+
+            $buddie = Buddie::on()
                 ->whereNull('disconnected_at')
                 ->where('shoogle_id', $shoogleId)
                 ->where(function ($query) use ($buddyId) {
@@ -327,13 +340,23 @@ class BuddyRequestRepository extends Repositories
                         });
 
                 })
-                ->update([
-                    'disconnected_at' => Carbon::now(),
-                ]);
+                ->orderBy('created_at', 'DESC')
+                ->first();
+
+            $buddie->update([
+                'disconnected_at' => Carbon::now(),
+            ]);
+
+            $userName = HelperUser::getFullName( Auth::id() );
+            $shoogleTitle = HelperShoogle::getTitle( $shoogleId );
+            $messageText = "$userName left $shoogleTitle. You are no longer buddied.";
 
             $helperNotification = new HelperNotifications();
-            $helperNotification->sendNotificationToUser($buddyId, NotificationsTypeConstant::BUDDY_DISCONNECT_ID, $message);
-            $helperNotification->recordNotificationDetail($shoogleId, Auth::id(), $message);
+            $helperNotification->sendNotificationToUser($buddyId, NotificationsTypeConstant::BUDDY_DISCONNECT_ID, $messageText);
+
+            $buddyRequestId = ( ! is_null( $buddyRequest ) ) ? $buddyRequest->id : null;
+            $buddieId = ( ! is_null( $buddie ) ) ? $buddie->id : null;
+            $helperNotification->recordNotificationDetail($shoogleId, Auth::id(), $message, $buddyRequestId, $buddieId);
         });
     }
 }
