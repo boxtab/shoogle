@@ -35,10 +35,10 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'shared/v1'], function () {
 
     // POST /api/shared/v1/logout
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth:api');
+    Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
 
     // POST /api/shared/v1/login
-    Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('login', [AuthController::class, 'login']);
 
     // POST /api/shared/v1/password/forgot
     Route::post('password/forgot', [AuthController::class, 'passwordForgot']);
