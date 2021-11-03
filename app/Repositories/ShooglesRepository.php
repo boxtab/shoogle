@@ -289,7 +289,7 @@ class ShooglesRepository extends Repositories
                 ->update(['left_at' => Carbon::now()]);
 
             $buddy = HelperBuddies::getBuddy($shoogle->id, Auth::id());
-            HelperBuddies::setDisconnectedBuddy($buddy);
+            HelperBuddies::setDisconnectedBuddy($buddy->id);
 
             $buddyRequest = HelperBuddyRequest::getBuddyRequest($shoogle->id, Auth::id());
             HelperBuddyRequest::setTypeBuddyRequest($buddyRequest, BuddyRequestTypeEnum::DISCONNECT);
