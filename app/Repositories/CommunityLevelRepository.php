@@ -5,6 +5,9 @@ namespace App\Repositories;
 use App\Helpers\HelperCompany;
 use App\Models\WellbeingScores;
 use App\Traits\CommunityLevelDayTrait;
+use App\Traits\CommunityLevelDifferenceValue;
+use App\Traits\CommunityLevelIsGrewTrait;
+use App\Traits\CommunityLevelValueTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -15,6 +18,10 @@ use Illuminate\Support\Facades\Log;
 class CommunityLevelRepository extends Repositories
 {
     use CommunityLevelDayTrait;
+
+    use CommunityLevelDifferenceValue;
+    use CommunityLevelIsGrewTrait;
+    use CommunityLevelValueTrait;
 
     /**
      * @var array Company data by wellbeing category.
@@ -55,10 +62,38 @@ class CommunityLevelRepository extends Repositories
     public function getWellbeingCategory($companyId, int $period)
     {
         $userIDs = HelperCompany::getArrayUserIds($companyId);
+        $periodBegin = $this->getNDaysAgo($period);
+        $periodEnd = $this->getToday();
 
-        $today = $this->getToday();
+        $differenceValue = $this->getDifferenceValue($userIDs, $periodBegin, $periodEnd);
+        $isGrew = $this->getIsGrew($userIDs, $periodBegin, $periodEnd);
+        $value = $this->getValue($userIDs, $periodBegin, $periodEnd);
 
-        Log::info($today);
+        $this->fillTheField($differenceValue, 'differenceValue');
+        $this->fillTheField($isGrew, 'isGrew');
+        $this->fillTheField($value, 'value');
+
         return $this->wellbeingCategory;
+    }
+
+    /**
+     * Fill in data by key.
+     *
+     * @param array|null $data
+     * @param string|null $field
+     */
+    private function fillTheField(?array $data, ?string $field): void
+    {
+        if ( is_null($data) || is_null($field) ) {
+            return;
+        }
+
+        foreach ($this->wellbeingCategory as $key => $category) {
+            if ( array_key_exists($key, $data) ) {
+                if ( array_key_exists($field, $this->wellbeingCategory[$key]) ) {
+                    $this->wellbeingCategory[$key][$field] = $data[$key];
+                }
+            }
+        }
     }
 }

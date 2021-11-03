@@ -18,9 +18,11 @@ trait CommunityLevelDayTrait
      */
     private function getNDaysAgo(?int $nDay): string
     {
-        if ( is_null($nDay) || $nDay < 1 ) {
-            return 1;
+        if ( is_null($nDay) ) {
+            $nDay = 0;
         }
+
+        return Carbon::now()->subDays($nDay)->toDateString();
     }
 
     /**

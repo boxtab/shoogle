@@ -67,9 +67,13 @@ class TestController extends Controller
 {
     public function index()
     {
-        $test = HelperCompany::getArrayUserIds(0);
-        dd($test);
+        $tmp = Carbon::now()->subDays(0)->toDateString();
+        dd($tmp);
 
+
+
+//        $test = HelperCompany::getArrayUserIds(0);
+//        dd($test);
 
 //        $data = 'tyGE9cSXdwDD6HjMx5sw0JziLRSaHzRd5NhwZZwd3RwANZGxnTeytTd4mRv4';
 //        $front = '$2y$10$OxJyQT1M6bxbQxhJqgDvHO6KXZdnPHUt0u5fMEhWEDQygDoMRRUo6';
