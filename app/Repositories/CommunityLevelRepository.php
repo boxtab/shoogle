@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Helpers\HelperCompany;
 use App\Models\WellbeingScores;
+use App\Traits\CommunityLevelDayTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
@@ -12,6 +14,8 @@ use Illuminate\Support\Facades\Log;
  */
 class CommunityLevelRepository extends Repositories
 {
+    use CommunityLevelDayTrait;
+
     /**
      * @var array Company data by wellbeing category.
      */
@@ -50,7 +54,11 @@ class CommunityLevelRepository extends Repositories
      */
     public function getWellbeingCategory($companyId, int $period)
     {
-        Log::info('test');
+        $userIDs = HelperCompany::getArrayUserIds($companyId);
+
+        $today = $this->getToday();
+
+        Log::info($today);
         return $this->wellbeingCategory;
     }
 }
