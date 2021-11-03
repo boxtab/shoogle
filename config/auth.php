@@ -111,7 +111,8 @@ return [
             'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
-            'throttle' => 60,
+            'throttle' => 3,
+//          old value  'throttle' => 60,
         ],
     ],
 

@@ -6,6 +6,7 @@ use App\Constants\RewardConstant;
 use App\Helpers\Helper;
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperChat;
+use App\Helpers\HelperCompany;
 use App\Helpers\HelperDateTime;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
@@ -58,21 +59,27 @@ use GetStream\StreamChat\Client as StreamClient;
 use Illuminate\Support\Facades\Schema;
 use App\Facades\PasswordRecoveryFacade;
 
-
-
+/**
+ * Class TestController
+ * @package App\Http\Controllers
+ */
 class TestController extends Controller
 {
     public function index()
     {
-        $data = 'tyGE9cSXdwDD6HjMx5sw0JziLRSaHzRd5NhwZZwd3RwANZGxnTeytTd4mRv4';
-        $front = '$2y$10$OxJyQT1M6bxbQxhJqgDvHO6KXZdnPHUt0u5fMEhWEDQygDoMRRUo6';
+        $test = HelperCompany::getArrayUserIds(0);
+        dd($test);
+
+
+//        $data = 'tyGE9cSXdwDD6HjMx5sw0JziLRSaHzRd5NhwZZwd3RwANZGxnTeytTd4mRv4';
+//        $front = '$2y$10$OxJyQT1M6bxbQxhJqgDvHO6KXZdnPHUt0u5fMEhWEDQygDoMRRUo6';
 
 //        $token = bcrypt($data);
-                $token = Hash::make($data);
+//                $token = Hash::make($data);
 //                dd($token);
 
-        $tmp = Hash::check($front, $data);
-        dd($tmp);
+//        $tmp = Hash::check($front, $data);
+//        dd($tmp);
 
 //        $tmp = \App\Models\PasswordReset::on()->where('email', '=', 'fox3@gmail.com')->count();
 //        dd($tmp);
