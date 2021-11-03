@@ -131,7 +131,7 @@ class WellbeingScoresRepository extends Repositories
      * @param string|null $to
      * @return object|null
      */
-    private function getAverageFromArrayUsers(array $arrayUserId, string $from = null, string $to=null): ?object
+    public function getAverageFromArrayUsers(array $arrayUserId, string $from = null, string $to=null): ?object
     {
         $countUser = count($arrayUserId);
 

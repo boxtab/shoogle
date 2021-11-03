@@ -7,6 +7,7 @@ use App\Models\WellbeingScores;
 use App\Traits\CommunityLevelDayTrait;
 use App\Traits\CommunityLevelDifferenceValue;
 use App\Traits\CommunityLevelIsGrewTrait;
+use App\Traits\CommunityLevelUserTrait;
 use App\Traits\CommunityLevelValueTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 class CommunityLevelRepository extends Repositories
 {
     use CommunityLevelDayTrait;
+    use CommunityLevelUserTrait;
 
     use CommunityLevelDifferenceValue;
     use CommunityLevelIsGrewTrait;
@@ -61,9 +63,9 @@ class CommunityLevelRepository extends Repositories
      */
     public function getWellbeingCategory($companyId, int $period)
     {
-        $userIDs = HelperCompany::getArrayUserIds($companyId);
         $periodBegin = $this->getNDaysAgo($period);
         $periodEnd = $this->getToday();
+        $userIDs = $this->getUserIDs($companyId, $periodBegin, $periodEnd);
 
         $differenceValue = $this->getDifferenceValue($userIDs, $periodBegin, $periodEnd);
         $isGrew = $this->getIsGrew($userIDs, $periodBegin, $periodEnd);

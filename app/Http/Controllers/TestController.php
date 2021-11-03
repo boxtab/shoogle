@@ -22,6 +22,7 @@ use App\Helpers\HelperShoogleStatistic;
 use App\Helpers\HelperShooglesViews;
 use App\Helpers\HelperStream;
 use App\Helpers\HelperUser;
+use App\Helpers\HelperWellbeing;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
@@ -32,6 +33,7 @@ use App\Repositories\TestRepository;
 use App\Services\NotificClientService;
 use App\Services\PasswordRecoveryService;
 use App\Services\RruleService;
+use App\Traits\CommunityLevelValueTrait;
 use Carbon\Carbon;
 use Database\Seeders\IconRewardsSeeder;
 use DateInterval;
@@ -43,6 +45,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Storage;
 use Recurr\Exception\InvalidRRule;
@@ -65,9 +68,20 @@ use App\Facades\PasswordRecoveryFacade;
  */
 class TestController extends Controller
 {
+    use CommunityLevelValueTrait;
+
     public function index()
     {
-        $tmp = Carbon::now()->subDays(0)->toDateString();
+//        $from = '2021-10-08';
+//        $to = '2021-10-08';
+//        $userIDs = HelperWellbeing::getUniqueUserIDsPerPeriod($from, $to);
+//        dd($userIDs);
+
+        $userIDs = [30, 60];
+        $periodBegin = '2021-09-20';
+        $periodEnd = '2021-10-07';
+
+        $tmp = $this->getValue($userIDs, $periodBegin, $periodEnd);
         dd($tmp);
 
 
