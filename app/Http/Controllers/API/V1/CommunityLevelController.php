@@ -8,6 +8,8 @@ use App\Http\Requests\CommunityLevelStatisticRequest;
 use App\Repositories\CommunityLevelRepository;
 use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Exception;
 
 /**
  * Class CommunityLevelController
@@ -24,8 +26,20 @@ class CommunityLevelController extends BaseApiController
         $this->repository = $communityLevelRepository;
     }
 
+    /**
+     * Well-being points statistics for the selected period.
+     * 
+     * @param CommunityLevelStatisticRequest $request
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
     public function statistic(CommunityLevelStatisticRequest $request)
     {
-        return ApiResponse::returnData(['test' => 1234567]);
+        try {
+             null;
+         } catch (Exception $e) {
+             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+         }
+
+         return ApiResponse::returnData([]);
     }
 }
