@@ -39,15 +39,14 @@ class HelperNotifications
      * @param string $message
      * @throws StreamException
      */
-    public function sendNotificationToUser(int $userId, int $typeId, string $message)
+    public function sendNotificationToUser(int $userId, int $typeId, string $message = '', string $title = '')
     {
         $listDevices = $this->streamClient->getDevices('user' . $userId);
+        $notificationId = $this->recordNotification($userId, $typeId, $message);
         foreach ($listDevices['devices'] as $device) {
             if (isset($device['disabled'])) continue;
-            $this->sendGCM($message, $device['id']);
+            $this->sendGCM($message, $device['id'], ['notificationId' => (string)$notificationId]);
         }
-
-        $this->recordNotification($userId, $typeId, $message);
     }
 
     /**
@@ -106,10 +105,10 @@ class HelperNotifications
      * @param int|null $typeId
      * @param string|null $message
      */
-    private function recordNotification(?int $userId, ?int $typeId, ?string $message): void
+    private function recordNotification(?int $userId, ?int $typeId, ?string $message)
     {
         if ( is_null( $userId ) || is_null( $typeId ) ) {
-            return;
+            return null;
         }
 
         $this->notificationToUser = NotificationToUser::on()->create([
@@ -117,6 +116,7 @@ class HelperNotifications
             'type_id' => $typeId,
             'notification' => $message,
         ]);
+        return $this->notificationToUser->id;
     }
 
     /**
