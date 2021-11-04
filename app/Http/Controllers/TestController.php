@@ -72,17 +72,45 @@ class TestController extends Controller
 
     public function index()
     {
+        $a = [
+            'social'        => 1,
+            'physical'      => 1,
+            'mental'        => 1,
+            'economical'    => 1,
+            'spiritual'     => 1,
+            'emotional'     => 1,
+            'intellectual'  => 1,
+        ];
+
+        $b = [
+            'social'        => 2,
+            'physical'      => 2,
+            'mental'        => 2,
+            'economical'    => 2,
+            'spiritual'     => 2,
+            'emotional'     => 2,
+            'intellectual'  => 2,
+        ];
+
+        $c = [];
+
+        foreach ($a as $key => $value) {
+            $c[$key] = $value + $b[$key];
+        }
+
+        dd($c);
+
 //        $from = '2021-10-08';
 //        $to = '2021-10-08';
 //        $userIDs = HelperWellbeing::getUniqueUserIDsPerPeriod($from, $to);
 //        dd($userIDs);
 
-        $userIDs = [30, 60];
-        $periodBegin = '2021-09-20';
-        $periodEnd = '2021-10-07';
-
-        $tmp = $this->getValue($userIDs, $periodBegin, $periodEnd);
-        dd($tmp);
+//        $userIDs = [30, 60];
+//        $periodBegin = '2021-09-20';
+//        $periodEnd = '2021-10-07';
+//
+//        $tmp = $this->getValue($userIDs, $periodBegin, $periodEnd);
+//        dd($tmp);
 
 
 

@@ -27,4 +27,20 @@ class HelperCalculate
 
         return $data;
     }
+
+    /**
+     * Rounding a number.
+     *
+     * @param float|null $data
+     * @param int|null $precision
+     * @return float|null
+     */
+    public static function roundingNumber(?float $data, ?int $precision): ?float
+    {
+        if ( is_null( $precision ) ) {
+            return $data;
+        }
+
+        return round($data, $precision);
+    }
 }

@@ -2,12 +2,18 @@
 
 namespace App\Traits;
 
+use App\Constants\WellbeingConstant;
+use App\Helpers\HelperCalculate;
+use Illuminate\Support\Facades\Log;
+
 /**
  * Trait CommunityLevelDifferenceValue
  * @package App\Traits
  */
 trait CommunityLevelDifferenceValue
 {
+    use CommunityLevelDailyAverage;
+
     /**
      * Period Difference Calculation.
      *
@@ -18,6 +24,19 @@ trait CommunityLevelDifferenceValue
      */
     private function getDifferenceValue(?array $userIDs, string $periodBegin, string $periodEnd): ?array
     {
-        return null;
+        $dayA = $this->getDailyAverage($userIDs, $periodBegin);
+        $dayB = $this->getDailyAverage($userIDs, $periodEnd);
+
+        $percent = [];
+
+        foreach ($dayA as $keyA => $valueA) {
+            if ( $valueA !== 0 ) {
+                $percent[$keyA] = ($dayB[$keyA] - $valueA) / $valueA * 100;
+            } else {
+                $percent[$keyA] = null;
+            }
+        }
+
+        return HelperCalculate::roundingArray($percent, WellbeingConstant::PRECISION);
     }
 }

@@ -2,6 +2,10 @@
 
 namespace App\Traits;
 
+use App\Constants\WellbeingConstant;
+use App\Helpers\HelperCalculate;
+use Illuminate\Support\Facades\Log;
+
 /**
  * Trait CommunityLevelIsGrewTrait
  * @package App\Traits
@@ -18,6 +22,25 @@ trait CommunityLevelIsGrewTrait
      */
     private function getIsGrew(?array $userIDs, string $periodBegin, string $periodEnd): ?array
     {
-        return null;
+        $dayA = $this->getDailyAverage($userIDs, $periodBegin);
+        $dayB = $this->getDailyAverage($userIDs, $periodEnd);
+
+        $grew = [];
+
+        foreach ($dayA as $keyA => $valueA) {
+            if ( ($dayB[$keyA] - $valueA) == 0 ) {
+                $grew[$keyA] = null;
+            }
+
+            if ( ($dayB[$keyA] - $valueA) > 0 ) {
+                $grew[$keyA] = true;
+            }
+
+            if ( ($dayB[$keyA] - $valueA) < 0 ) {
+                $grew[$keyA] = false;
+            }
+        }
+
+        return $grew;
     }
 }
