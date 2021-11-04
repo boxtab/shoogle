@@ -58,22 +58,25 @@ class CommunityLevelRepository extends Repositories
      * Company statistics by wellbeing category.
      *
      * @param $companyId
-     * @param int $period
+     * @param string|null $from
+     * @param string|null $to
      * @return array
      */
-    public function getWellbeingCategory($companyId, int $period)
+    public function getWellbeingCategory($companyId, ?string $from, ?string $to)
     {
-        $periodBegin = $this->getNDaysAgo($period);
-        $periodEnd = $this->getToday();
+//        $periodBegin = $this->getNDaysAgo($period);
+//        $periodEnd = $this->getToday();
+        $periodBegin = $to;
+        $periodEnd = $from;
         $userIDs = $this->getUserIDs($companyId, $periodBegin, $periodEnd);
 
-        $differenceValue = $this->getDifferenceValue($userIDs, $periodBegin, $periodEnd);
-        $isGrew = $this->getIsGrew($userIDs, $periodBegin, $periodEnd);
-        $value = $this->getValue($userIDs, $periodBegin, $periodEnd);
-
-        $this->fillTheField($differenceValue, 'differenceValue');
-        $this->fillTheField($isGrew, 'isGrew');
-        $this->fillTheField($value, 'value');
+//        $differenceValue = $this->getDifferenceValue($userIDs, $periodBegin, $periodEnd);
+//        $isGrew = $this->getIsGrew($userIDs, $periodBegin, $periodEnd);
+//        $value = $this->getValue($userIDs, $periodBegin, $periodEnd);
+//
+//        $this->fillTheField($differenceValue, 'differenceValue');
+//        $this->fillTheField($isGrew, 'isGrew');
+//        $this->fillTheField($value, 'value');
 
         return $this->wellbeingCategory;
     }

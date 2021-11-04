@@ -42,4 +42,21 @@ class HelperDateTime
     {
         return date('Y-m-d H:i:s', strtotime('+1 year', strtotime($datetime)));
     }
+
+    /**
+     * Date from must be less than date to.
+     *
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
+     * @return bool
+     */
+    public static function checkDateFromLessDateTo(?string $dateFrom, ?string $dateTo): bool
+    {
+        if ( ! is_null($dateFrom) && ! is_null($dateTo) ) {
+            if ( strtotime($dateFrom) > strtotime($dateTo) ) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

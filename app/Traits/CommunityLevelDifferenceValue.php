@@ -18,11 +18,11 @@ trait CommunityLevelDifferenceValue
      * Period Difference Calculation.
      *
      * @param array|null $userIDs
-     * @param string $periodBegin
-     * @param string $periodEnd
+     * @param string|null $periodBegin
+     * @param string|null $periodEnd
      * @return array|null
      */
-    private function getDifferenceValue(?array $userIDs, string $periodBegin, string $periodEnd): ?array
+    private function getDifferenceValue(?array $userIDs, ?string $periodBegin, ?string $periodEnd): ?array
     {
         $dayA = $this->getDailyAverage($userIDs, $periodBegin);
         $dayB = $this->getDailyAverage($userIDs, $periodEnd);

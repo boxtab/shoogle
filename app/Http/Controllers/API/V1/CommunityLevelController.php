@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Helper;
+use App\Helpers\HelperDateTime;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommunityLevelStatisticRequest;
@@ -37,14 +38,18 @@ class CommunityLevelController extends BaseApiController
     public function statistic(CommunityLevelStatisticRequest $request)
     {
         try {
-            $period = $request->get('period');
-
             $companyId = Helper::getCompanyIdFromJWT();
             if ( is_null($companyId) ) {
                 throw new Exception('The company ID was not found for the current user.', Response::HTTP_NOT_FOUND);
             }
 
-            $wellbeingCategory = $this->repository->getWellbeingCategory($companyId, $period);
+            $dateFrom = $request->get('from');
+            $dateTo = $request->get('to');
+            if ( ! HelperDateTime::checkDateFromLessDateTo($dateFrom, $dateTo) ) {
+                throw new Exception('Date from must be less than date to.', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $wellbeingCategory = $this->repository->getWellbeingCategory($companyId, $dateFrom, $dateTo);
 
          } catch (Exception $e) {
              return ApiResponse::returnError($e->getMessage(), $e->getCode());

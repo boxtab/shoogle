@@ -15,11 +15,11 @@ trait CommunityLevelUserTrait
      * Get unique identifiers of users of one company who have well-being points for a period.
      *
      * @param int $companyId
-     * @param string $periodBegin
-     * @param string $periodEnd
+     * @param string|null $periodBegin
+     * @param string|null $periodEnd
      * @return array|null
      */
-    private function getUserIDs(int $companyId, string $periodBegin, string $periodEnd): ?array
+    private function getUserIDs(int $companyId, ?string $periodBegin, ?string $periodEnd): ?array
     {
         $userIDsCompany = HelperCompany::getArrayUserIds($companyId);
         $userIDsPeriod = HelperWellbeing::getUniqueUserIDsPerPeriod($periodBegin, $periodEnd);
