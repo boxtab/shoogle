@@ -20,7 +20,7 @@ class HelperWellbeing
      */
     public static function getUniqueUserIDsPerPeriod(?string $from, ?string $to): ?array
     {
-        $userIDs = WellbeingScores::on()
+        return WellbeingScores::on()
             ->when( (! is_null($from)) && (! is_null($to)), function($query) use ($from, $to) {
                 return $query->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
             })
@@ -30,8 +30,5 @@ class HelperWellbeing
                 return $item->user_id;
             })
             ->toArray();
-
-
-        return $userIDs;
     }
 }

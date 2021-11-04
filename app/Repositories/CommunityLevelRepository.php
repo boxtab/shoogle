@@ -69,6 +69,7 @@ class CommunityLevelRepository extends Repositories
         $periodBegin = $to;
         $periodEnd = $from;
         $userIDs = $this->getUserIDs($companyId, $periodBegin, $periodEnd);
+        Log::info($userIDs);
 
 //        $differenceValue = $this->getDifferenceValue($userIDs, $periodBegin, $periodEnd);
 //        $isGrew = $this->getIsGrew($userIDs, $periodBegin, $periodEnd);

@@ -59,4 +59,24 @@ class HelperDateTime
         }
         return true;
     }
+
+    /**
+     * Pair check.
+     *
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
+     * @return bool
+     */
+    public static function checkDatePair(?string $dateFrom, ?string $dateTo): bool
+    {
+        if ( is_null($dateFrom) && ! is_null($dateTo) ) {
+            return true;
+        }
+
+        if ( ! is_null($dateFrom) && is_null($dateTo) ) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -49,6 +49,10 @@ class CommunityLevelController extends BaseApiController
                 throw new Exception('Date from must be less than date to.', Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
+            if ( HelperDateTime::checkDatePair($dateFrom, $dateTo) ) {
+                throw new Exception('Both dates must be filled in or both are empty.', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
             $wellbeingCategory = $this->repository->getWellbeingCategory($companyId, $dateFrom, $dateTo);
 
          } catch (Exception $e) {
