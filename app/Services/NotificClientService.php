@@ -6,6 +6,7 @@ use App\Constants\NotificationsTypeConstant;
 use App\Constants\NotificationTextConstant;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNotifications;
+use App\Models\Shoogle;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -45,11 +46,18 @@ class NotificClientService
 
             if ( $needToSend ) {
 
+                $shoogle = Shoogle::on()
+                    ->where('id', '=', $lineUser['shoogle_id'])
+                    ->first();
+                $shoogleTitle = ( ! is_null($shoogle) ) ? $shoogle->title : null;
+
+
+
                 $helper = new HelperNotifications();
                 $helper->sendNotificationToUser(
                     $lineUser['user_id'],
                     NotificationsTypeConstant::SCHEDULER_ID,
-                    NotificationTextConstant::SCHEDULER
+                    $shoogleTitle
                 );
                 $countSendNotific++;
                 /*

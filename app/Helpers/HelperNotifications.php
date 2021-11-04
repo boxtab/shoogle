@@ -39,7 +39,7 @@ class HelperNotifications
      * @param string $message
      * @throws StreamException
      */
-    public function sendNotificationToUser(int $userId, int $typeId, string $message = '', string $title = '')
+    public function sendNotificationToUser(int $userId, int $typeId, string $message = '')
     {
         $listDevices = $this->streamClient->getDevices('user' . $userId);
         $notificationId = $this->recordNotification($userId, $typeId, $message);
@@ -104,6 +104,7 @@ class HelperNotifications
      * @param int|null $userId
      * @param int|null $typeId
      * @param string|null $message
+     * @return int|mixed|null
      */
     private function recordNotification(?int $userId, ?int $typeId, ?string $message)
     {

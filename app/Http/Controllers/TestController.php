@@ -72,33 +72,41 @@ class TestController extends Controller
 
     public function index()
     {
-        $a = [
-            'social'        => 1,
-            'physical'      => 1,
-            'mental'        => 1,
-            'economical'    => 1,
-            'spiritual'     => 1,
-            'emotional'     => 1,
-            'intellectual'  => 1,
-        ];
+        $shoogle = Shoogle::on()
+            ->where('id', '=', 2)
+            ->first();
+        $shoogleTitle = ( ! is_null($shoogle) ) ? $shoogle->title : null;
 
-        $b = [
-            'social'        => 2,
-            'physical'      => 2,
-            'mental'        => 2,
-            'economical'    => 2,
-            'spiritual'     => 2,
-            'emotional'     => 2,
-            'intellectual'  => 2,
-        ];
 
-        $c = [];
+        dd($shoogleTitle);
 
-        foreach ($a as $key => $value) {
-            $c[$key] = $value + $b[$key];
-        }
-
-        dd($c);
+//        $a = [
+//            'social'        => 1,
+//            'physical'      => 1,
+//            'mental'        => 1,
+//            'economical'    => 1,
+//            'spiritual'     => 1,
+//            'emotional'     => 1,
+//            'intellectual'  => 1,
+//        ];
+//
+//        $b = [
+//            'social'        => 2,
+//            'physical'      => 2,
+//            'mental'        => 2,
+//            'economical'    => 2,
+//            'spiritual'     => 2,
+//            'emotional'     => 2,
+//            'intellectual'  => 2,
+//        ];
+//
+//        $c = [];
+//
+//        foreach ($a as $key => $value) {
+//            $c[$key] = $value + $b[$key];
+//        }
+//
+//        dd($c);
 
 //        $from = '2021-10-08';
 //        $to = '2021-10-08';
