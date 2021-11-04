@@ -159,7 +159,7 @@ class ShooglesController extends BaseApiController
      */
     public function soloYes(int $id = null)
     {
-        $this->repository->soloChange($id, true);
+//        $this->repository->soloChange($id, true);
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
     }
 
@@ -171,7 +171,7 @@ class ShooglesController extends BaseApiController
      */
     public function soloNo(int $id = null)
     {
-        $this->repository->soloChange($id, false);
+//        $this->repository->soloChange($id, false);
         return ApiResponse::returnData([], Response::HTTP_NO_CONTENT);
     }
 

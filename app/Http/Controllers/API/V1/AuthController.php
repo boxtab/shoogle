@@ -219,7 +219,7 @@ class AuthController extends BaseApiController
             $resetPasswordMobileMail->to($email);
             Mail::send($resetPasswordMobileMail);
 
-            return ApiResponse::returnData(['code' => $code]);
+            return ApiResponse::returnData(['status' => 'A verification code has been sent to your email address']);
 
         }
     }

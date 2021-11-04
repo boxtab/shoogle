@@ -141,12 +141,16 @@ class HelperBuddies
     /**
      * Cancels friendship.
      *
-     * @param $buddy
+     * @param int|null $buddyId
      */
-    public static function setDisconnectedBuddy(&$buddy)
+    public static function setDisconnectedBuddy(?int $buddyId)
     {
-        if ( ! is_null($buddy) ) {
-            $buddy->disconnected = Carbon::now();
+        if ( ! is_null($buddyId) ) {
+            Buddie::on()
+                ->where('id', '=', $buddyId)
+                ->update([
+                    'disconnected_at' => Carbon::now()
+                ]);
         }
     }
 }

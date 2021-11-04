@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Helpers\Helper;
+use App\Helpers\HelperDateTime;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommunityLevelStatisticRequest;
 use App\Repositories\CommunityLevelRepository;
 use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class CommunityLevelController
@@ -24,8 +29,32 @@ class CommunityLevelController extends BaseApiController
         $this->repository = $communityLevelRepository;
     }
 
+    /**
+     * Well-being points statistics for the selected period.
+     *
+     * @param CommunityLevelStatisticRequest $request
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
     public function statistic(CommunityLevelStatisticRequest $request)
     {
-        return ApiResponse::returnData(['test' => 1234567]);
+        try {
+            $companyId = Helper::getCompanyIdFromJWT();
+            if ( is_null($companyId) ) {
+                throw new Exception('The company ID was not found for the current user.', Response::HTTP_NOT_FOUND);
+            }
+
+            $dateFrom = $request->get('from');
+            $dateTo = $request->get('to');
+            if ( ! HelperDateTime::checkDateFromLessDateTo($dateFrom, $dateTo) ) {
+                throw new Exception('Date from must be less than date to.', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $wellbeingCategory = $this->repository->getWellbeingCategory($companyId, $dateFrom, $dateTo);
+
+         } catch (Exception $e) {
+             return ApiResponse::returnError($e->getMessage(), $e->getCode());
+         }
+
+         return ApiResponse::returnData($wellbeingCategory);
     }
 }
