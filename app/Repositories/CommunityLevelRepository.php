@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Helpers\HelperCompany;
 use App\Models\WellbeingScores;
+use App\Traits\CommunityLevelDataEmpty;
 use App\Traits\CommunityLevelDayTrait;
 use App\Traits\CommunityLevelDifferenceValue;
 use App\Traits\CommunityLevelIsGrewTrait;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Log;
  */
 class CommunityLevelRepository extends Repositories
 {
+    use CommunityLevelDataEmpty;
+
     use CommunityLevelDayTrait;
     use CommunityLevelUserTrait;
 
@@ -58,18 +61,19 @@ class CommunityLevelRepository extends Repositories
      * Company statistics by wellbeing category.
      *
      * @param $companyId
-     * @param string|null $from
-     * @param string|null $to
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
      * @return array
      */
-    public function getWellbeingCategory($companyId, ?string $from, ?string $to)
+    public function getWellbeingCategory($companyId, ?string $dateFrom, ?string $dateTo)
     {
+        if ( ! $this->isEmptyDate($companyId, $dateFrom, $dateTo) ) {
 //        $periodBegin = $this->getNDaysAgo($period);
 //        $periodEnd = $this->getToday();
-        $periodBegin = $to;
-        $periodEnd = $from;
-        $userIDs = $this->getUserIDs($companyId, $periodBegin, $periodEnd);
-        Log::info($userIDs);
+            $periodBegin = $dateFrom;
+            $periodEnd = $dateTo;
+            $userIDs = $this->getUserIDs($companyId, $periodBegin, $periodEnd);
+//        Log::info($userIDs);
 
 //        $differenceValue = $this->getDifferenceValue($userIDs, $periodBegin, $periodEnd);
 //        $isGrew = $this->getIsGrew($userIDs, $periodBegin, $periodEnd);
@@ -78,6 +82,7 @@ class CommunityLevelRepository extends Repositories
 //        $this->fillTheField($differenceValue, 'differenceValue');
 //        $this->fillTheField($isGrew, 'isGrew');
 //        $this->fillTheField($value, 'value');
+        }
 
         return $this->wellbeingCategory;
     }
