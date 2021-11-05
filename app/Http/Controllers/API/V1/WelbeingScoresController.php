@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Helper;
+use App\Helpers\HelperDateTime;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WellbeingScoresAverageRequest;
 use App\Http\Requests\WellbeingScoresStoreRequest;
@@ -93,16 +94,22 @@ class WelbeingScoresController extends BaseApiController
      * The average of the user wellbeing scores.
      *
      * @param int $userId
-     * @param string|null $from
-     * @param string|null $to
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
      * @return \Illuminate\Http\JsonResponse|Response
      */
-    private function getAverageUser(int $userId, ?string $from, ?string $to)
+    private function getAverageUser(int $userId, ?string $dateFrom, ?string $dateTo)
     {
         try {
-            $average = $this->repository->getAverageUser( $userId, $from, $to );
+            $this->repository->existsUser($userId);
+
+            if ( ! HelperDateTime::checkDateFromLessDateTo($dateFrom, $dateTo) ) {
+                throw new Exception('Date from must be less than date to.', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $average = $this->repository->getAverageUser( $userId, $dateFrom, $dateTo );
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage());
         }
 
         $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);

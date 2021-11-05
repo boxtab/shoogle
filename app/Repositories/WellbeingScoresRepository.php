@@ -40,6 +40,21 @@ class WellbeingScoresRepository extends Repositories
     }
 
     /**
+     * Checking a user for existence.
+     *
+     * @param int $userId
+     * @throws Exception
+     */
+    public function existsUser(int $userId): void
+    {
+        $user = User::on()->find($userId);
+
+        if ( is_null( $user ) ) {
+            throw new Exception('User not found by ID.', Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
      * If the user does not exist then throw an exception.
      *
      * @param int $id
@@ -47,9 +62,9 @@ class WellbeingScoresRepository extends Repositories
      */
     public function existsShoogle(int $id): void
     {
-        $user = Shoogle::on()->find($id);
+        $shoogle = Shoogle::on()->find($id);
 
-        if ( is_null( $user ) ) {
+        if ( is_null( $shoogle ) ) {
             throw new Exception('Shoogle not found for this ID', Response::HTTP_NOT_FOUND);
         }
     }
@@ -88,11 +103,11 @@ class WellbeingScoresRepository extends Repositories
      * Calculate the average well-being for one user.
      *
      * @param int $userId
-     * @param string|null $from
-     * @param string|null $to
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
      * @return object
      */
-    public function getAverageUser(int $userId, string $from = null, string $to = null): ?object
+    public function getAverageUser(int $userId, ?string $dateFrom, ?string $dateTo): ?object
     {
         $selection = $this->model->on()
             ->select(DB::raw('
@@ -104,9 +119,18 @@ class WellbeingScoresRepository extends Repositories
                     emotional,
                     intellectual
                 '))
-            ->when( (! is_null($from)) && (! is_null($to)), function($query) use ($from, $to) {
-                return $query->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+//            ->when( (! is_null($dateFrom)) && (! is_null($dateTo)), function($query) use ($dateFrom, $dateTo) {
+//                return $query->whereBetween('created_at', [$dateFrom . ' 00:00:00', $dateTo . ' 23:59:59']);
+//            })
+
+            ->when( ! is_null($dateFrom), function($query) use ($dateFrom) {
+                return $query->where('created_at', '>=', $dateFrom . ' 00:00:00');
             })
+
+            ->when( ! is_null($dateTo), function($query) use ($dateTo) {
+                return $query->where('created_at', '<=', $dateTo . ' 23:59:59');
+            })
+
             ->where('user_id', $userId)
             ->get();
 
