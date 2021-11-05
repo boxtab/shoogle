@@ -6,10 +6,12 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Shoogle Front</title>
+    <link rel="stylesheet" type="text/css" href="./css/fonts-gilroy.css">
     <link rel="stylesheet" type="text/css" href="./css/invite.css">
 {{--    <link rel="stylesheet" href="css/style.css">--}}
 
     <style>
+/*
         @font-face {
             font-family: 'Gilroy';
             src: url( {{asset('fonts/Gilroy-egular.eot')}} );
@@ -69,6 +71,7 @@
             font-weight: 800;
             font-style: normal;
         }
+*/
 
     </style>
 </head>
@@ -86,7 +89,7 @@
         </div>
         <!-- </div> -->
     </div>
-    <div class="hero" style="background: url( {{asset('images/invite/sky.png')}} )">
+    <div class="hero" style="background-image: url( {{asset('images/invite/sky.png')}} )">
         <div class="section">
             <div class="text">
                 <div class="title">
