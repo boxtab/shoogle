@@ -15,14 +15,15 @@ trait CommunityLevelDataEmpty
     /**
      * Is there data to calculate.
      *
-     * @param int $companyId
+     * @param array $usersIDs
      * @param string|null $dateFrom
      * @param string|null $dateTo
      * @return bool
      */
-    private function isEmptyDate(int $companyId, ?string $dateFrom, ?string $dateTo): bool
+    private function isEmptyDate(array $usersIDs, ?string $dateFrom, ?string $dateTo): bool
     {
-        $idAllUsersCompany = HelperCompany::getArrayUserIds($companyId);
+        $idAllUsersCompany = $usersIDs;
+//        $idAllUsersCompany = HelperCompany::getArrayUserIds($companyId);
 
         $wellbeingScoresRow = WellbeingScores::on()
             ->whereIn('user_id', $idAllUsersCompany)

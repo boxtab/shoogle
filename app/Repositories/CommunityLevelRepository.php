@@ -60,17 +60,18 @@ class CommunityLevelRepository extends Repositories
     /**
      * Company statistics by wellbeing category.
      *
-     * @param $companyId
+     * @param array $usersIDs
      * @param string|null $dateFrom
      * @param string|null $dateTo
      * @return array
      */
-    public function getWellbeingCategory($companyId, ?string $dateFrom, ?string $dateTo)
+    public function getWellbeingCategory(array $usersIDs, ?string $dateFrom, ?string $dateTo)
     {
-        if ( ! $this->isEmptyDate($companyId, $dateFrom, $dateTo) ) {
-            $periodBegin = $this->getPeriodBegin($companyId, $dateFrom, $dateTo);
-            $periodEnd = $this->getPeriodEnd($companyId, $dateFrom, $dateTo);
-            $userIDs = $this->getUserIDs($companyId, $periodBegin, $periodEnd);
+        if ( ! $this->isEmptyDate($usersIDs, $dateFrom, $dateTo) ) {
+            $periodBegin = $this->getPeriodBegin($usersIDs, $dateFrom, $dateTo);
+            $periodEnd = $this->getPeriodEnd($usersIDs, $dateFrom, $dateTo);
+            $userIDs = $usersIDs;
+//            $userIDs = $this->getUserIDs($companyId, $periodBegin, $periodEnd);
 
             if ( is_null($periodBegin) || is_null($periodEnd) || empty($userIDs) ) {
                 return $this->wellbeingCategory;

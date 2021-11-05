@@ -40,39 +40,39 @@ trait CommunityLevelDayTrait
     /**
      * Determine the beginning of the period.
      *
-     * @param int $companyId
+     * @param array $usersIDs
      * @param string|null $dateFrom
      * @param string|null $dateTo
      * @return string|null
      */
-    private function getPeriodBegin(int $companyId, ?string $dateFrom, ?string $dateTo): ?string
+    private function getPeriodBegin(array $usersIDs, ?string $dateFrom, ?string $dateTo): ?string
     {
-        return $this->getPeriod($companyId, $dateFrom, $dateTo, 'begin');
+        return $this->getPeriod($usersIDs, $dateFrom, $dateTo, 'begin');
     }
 
     /**
      * Determine the end of the period.
      *
-     * @param int $companyId
+     * @param array $usersIDs
      * @param string|null $dateFrom
      * @param string|null $dateTo
      * @return string|null
      */
-    private function getPeriodEnd(int $companyId, ?string $dateFrom, ?string $dateTo): ?string
+    private function getPeriodEnd(array $usersIDs, ?string $dateFrom, ?string $dateTo): ?string
     {
-        return $this->getPeriod($companyId, $dateFrom, $dateTo, 'end');
+        return $this->getPeriod($usersIDs, $dateFrom, $dateTo, 'end');
     }
 
     /**
      * Defines the start or end of a period.
      *
-     * @param int $companyId
+     * @param array $usersIDs
      * @param string|null $dateFrom
      * @param string|null $dateTo
      * @param string $beginEnd
      * @return string|null
      */
-    private function getPeriod(int $companyId, ?string $dateFrom, ?string $dateTo, string $beginEnd): ?string
+    private function getPeriod(array $usersIDs, ?string $dateFrom, ?string $dateTo, string $beginEnd): ?string
     {
         switch ($beginEnd) {
             case 'begin':
@@ -87,7 +87,8 @@ trait CommunityLevelDayTrait
             $dateTo = Carbon::now()->toDateString();
         }
 
-        $idAllUsersCompany = HelperCompany::getArrayUserIds($companyId);
+//        $idAllUsersCompany = HelperCompany::getArrayUserIds($companyId);
+        $idAllUsersCompany = $usersIDs;
 
         $wellbeingScores = WellbeingScores::on()
             ->whereIn('user_id', $idAllUsersCompany)
