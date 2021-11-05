@@ -11,5 +11,5 @@ class WellbeingConstant
     /**
      * Rounding Accuracy for Results.
      */
-    const PRECISION = null;
+    const PRECISION = 1;
 }
