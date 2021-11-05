@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Helpers\HelperCompany;
+use App\Models\WellbeingScores;
 use Carbon\Carbon;
 
 /**
@@ -33,5 +35,69 @@ trait CommunityLevelDayTrait
     private function getToday(): string
     {
         return Carbon::now()->toDateString();
+    }
+
+    /**
+     * Determine the beginning of the period.
+     *
+     * @param int $companyId
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
+     * @return string|null
+     */
+    private function getPeriodBegin(int $companyId, ?string $dateFrom, ?string $dateTo): ?string
+    {
+        return $this->getPeriod($companyId, $dateFrom, $dateTo, 'begin');
+    }
+
+    /**
+     * Determine the end of the period.
+     *
+     * @param int $companyId
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
+     * @return string|null
+     */
+    private function getPeriodEnd(int $companyId, ?string $dateFrom, ?string $dateTo): ?string
+    {
+        return $this->getPeriod($companyId, $dateFrom, $dateTo, 'end');
+    }
+
+    /**
+     * Defines the start or end of a period.
+     *
+     * @param int $companyId
+     * @param string|null $dateFrom
+     * @param string|null $dateTo
+     * @param string $beginEnd
+     * @return string|null
+     */
+    private function getPeriod(int $companyId, ?string $dateFrom, ?string $dateTo, string $beginEnd): ?string
+    {
+        switch ($beginEnd) {
+            case 'begin':
+                $orderBy = 'ASC';
+                break;
+            case 'end':
+                $orderBy = 'DESC';
+                break;
+        }
+
+        if ( is_null($dateTo) ) {
+            $dateTo = Carbon::now()->toDateString();
+        }
+
+        $idAllUsersCompany = HelperCompany::getArrayUserIds($companyId);
+
+        $wellbeingScores = WellbeingScores::on()
+            ->whereIn('user_id', $idAllUsersCompany)
+            ->where('created_at', '<=', $dateTo . ' 23:59:59')
+            ->when( ! is_null($dateFrom), function ($query) use ($dateFrom) {
+                $query->where('created_at', '>=', $dateFrom . ' 00:00:00');
+            })
+            ->orderBy('created_at', $orderBy)
+            ->first();
+
+        return ( ! is_null($wellbeingScores) ) ? $wellbeingScores->created_at->toDateString() : null;
     }
 }
