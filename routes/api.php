@@ -14,6 +14,7 @@ use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\WelbeingScoresController;
 use App\Http\Controllers\API\V1\WellbeingCategoryController;
+use App\Http\Controllers\API\V1\WellbeingWeekController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -412,6 +413,9 @@ Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_
 
         // POST api/admin/v1/community-data/statistic
         Route::post('statistic', [CommunityLevelController::class, 'statistic']);
+
+        // POST api/admin/v1/community-data
+        Route::post('', [WellbeingWeekController::class, 'week']);
 
     });
 

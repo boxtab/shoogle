@@ -188,7 +188,7 @@ class WelbeingScoresController extends BaseApiController
             $this->repository->existsDepartment($id);
             $average = $this->repository->getDepartmentCompanyId($id, $request->input('from'), $request->input('to'));
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage());
         }
         $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);
         return ApiResponse::returnData($wellbeingScoresAverageResource);
