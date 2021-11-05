@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Helpers\HelperCompany;
 use App\Models\WellbeingScores;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Trait CommunityLevelDataEmpty
@@ -30,6 +31,6 @@ trait CommunityLevelDataEmpty
             })
             ->count();
 
-        return $wellbeingScoresRow > 0 ? true : false;
+        return $wellbeingScoresRow > 0 ? false : true;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use Illuminate\Support\Facades\Auth;
 use App\Helpers\Helper;
 use App\Helpers\HelperDateTime;
 use App\Http\Controllers\API\BaseApiController;
