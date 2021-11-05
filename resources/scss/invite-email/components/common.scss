@@ -7,24 +7,24 @@ body {
 
 body,
 body * {
-  font-family: 'Gilroy';
+  font-family: 'Gilroy', sans-serif;
   font-weight: 400;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-size: $font-size-Min;
 
-  @media (min-width: $mobileBig) {
-    font-size: $font-size;
-  }
+  // @media (min-width: $mobileBig) {
+  font-size: $font-size;
+  // }
 }
 .section {
   width: 300px;
   margin: auto;
 
-  @media (min-width: $mobileBig) {
-    width: 600px;
-  }
+  // @media (min-width: $mobileBig) {
+  width: 600px;
+  // }
 }
 
 a {
@@ -34,7 +34,8 @@ a {
 .container {
   margin: auto;
   width: 100%;
-  // max-width: 600px;
+
+  min-width: 600px;
 }
 
 h1 {
@@ -42,9 +43,9 @@ h1 {
   font-weight: 800;
   font-size: $font-size-h1-Min;
 
-  @media (min-width: $mobileBig) {
-    font-size: $font-size-h1;
-  }
+  // @media (min-width: $mobileBig) {
+  font-size: $font-size-h1;
+  // }
 }
 
 h2 {
@@ -53,9 +54,9 @@ h2 {
   color: $color-theme;
   font-size: $font-size-title-Min;
 
-  @media (min-width: $mobileBig) {
-    font-size: $font-size-title;
-  }
+  // @media (min-width: $mobileBig) {
+  font-size: $font-size-title;
+  // }
 }
 
 .header {
@@ -65,10 +66,11 @@ h2 {
   height: 108px;
   padding-right: 10px;
 
-  @media (min-width: $mobileBig) {
-    height: 108px;
-    padding-right: 20px;
-  }
+  // @media (min-width: $mobileBig) {
+  height: 108px;
+  padding-right: 20px;
+  // }
+
   .logo {
     float: left;
     text-align: left;
@@ -77,10 +79,10 @@ h2 {
     width: 96px;
     margin-top: 10px;
 
-    @media (min-width: $mobileBig) {
-      width: 96px;
-      margin-top: 10px;
-    }
+    // @media (min-width: $mobileBig) {
+    width: 96px;
+    margin-top: 10px;
+    // }
 
     a {
       display: block;
@@ -96,9 +98,9 @@ h2 {
     // padding-top: 28px;
     padding-top: 56px;
 
-    @media (min-width: $mobileBig) {
-      padding-top: 56px;
-    }
+    // @media (min-width: $mobileBig) {
+    padding-top: 56px;
+    // }
 
     a {
       display: inline-block;
@@ -107,10 +109,10 @@ h2 {
       width: 40px;
       margin-left: 26px;
 
-      @media (min-width: $mobileBig) {
-        width: 40px;
-        margin-left: 26px;
-      }
+      // @media (min-width: $mobileBig) {
+      width: 40px;
+      margin-left: 26px;
+      // }
 
       img {
         width: 100%;
@@ -127,10 +129,10 @@ h2 {
   height: 260px;
   overflow: hidden;
 
-  @media (min-width: $mobileBig) {
-    height: 520px;
-    background-position: 50% 80%;
-  }
+  // @media (min-width: $mobileBig) {
+  height: 520px;
+  background-position: 50% 80%;
+  // }
 
   .text {
     float: left;
@@ -140,30 +142,30 @@ h2 {
     // padding-left: 18px;
     padding-left: 5px;
 
-    @media (min-width: $mobileBig) {
-      // width: 300px;
-      width: 336px;
-      padding-top: 48px;
-      // padding-left: 36px;
-      padding-left: 10px;
-    }
+    // @media (min-width: $mobileBig) {
+    // width: 300px;
+    width: 336px;
+    padding-top: 48px;
+    // padding-left: 36px;
+    padding-left: 10px;
+    // }
 
     .title {
       font-weight: 800;
       color: #fff;
       font-size: $font-size-h1-Min;
 
-      @media (min-width: $mobileBig) {
-        font-size: $font-size-h1;
-      }
+      // @media (min-width: $mobileBig) {
+      font-size: $font-size-h1;
+      // }
     }
     .description {
       color: #fff;
       font-size: $font-size-description-Min;
 
-      @media (min-width: $mobileBig) {
-        font-size: $font-size-description;
-      }
+      // @media (min-width: $mobileBig) {
+      font-size: $font-size-description;
+      // }
     }
   }
 
@@ -173,18 +175,18 @@ h2 {
     padding-top: 44px;
     float: right;
 
-    @media (min-width: $mobileBig) {
-      // width: 260px;
-      width: 234px;
-      padding-top: 88px;
-    }
+    // @media (min-width: $mobileBig) {
+    // width: 260px;
+    width: 234px;
+    padding-top: 88px;
+    // }
 
     img {
       width: 117px;
 
-      @media (min-width: $mobileBig) {
-        width: 234px;
-      }
+      // @media (min-width: $mobileBig) {
+      width: 234px;
+      // }
     }
   }
 }
@@ -197,86 +199,81 @@ h2 {
   height: 232px;
   overflow: hidden;
 
-  @media (min-width: $mobileBig) {
-    padding-top: 24px;
-    padding-left: 24px;
-    height: 324px;
-  }
+  // @media (min-width: $mobileBig) {
+  padding-top: 24px;
+  padding-left: 24px;
+  height: 324px;
+  // }
 
   h2 {
     color: $color-theme;
     margin-bottom: 22px;
 
-    @media (min-width: $mobileBig) {
-      margin-bottom: 44px;
-    }
+    // @media (min-width: $mobileBig) {
+    margin-bottom: 44px;
+    // }
   }
   .columns {
     overflow: hidden;
-
-    @media (min-width: $mobileBig) {
-    }
 
     .item {
       float: left;
       width: 30%;
       margin: 1%;
 
-      @media (min-width: $mobileBig) {
-      }
       .ico {
         text-align: center;
         height: 32px;
         margin-bottom: 13px;
         padding-right: 20px;
 
-        @media (min-width: $mobileBig) {
-          height: 64px;
-          margin-bottom: 26px;
-          padding-right: 40px;
-        }
+        // @media (min-width: $mobileBig) {
+        height: 64px;
+        margin-bottom: 26px;
+        padding-right: 40px;
+        // }
 
         &.plus {
           img {
             width: 32px;
-            @media (min-width: $mobileBig) {
-              width: 64px;
-            }
+
+            // @media (min-width: $mobileBig) {
+            width: 64px;
+            // }
           }
         }
         &.list {
           padding-top: 3px;
 
-          @media (min-width: $mobileBig) {
-            padding-top: 6px;
-          }
+          // @media (min-width: $mobileBig) {
+          padding-top: 6px;
+          // }
 
           img {
             width: 26px;
-            @media (min-width: $mobileBig) {
-              width: 52px;
-            }
+            // @media (min-width: $mobileBig) {
+            width: 52px;
+            // }
           }
         }
         &.envelop {
           padding-top: 3px;
 
-          @media (min-width: $mobileBig) {
-            width: 6px;
-          }
+          // @media (min-width: $mobileBig) {
+          width: 6px;
+          // }
+
           img {
             width: 26px;
-            @media (min-width: $mobileBig) {
-              width: 52px;
-            }
+
+            // @media (min-width: $mobileBig) {
+            width: 52px;
+            // }
           }
         }
       }
       .text {
         color: $color-theme;
-
-        @media (min-width: $mobileBig) {
-        }
       }
     }
   }
@@ -289,10 +286,10 @@ h2 {
   padding-top: 24px;
   overflow: hidden;
 
-  @media (min-width: $mobileBig) {
-    height: 250px;
-    padding-top: 48px;
-  }
+  // @media (min-width: $mobileBig) {
+  height: 250px;
+  padding-top: 48px;
+  // }
 
   h2 {
     color: #fff;
@@ -300,9 +297,9 @@ h2 {
     text-align: center;
     margin-bottom: 15px;
 
-    @media (min-width: $mobileBig) {
-      margin-bottom: 30px;
-    }
+    // @media (min-width: $mobileBig) {
+    margin-bottom: 30px;
+    // }
   }
   .app-row {
     overflow: hidden;
@@ -310,17 +307,17 @@ h2 {
     text-align: center;
     margin: auto;
 
-    @media (min-width: $mobileBig) {
-      width: 430px;
-    }
+    // @media (min-width: $mobileBig) {
+    width: 430px;
+    // }
 
     .app-store {
       float: left;
       width: 100px;
 
-      @media (min-width: $mobileBig) {
-        width: 200px;
-      }
+      // @media (min-width: $mobileBig) {
+      width: 200px;
+      // }
 
       img {
         width: 100%;
@@ -330,9 +327,10 @@ h2 {
       float: right;
       width: 100px;
 
-      @media (min-width: $mobileBig) {
-        width: 200px;
-      }
+      // @media (min-width: $mobileBig) {
+      width: 200px;
+      // }
+
       img {
         width: 100%;
       }

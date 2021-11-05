@@ -34,26 +34,27 @@ a {
   padding-top: 120px;
   padding-bottom: 20px;
 
-  @media (min-width: $mobileBig) {
-    overflow: hidden;
-    border-radius: 80px;
-    padding-left: 80px;
-    padding-right: 80px;
-    padding-top: 240px;
-    padding-bottom: 40px;
-  }
+  // @media (min-width: $mobileBig) {
+  overflow: hidden;
+  border-radius: 80px;
+  padding-left: 80px;
+  padding-right: 80px;
+  padding-top: 240px;
+  padding-bottom: 40px;
+  // }
 
   // @media (max-width: $mobileSmallMax) {
-  @media (max-width: $mobileBig) {
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 20px;
-  }
-  @media (max-width: $mobileSmallMax) {
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 20px;
-  }
+  // @media (max-width: $mobileBig) {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  // }
+
+  // @media (max-width: $mobileSmallMax) {
+  //   padding-left: 20px;
+  //   padding-right: 20px;
+  //   padding-bottom: 20px;
+  // }
 }
 
 h1 {
@@ -117,10 +118,10 @@ h2 {
   width: calc(100% - 10px);
   margin-left: 10px;
 
-  @media (min-width: $mobileBig) {
-    width: calc(100% - 20px);
-    margin-left: 20px;
-  }
+  // @media (min-width: $mobileBig) {
+  width: calc(100% - 20px);
+  margin-left: 20px;
+  // }
 }
 
 .divider {
@@ -139,12 +140,12 @@ h2 {
   padding-left: 0px;
   padding-bottom: 12px;
 
-  @media (min-width: $mobileBig) {
-    padding-top: 60px;
-    padding-right: 30px;
-    padding-left: 30px;
-    padding-bottom: 25px;
-  }
+  // @media (min-width: $mobileBig) {
+  padding-top: 60px;
+  padding-right: 30px;
+  padding-left: 30px;
+  padding-bottom: 25px;
+  // }
 
   li {
     overflow: hidden;
@@ -161,11 +162,11 @@ h2 {
       border-radius: 5px;
       overflow: hidden;
 
-      @media (min-width: $mobileBig) {
-        width: 90px;
-        height: 90px;
-        border-radius: 10px;
-      }
+      // @media (min-width: $mobileBig) {
+      width: 90px;
+      height: 90px;
+      border-radius: 10px;
+      // }
 
       img {
         width: 100%;
@@ -182,12 +183,12 @@ h2 {
       padding-left: 10px;
       padding-right: 15px;
 
-      @media (min-width: $mobileBig) {
-        width: calc(100% - 130px);
-        padding-top: 12px;
-        padding-left: 20px;
-        padding-right: 30px;
-      }
+      // @media (min-width: $mobileBig) {
+      width: calc(100% - 130px);
+      padding-top: 12px;
+      padding-left: 20px;
+      padding-right: 30px;
+      // }
 
       .title {
         color: $color-list-title;
@@ -196,10 +197,10 @@ h2 {
         font-size: $font-size-title;
         margin-bottom: 5px;
 
-        @media (min-width: $mobileBig) {
-          font-size: $font-size-title;
-          margin-bottom: 10px;
-        }
+        // @media (min-width: $mobileBig) {
+        font-size: $font-size-title;
+        margin-bottom: 10px;
+        // }
       }
 
       .description {
@@ -248,11 +249,11 @@ h2 {
     width: 202px;
     // }
 
-    @media (max-width: 554px) {
-      float: none;
-      margin: auto;
-      margin-bottom: 10px;
-    }
+    // @media (max-width: 554px) {
+    //   float: none;
+    //   margin: auto;
+    //   margin-bottom: 10px;
+    // }
 
     img {
       width: 100%;
@@ -262,11 +263,11 @@ h2 {
     float: right;
     // width: 115px;
 
-    @media (max-width: 554px) {
-      float: none;
-      margin: auto;
-      margin-bottom: 10px;
-    }
+    // @media (max-width: 554px) {
+    //   float: none;
+    //   margin: auto;
+    //   margin-bottom: 10px;
+    // }
 
     // @media (min-width: $mobileBig) {
     width: 230px;
