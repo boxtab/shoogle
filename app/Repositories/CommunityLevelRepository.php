@@ -68,20 +68,21 @@ class CommunityLevelRepository extends Repositories
     public function getWellbeingCategory($companyId, ?string $dateFrom, ?string $dateTo)
     {
         if ( ! $this->isEmptyDate($companyId, $dateFrom, $dateTo) ) {
-//        $periodBegin = $this->getNDaysAgo($period);
-//        $periodEnd = $this->getToday();
-            $periodBegin = $dateFrom;
-            $periodEnd = $dateTo;
+            $periodBegin = $this->getPeriodBegin($companyId, $dateFrom, $dateTo);
+            $periodEnd = $this->getPeriodEnd($companyId, $dateFrom, $dateTo);
             $userIDs = $this->getUserIDs($companyId, $periodBegin, $periodEnd);
-//        Log::info($userIDs);
 
-//        $differenceValue = $this->getDifferenceValue($userIDs, $periodBegin, $periodEnd);
-//        $isGrew = $this->getIsGrew($userIDs, $periodBegin, $periodEnd);
-//        $value = $this->getValue($userIDs, $periodBegin, $periodEnd);
-//
-//        $this->fillTheField($differenceValue, 'differenceValue');
-//        $this->fillTheField($isGrew, 'isGrew');
-//        $this->fillTheField($value, 'value');
+            if ( is_null($periodBegin) || is_null($periodEnd) || empty($userIDs) ) {
+                return $this->wellbeingCategory;
+            }
+
+        $differenceValue = $this->getDifferenceValue($userIDs, $periodBegin, $periodEnd);
+        $isGrew = $this->getIsGrew($userIDs, $periodBegin, $periodEnd);
+        $value = $this->getValue($userIDs, $periodBegin, $periodEnd);
+
+        $this->fillTheField($differenceValue, 'differenceValue');
+        $this->fillTheField($isGrew, 'isGrew');
+        $this->fillTheField($value, 'value');
         }
 
         return $this->wellbeingCategory;

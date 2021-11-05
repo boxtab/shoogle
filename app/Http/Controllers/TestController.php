@@ -72,13 +72,37 @@ class TestController extends Controller
 
     public function index()
     {
-        $shoogle = Shoogle::on()
-            ->where('id', '=', 2)
+        dd(empty([]));
+
+        $periodFrom = null;
+        $periodTo = null;
+
+        if ( is_null($periodTo) ) {
+            $periodTo = Carbon::now()->toDateString();
+        }
+
+        $user = User::on()
+            ->where('created_at', '<=', $periodTo . ' 23:59:59')
+            ->when( ! is_null($periodFrom), function ($query) use ($periodFrom) {
+                $query->where('created_at', '>=', $periodFrom . ' 00:00:00');
+            })->orderBy('created_at', 'ASC')
             ->first();
-        $shoogleTitle = ( ! is_null($shoogle) ) ? $shoogle->title : null;
+
+        if ( ! is_null($user) ) {
+            dd($user->created_at->toDateString());
+        } else {
+            dd('is null');
+        }
 
 
-        dd($shoogleTitle);
+
+
+
+//        $shoogle = Shoogle::on()
+//            ->where('id', '=', 2)
+//            ->first();
+//        $shoogleTitle = ( ! is_null($shoogle) ) ? $shoogle->title : null;
+//        dd($shoogleTitle);
 
 //        $a = [
 //            'social'        => 1,
