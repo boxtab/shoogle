@@ -31,6 +31,7 @@ class Company extends BaseModel
         'name',
         'created_at',
         'updated_at',
+        'deleted_at',
     ];
 
     protected $casts = [
@@ -38,6 +39,7 @@ class Company extends BaseModel
         'name' => 'string:45',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
+        'deleted_at' => 'datetime:Y-m-d h:i:s',
     ];
 
     /**

@@ -72,28 +72,33 @@ class TestController extends Controller
 
     public function index()
     {
-        dd(empty([]));
+        $companyId = 11111;
+        $isDelete = Company::on()->where('id', '=', $companyId)->exists();
 
-        $periodFrom = null;
-        $periodTo = null;
+        dd($isDelete);
 
-        if ( is_null($periodTo) ) {
-            $periodTo = Carbon::now()->toDateString();
-        }
-
-        $user = User::on()
-            ->where('created_at', '<=', $periodTo . ' 23:59:59')
-            ->when( ! is_null($periodFrom), function ($query) use ($periodFrom) {
-                $query->where('created_at', '>=', $periodFrom . ' 00:00:00');
-            })->orderBy('created_at', 'ASC')
-            ->first();
-
-        if ( ! is_null($user) ) {
-            dd($user->created_at->toDateString());
-        } else {
-            dd('is null');
-        }
-
+//        dd(empty([]));
+//
+//        $periodFrom = null;
+//        $periodTo = null;
+//
+//        if ( is_null($periodTo) ) {
+//            $periodTo = Carbon::now()->toDateString();
+//        }
+//
+//        $user = User::on()
+//            ->where('created_at', '<=', $periodTo . ' 23:59:59')
+//            ->when( ! is_null($periodFrom), function ($query) use ($periodFrom) {
+//                $query->where('created_at', '>=', $periodFrom . ' 00:00:00');
+//            })->orderBy('created_at', 'ASC')
+//            ->first();
+//
+//        if ( ! is_null($user) ) {
+//            dd($user->created_at->toDateString());
+//        } else {
+//            dd('is null');
+//        }
+//
 
 
 

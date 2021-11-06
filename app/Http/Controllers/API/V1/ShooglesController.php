@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Helper;
+use App\Helpers\HelperCompany;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
@@ -273,21 +274,32 @@ class ShooglesController extends BaseApiController
             return ApiResponse::returnError(['pageSize' => 'PageSize number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $searchResult = $this->repository->search(
-            $request->input('search'),
-            $request->input('filter'),
-            $page,
-            $pageSize
-        );
+        try {
+            $companyId = HelperCompany::getCompanyId();
+            if ( is_null($companyId) ) {
+                throw new Exception('The company ID for the current user was not found', Response::HTTP_NOT_FOUND);
+            }
 
-        if ( is_null( $searchResult ) ) {
-            $searchResultResource = [];
-        } else {
-            $searchResultResource = new ShooglesSearchResultResource( $searchResult );
-            $searchResultResource->setFindCount($this->repository->getFindCount());
-            $searchResultResource->setCommunityCount($this->repository->getCommunityCount());
-            $searchResultResource->setBuddiesCount($this->repository->getBuddiesCount());
-            $searchResultResource->setSolosCount($this->repository->getSolosCount());
+            $searchResult = $this->repository->search(
+                $companyId,
+                $request->input('search'),
+                $request->input('filter'),
+                $page,
+                $pageSize
+            );
+
+            if (is_null($searchResult)) {
+                $searchResultResource = [];
+            } else {
+                $searchResultResource = new ShooglesSearchResultResource($searchResult);
+                $searchResultResource->setFindCount($this->repository->getFindCount());
+                $searchResultResource->setCommunityCount($this->repository->getCommunityCount());
+                $searchResultResource->setBuddiesCount($this->repository->getBuddiesCount());
+                $searchResultResource->setSolosCount($this->repository->getSolosCount());
+            }
+
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage());
         }
 
         return ApiResponse::returnData($searchResultResource);
