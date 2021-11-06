@@ -47,7 +47,8 @@ class ProfileRepository extends Repositories
      */
     public function getProfile(int $userId)
     {
-        return $this->model->on()->where('id', '=', $userId)
+        return $this->model->on()
+            ->where('id', '=', $userId)
             ->firstOrFail([
                 'id',
                 'first_name',

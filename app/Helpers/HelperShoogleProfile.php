@@ -81,10 +81,6 @@ class HelperShoogleProfile
      */
     public function __construct(?int $userID)
     {
-        if ( is_null( $userID ) ) {
-            return [];
-        }
-
         $shooglesIDs = HelperShoogle::getShooglesIDsByUserID($userID);
 
         $this->activeShooglesCount = Shoogle::on()
