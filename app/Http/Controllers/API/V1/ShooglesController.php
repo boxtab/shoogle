@@ -29,6 +29,7 @@ use App\Models\Shoogle;
 use App\Repositories\ShooglesRepository;
 use App\Support\ApiRequest\ApiRequest;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\ShoogleCompanyTrait;
 use App\Traits\ShoogleValidationTrait;
 use App\User;
 use Carbon\Carbon;
@@ -48,7 +49,7 @@ use GetStream\StreamChat\Client as StreamClient;
 
 class ShooglesController extends BaseApiController
 {
-    use ShoogleValidationTrait;
+    use ShoogleValidationTrait, ShoogleCompanyTrait;
 
     /**
      * ShooglesController constructor.
@@ -142,9 +143,12 @@ class ShooglesController extends BaseApiController
     public function views($id = null)
     {
         try {
-            $shoogles = $this->findRecordByID($id);
+            $shoogle = $this->findRecordByID($id);
+            $this->checkCreatorAndUserInCompany($shoogle->id);
+
             $this->repository->incrementViews($id);
-            $shooglesViewsResource = new ShooglesViewsResource($shoogles);
+
+            $shooglesViewsResource = new ShooglesViewsResource($shoogle);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -181,6 +185,7 @@ class ShooglesController extends BaseApiController
      *
      * @param ShooglesEntryRequest $request
      * @return \Illuminate\Http\JsonResponse|Response|null
+     * @throws Exception
      */
     public function entry(ShooglesEntryRequest $request)
     {
@@ -195,6 +200,8 @@ class ShooglesController extends BaseApiController
         }
 
         try {
+            $this->checkCreatorAndUserInCompany($request->get('shoogleId'));
+
             $this->repository->entry(
                 Auth::id(),
                 $request->input('shoogleId'),
@@ -225,6 +232,7 @@ class ShooglesController extends BaseApiController
     public function leave(?int $shoogleId)
     {
         try {
+            $this->checkCreatorAndUserInCompany($shoogleId);
             $this->repository->leave($shoogleId);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage());
@@ -277,7 +285,7 @@ class ShooglesController extends BaseApiController
         try {
             $companyId = HelperCompany::getCompanyId();
             if ( is_null($companyId) ) {
-                throw new Exception('The company ID for the current user was not found', Response::HTTP_NOT_FOUND);
+                throw new Exception('The company ID for the current user was not found.', Response::HTTP_NOT_FOUND);
             }
 
             $searchResult = $this->repository->search(
@@ -359,6 +367,8 @@ class ShooglesController extends BaseApiController
             $shoogle = HelperShoogle::getShoogle($id);
             $member = HelperMember::getMember(Auth::id(), $id);
 
+            $this->checkCreatorAndUserInCompany($id);
+
             $calendar = $this->repository->getCalendar($shoogle, $member);
             $shooglesCalendarResource = new ShooglesCalendarResource($calendar);
         } catch (Exception $e) {
@@ -377,6 +387,7 @@ class ShooglesController extends BaseApiController
     public function setting(ShoogleSettingRequest $request, int $id)
     {
         try {
+            $this->checkCreatorAndUserInCompany($id);
             HelperShoogle::getShoogle($id);
             $member = HelperMember::getMember(Auth::id(), $id);
             $setting = $request->only(['reminder', 'reminderInterval', 'buddy', 'isReminder']);
@@ -397,6 +408,8 @@ class ShooglesController extends BaseApiController
     public function destroy($id)
     {
         try {
+            $this->checkCreatorAndUserInCompany($id);
+
             $shoogle = $this->findRecordByID($id);
             $shoogle->destroy($id);
         } catch (Exception $e) {
