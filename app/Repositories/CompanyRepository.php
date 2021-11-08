@@ -78,7 +78,7 @@ class CompanyRepository extends Repositories
                           and r.name = "company-admin"
                         limit 1
                     ) as contact_person_email,
-                    (select count(uc.id) from users as uc where uc.company_id = c.id) as users_count
+                    (select count(uc.id) from users as uc where uc.company_id = c.id and uc.deleted_at is null) as users_count
                 from companies as c
                 where c.deleted_at is null
                 order by c.name ' . $order . '
