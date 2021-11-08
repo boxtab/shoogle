@@ -16,6 +16,8 @@ use App\Helpers\HelperNotifications;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
 use App\Http\Resources\ShoogleBuddyNameResource;
+use App\Models\Buddie;
+use App\Models\BuddyRequest;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\Models\UserHasShoogle;
@@ -289,18 +291,34 @@ class ShooglesRepository extends Repositories
                 ->update(['left_at' => Carbon::now()]);
 
             $buddy = HelperBuddies::getBuddy($shoogle->id, Auth::id());
-            HelperBuddies::setDisconnectedBuddy($buddy->id);
+            if ( ! is_null($buddy) ) {
+                Buddie::on()
+                    ->where('id', '=', $buddy->id)
+                    ->update([
+                        'disconnected_at' => Carbon::now()
+                    ]);
+            }
+//            HelperBuddies::setDisconnectedBuddy($buddy->id);
 
             $buddyRequest = HelperBuddyRequest::getBuddyRequest($shoogle->id, Auth::id());
-            HelperBuddyRequest::setTypeBuddyRequest($buddyRequest, BuddyRequestTypeEnum::DISCONNECT);
+            if ( ! is_null($buddyRequest) ) {
+                BuddyRequest::on()
+                    ->where('id', '=', $buddyRequest->id)
+                    ->update([
+                        'type' => BuddyRequestTypeEnum::DISCONNECT,
+                    ]);
+//            $buddyRequest->type = $type;
+            }
 
-            $buddyId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
-            if ( ! is_null( $buddyId ) ) {
+//            HelperBuddyRequest::setTypeBuddyRequest($buddyRequest, BuddyRequestTypeEnum::DISCONNECT);
+
+            $buddyUserId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
+            if ( ! is_null( $buddyUserId ) ) {
 
                 $helperNotification = new HelperNotifications();
 
                 $helperNotification->sendNotificationToUser(
-                    $buddyId,
+                    $buddyUserId,
                     NotificationsTypeConstant::BUDDY_DISCONNECT_ID,
                     Auth::user()->first_name . ' ' . Auth::user()->first_name . ' left ' . $shoogle->title . '.  You are no longer buddied.'
                 );
