@@ -29,15 +29,15 @@ class UserProfileAdminResource extends JsonResource
             'departmentId'      => $this->resource->department_id,
             'email'             => $this->resource->email,
             'rating'            => $this->resource->rank,
-            'shoogles'          => Shoogle::where('owner_id', $this->resource->id)->count(),
+            'shoogles'          => Shoogle::on()->where('owner_id', $this->resource->id)->count(),
             'isCompanyAdmin'    => (Helper::getRole($this->resource->id) == RoleConstant::COMPANY_ADMIN) ? true : false,
-            'shooglesList'      => Shoogle::where('owner_id', $this->resource->id)
+            'shooglesList'      => Shoogle::on()->where('owner_id', $this->resource->id)
                 ->get()
                 ->map(function ($item) {
                     return [
                         'title' => $item->title,
                         'wellbeingCategory' => $item->wellbeingCategory->name,
-                        'shooglersCount' => UserHasShoogle::where('shoogle_id', $item->id)->count(),
+                        'shooglersCount' => UserHasShoogle::on()->where('shoogle_id', $item->id)->count(),
                     ];
                 })
                 ->toArray(),

@@ -33,8 +33,8 @@ class ShooglesResource extends JsonResource
             'lastActivity' => $this->resource->updated,
             'wellbeingCategory' => $this->resource->wellbeingCategory->name,
 
-            'shooglersCount' => UserHasShoogle::where('shoogle_id', $this->resource->id)->count(),
-            'shooglersList' => UserHasShoogle::where('shoogle_id', $this->resource->id)
+            'shooglersCount' => UserHasShoogle::on()->where('shoogle_id', $this->resource->id)->count(),
+            'shooglersList' => UserHasShoogle::on()->where('shoogle_id', $this->resource->id)
                 ->get()
                 ->map(function ($item) {
                     return [
@@ -47,8 +47,8 @@ class ShooglesResource extends JsonResource
                 })
                 ->toArray(),
 
-            'buddiesCount' => Buddie::where('shoogle_id', $this->resource->id)->count(),
-            'buddiesList' => Buddie::where('shoogle_id', $this->resource->id)
+            'buddiesCount' => Buddie::on()->where('shoogle_id', $this->resource->id)->count(),
+            'buddiesList' => Buddie::on()->where('shoogle_id', $this->resource->id)
                 ->get()
                 ->map(function ($item) {
                     return [

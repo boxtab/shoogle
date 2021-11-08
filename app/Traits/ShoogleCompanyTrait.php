@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Helpers\HelperCompany;
+use App\Models\Company;
 use App\Models\Shoogle;
 use App\User;
 use Illuminate\Http\Response;
@@ -43,7 +44,17 @@ trait ShoogleCompanyTrait
             throw new Exception('Company owner not found.', Response::HTTP_NOT_FOUND);
         }
 
-        if ($currentUserCompanyId !== $ownerUser->company_id) {
+        $ownerUserCompanyId = $ownerUser->company_id;
+        if ( is_null($ownerUserCompanyId) ) {
+            throw new Exception('The creator of shoogle has no company.', Response::HTTP_NOT_FOUND);
+        }
+
+        $ownerCompany = Company::on()->where('id', '=', $ownerUserCompanyId)->first();
+        if ( is_null($ownerCompany) ) {
+            throw new Exception('The company of the creator of shoogle was not found in the table.', Response::HTTP_NOT_FOUND);
+        }
+
+        if ($currentUserCompanyId !== $ownerUserCompanyId) {
             throw new Exception('The requested shoogle is not part of your company.', Response::HTTP_FORBIDDEN);
         }
     }

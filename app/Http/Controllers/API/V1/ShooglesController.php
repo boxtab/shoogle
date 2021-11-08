@@ -125,10 +125,12 @@ class ShooglesController extends BaseApiController
     public function show($id = null)
     {
         try {
-            $shoogles = $this->findRecordByID($id);
-            $shooglesResource = new ShooglesResource($shoogles);
+            $shoogle = $this->findRecordByID($id);
+            $this->checkCreatorAndUserInCompany($id);
+
+            $shooglesResource = new ShooglesResource($shoogle);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData($shooglesResource);
@@ -324,6 +326,8 @@ class ShooglesController extends BaseApiController
     {
         try {
             $shoogle = $this->findRecordByID($id);
+            $this->checkCreatorAndUserInCompany($id);
+
             $shoogle->update(
                 Helper::formatSnakeCase($request->all())
             );
@@ -345,12 +349,14 @@ class ShooglesController extends BaseApiController
     {
         try {
             $shoogle = $this->findRecordByID($id);
+            $this->checkCreatorAndUserInCompany($id);
+
             $active = $request->get('active');
             $shoogle->update([
                 'active' => $active,
             ]);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return ApiResponse::returnData([]);
     }

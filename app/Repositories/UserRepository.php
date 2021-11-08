@@ -45,7 +45,7 @@ class UserRepository extends Repositories
     {
         return $this->model->on()
             ->when( ! $this->noCompany() , function ($query) {
-                return $query->where('company_id', $this->companyId);
+                return $query->where('company_id', '=', $this->companyId);
             })
             ->get();
     }

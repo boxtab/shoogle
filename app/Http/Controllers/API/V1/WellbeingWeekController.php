@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\WellbeingWeekRequest;
 use App\Repositories\CommunityLevelRepository;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\DepartmentCompanyTrait;
 use App\Traits\WellbeingWeekUsersTrait;
 use Illuminate\Http\Request;
 use Exception;
@@ -20,7 +21,7 @@ use App\Repositories\WellbeingWeekRepository;
  */
 class WellbeingWeekController extends  BaseApiController
 {
-    use WellbeingWeekUsersTrait;
+    use WellbeingWeekUsersTrait, DepartmentCompanyTrait;
 
     /**
      * WellbeingWeekController constructor.
@@ -45,7 +46,12 @@ class WellbeingWeekController extends  BaseApiController
             if ( ! HelperDateTime::checkDateFromLessDateTo($dateFrom, $dateTo) ) {
                 throw new Exception('Date from must be less than date to.', Response::HTTP_UNPROCESSABLE_ENTITY);
             }
+
             $departmentId = $request->get('departmentId');
+            if ( ! is_null($departmentId) ) {
+                $this->isDepartmentBelongsCompany($departmentId);
+            }
+
             $usersIDs = $this->getUsersIDsFromDepartmentId($departmentId, $dateFrom, $dateTo);
 
             $data = $this->repository->getDataByWeek($usersIDs, $dateFrom, $dateTo);

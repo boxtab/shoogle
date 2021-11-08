@@ -19,6 +19,7 @@ use App\Models\UserHasShoogle;
 use App\Scopes\BuddiesScope;
 use App\Models\Shoogle;
 use App\Services\StreamService;
+use App\Traits\UserCompanyTrait;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Concerns\BuildsQueries;
@@ -39,6 +40,8 @@ use Tymon\JWTAuth\Providers\Auth\Illuminate;
  */
 class BuddyRequestRepository extends Repositories
 {
+    use UserCompanyTrait;
+
     /**
      * @var BuddyRequest
      */
@@ -188,6 +191,8 @@ class BuddyRequestRepository extends Repositories
 
             $user1Id = $buddyRequest->user1_id;
             $user2Id = $buddyRequest->user2_id;
+            $this->isUsersInCompany($user1Id, $user2Id);
+
             $buddie = Buddie::on()
                 ->where('shoogle_id', $buddyRequest->shoogle_id)
                 ->where(function ($query) use ($user1Id, $user2Id) {
@@ -268,26 +273,32 @@ class BuddyRequestRepository extends Repositories
      */
     public function buddyReject(BuddyRequest $buddyRequest): void
     {
-        $buddyRequest->update([
-            'type' => BuddyRequestTypeEnum::REJECT,
-        ]);
+        DB::transaction( function () use ($buddyRequest) {
 
-        $user2Name = HelperUser::getFullName( $buddyRequest->user2_id );
-        $shoogleTitle = HelperShoogle::getTitle( $buddyRequest->shoogle_id );
-        $messageText = "$user2Name has rejected your invitation to buddy up in $shoogleTitle .";
+            $this->isUsersInCompany($buddyRequest->user1_id, $buddyRequest->user2_id);
 
-        $helperNotification = new HelperNotifications();
-        $helperNotification->sendNotificationToUser(
-            $buddyRequest->user1_id,
-            NotificationsTypeConstant::BUDDY_REJECT_ID,
-            $messageText
-        );
-        $helperNotification->recordNotificationDetail(
-            $buddyRequest->shoogle_id,
-            $buddyRequest->user2_id,
-            NotificationTextConstant::BUDDY_REJECT,
-            $buddyRequest->id
-        );
+            $buddyRequest->update([
+                'type' => BuddyRequestTypeEnum::REJECT,
+            ]);
+
+            $user2Name = HelperUser::getFullName($buddyRequest->user2_id);
+            $shoogleTitle = HelperShoogle::getTitle($buddyRequest->shoogle_id);
+            $messageText = "$user2Name has rejected your invitation to buddy up in $shoogleTitle .";
+
+            $helperNotification = new HelperNotifications();
+            $helperNotification->sendNotificationToUser(
+                $buddyRequest->user1_id,
+                NotificationsTypeConstant::BUDDY_REJECT_ID,
+                $messageText
+            );
+            $helperNotification->recordNotificationDetail(
+                $buddyRequest->shoogle_id,
+                $buddyRequest->user2_id,
+                NotificationTextConstant::BUDDY_REJECT,
+                $buddyRequest->id
+            );
+
+        });
     }
 
     /**
@@ -300,6 +311,8 @@ class BuddyRequestRepository extends Repositories
     public function buddyDisconnect(int $buddyId, int $shoogleId, ?string $message): void
     {
         DB::transaction( function () use ($buddyId, $shoogleId, $message) {
+
+            $this->isUsersInCompany($buddyId, Auth::id());
 
             $buddyRequestFields = ['type' => BuddyRequestTypeEnum::DISCONNECT];
             if ( ! is_null($message) ) {

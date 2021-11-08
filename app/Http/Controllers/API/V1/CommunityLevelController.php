@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Traits\DepartmentCompanyTrait;
 use App\Traits\WellbeingWeekUsersTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Helper;
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\Log;
  */
 class CommunityLevelController extends BaseApiController
 {
-    use WellbeingWeekUsersTrait;
+    use WellbeingWeekUsersTrait, DepartmentCompanyTrait;
 
     /**
      * CommunityLevelController constructor.
@@ -58,6 +59,10 @@ class CommunityLevelController extends BaseApiController
             }
 
             $departmentId = $request->get('departmentId');
+            if ( ! is_null($departmentId) ) {
+                $this->isDepartmentBelongsCompany($departmentId);
+            }
+
             $usersIDs = $this->getUsersIDsFromDepartmentId($departmentId, $dateFrom, $dateTo);
 
             $wellbeingCategory = $this->repository->getWellbeingCategory($usersIDs, $dateFrom, $dateTo);

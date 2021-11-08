@@ -36,13 +36,15 @@ class NotificationToUserRepository extends Repositories
     /**
      * The entire list of notifications.
      *
+     * @param int $companyId
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function getList()
+    public function getList(int $companyId)
     {
         return $this->model->on()
-            ->leftJoin('users', 'users.id', '=', 'notifications_to_user.user_id')
-            ->leftJoin('notifications_type', 'notifications_type.id', '=', 'notifications_to_user.type_id')
+            ->join('users', 'users.id', '=', 'notifications_to_user.user_id')
+            ->join('notifications_type', 'notifications_type.id', '=', 'notifications_to_user.type_id')
+            ->where('users.company_id', '=', $companyId)
             ->get([
                 'notifications_to_user.id as id',
                 'notifications_to_user.user_id as user_id',
