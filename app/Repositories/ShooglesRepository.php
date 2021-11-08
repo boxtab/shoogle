@@ -403,8 +403,6 @@ class ShooglesRepository extends Repositories
             ->get()
             ->toArray();
 
-        Log::info($this->shooglesAll);
-
         $this->shooglesAll = $this->setGeneralShooglersCount($this->shooglesAll);
         $this->shooglesAll = $this->setGeneralBuddiesCount($this->shooglesAll);
         $this->shooglesAll = $this->setGeneralSolosCount($this->shooglesAll);

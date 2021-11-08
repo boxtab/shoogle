@@ -298,7 +298,7 @@ class ShooglesController extends BaseApiController
                 $pageSize
             );
 
-            if (is_null($searchResult)) {
+            if ( is_null($searchResult) ) {
                 $searchResultResource = [];
             } else {
                 $searchResultResource = new ShooglesSearchResultResource($searchResult);
