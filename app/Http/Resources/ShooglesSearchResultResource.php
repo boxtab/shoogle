@@ -2,8 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperCompany;
 use App\Models\Shoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -45,9 +47,30 @@ class ShooglesSearchResultResource extends JsonResource
      *
      * @return int
      */
-    public function getCount(): int
+    public function getCount()
     {
-        return (int)Shoogle::on()->count();
+//        Order::whereHas('orderItems', function($query) {
+//            $query->where('status', 1);
+//        })->get();
+
+//        select * from `orders` where exists (
+//        select *
+//        from `order_items`
+//    where `orders`.`id` = `order_items`.`order_id` and `status` = 1
+//)
+
+        $companyId = HelperCompany::getCompanyId();
+        if ( is_null($companyId) ) {
+            return 'Unable to determine the company ID of the current user';
+        } else {
+            return Shoogle::on()
+                ->whereHas('owner', function ($query) use ($companyId) {
+                    $query->where('company_id', '=', $companyId);
+                })
+                ->count();
+        }
+
+//        return (int)Shoogle::on()->count();
     }
 
     /**
