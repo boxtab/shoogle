@@ -25,9 +25,9 @@ class WellbeingWeekRequest extends ApiRequest
     public function rules()
     {
         return [
-            'from'          => 'nullable|',
-            'to'            => 'nullable|',
-            'departmentId'  => 'nullable|numeric|',
+            'from'          => 'nullable|string|date_format:Y-m-d',
+            'to'            => 'nullable|string|date_format:Y-m-d',
+            'departmentId'  => 'nullable|integer|exists:departments,id',
         ];
     }
 }

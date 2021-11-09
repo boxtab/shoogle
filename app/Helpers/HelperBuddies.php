@@ -65,7 +65,8 @@ class HelperBuddies
             ->where(function ($query) use ($userId) {
                 $query->where('user1_id', '=', $userId)
                     ->orWhere('user2_id', '=', $userId);
-            })->count('*');
+            })
+            ->count('*');
 
         return ( $buddyCount > 0 ) ? true : false;
     }

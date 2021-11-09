@@ -16,6 +16,8 @@ use App\Helpers\HelperNotifications;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
 use App\Http\Resources\ShoogleBuddyNameResource;
+use App\Models\Buddie;
+use App\Models\BuddyRequest;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\Models\UserHasShoogle;
@@ -130,7 +132,7 @@ class ShooglesRepository extends Repositories
                 '(select count(uhs.user_id) from user_has_shoogle as uhs where uhs.shoogle_id = shoogles.id) as shooglers, ' .
                 'departments.name as departments_name '
             ))
-            ->leftJoin('users', 'users.id', '=', 'shoogles.owner_id')
+            ->join('users', 'users.id', '=', 'shoogles.owner_id')
             ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
             ->when( ! $this->noCompany(), function($query) {
                 return $query->where('users.company_id', $this->companyId);
@@ -289,18 +291,34 @@ class ShooglesRepository extends Repositories
                 ->update(['left_at' => Carbon::now()]);
 
             $buddy = HelperBuddies::getBuddy($shoogle->id, Auth::id());
-            HelperBuddies::setDisconnectedBuddy($buddy->id);
+            if ( ! is_null($buddy) ) {
+                Buddie::on()
+                    ->where('id', '=', $buddy->id)
+                    ->update([
+                        'disconnected_at' => Carbon::now()
+                    ]);
+            }
+//            HelperBuddies::setDisconnectedBuddy($buddy->id);
 
             $buddyRequest = HelperBuddyRequest::getBuddyRequest($shoogle->id, Auth::id());
-            HelperBuddyRequest::setTypeBuddyRequest($buddyRequest, BuddyRequestTypeEnum::DISCONNECT);
+            if ( ! is_null($buddyRequest) ) {
+                BuddyRequest::on()
+                    ->where('id', '=', $buddyRequest->id)
+                    ->update([
+                        'type' => BuddyRequestTypeEnum::DISCONNECT,
+                    ]);
+//            $buddyRequest->type = $type;
+            }
 
-            $buddyId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
-            if ( ! is_null( $buddyId ) ) {
+//            HelperBuddyRequest::setTypeBuddyRequest($buddyRequest, BuddyRequestTypeEnum::DISCONNECT);
+
+            $buddyUserId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
+            if ( ! is_null( $buddyUserId ) ) {
 
                 $helperNotification = new HelperNotifications();
 
                 $helperNotification->sendNotificationToUser(
-                    $buddyId,
+                    $buddyUserId,
                     NotificationsTypeConstant::BUDDY_DISCONNECT_ID,
                     Auth::user()->first_name . ' ' . Auth::user()->first_name . ' left ' . $shoogle->title . '.  You are no longer buddied.'
                 );
@@ -352,13 +370,14 @@ class ShooglesRepository extends Repositories
     /**
      * Search by shoogles.
      *
+     * @param int $companyId
      * @param string|null $search
      * @param string|null $filterIncome
      * @param int|null $page
      * @param int|null $pageSize
-     * @return array
+     * @return array|null
      */
-    public function search(string $search = null, string $filterIncome = null, int $page = null, int $pageSize = null)
+    public function search(int $companyId, string $search = null, string $filterIncome = null, int $page = null, int $pageSize = null)
     {
         switch ($filterIncome) {
             case 'oldest':
@@ -383,8 +402,10 @@ class ShooglesRepository extends Repositories
                 null as solo,
                 null as joined
             '))
+            ->Join('users as u', 'sh.owner_id', '=', 'u.id')
             ->leftJoin('wellbeing_categories as wc', 'sh.wellbeing_category_id', '=', 'wc.id')
-            ->whereNull('deleted_at')
+            ->whereNull('sh.deleted_at')
+            ->where('u.company_id', '=', $companyId)
             ->when( ! is_null($search), function($query) use ($search) {
                 return $query->where(function ($query) use ($search) {
                     return $query->where('sh.title', 'LIKE', '%' . $search . '%')

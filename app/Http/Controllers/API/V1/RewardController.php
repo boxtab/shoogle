@@ -8,9 +8,11 @@ use App\Http\Resources\RewardListResource;
 use App\Repositories\ProfileRepository;
 use App\Repositories\RewardRepository;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\UserCompanyTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Exception;
@@ -21,6 +23,8 @@ use Exception;
  */
 class RewardController extends BaseApiController
 {
+    use UserCompanyTrait;
+
     /**
      * RewardController constructor.
      * @param RewardRepository $rewardRepository
@@ -41,7 +45,7 @@ class RewardController extends BaseApiController
         try {
             $userId = $request->input('userId');
             $rewardId = $request->input('rewardId');
-
+            $this->isUsersInCompany($userId, Auth::id());
             $this->repository->assign($userId, $rewardId);
 
         } catch (\GetStream\StreamChat\StreamException $e) {

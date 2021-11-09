@@ -17,9 +17,9 @@ class DepartmentDetailResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'name' => $this->resource->name,
-            'shooglersCount' => User::where('department_id', $this->resource->id)->count(),
-            'shooglers' => new DepartmentUserResource(User::where('department_id', $this->resource->id)->get()),
+            'name'              => $this->resource->name,
+            'shooglersCount'    => User::on()->where('department_id', '=', $this->resource->id)->count(),
+            'shooglers'         => new DepartmentUserResource(User::on()->where('department_id', $this->resource->id)->get()),
         ];
     }
 }

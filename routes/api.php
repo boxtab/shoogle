@@ -218,7 +218,7 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
  * ADMIN
  * =====================================================================================================================
  */
-Route::group(['prefix' => 'admin/v1', 'middlewar' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
+Route::group(['prefix' => 'admin/v1', 'middleware' => ['auth:api', 'user_already_logged_in', 'cors']], function () {
     /**
      * Entity: Shoogle
      * Table: shoogles

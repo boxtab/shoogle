@@ -27,6 +27,7 @@ class CommunityLevelStatisticRequest extends ApiRequest
         return [
             'from'  => 'nullable|date_format:Y-m-d',
             'to'    => 'nullable|date_format:Y-m-d',
+            'departmentId'  => 'nullable|integer|exists:departments,id',
         ];
     }
 }

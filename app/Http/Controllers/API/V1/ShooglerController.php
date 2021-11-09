@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Helpers\HelperCompany;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShooglerIndexRequest;
 use App\Http\Resources\ShooglerListResource;
@@ -10,6 +11,8 @@ use App\Models\UserHasShoogle;
 use App\Repositories\ShooglerRepository;
 use App\Repositories\ShooglesRepository;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\ShoogleCompanyTrait;
+use App\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -23,6 +26,7 @@ use App\Http\Controllers\API\BaseApiController;
  */
 class ShooglerController extends BaseApiController
 {
+    use ShoogleCompanyTrait;
     /**
      * ShooglerController constructor.
      * @param ShooglerRepository $shooglerRepository
@@ -54,8 +58,10 @@ class ShooglerController extends BaseApiController
         try {
             $shoogle = Shoogle::on()->find($id);
             if ( is_null( $shoogle ) ) {
-                throw new \Exception('Shoogle not found for this ID', Response::HTTP_NOT_FOUND);
+                throw new \Exception('Shoogle not found for this ID.', Response::HTTP_NOT_FOUND);
             }
+
+            $this->checkCreatorAndUserInCompany($shoogle->id);
 
             $shoogler = $this->repository->getShooglerList(
                 $id,

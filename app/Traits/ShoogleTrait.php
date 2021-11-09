@@ -101,7 +101,8 @@ trait ShoogleTrait
             ->get(['shoogle_id', 'user1_id', 'user2_id'])
             ->map(function ($buddy) use ($authenticatedUserID) {
                 $buddyID = ( $buddy['user1_id'] === $authenticatedUserID ) ? $buddy['user2_id'] : $buddy['user1_id'];
-                $buddyName = User::on()->where('id', '=', $buddyID)->first()->full_name;
+                $buddy = User::on()->where('id', '=', $buddyID)->first();
+                $buddyName = ( ! is_null($buddy) ) ? $buddy->full_name : null;
                 return [$buddy['shoogle_id'], $buddyName];
             })
             ->toAssoc()

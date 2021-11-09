@@ -11,6 +11,7 @@ use App\Http\Resources\DepartmentItemsResource;
 use App\Http\Resources\DepartmentListResource;
 use App\Models\Department;
 use App\Repositories\DepartmentRepository;
+use App\Traits\DepartmentCompanyTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -24,6 +25,8 @@ use Exception;
  */
 class DepartmentController extends BaseApiController
 {
+    use DepartmentCompanyTrait;
+
     /**
      * DepartmentController constructor.
      *
@@ -74,6 +77,8 @@ class DepartmentController extends BaseApiController
     {
         try {
             $record = $this->findRecordByID($id);
+            $this->isDepartmentBelongsCompany($id);
+
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -91,6 +96,8 @@ class DepartmentController extends BaseApiController
     {
         try {
             $record = $this->findRecordByID($id);
+            $this->isDepartmentBelongsCompany($id);
+
             $record->update([
                 'name' => $request->input('name')
             ]);
@@ -111,6 +118,8 @@ class DepartmentController extends BaseApiController
     {
         try {
             $record = $this->findRecordByID($id);
+            $this->isDepartmentBelongsCompany($id);
+
             $record->destroy($id);
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {

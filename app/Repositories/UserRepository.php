@@ -45,7 +45,7 @@ class UserRepository extends Repositories
     {
         return $this->model->on()
             ->when( ! $this->noCompany() , function ($query) {
-                return $query->where('company_id', $this->companyId);
+                return $query->where('company_id', '=', $this->companyId);
             })
             ->get();
     }
@@ -123,9 +123,10 @@ class UserRepository extends Repositories
      */
     public function delete(int $userId)
     {
-        DB::transaction( function () use ($userId) {
-            Invite::on()->where('user_id', '=', $userId)->delete();
-            User::on()->where('id', '=', $userId)->delete();
-        });
+        Log::info('test delete');
+//        DB::transaction( function () use ($userId) {
+//            Invite::on()->where('user_id', '=', $userId)->delete();
+//            User::on()->where('id', '=', $userId)->delete();
+//        });
     }
 }

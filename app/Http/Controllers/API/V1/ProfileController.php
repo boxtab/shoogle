@@ -60,6 +60,9 @@ class ProfileController extends BaseApiController
     public function show()
     {
         try {
+            if ( ! Auth::check() ) {
+                throw new Exception('User is not found!', Response::HTTP_NOT_FOUND);
+            }
             $profile = $this->repository->getProfile( Auth::id() );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);

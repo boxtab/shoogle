@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Helper;
+use App\Helpers\HelperCompany;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
@@ -28,6 +29,7 @@ use App\Models\Shoogle;
 use App\Repositories\ShooglesRepository;
 use App\Support\ApiRequest\ApiRequest;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\ShoogleCompanyTrait;
 use App\Traits\ShoogleValidationTrait;
 use App\User;
 use Carbon\Carbon;
@@ -47,7 +49,7 @@ use GetStream\StreamChat\Client as StreamClient;
 
 class ShooglesController extends BaseApiController
 {
-    use ShoogleValidationTrait;
+    use ShoogleValidationTrait, ShoogleCompanyTrait;
 
     /**
      * ShooglesController constructor.
@@ -123,10 +125,12 @@ class ShooglesController extends BaseApiController
     public function show($id = null)
     {
         try {
-            $shoogles = $this->findRecordByID($id);
-            $shooglesResource = new ShooglesResource($shoogles);
+            $shoogle = $this->findRecordByID($id);
+            $this->checkCreatorAndUserInCompany($id);
+
+            $shooglesResource = new ShooglesResource($shoogle);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return ApiResponse::returnData($shooglesResource);
@@ -141,9 +145,12 @@ class ShooglesController extends BaseApiController
     public function views($id = null)
     {
         try {
-            $shoogles = $this->findRecordByID($id);
+            $shoogle = $this->findRecordByID($id);
+            $this->checkCreatorAndUserInCompany($shoogle->id);
+
             $this->repository->incrementViews($id);
-            $shooglesViewsResource = new ShooglesViewsResource($shoogles);
+
+            $shooglesViewsResource = new ShooglesViewsResource($shoogle);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -180,6 +187,7 @@ class ShooglesController extends BaseApiController
      *
      * @param ShooglesEntryRequest $request
      * @return \Illuminate\Http\JsonResponse|Response|null
+     * @throws Exception
      */
     public function entry(ShooglesEntryRequest $request)
     {
@@ -194,6 +202,8 @@ class ShooglesController extends BaseApiController
         }
 
         try {
+            $this->checkCreatorAndUserInCompany($request->get('shoogleId'));
+
             $this->repository->entry(
                 Auth::id(),
                 $request->input('shoogleId'),
@@ -224,6 +234,7 @@ class ShooglesController extends BaseApiController
     public function leave(?int $shoogleId)
     {
         try {
+            $this->checkCreatorAndUserInCompany($shoogleId);
             $this->repository->leave($shoogleId);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage());
@@ -273,21 +284,32 @@ class ShooglesController extends BaseApiController
             return ApiResponse::returnError(['pageSize' => 'PageSize number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $searchResult = $this->repository->search(
-            $request->input('search'),
-            $request->input('filter'),
-            $page,
-            $pageSize
-        );
+        try {
+            $companyId = HelperCompany::getCompanyId();
+            if ( is_null($companyId) ) {
+                throw new Exception('The company ID for the current user was not found.', Response::HTTP_NOT_FOUND);
+            }
 
-        if ( is_null( $searchResult ) ) {
-            $searchResultResource = [];
-        } else {
-            $searchResultResource = new ShooglesSearchResultResource( $searchResult );
-            $searchResultResource->setFindCount($this->repository->getFindCount());
-            $searchResultResource->setCommunityCount($this->repository->getCommunityCount());
-            $searchResultResource->setBuddiesCount($this->repository->getBuddiesCount());
-            $searchResultResource->setSolosCount($this->repository->getSolosCount());
+            $searchResult = $this->repository->search(
+                $companyId,
+                $request->input('search'),
+                $request->input('filter'),
+                $page,
+                $pageSize
+            );
+
+            if ( is_null($searchResult) ) {
+                $searchResultResource = [];
+            } else {
+                $searchResultResource = new ShooglesSearchResultResource($searchResult);
+                $searchResultResource->setFindCount($this->repository->getFindCount());
+                $searchResultResource->setCommunityCount($this->repository->getCommunityCount());
+                $searchResultResource->setBuddiesCount($this->repository->getBuddiesCount());
+                $searchResultResource->setSolosCount($this->repository->getSolosCount());
+            }
+
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage());
         }
 
         return ApiResponse::returnData($searchResultResource);
@@ -304,6 +326,8 @@ class ShooglesController extends BaseApiController
     {
         try {
             $shoogle = $this->findRecordByID($id);
+            $this->checkCreatorAndUserInCompany($id);
+
             $shoogle->update(
                 Helper::formatSnakeCase($request->all())
             );
@@ -325,12 +349,14 @@ class ShooglesController extends BaseApiController
     {
         try {
             $shoogle = $this->findRecordByID($id);
+            $this->checkCreatorAndUserInCompany($id);
+
             $active = $request->get('active');
             $shoogle->update([
                 'active' => $active,
             ]);
         } catch (Exception $e) {
-            return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return ApiResponse::returnData([]);
     }
@@ -346,6 +372,8 @@ class ShooglesController extends BaseApiController
         try {
             $shoogle = HelperShoogle::getShoogle($id);
             $member = HelperMember::getMember(Auth::id(), $id);
+
+            $this->checkCreatorAndUserInCompany($id);
 
             $calendar = $this->repository->getCalendar($shoogle, $member);
             $shooglesCalendarResource = new ShooglesCalendarResource($calendar);
@@ -365,6 +393,7 @@ class ShooglesController extends BaseApiController
     public function setting(ShoogleSettingRequest $request, int $id)
     {
         try {
+            $this->checkCreatorAndUserInCompany($id);
             HelperShoogle::getShoogle($id);
             $member = HelperMember::getMember(Auth::id(), $id);
             $setting = $request->only(['reminder', 'reminderInterval', 'buddy', 'isReminder']);
@@ -385,6 +414,8 @@ class ShooglesController extends BaseApiController
     public function destroy($id)
     {
         try {
+            $this->checkCreatorAndUserInCompany($id);
+
             $shoogle = $this->findRecordByID($id);
             $shoogle->destroy($id);
         } catch (Exception $e) {

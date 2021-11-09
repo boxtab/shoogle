@@ -11,6 +11,8 @@ use App\Http\Resources\WelbeingScoresAverageResource;
 use App\Repositories\DepartmentRepository;
 use App\Repositories\WellbeingScoresRepository;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\DepartmentCompanyTrait;
+use App\Traits\ShoogleCompanyTrait;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
@@ -24,6 +26,8 @@ use Illuminate\Support\Facades\Log;
  */
 class WelbeingScoresController extends BaseApiController
 {
+    use ShoogleCompanyTrait, DepartmentCompanyTrait;
+
     /**
      * WelbeingScoresController constructor.
      * @param WellbeingScoresRepository $wellbeingScoresRepository
@@ -127,6 +131,8 @@ class WelbeingScoresController extends BaseApiController
     {
         try {
             $this->repository->existsShoogle($id);
+            $this->checkCreatorAndUserInCompany($id);
+
             $average = $this->repository->getAverageShoogle( $id, $request->input('from'), $request->input('to') );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -166,7 +172,9 @@ class WelbeingScoresController extends BaseApiController
     {
         try {
             $this->repository->existsCompany($id);
+            $this->checkCreatorAndUserInCompany($id);
             $average = $this->repository->getAverageCompanyId($id, $request->input('from'), $request->input('to'));
+
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -186,6 +194,8 @@ class WelbeingScoresController extends BaseApiController
     {
         try {
             $this->repository->existsDepartment($id);
+            $this->isDepartmentBelongsCompany($id);
+
             $average = $this->repository->getDepartmentCompanyId($id, $request->input('from'), $request->input('to'));
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage());

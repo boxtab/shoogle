@@ -30,7 +30,7 @@ class HelperBuddyRequest
 
         $countBuddyRequest = BuddyRequest::on()
             ->where('shoogle_id', '=', $shoogleId)
-            ->where('type', '<>', BuddyRequestTypeEnum::DISCONNECT)
+            ->whereNotIn('type',  [BuddyRequestTypeEnum::REJECT, BuddyRequestTypeEnum::DISCONNECT])
             ->where(function ($query) use ($user1Id, $user2Id) {
 
                 $query->where(function ($query) use ($user1Id, $user2Id) {

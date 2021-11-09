@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Traits\DepartmentCompanyTrait;
+use App\Traits\WellbeingWeekUsersTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Helper;
 use App\Helpers\HelperDateTime;
@@ -21,6 +23,8 @@ use Illuminate\Support\Facades\Log;
  */
 class CommunityLevelController extends BaseApiController
 {
+    use WellbeingWeekUsersTrait, DepartmentCompanyTrait;
+
     /**
      * CommunityLevelController constructor.
      * @param CommunityLevelRepository $communityLevelRepository
@@ -39,10 +43,10 @@ class CommunityLevelController extends BaseApiController
     public function statistic(CommunityLevelStatisticRequest $request)
     {
         try {
-            $companyId = Helper::getCompanyIdFromJWT();
-            if ( is_null($companyId) ) {
-                throw new Exception('The company ID was not found for the current user.', Response::HTTP_NOT_FOUND);
-            }
+//            $companyId = Helper::getCompanyIdFromJWT();
+//            if ( is_null($companyId) ) {
+//                throw new Exception('The company ID was not found for the current user.', Response::HTTP_NOT_FOUND);
+//            }
 
             $dateFrom = $request->get('from');
             $dateTo = $request->get('to');
@@ -54,7 +58,14 @@ class CommunityLevelController extends BaseApiController
                 throw new Exception('Both dates must be filled in or both are empty.', Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            $wellbeingCategory = $this->repository->getWellbeingCategory($companyId, $dateFrom, $dateTo);
+            $departmentId = $request->get('departmentId');
+            if ( ! is_null($departmentId) ) {
+                $this->isDepartmentBelongsCompany($departmentId);
+            }
+
+            $usersIDs = $this->getUsersIDsFromDepartmentId($departmentId, $dateFrom, $dateTo);
+
+            $wellbeingCategory = $this->repository->getWellbeingCategory($usersIDs, $dateFrom, $dateTo);
 
          } catch (Exception $e) {
              return ApiResponse::returnError($e->getMessage(), $e->getCode());

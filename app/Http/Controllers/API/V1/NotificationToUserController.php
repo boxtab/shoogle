@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Helpers\HelperCompany;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NotificationToUserDeleteRequest;
@@ -42,7 +43,12 @@ class NotificationToUserController extends BaseApiController
     public function index()
     {
         try {
-            $listNotificationsToUser = $this->repository->getList();
+            $currentUserCompanyId = HelperCompany::getCompanyId();
+            if (is_null($currentUserCompanyId)) {
+                throw new Exception('The company ID for the current user was not found.', Response::HTTP_NOT_FOUND);
+            }
+
+            $listNotificationsToUser = $this->repository->getList($currentUserCompanyId);
             $notificationToUserResource = NotificationToUserResource::collection($listNotificationsToUser);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage());

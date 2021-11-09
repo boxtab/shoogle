@@ -13,6 +13,7 @@ use App\Models\BuddyRequest;
 use App\Repositories\BuddyRequestRepository;
 use App\Repositories\CompanyRepository;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\UserCompanyTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BuddyRequestController extends BaseApiController
 {
+    use UserCompanyTrait;
+
     /**
      * BuddyRequestController constructor.
      * @param BuddyRequestRepository $buddyRequestRepository
@@ -45,6 +48,8 @@ class BuddyRequestController extends BaseApiController
             $shoogleId = $request->input('shoogleId');
             $user2id = $request->input('buddyId');
             $message = $request->input('message');
+            $this->isUsersInCompany($user2id, Auth::id());
+
             $this->repository->buddyRequest($shoogleId, $user2id, $message);
         } catch (\Exception $e) {
             return ApiResponse::returnError($e->getMessage());

@@ -45,7 +45,7 @@ class DepartmentRepository extends Repositories
                 count(users.id) as shooglers'))
             ->leftJoin('users', 'users.department_id', '=', 'departments.id')
             ->when( ! $this->noCompany(), function($query) {
-                return $query->where('departments.company_id', $this->companyId);
+                return $query->where('departments.company_id', '=', $this->companyId);
             })
             ->groupBy('departments.id', 'departments.name')
             ->get();

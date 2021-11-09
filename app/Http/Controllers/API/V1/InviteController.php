@@ -10,6 +10,7 @@ use App\Http\Resources\InviteListResource;
 use App\Http\Resources\InviteShowResource;
 use App\Repositories\InviteRepository;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\InviteCompanyTrait;
 use App\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
@@ -30,6 +31,8 @@ use Exception;
  */
 class InviteController extends BaseApiController
 {
+    use InviteCompanyTrait;
+
     /**
      * InviteController constructor.
      *
@@ -87,6 +90,8 @@ class InviteController extends BaseApiController
     {
         try {
             $record = $this->findRecordByID($id);
+            $this->checkCreatorInviteAndUserInCompany($id);
+
             $record->update([
                 'email' => $request->input('email'),
                 'department_id' => $request->input('departmentId'),
@@ -126,6 +131,8 @@ class InviteController extends BaseApiController
     {
         try {
             $invite = $this->findRecordByID($id);
+            $this->checkCreatorInviteAndUserInCompany($id);
+
             $inviteResource = new InviteShowResource($invite);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -143,10 +150,13 @@ class InviteController extends BaseApiController
     {
         try {
             $invite = $this->findRecordByID($id);
+            $this->checkCreatorInviteAndUserInCompany($id);
             if ($invite->is_used == 1) {
                 throw new Exception('Unable to delete used invite', Response::HTTP_FORBIDDEN);
             }
+
             $invite->destroy($id);
+
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
