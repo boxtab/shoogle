@@ -6,6 +6,7 @@ use App\Models\NotificationToUser;
 use GetStream\StreamChat\Client as StreamClient;
 use GetStream\StreamChat\StreamException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperStream

@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\User;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperUser
@@ -24,7 +25,7 @@ class HelperUser
 
         $user = User::on()
             ->where('id', '=', $userId)
-            ->first(['first_name', 'last_name']);
+            ->first();
 
         if ( is_null( $user ) ) {
             return 'The user with the given ID was not found.';
