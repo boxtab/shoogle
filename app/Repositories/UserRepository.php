@@ -123,9 +123,10 @@ class UserRepository extends Repositories
      */
     public function delete(int $userId)
     {
-        DB::transaction( function () use ($userId) {
-            Invite::on()->where('user_id', '=', $userId)->delete();
-            User::on()->where('id', '=', $userId)->delete();
-        });
+        Log::info('test delete');
+//        DB::transaction( function () use ($userId) {
+//            Invite::on()->where('user_id', '=', $userId)->delete();
+//            User::on()->where('id', '=', $userId)->delete();
+//        });
     }
 }
