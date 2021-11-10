@@ -1,6 +1,10 @@
 // Responsive
+$mobileMax: 679px;
 $mobileBig: 680px;
 
+// Mobile Big
+@media (max-width: $mobileMax) {
+}
 // Mobile Big
 @media (min-width: $mobileBig) {
 }
