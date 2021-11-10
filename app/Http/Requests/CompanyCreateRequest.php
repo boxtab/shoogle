@@ -25,7 +25,8 @@ class CompanyCreateRequest extends ApiRequest
     public function rules()
     {
         return [
-            'companyName'   => 'required|unique:companies,name|min:2|max:45',
+            'companyName'   => 'required|min:2|max:45',
+//            'companyName'   => 'required|unique:companies,name|min:2|max:45',
             'firstName'     => 'required|min:2|max:255',
             'lastName'      => 'min:2|max:255',
             'email'         => 'required|email:rfc,dns|min:5|max:255',
