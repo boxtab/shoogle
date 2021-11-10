@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null from_message
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
+ * @property Carbon|null deleted_at
  *
  */
 class NotificationToUser extends BaseModel
@@ -45,6 +46,7 @@ class NotificationToUser extends BaseModel
         'buddy_id',
         'created_at',
         'updated_at',
+        'deleted_at',
     ];
 
     protected $casts = [
@@ -60,6 +62,7 @@ class NotificationToUser extends BaseModel
         'buddy_id' => 'integer',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
+        'deleted_at' => 'datetime:Y-m-d h:i:s',
     ];
 
     /**

@@ -58,22 +58,22 @@ class NotificationToUserController extends BaseApiController
     }
 
     /**
-     * Marks all notifications as read.
+     * Returns the number of unread notifications
      *
-     * @param $userId
      * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function viewed($userId)
+    public function viewed()
     {
         try {
+            $userId = Auth::id();
             $this->repository->checkExistenceUser($userId);
-            $this->repository->viewed($userId);
+            $viewed = $this->repository->viewed($userId);
 
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return ApiResponse::returnData([]);
+        return ApiResponse::returnData(['viewedCount' => $viewed]);
     }
 
     /**

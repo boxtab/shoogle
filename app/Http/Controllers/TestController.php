@@ -28,9 +28,11 @@ use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
+use App\Models\NotificationToUser;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
+use App\Repositories\NotificationToUserRepository;
 use App\Repositories\TestRepository;
 use App\Services\NotificClientService;
 use App\Services\PasswordRecoveryService;
@@ -75,10 +77,17 @@ class TestController extends Controller
 
     public function index()
     {
-        $userId = 30;
+        $notificationToUser = new NotificationToUser();
+        $notificationToUserRepository = new NotificationToUserRepository($notificationToUser);
 
-        $userDeleteService = new UserDeleteService($userId);
-        $userDeleteService->buddyDisconnect();
+        $userId = 115;
+        $tmp = $notificationToUserRepository->getListNotifications($userId);
+        dd($tmp->toArray());
+
+//        $userId = 30;
+//
+//        $userDeleteService = new UserDeleteService($userId);
+//        $userDeleteService->buddyDisconnect();
 
 //        User::withTrashed()->find(116)->restore();
 

@@ -75,18 +75,25 @@ class NotificationToUserRepository extends Repositories
     }
 
     /**
-     * Mark as read.
+     * Returns the number of unread notifications.
      *
      * @param int $userId
+     * @return int
      */
-    public function viewed(int $userId)
+    public function viewed(int $userId): int
     {
-        NotificationToUser::on()
+//        NotificationToUser::on()
+//            ->where('user_id', '=', $userId)
+//            ->where('type_id', '<>', NotificationsTypeConstant::BUDDY_REQUEST_ID)
+//            ->update([
+//                'viewed' => 1,
+//            ]);
+
+        return NotificationToUser::on()
             ->where('user_id', '=', $userId)
-            ->where('type_id', '<>', NotificationsTypeConstant::BUDDY_REQUEST_ID)
-            ->update([
-                'viewed' => 1,
-            ]);
+            ->where('viewed', '=', 0)
+            ->get()
+            ->count();
     }
 
     /**
@@ -101,14 +108,23 @@ class NotificationToUserRepository extends Repositories
             return [];
         }
 
-        return $this->model->on()
+        $notificationsToUserSelection = $this->model->on()
             ->leftJoin('notifications_type', 'notifications_type.id', '=', 'notifications_to_user.type_id')
             ->where('user_id', '=', $userId)
+            ->where('viewed', '=', 0);
+
+        $notificationsToUserCollection = $notificationsToUserSelection
             ->get([
                 'notifications_to_user.id as id',
                 'notifications_type.name as typeNotificationText',
                 'notifications_to_user.created_at as createdAt',
             ]);
+
+        $notificationsToUserSelection->update([
+            'viewed' => 1,
+        ]);
+
+        return $notificationsToUserCollection;
     }
 
     /**
@@ -126,9 +142,9 @@ class NotificationToUserRepository extends Repositories
                     ->where('id', '=', $listNotificationID)
                     ->first();
 
-                $notificationToUser->update([
-                    'viewed' => 1,
-                ]);
+//                $notificationToUser->update([
+//                    'viewed' => 1,
+//                ]);
 
                 if ( $notificationToUser->type_id === NotificationsTypeConstant::BUDDY_REQUEST_ID ) {
 
@@ -151,6 +167,8 @@ class NotificationToUserRepository extends Repositories
                     $buddyRequestRepository = new BuddyRequestRepository($buddyRequestModel);
                     $buddyRequestRepository->buddyReject($buddyRequest);
                 }
+
+                $notificationToUser->delete();
 
             }
         });
