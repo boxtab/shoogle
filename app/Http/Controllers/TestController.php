@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\RewardConstant;
+use App\Enums\BuddyRequestTypeEnum;
 use App\Helpers\Helper;
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperChat;
@@ -23,6 +24,7 @@ use App\Helpers\HelperShooglesViews;
 use App\Helpers\HelperStream;
 use App\Helpers\HelperUser;
 use App\Helpers\HelperWellbeing;
+use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
@@ -33,6 +35,7 @@ use App\Repositories\TestRepository;
 use App\Services\NotificClientService;
 use App\Services\PasswordRecoveryService;
 use App\Services\RruleService;
+use App\Services\UserDeleteService;
 use App\Traits\CommunityLevelValueTrait;
 use Carbon\Carbon;
 use Database\Seeders\IconRewardsSeeder;
@@ -72,10 +75,17 @@ class TestController extends Controller
 
     public function index()
     {
-        $companyId = 11111;
-        $isDelete = Company::on()->where('id', '=', $companyId)->exists();
+        $userId = 30;
 
-        dd($isDelete);
+        $userDeleteService = new UserDeleteService($userId);
+        $userDeleteService->buddyDisconnect();
+
+//        User::withTrashed()->find(116)->restore();
+
+//        $companyId = 11111;
+//        $isDelete = Company::on()->where('id', '=', $companyId)->exists();
+//
+//        dd($isDelete);
 
 //        dd(empty([]));
 //

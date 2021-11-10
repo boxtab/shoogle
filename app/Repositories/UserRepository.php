@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
+use App\Helpers\HelperUser;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
 use App\Models\Role;
@@ -123,10 +124,6 @@ class UserRepository extends Repositories
      */
     public function delete(int $userId)
     {
-        Log::info('test delete');
-//        DB::transaction( function () use ($userId) {
-//            Invite::on()->where('user_id', '=', $userId)->delete();
-//            User::on()->where('id', '=', $userId)->delete();
-//        });
+        HelperUser::delete($userId);
     }
 }

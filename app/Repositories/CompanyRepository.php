@@ -133,9 +133,20 @@ class CompanyRepository extends Repositories
     {
         DB::transaction( function () use ($credentials) {
 
-            $company = Company::on()->create([
-                'name' => $credentials['companyName'],
-            ]);
+            $company = Company::withTrashed()
+                ->where('name', '=', $credentials['companyName'])
+                ->first();
+
+            Log::info($company);
+
+            if ( $company ) {
+                $company->restore();
+            } else {
+                $company = Company::on()->create([
+                    'name' => $credentials['companyName'],
+                ]);
+            }
+
 
             $user = User::withTrashed()
                 ->where('email', '=', $credentials['email'])

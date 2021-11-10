@@ -134,7 +134,7 @@ class BuddyRequestController extends BaseApiController
                 ->first();
 
             if ( $buddyRequest->type !== BuddyRequestTypeEnum::INVITE ) {
-                throw new \Exception("The type of invitation must be invite!",
+                throw new \Exception("The invitation is 180 no longer relevant!",
                     \Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
@@ -163,7 +163,8 @@ class BuddyRequestController extends BaseApiController
             $buddyId = $request->input('buddyId');
             $shoogleId = $request->input('shoogleId');
             $message = $request->input('message');
-            $this->repository->buddyDisconnect($buddyId, $shoogleId, $message);
+            $callerUserId = Auth::id();
+            $this->repository->buddyDisconnect($buddyId, $shoogleId, $callerUserId, $message);
         } catch (\Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }

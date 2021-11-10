@@ -298,7 +298,6 @@ class ShooglesRepository extends Repositories
                         'disconnected_at' => Carbon::now()
                     ]);
             }
-//            HelperBuddies::setDisconnectedBuddy($buddy->id);
 
             $buddyRequest = HelperBuddyRequest::getBuddyRequest($shoogle->id, Auth::id());
             if ( ! is_null($buddyRequest) ) {
@@ -307,10 +306,7 @@ class ShooglesRepository extends Repositories
                     ->update([
                         'type' => BuddyRequestTypeEnum::DISCONNECT,
                     ]);
-//            $buddyRequest->type = $type;
             }
-
-//            HelperBuddyRequest::setTypeBuddyRequest($buddyRequest, BuddyRequestTypeEnum::DISCONNECT);
 
             $buddyUserId = HelperBuddies::getBuddyId($shoogle->id, Auth::id());
             if ( ! is_null( $buddyUserId ) ) {

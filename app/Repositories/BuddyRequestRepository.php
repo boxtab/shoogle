@@ -306,13 +306,14 @@ class BuddyRequestRepository extends Repositories
      *
      * @param int $buddyId
      * @param int $shoogleId
+     * @param int $callerUserId
      * @param string|null $message
      */
-    public function buddyDisconnect(int $buddyId, int $shoogleId, ?string $message): void
+    public function buddyDisconnect(int $buddyId, int $shoogleId, int $callerUserId, ?string $message): void
     {
-        DB::transaction( function () use ($buddyId, $shoogleId, $message) {
+        DB::transaction( function () use ($buddyId, $shoogleId, $callerUserId, $message) {
 
-            $this->isUsersInCompany($buddyId, Auth::id());
+            $this->isUsersInCompany($buddyId, $callerUserId);
 
             $buddyRequestFields = ['type' => BuddyRequestTypeEnum::DISCONNECT];
             if ( ! is_null($message) ) {
@@ -321,14 +322,14 @@ class BuddyRequestRepository extends Repositories
 
             $buddyRequest = BuddyRequest::on()
                 ->where('shoogle_id', $shoogleId)
-                ->where(function ($query) use ($buddyId) {
+                ->where(function ($query) use ($buddyId, $callerUserId) {
 
-                    $query->where(function($query) use ($buddyId) {
+                    $query->where(function($query) use ($buddyId, $callerUserId) {
                             $query->where('user1_id', $buddyId)
-                                ->where('user2_id', Auth::id());
+                                ->where('user2_id', $callerUserId);
                         })
-                        ->orWhere(function($query) use ($buddyId) {
-                            $query->where('user1_id', Auth::id())
+                        ->orWhere(function($query) use ($buddyId, $callerUserId) {
+                            $query->where('user1_id', $callerUserId)
                                 ->where('user2_id', $buddyId);
                         });
 
@@ -341,14 +342,14 @@ class BuddyRequestRepository extends Repositories
             $buddie = Buddie::on()
                 ->whereNull('disconnected_at')
                 ->where('shoogle_id', $shoogleId)
-                ->where(function ($query) use ($buddyId) {
+                ->where(function ($query) use ($buddyId, $callerUserId) {
 
-                    $query->where(function($query) use ($buddyId) {
+                    $query->where(function($query) use ($buddyId, $callerUserId) {
                         $query->where('user1_id', $buddyId)
-                            ->where('user2_id', Auth::id());
+                            ->where('user2_id', $callerUserId);
                     })
-                        ->orWhere(function($query) use ($buddyId) {
-                            $query->where('user1_id', Auth::id())
+                        ->orWhere(function($query) use ($buddyId, $callerUserId) {
+                            $query->where('user1_id', $callerUserId)
                                 ->where('user2_id', $buddyId);
                         });
 
@@ -360,7 +361,7 @@ class BuddyRequestRepository extends Repositories
                 'disconnected_at' => Carbon::now(),
             ]);
 
-            $userName = HelperUser::getFullName( Auth::id() );
+            $userName = HelperUser::getFullName( $callerUserId );
             $shoogleTitle = HelperShoogle::getTitle( $shoogleId );
             $messageText = "$userName left $shoogleTitle. You are no longer buddied.";
 
@@ -369,7 +370,7 @@ class BuddyRequestRepository extends Repositories
 
             $buddyRequestId = ( ! is_null( $buddyRequest ) ) ? $buddyRequest->id : null;
             $buddieId = ( ! is_null( $buddie ) ) ? $buddie->id : null;
-            $helperNotification->recordNotificationDetail($shoogleId, Auth::id(), $message, $buddyRequestId, $buddieId);
+            $helperNotification->recordNotificationDetail($shoogleId, $callerUserId, $message, $buddyRequestId, $buddieId);
         });
     }
 }

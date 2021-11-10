@@ -110,6 +110,22 @@ class User extends Authenticatable implements JWTSubject, HasMedia
      */
     protected $guard_name = 'api';
 
+    protected static function booted()
+    {
+        static::deleting(function ($resource) {
+//            Log::info('deleting');
+        });
+
+        static::restoring(function ($resource) {
+
+//            if( $resource->trashed() ) {
+//                Log::info('restoring');
+//            }
+
+
+        });
+    }
+
 //    protected static function boot()
 //    {
 //        parent::boot();
