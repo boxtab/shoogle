@@ -52,7 +52,7 @@ class HelperUser
             $userDeleteService->buddyReject();
             $userDeleteService->buddyDisconnect();
             $userDeleteService->deleteUserHasShoogle();
-            $userDeleteService->deleteShoogleViews();
+//            $userDeleteService->deleteShoogleViews();
             $userDeleteService->deleteUserHasReward();
             $userDeleteService->deleteInvite();
             $userDeleteService->deleteUser();
