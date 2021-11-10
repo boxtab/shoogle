@@ -10,6 +10,7 @@ use App\Helpers\Helper;
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperNotific;
 use App\Helpers\HelperNotifications;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperUser;
@@ -262,6 +263,8 @@ class BuddyRequestRepository extends Repositories
                 ->update([
                     'solo' => 0,
                 ]);
+
+            HelperNotific::checkMark($buddyRequest->id, NotificationsTypeConstant::BUDDY_REQUEST_ID, true);
         });
     }
 
@@ -298,6 +301,7 @@ class BuddyRequestRepository extends Repositories
                 $buddyRequest->id
             );
 
+            HelperNotific::checkMark($buddyRequest->id, NotificationsTypeConstant::BUDDY_REQUEST_ID, true);
         });
     }
 
