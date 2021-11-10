@@ -200,10 +200,10 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
     Route::group(['prefix' => 'notification'], function () {
 
         // GET /api/front/v1/notification
-        Route::get('/{userId}', [NotificationToUserController::class, 'viewed']);
+        Route::get('', [NotificationToUserController::class, 'viewed']);
 
         // GET /api/front/v1/notification/list
-        Route::get('list', [NotificationToUserController::class, 'listNotifications']);
+        Route::get('/list', [NotificationToUserController::class, 'listNotifications']);
 
         // DELETE /api/front/v1/notification
         Route::delete('', [NotificationToUserController::class, 'delete']);

@@ -84,6 +84,7 @@ class NotificationToUserController extends BaseApiController
     public function listNotifications()
     {
         try {
+            Log::info('test');
             $listNotification = $this->repository->getListNotifications( Auth::id() );
             $listNotificationResource = NotificationListResource::collection($listNotification);
 
