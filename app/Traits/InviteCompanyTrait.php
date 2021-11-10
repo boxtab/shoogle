@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Helpers\HelperCompany;
+use App\Models\Invite;
 use App\Models\Shoogle;
 use Illuminate\Http\Response;
 use Exception;
@@ -30,7 +31,7 @@ trait InviteCompanyTrait
             throw new Exception('Invitation ID not found.', Response::HTTP_NOT_FOUND);
         }
 
-        $invite = Shoogle::on()->find($inviteId);
+        $invite = Invite::on()->find($inviteId);
         if ( is_null( $invite ) ) {
             throw new \Exception('Invite not found for this ID.', Response::HTTP_NOT_FOUND);
         }
