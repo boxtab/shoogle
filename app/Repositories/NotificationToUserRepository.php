@@ -6,6 +6,7 @@ use App\Constants\NotificationsTypeConstant;
 use App\Enums\BuddyRequestTypeEnum;
 use App\Models\BuddyRequest;
 use App\Models\NotificationToUser;
+use App\Scopes\NotificationToUserScope;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
@@ -110,8 +111,9 @@ class NotificationToUserRepository extends Repositories
 
         $notificationsToUserSelection = $this->model->on()
             ->leftJoin('notifications_type', 'notifications_type.id', '=', 'notifications_to_user.type_id')
-            ->where('user_id', '=', $userId)
-            ->where('viewed', '=', 0);
+//            ->withoutGlobalScope(NotificationToUserScope::class)
+            ->where('user_id', '=', $userId);
+//            ->where('viewed', '=', 0);
 
         $notificationsToUserCollection = $notificationsToUserSelection
             ->get([
