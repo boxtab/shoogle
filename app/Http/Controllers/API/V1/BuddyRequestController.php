@@ -134,7 +134,7 @@ class BuddyRequestController extends BaseApiController
                 ->first();
 
             if ( $buddyRequest->type !== BuddyRequestTypeEnum::INVITE ) {
-                throw new \Exception("The type of invitation must be invite!",
+                throw new \Exception("The invitation is 180 no longer relevant!",
                     \Illuminate\Http\Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 

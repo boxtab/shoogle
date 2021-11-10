@@ -36,7 +36,7 @@ trait InviteCompanyTrait
             throw new \Exception('Invite not found for this ID.', Response::HTTP_NOT_FOUND);
         }
 
-        $inviteCompanyId = $invite->company_id;
+        $inviteCompanyId = $invite->companies_id;
         if ( is_null($inviteCompanyId) ) {
             throw new Exception('The company ID was not found in the invitation.', Response::HTTP_NOT_FOUND);
         }
