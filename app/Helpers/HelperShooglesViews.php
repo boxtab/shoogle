@@ -72,9 +72,10 @@ class HelperShooglesViews
 
         $shooglesViews = ShoogleViews::on()
             ->whereHas('user')
-//            ->whereHas('user_has_shoogle')
+            ->whereHas('userHasShoogle', function ($query) {
+                $query->whereNotNull('left_at');
+            })
             ->where('shoogles_views.shoogle_id', '=', $shoogleID)
-//            ->whereNotNull('user_has_shoogle.left_at')
             ->orderBy('shoogles_views.last_view', 'DESC')
             ->get()
             ->map(function($item) {
