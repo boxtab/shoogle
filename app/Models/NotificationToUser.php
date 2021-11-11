@@ -144,6 +144,25 @@ class NotificationToUser extends BaseModel
     }
 
     /**
+     * @return mixed|null
+     */
+    public function getTypeNotificationTextAttribute()
+    {
+        if ( is_null( $this->type_id ) ) {
+            return null;
+        } else {
+            $typeNotification = NotificationsType::on()
+                ->where('id', '=', $this->type_id)
+                ->first();
+            if ( is_null($typeNotification) ) {
+                return null;
+            } else {
+                return $typeNotification->name;
+            }
+        }
+    }
+
+    /**
      * The "booted" method of the model.
      *
      * @return void

@@ -20,7 +20,7 @@ class NotificationListResource extends JsonResource
         return [
             'id' => $this->resource->id,
             'typeNotificationText' => $this->resource->typeNotificationText,
-            'createdAt' => $this->resource->createdAt,
+            'createdAt' => $this->resource->created,
             'reward' => RewardResource::make( HelperReward::getAwarded($this->resource->id) ),
             'buddy' => HelperNotificationBuddy::getBuddyAndShoogle($this->resource->id),
         ];

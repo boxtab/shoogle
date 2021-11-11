@@ -67,7 +67,7 @@ class UserController extends BaseApiController
             $this->repository->create($credentials);
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
-                return ApiResponse::returnError('Violation of constraint integrity of foreign or unique key!');
+                return ApiResponse::returnError('Unable to create user.');
             } else {
                 return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
             }
@@ -146,7 +146,7 @@ class UserController extends BaseApiController
             if ( Auth::user()->roles()->first()->name === RoleConstant::COMPANY_ADMIN) {
                 if ( $user->company_id !== Auth::user()->company_id ) {
                     throw new Exception(
-                        "The administrator of a company cannot delete a user who is not a member of this company",
+                        "The administrator of a company cannot delete a user who is not a member of this company.",
                         Response::HTTP_FORBIDDEN
                     );
                 }

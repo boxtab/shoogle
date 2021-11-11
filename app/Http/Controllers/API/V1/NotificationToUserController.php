@@ -46,7 +46,7 @@ class NotificationToUserController extends BaseApiController
         try {
             $currentUserCompanyId = HelperCompany::getCompanyId();
             if (is_null($currentUserCompanyId)) {
-                throw new Exception('The company ID for the current user was not found.', Response::HTTP_NOT_FOUND);
+                throw new Exception('Company not found.', Response::HTTP_NOT_FOUND);
             }
 
             $listNotificationsToUser = $this->repository->getList($currentUserCompanyId);
@@ -134,7 +134,7 @@ class NotificationToUserController extends BaseApiController
                 ->first();
 
             if ( is_null($notification) ) {
-                throw new Exception('No notification found in the database.', Response::HTTP_NOT_FOUND);
+                throw new Exception('No notification found.', Response::HTTP_NOT_FOUND);
             }
 
             $notificationUserId = $notification->user_id;
@@ -148,7 +148,7 @@ class NotificationToUserController extends BaseApiController
             }
 
             if ( $notificationUserId !== $userId ) {
-                throw new Exception('The notification does not belong to the user', Response::HTTP_FORBIDDEN);
+                throw new Exception('The notification does not belong to the user.', Response::HTTP_FORBIDDEN);
             }
 
             if ( ! is_null($notification->deleted_at) ) {

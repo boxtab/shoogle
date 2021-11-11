@@ -58,7 +58,7 @@ class ShooglerController extends BaseApiController
         try {
             $shoogle = Shoogle::on()->find($id);
             if ( is_null( $shoogle ) ) {
-                throw new \Exception('Shoogle not found for this ID.', Response::HTTP_NOT_FOUND);
+                throw new \Exception('Shoogle not found.', Response::HTTP_NOT_FOUND);
             }
 
             $this->checkCreatorAndUserInCompany($shoogle->id);
