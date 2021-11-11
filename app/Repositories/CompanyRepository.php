@@ -117,8 +117,6 @@ class CompanyRepository extends Repositories
                 ->where('name', '=', $credentials['companyName'])
                 ->first();
 
-            Log::info($company);
-
             if ( $company ) {
                 $company->restore();
             } else {
