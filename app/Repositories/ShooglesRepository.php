@@ -155,13 +155,13 @@ class ShooglesRepository extends Repositories
         $minuteAgo = Carbon::now()->subMinute();
         $timeAgo = $minuteAgo;
 
-        $shoogleViews = ShoogleViews::where('shoogle_id', $shoogleId)->where('user_id', $userId)->first();
+        $shoogleViews = ShoogleViews::on()->where('shoogle_id', $shoogleId)->where('user_id', $userId)->first();
 
         $lastUpdate = ( ! is_null($shoogleViews) ) ? $shoogleViews->last_view : $timeAgo;
 
 
         if ( $lastUpdate->getTimestamp() <= $timeAgo->getTimestamp() ) {
-            $shoogle = Shoogle::where('id', $shoogleId)->first();
+            $shoogle = Shoogle::on()->where('id', $shoogleId)->first();
             $shoogle->views++;
             $shoogle->save();
         }
@@ -235,7 +235,7 @@ class ShooglesRepository extends Repositories
                     ]);
                     $lastInsertId = $member->id;
                 } else {
-                    throw new \Exception("The user id:$userId is already a member of the shoogle id:$shoogleId",
+                    throw new \Exception("You are already a member of shoogle!",
                         Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
             } else {
@@ -276,7 +276,7 @@ class ShooglesRepository extends Repositories
         $shoogle = Shoogle::on()->where('id', '=', $shoogleId)->first();
 
         if ( is_null($shoogle) ) {
-            throw new Exception("Project ID $shoogleId does not exist.", Response::HTTP_NOT_FOUND);
+            throw new Exception("Shoogle doesn't exist.", Response::HTTP_NOT_FOUND);
         }
 
         if ( ! HelperShoogle::isMember( Auth::id(), $shoogleId ) ) {

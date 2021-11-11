@@ -66,12 +66,12 @@ class NotificationToUserRepository extends Repositories
     public function checkExistenceUser(?int $userId)
     {
         if ( is_null($userId) ) {
-            throw new \Exception("User ID not specified", Response::HTTP_NOT_FOUND);
+            throw new \Exception("User ID not found!", Response::HTTP_NOT_FOUND);
         }
 
         $user = User::on()->where('id', '=', $userId)->first();
         if ( is_null( $user ) ) {
-            throw new \Exception("User ID: $userId not found", Response::HTTP_NOT_FOUND);
+            throw new \Exception("User not found!", Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -83,13 +83,6 @@ class NotificationToUserRepository extends Repositories
      */
     public function viewed(int $userId): int
     {
-//        NotificationToUser::on()
-//            ->where('user_id', '=', $userId)
-//            ->where('type_id', '<>', NotificationsTypeConstant::BUDDY_REQUEST_ID)
-//            ->update([
-//                'viewed' => 1,
-//            ]);
-
         return NotificationToUser::on()
             ->where('user_id', '=', $userId)
             ->where('viewed', '=', 0)
@@ -141,10 +134,6 @@ class NotificationToUserRepository extends Repositories
                 $notificationToUser = NotificationToUser::on()
                     ->where('id', '=', $listNotificationID)
                     ->first();
-
-//                $notificationToUser->update([
-//                    'viewed' => 1,
-//                ]);
 
                 if ( $notificationToUser->type_id === NotificationsTypeConstant::BUDDY_REQUEST_ID ) {
 

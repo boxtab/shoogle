@@ -46,7 +46,6 @@ class HelperReward
      */
     public static function getAwarded(?int $notificationId)
     {
-//        Log::info($notificationId);
         if ( is_null($notificationId) ) {
             return null;
         }

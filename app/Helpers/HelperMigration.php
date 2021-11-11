@@ -26,7 +26,11 @@ class HelperMigration
         }, $conn->listTableForeignKeys($table));
     }
 
-
+    /**
+     * @param string $table
+     * @param string $uniqueKey
+     * @return bool
+     */
     public static function hasUniqueKeyInTable(string $table, string $uniqueKey): bool
     {
         $listUniqueKeys = [];

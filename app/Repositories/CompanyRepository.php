@@ -86,26 +86,6 @@ class CompanyRepository extends Repositories
     }
 
     /**
-     * Get a list of companies.
-     *
-     * @param string $order
-     * @return array
-     */
-    public function getList2(string $order): array
-    {
-        return $this->model->on()
-            ->select([
-                'companies.id as id',
-                'companies.name as companyName',
-            ])
-            ->with('users:id,first_name')
-//            ->leftJoin('users', 'companies.id', '=', 'users.company_id')
-            ->orderBy('companies.name', $order)
-            ->get()
-            ->toArray();
-    }
-
-    /**
      * Get the entity of the admin company by the company ID.
      *
      * @param int $companyId

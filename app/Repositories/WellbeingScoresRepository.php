@@ -50,7 +50,7 @@ class WellbeingScoresRepository extends Repositories
         $user = User::on()->find($userId);
 
         if ( is_null( $user ) ) {
-            throw new Exception('User not found by ID.', Response::HTTP_NOT_FOUND);
+            throw new Exception('User not found!', Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -65,7 +65,7 @@ class WellbeingScoresRepository extends Repositories
         $shoogle = Shoogle::on()->find($id);
 
         if ( is_null( $shoogle ) ) {
-            throw new Exception('Shoogle not found for this ID', Response::HTTP_NOT_FOUND);
+            throw new Exception('Shoogle not found!', Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -80,7 +80,7 @@ class WellbeingScoresRepository extends Repositories
         $company = Company::on()->find($id);
 
         if ( is_null( $company ) ) {
-            throw new Exception('No company found by ID.', Response::HTTP_NOT_FOUND);
+            throw new Exception('Company not found!', Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -95,7 +95,7 @@ class WellbeingScoresRepository extends Repositories
         $department = Department::on()->find($id);
 
         if ( is_null( $department ) ) {
-            throw new Exception('No department found by ID.', Response::HTTP_NOT_FOUND);
+            throw new Exception('Department not found!', Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -119,9 +119,6 @@ class WellbeingScoresRepository extends Repositories
                     emotional,
                     intellectual
                 '))
-//            ->when( (! is_null($dateFrom)) && (! is_null($dateTo)), function($query) use ($dateFrom, $dateTo) {
-//                return $query->whereBetween('created_at', [$dateFrom . ' 00:00:00', $dateTo . ' 23:59:59']);
-//            })
 
             ->when( ! is_null($dateFrom), function($query) use ($dateFrom) {
                 return $query->where('created_at', '>=', $dateFrom . ' 00:00:00');

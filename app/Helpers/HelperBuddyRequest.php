@@ -115,7 +115,6 @@ class HelperBuddyRequest
                 ->update([
                     'type' => $type,
                 ]);
-//            $buddyRequest->type = $type;
         }
     }
 }

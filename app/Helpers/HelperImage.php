@@ -18,7 +18,10 @@ class HelperImage
         'id_photo_plaque'
     ];
 
-
+    /**
+     * @param $base64
+     * @return string|string[]
+     */
     public static function clearBase64Image($base64)
     {
         $base64 = str_replace('data:image/png;base64,', '', $base64);
@@ -29,6 +32,10 @@ class HelperImage
         return $base64;
     }
 
+    /**
+     * @param $mime
+     * @return string
+     */
     public static function getFileExtension($mime)
     {
         switch ($mime) {
@@ -40,7 +47,12 @@ class HelperImage
         }
     }
 
-
+    /**
+     * @param $base64
+     * @param $label
+     * @param $report
+     * @return mixed
+     */
     public static function processReportBase64Image($base64, $label, $report)
     {
         $photoDecoded = base64_decode(static::clearBase64Image($base64));
@@ -69,7 +81,10 @@ class HelperImage
         return $protoRawResized;
     }
 
-
+    /**
+     * @param $reportId
+     * @param $label
+     */
     public static function deleteImage($reportId, $label)
     {
         Storage::disk('local')->delete([
@@ -80,6 +95,9 @@ class HelperImage
         ]);
     }
 
+    /**
+     * @param $img
+     */
     public static function optimize(&$img)
     {
         $maxSidePx = config('app.report_image_max_side_px');
@@ -88,17 +106,14 @@ class HelperImage
                 $constraint->aspectRatio();
             });
         }
-        /* if ($img->getWidth() > $maxSidePx) {
-             $img->resize($maxSidePx, null, function ($constraint) {
-                 $constraint->aspectRatio();
-             });
-         } elseif ($img->getHeight() > $maxSidePx) {
-             $img->resize(null, $maxSidePx, function ($constraint) {
-                 $constraint->aspectRatio();
-             });
-         }*/
     }
 
+    /**
+     * @param $label
+     * @param $fullPathSmall
+     * @param $filepath
+     * @param $rawImage
+     */
     public static function deleteAndStore($label, $fullPathSmall, $filepath,  $rawImage)
     {
         if (Storage::disk('local')->exists($filepath . $label . '.' . 'png')) {
@@ -110,6 +125,10 @@ class HelperImage
         Storage::disk('local')->put($fullPathSmall, $rawImage);
     }
 
+    /**
+     * @param string $title
+     * @return string
+     */
     public static function getPdfTrans(string $title): string
     {
         return trans("admin.report.documents.pdf.$title");

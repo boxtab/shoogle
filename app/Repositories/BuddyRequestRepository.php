@@ -70,22 +70,22 @@ class BuddyRequestRepository extends Repositories
         $user1Id = Auth::id();
 
         if ( ! HelperMember::isMember($shoogleId, $user1Id) ) {
-            throw new \Exception("User id:$user1Id is not a member of shoogle id:$shoogleId",
+            throw new \Exception("You are not a member of shoogle!",
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if ( ! HelperMember::isMember($shoogleId, $user2Id) ) {
-            throw new \Exception("User id:$user2Id is not a member of shoogle id:$shoogleId",
+            throw new \Exception("The user with whom you want to be friends is not a member of shoogle!",
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if ( HelperBuddies::isFriends($shoogleId, $user1Id, $user2Id) ) {
-            throw new \Exception("Users id:$user1Id and id:$user2Id of shoogle id:$shoogleId are already friends",
+            throw new \Exception("You are already friends with this user!",
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         if ( HelperBuddyRequest::isBuddyRequest($shoogleId, $user1Id, $user2Id) ) {
-            throw new \Exception("User id:$user1Id has already sent a friend request to user id:$user2Id for shoogle id:$shoogleId",
+            throw new \Exception('You have already sent a request to this user!',
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 

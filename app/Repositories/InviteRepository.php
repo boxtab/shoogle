@@ -77,7 +77,7 @@ class InviteRepository extends Repositories
     {
         DB::transaction(function () use ($email, $departmentId) {
             if ( $this->noCompany() ) {
-                throw new Exception('The authenticated user does not have a company ID!', Response::HTTP_NOT_FOUND);
+                throw new Exception('You are not part of more than one company!', Response::HTTP_NOT_FOUND);
             }
 
             $this->model->on()->create([

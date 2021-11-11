@@ -41,23 +41,6 @@ class HelperFriend
     }
 
     /**
-     * Returns true if two users are friends within a shoogle.
-     *
-     * @param int|null $shoogleId
-     * @param int|null $user1Id
-     * @param int|null $user2Id
-     * @return bool
-     */
-    public static function isFriend(?int $shoogleId, ?int $user1Id, ?int $user2Id): bool
-    {
-        if ( is_null($shoogleId) || is_null($user1Id) || is_null($user2Id) ) {
-            return false;
-        }
-
-        return self::getFriendBuilder($shoogleId, $user1Id, $user2Id)->exists();
-    }
-
-    /**
      * Returns a friend in shoogle.
      *
      * @param int|null $shoogleId

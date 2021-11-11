@@ -98,7 +98,7 @@ class HelperShoogle
         $shoogle = Shoogle::on()->where('id', '=', $shoogleId)->first();
 
         if ( is_null( $shoogle ) ) {
-            throw new \Exception("Shoogle by ID $shoogleId not found or deleted", Response::HTTP_NOT_FOUND);
+            throw new \Exception("Shoogle not found!", Response::HTTP_NOT_FOUND);
         }
 
         return $shoogle;
