@@ -111,16 +111,15 @@ class NotificationToUserRepository extends Repositories
 
         $notificationsToUserSelection = $this->model->on()
             ->leftJoin('notifications_type', 'notifications_type.id', '=', 'notifications_to_user.type_id')
-//            ->withoutGlobalScope(NotificationToUserScope::class)
+            ->withoutGlobalScope(NotificationToUserScope::class)
             ->where('user_id', '=', $userId);
-//            ->where('viewed', '=', 0);
 
         $notificationsToUserCollection = $notificationsToUserSelection
             ->get([
-                'notifications_to_user.id as id',
-                'notifications_type.name as typeNotificationText',
-                'notifications_to_user.created_at as createdAt',
-            ]);
+                    'notifications_to_user.id as id',
+                    'notifications_type.name as typeNotificationText',
+                    'notifications_to_user.created_at as createdAt',
+                ]);
 
         $notificationsToUserSelection->update([
             'viewed' => 1,
