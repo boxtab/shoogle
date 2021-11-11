@@ -68,6 +68,7 @@ class CommunityLevelRepository extends Repositories
     public function getWellbeingCategory(array $usersIDs, ?string $dateFrom, ?string $dateTo)
     {
         if ( ! $this->isEmptyDate($usersIDs, $dateFrom, $dateTo) ) {
+
             $periodBegin = $this->getPeriodBegin($usersIDs, $dateFrom, $dateTo);
             $periodEnd = $this->getPeriodEnd($usersIDs, $dateFrom, $dateTo);
             $userIDs = $usersIDs;
@@ -77,13 +78,13 @@ class CommunityLevelRepository extends Repositories
                 return $this->wellbeingCategory;
             }
 
-        $differenceValue = $this->getDifferenceValue($userIDs, $periodBegin, $periodEnd);
-        $isGrew = $this->getIsGrew($userIDs, $periodBegin, $periodEnd);
-        $value = $this->getValue($userIDs, $periodBegin, $periodEnd);
+            $differenceValue = $this->getDifferenceValue($userIDs, $periodBegin, $periodEnd);
+            $isGrew = $this->getIsGrew($userIDs, $periodBegin, $periodEnd);
+            $value = $this->getValue($userIDs, $periodBegin, $periodEnd);
 
-        $this->fillTheField($differenceValue, 'differenceValue');
-        $this->fillTheField($isGrew, 'isGrew');
-        $this->fillTheField($value, 'value');
+            $this->fillTheField($differenceValue, 'differenceValue');
+            $this->fillTheField($isGrew, 'isGrew');
+            $this->fillTheField($value, 'value');
         }
 
         return $this->wellbeingCategory;

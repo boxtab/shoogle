@@ -43,13 +43,9 @@ class CommunityLevelController extends BaseApiController
     public function statistic(CommunityLevelStatisticRequest $request)
     {
         try {
-//            $companyId = Helper::getCompanyIdFromJWT();
-//            if ( is_null($companyId) ) {
-//                throw new Exception('The company ID was not found for the current user.', Response::HTTP_NOT_FOUND);
-//            }
-
             $dateFrom = $request->get('from');
             $dateTo = $request->get('to');
+
             if ( ! HelperDateTime::checkDateFromLessDateTo($dateFrom, $dateTo) ) {
                 throw new Exception('Date from must be less than date to.', Response::HTTP_UNPROCESSABLE_ENTITY);
             }

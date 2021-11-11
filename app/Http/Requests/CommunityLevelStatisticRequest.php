@@ -25,8 +25,8 @@ class CommunityLevelStatisticRequest extends ApiRequest
     public function rules()
     {
         return [
-            'from'  => 'nullable|date_format:Y-m-d',
-            'to'    => 'nullable|date_format:Y-m-d',
+            'from'          => 'nullable|date_format:Y-m-d',
+            'to'            => 'nullable|date_format:Y-m-d',
             'departmentId'  => 'nullable|integer|exists:departments,id',
         ];
     }

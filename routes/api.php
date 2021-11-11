@@ -199,6 +199,9 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
      */
     Route::group(['prefix' => 'notification'], function () {
 
+        // GET /api/front/v1/notification/:id
+        Route::get('{id}', [NotificationToUserController::class, 'show'])->where('id', '[0-9]+');
+
         // GET /api/front/v1/notification
         Route::get('', [NotificationToUserController::class, 'viewed']);
 
