@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Constants\RewardConstant;
 use App\Models\UserHasReward;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperReward
@@ -45,6 +46,7 @@ class HelperReward
      */
     public static function getAwarded(?int $notificationId)
     {
+//        Log::info($notificationId);
         if ( is_null($notificationId) ) {
             return null;
         }

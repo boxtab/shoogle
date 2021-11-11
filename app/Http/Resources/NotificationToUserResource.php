@@ -15,12 +15,12 @@ class NotificationToUserResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->resource->id,
-            'user_id' => $this->resource->user_id,
-            'full_name' => $this->resource->first_name . ' ' . $this->resource->last_name,
+            'id'                => $this->resource->id,
+            'user_id'           => $this->resource->user_id,
+            'full_name'         => $this->resource->first_name . ' ' . $this->resource->last_name,
             'type_notification' => $this->resource->type,
-            'notification' => $this->resource->notification,
-            'created_at' => $this->resource->created,
+            'notification'      => $this->resource->notification,
+            'created_at'        => $this->resource->created,
         ];
     }
 }

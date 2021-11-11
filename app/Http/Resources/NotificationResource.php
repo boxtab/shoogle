@@ -8,7 +8,7 @@ use App\Helpers\HelperReward;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
 
-class NotificationListResource extends JsonResource
+class NotificationResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,8 +20,8 @@ class NotificationListResource extends JsonResource
     {
         return [
             'id' => $this->resource->id,
-            'typeNotificationText' => $this->resource->typeNotificationLabel,
-            'createdAt' => $this->resource->createdAt,
+            'typeNotificationText' => $this->resource->typeNotificationText,
+            'createdAt' => $this->resource->created,
             'reward' => RewardResource::make( HelperReward::getAwarded($this->resource->id) ),
             'buddy' => HelperNotificationBuddy::getBuddyAndShoogle($this->resource->id),
         ];

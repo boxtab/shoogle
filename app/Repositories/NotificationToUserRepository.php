@@ -117,10 +117,9 @@ class NotificationToUserRepository extends Repositories
         $notificationsToUserCollection = $notificationsToUserSelection
             ->get([
                     'notifications_to_user.id as id',
-                    'notifications_type.name as typeNotificationText',
+                    'notifications_type.name as typeNotificationLabel',
                     'notifications_to_user.created_at as createdAt',
                 ]);
-
         $notificationsToUserSelection->update([
             'viewed' => 1,
         ]);

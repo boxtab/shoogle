@@ -7,6 +7,7 @@ use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NotificationToUserDeleteRequest;
 use App\Http\Resources\NotificationListResource;
+use App\Http\Resources\NotificationResource;
 use App\Http\Resources\NotificationToUserResource;
 use App\Models\NotificationToUser;
 use App\Models\Shoogle;
@@ -155,7 +156,7 @@ class NotificationToUserController extends BaseApiController
                 throw new Exception('The notification has been removed.', Response::HTTP_NOT_FOUND);
             }
 
-            $notificationResource = new NotificationListResource($notification);
+            $notificationResource = new NotificationResource($notification);
 
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
