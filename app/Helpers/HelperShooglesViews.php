@@ -4,8 +4,10 @@ namespace App\Helpers;
 
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
+use App\Scopes\UserHasShoogleScope;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperShooglesViews
@@ -70,23 +72,27 @@ class HelperShooglesViews
             return $response;
         }
 
-        $shooglesViews = ShoogleViews::on()
+        $shooglesViewsStatment = ShoogleViews::on()
             ->whereHas('user')
             ->whereHas('userHasShoogle', function ($query) {
-                $query->whereNotNull('left_at');
+                $query
+//                    ->withoutGlobalScope(UserHasShoogleScope::class)
+                    ->whereNull('left_at');
             })
             ->where('shoogles_views.shoogle_id', '=', $shoogleID)
-            ->orderBy('shoogles_views.last_view', 'DESC')
-            ->get()
+            ->orderBy('shoogles_views.last_view', 'DESC');
+
+        $sql = $shooglesViewsStatment->toSql();
+        Log::info($sql);
+
+        $response = $shooglesViewsStatment->get()
             ->map(function($item) {
                 return [
                     'id' => $item->user_id,
                     'avatar' => HelperAvatar::getURLProfileImage($item->user->profile_image),
                 ];
             })
-            ->toArray();
-
-        $response = $shooglesViews;
+            ->toArray();;
 
         return $response;
     }
