@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\NotificationToUser;
 use App\Models\UserHasShoogleLog;
+use Carbon\Carbon;
 
 /**
  * Class HelperNotific
@@ -46,7 +47,14 @@ class HelperNotific
             ->where('buddy_request_id', '=', $requestId)
             ->where('type_id', '=', $notificationType)
             ->update([
-                'viewed' => (int)$mark,
+                'deleted_at' => Carbon::now(),
             ]);
+
+//        NotificationToUser::on()
+//            ->where('buddy_request_id', '=', $requestId)
+//            ->where('type_id', '=', $notificationType)
+//            ->update([
+//                'viewed' => (int)$mark,
+//            ]);
     }
 }
