@@ -77,12 +77,16 @@ class TestController extends Controller
 
     public function index()
     {
-        $notificationToUser = new NotificationToUser();
-        $notificationToUserRepository = new NotificationToUserRepository($notificationToUser);
+        $tmp = HelperNow::getDateTime();
 
-        $userId = 115;
-        $tmp = $notificationToUserRepository->getListNotifications($userId);
-        dd($tmp->toArray());
+        dd($tmp);
+
+//        $notificationToUser = new NotificationToUser();
+//        $notificationToUserRepository = new NotificationToUserRepository($notificationToUser);
+//
+//        $userId = 115;
+//        $tmp = $notificationToUserRepository->getListNotifications($userId);
+//        dd($tmp->toArray());
 
 //        $userId = 30;
 //

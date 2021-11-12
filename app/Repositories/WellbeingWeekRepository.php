@@ -70,8 +70,6 @@ class WellbeingWeekRepository extends Repositories
             $beginDate = $this->getBeginInterval($usersIDs, $dateFrom);
             $endDate = null;
 
-            Log::info('beginDate');
-            Log::info($beginDate);
         }
         return $this->wellbeing;
     }

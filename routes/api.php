@@ -4,6 +4,7 @@ use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\BuddyRequestController;
 use App\Http\Controllers\API\V1\CommunityLevelController;
 use App\Http\Controllers\API\V1\CompanyController;
+use App\Http\Controllers\API\V1\DateNowController;
 use App\Http\Controllers\API\V1\DepartmentController;
 use App\Http\Controllers\API\V1\InviteController;
 use App\Http\Controllers\API\V1\NotificationToUserController;
@@ -210,6 +211,9 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
 
         // DELETE /api/front/v1/notification
         Route::delete('', [NotificationToUserController::class, 'delete']);
+
+        // POST /api/front/v1/notification/date
+        Route::post('/date', [DateNowController::class, 'edit']);
     });
 
 });

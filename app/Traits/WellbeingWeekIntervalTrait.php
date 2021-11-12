@@ -27,7 +27,6 @@ trait WellbeingWeekIntervalTrait
             ->orderBy('created_at', 'ASC')
             ->first();
 
-        Log::info($dateMin);
 
         return null;
     }

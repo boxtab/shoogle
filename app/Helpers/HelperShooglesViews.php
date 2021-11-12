@@ -72,29 +72,22 @@ class HelperShooglesViews
             return $response;
         }
 
-        $shooglesViewsStatment = ShoogleViews::on()
+        return ShoogleViews::on()
             ->whereHas('user')
             ->whereHas('userHasShoogle', function ($query) {
                 $query
-//                    ->withoutGlobalScope(UserHasShoogleScope::class)
                     ->whereNull('left_at');
             })
             ->where('shoogles_views.shoogle_id', '=', $shoogleID)
-            ->orderBy('shoogles_views.last_view', 'DESC');
-
-        $sql = $shooglesViewsStatment->toSql();
-        Log::info($sql);
-
-        $response = $shooglesViewsStatment->get()
+            ->orderBy('shoogles_views.last_view', 'DESC')
+            ->get()
             ->map(function($item) {
                 return [
                     'id' => $item->user_id,
                     'avatar' => HelperAvatar::getURLProfileImage($item->user->profile_image),
                 ];
             })
-            ->toArray();;
-
-        return $response;
+            ->toArray();
     }
 
 }
