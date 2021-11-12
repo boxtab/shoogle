@@ -10,6 +10,7 @@ use App\Http\Controllers\API\V1\InviteController;
 use App\Http\Controllers\API\V1\NotificationToUserController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\RewardController;
+use App\Http\Controllers\API\V1\SchedulerController;
 use App\Http\Controllers\API\V1\ShooglerController;
 use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
@@ -214,6 +215,9 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
 
         // POST /api/front/v1/notification/date
         Route::post('/date', [DateNowController::class, 'edit']);
+
+        // GET /api/front/v1/notification/scheduler
+        Route::get('/scheduler', [SchedulerController::class, 'run']);
     });
 
 });
