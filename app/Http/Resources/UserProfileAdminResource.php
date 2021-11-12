@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
+use App\Helpers\HelperWellbeing;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -41,6 +42,7 @@ class UserProfileAdminResource extends JsonResource
                     ];
                 })
                 ->toArray(),
+            'wellbeingLastTime' => HelperWellbeing::getLastTime( $this->resource->id ),
         ];
     }
 }

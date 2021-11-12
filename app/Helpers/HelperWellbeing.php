@@ -37,4 +37,28 @@ class HelperWellbeing
             })
             ->toArray();
     }
+
+    /**
+     * When was the last time there were well-being points.
+     *
+     * @param int|null $userId
+     * @return string|null
+     */
+    public static function getLastTime(?int $userId): ?string
+    {
+        if ( is_null( $userId ) ) {
+            return null;
+        }
+
+        $wellbeingScores = WellbeingScores::on()
+            ->where('user_id', '=', $userId)
+            ->orderBy('created_at', 'DESC')
+            ->first();
+
+        if ( is_null($wellbeingScores) ) {
+            return null;
+        }
+
+        return $wellbeingScores->created_at;
+    }
 }

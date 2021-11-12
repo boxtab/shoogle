@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Models\WellbeingScores;
 use App\Traits\WellbeingWeekAverageTrait;
+use App\Traits\WellbeingWeekIntervalTrait;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class WellbeingWeekRepository
@@ -12,6 +14,7 @@ use App\Traits\WellbeingWeekAverageTrait;
 class WellbeingWeekRepository extends Repositories
 {
     use WellbeingWeekAverageTrait;
+    use WellbeingWeekIntervalTrait;
 
     /**
      * @var array Wellbeing points by week.
@@ -63,6 +66,12 @@ class WellbeingWeekRepository extends Repositories
         if ( ! empty($usersIDs) ) {
             $wellbeing = $this->getWeekAverage($usersIDs, $dateFrom, $dateTo);
             $this->fillTheWellbeing($wellbeing);
+
+            $beginDate = $this->getBeginInterval($usersIDs, $dateFrom);
+            $endDate = null;
+
+            Log::info('beginDate');
+            Log::info($beginDate);
         }
         return $this->wellbeing;
     }
