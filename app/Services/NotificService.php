@@ -21,9 +21,6 @@ class NotificService
      */
     public function getLineUsers(): array
     {
-//        Log::info( 'test' );
-//        Log::info( HelperNow::getDateTime() );
-
         $userHasShoogleStatement = UserHasShoogle::on()
             ->where('is_reminder', '=', 1)
             ->whereNotNull('reminder')
@@ -35,8 +32,6 @@ class NotificService
             });
 
         $sql = $userHasShoogleStatement->toSql();
-
-//        Log::info($sql);
 
         $userHasShoogle = $userHasShoogleStatement->get([
             'id',

@@ -34,6 +34,7 @@ use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
 use App\Repositories\NotificationToUserRepository;
 use App\Repositories\TestRepository;
+use App\Scopes\NotificationToUserScope;
 use App\Services\NotificClientService;
 use App\Services\PasswordRecoveryService;
 use App\Services\RruleService;
@@ -77,13 +78,18 @@ class TestController extends Controller
 
     public function index()
     {
-        $userRoleId = \App\Models\Role::on()
-            ->where('name', '=', RoleConstant::USER)
+        $notification = NotificationToUser::on()
+            ->withoutGlobalScope(NotificationToUserScope::class)
+            ->where('id', '=', 97)
             ->first();
 
-        $tmp = $userRoleId->name1;
+        dd($notification);
 
-        dd($tmp);
+//        $userRoleId = \App\Models\Role::on()
+//            ->where('name', '=', RoleConstant::USER)
+//            ->first();
+//        $tmp = $userRoleId->name1;
+//        dd($tmp);
 
 //        $tmp = HelperNow::getDateTime();
 //        dd($tmp);

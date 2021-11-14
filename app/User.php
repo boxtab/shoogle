@@ -185,6 +185,14 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     /**
      * @return HasMany
      */
+    public function notificationsUser(): HasMany
+    {
+        return $this->hasMany(NotificationToUser::class, 'user_id', 'id');
+    }
+
+    /**
+     * @return HasMany
+     */
     public function notificationsFromUser(): HasMany
     {
         return $this->hasMany(NotificationToUser::class, 'from_user_id', 'id');

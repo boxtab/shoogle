@@ -2,7 +2,10 @@
 
 namespace App\Helpers;
 
+use App\Constants\NotificationsTypeConstant;
+use App\Models\NotificationToUser;
 use App\Models\WellbeingScores;
+use App\Scopes\NotificationToUserScope;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -60,5 +63,26 @@ class HelperWellbeing
         }
 
         return $wellbeingScores->created_at;
+    }
+
+    /**
+     * Get notification wellbeing.
+     *
+     * @param int|null $notificationId
+     * @param int|null $userId
+     * @return array|null
+     */
+    public static function getNotification(?int $notificationId, ?int $userId): ?array
+    {
+        $notification = HelperNotific::checkNotification($notificationId, $userId, NotificationsTypeConstant::WELLBEING_ID);
+        if ( is_null($notification) ) {
+            return null;
+        }
+
+        return [
+            'shoogleId' => null,
+            'coverImage' => null,
+            'message' => 'Well-being pulse reminder',
+        ];
     }
 }

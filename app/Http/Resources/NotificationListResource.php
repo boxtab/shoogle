@@ -6,7 +6,9 @@ use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNotificationBuddy;
 use App\Helpers\HelperReward;
+use App\Helpers\HelperWellbeing;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class NotificationListResource extends JsonResource
@@ -25,7 +27,8 @@ class NotificationListResource extends JsonResource
             'createdAt'             => $this->resource->createdAt,
             'reward'                => RewardResource::make( HelperReward::getAwarded($this->resource->id) ),
             'buddy'                 => HelperNotificationBuddy::getBuddyAndShoogle($this->resource->id),
-            'reminder'              => HelperNotific::getRemainderScheduler( $this->resource->id ),
+            'reminder'              => HelperNotific::getRemainderScheduler( $this->resource->id, Auth::id() ),
+            'wellbeing'             => HelperWellbeing::getNotification($this->resource->id, Auth::id()),
         ];
     }
 }

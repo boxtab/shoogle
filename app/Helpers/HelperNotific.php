@@ -8,6 +8,7 @@ use App\Models\Shoogle;
 use App\Models\UserHasShoogleLog;
 use App\Scopes\NotificationToUserScope;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -63,14 +64,16 @@ class HelperNotific
     }
 
     /**
-     * Reminder from the shoogle planner.
+     * Check notification.
      *
      * @param int|null $notificationId
-     * @return array|null
+     * @param int|null $userId
+     * @param int $notificationType
+     * @return \Illuminate\Database\Eloquent\Builder|Model|object|null
      */
-    public static function getRemainderScheduler(?int $notificationId)
+    public static function checkNotification(?int $notificationId, ?int $userId, int $notificationType)
     {
-        if ( is_null($notificationId) ) {
+        if ( is_null($notificationId) || is_null($userId) ) {
             return null;
         }
 
@@ -83,7 +86,28 @@ class HelperNotific
             return null;
         }
 
-        if ( $notification->type_id !== NotificationsTypeConstant::SCHEDULER_ID ) {
+        if ( $notification->user_id !== $userId ) {
+            return null;
+        }
+
+        if ( $notification->type_id !== $notificationType ) {
+            return null;
+        }
+
+        return $notification;
+    }
+
+    /**
+     * Reminder from the shoogle planner.
+     *
+     * @param int|null $notificationId
+     * @param int|null $userId
+     * @return array|null
+     */
+    public static function getRemainderScheduler(?int $notificationId, ?int $userId)
+    {
+        $notification = self::checkNotification($notificationId, $userId, NotificationsTypeConstant::SCHEDULER_ID);
+        if ( is_null($notification) ) {
             return null;
         }
 
