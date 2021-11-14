@@ -77,9 +77,16 @@ class TestController extends Controller
 
     public function index()
     {
-        $tmp = HelperNow::getDateTime();
+        $userRoleId = \App\Models\Role::on()
+            ->where('name', '=', RoleConstant::USER)
+            ->first();
+
+        $tmp = $userRoleId->name1;
 
         dd($tmp);
+
+//        $tmp = HelperNow::getDateTime();
+//        dd($tmp);
 
 //        $notificationToUser = new NotificationToUser();
 //        $notificationToUserRepository = new NotificationToUserRepository($notificationToUser);

@@ -34,8 +34,6 @@ class NotificClientService
         $notificService = new NotificService();
         $lineUsers = $notificService->getLineUsers();
 
-//        Log::info($lineUsers);
-
         $userHasShoogleIds = $notificService->getUserHasShoogleIds($lineUsers);
         $notificService->lockUserHasShoogle($userHasShoogleIds);
 

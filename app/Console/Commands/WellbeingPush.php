@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\WellbeingService;
 use Illuminate\Console\Command;
 
 class WellbeingPush extends Command
@@ -18,7 +19,7 @@ class WellbeingPush extends Command
      *
      * @var string
      */
-    protected $description = 'Wellbeing Points Reminders';
+    protected $description = 'Wellbeing points reminders';
 
     /**
      * Create a new command instance.
@@ -34,10 +35,15 @@ class WellbeingPush extends Command
      * Execute the console command.
      *
      * @return int
+     * @throws \GetStream\StreamChat\StreamException
      */
     public function handle()
     {
         $this->info( $this->description );
+
+        $wellbeingService = new WellbeingService();
+        $countSendNotific = $wellbeingService->run();
+        $this->info("$countSendNotific notification(s) sent");
 
         return Command::SUCCESS;
     }

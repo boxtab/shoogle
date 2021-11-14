@@ -163,7 +163,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia
      */
     public function manyRole(): HasMany
     {
-        return $this->hasMany(ModelHasRole::class);
+        return $this->hasMany(ModelHasRole::class, 'model_id', 'id');
     }
 
     /**
