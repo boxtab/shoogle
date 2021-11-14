@@ -14,6 +14,7 @@ class NotificationsTypeConstant
     const BUDDY_REJECT_ID = 4;
     const BUDDY_DISCONNECT_ID = 5;
     const REWARD_ASSIGN_ID = 6;
+    const WELLBEING_ID = 7;
 
     const SCHEDULER_NAME = 'SCHEDULER';
     const BUDDY_REQUEST_NAME = 'BUDDY_REQUEST';
@@ -21,4 +22,5 @@ class NotificationsTypeConstant
     const BUDDY_REJECT_NAME = 'BUDDY_REJECT';
     const BUDDY_DISCONNECT_NAME = 'BUDDY_DISCONNECT';
     const REWARD_ASSIGN_NAME = 'REWARD_ASSIGN';
+    const WELLBEING_NAME = 'WELLBEING';
 }

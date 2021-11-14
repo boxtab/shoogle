@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Helpers\HelperBuddyRequest;
+use App\Helpers\HelperNotific;
 use App\Helpers\HelperNotificationBuddy;
 use App\Helpers\HelperReward;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -22,8 +23,9 @@ class NotificationResource extends JsonResource
             'id' => $this->resource->id,
             'typeNotificationText' => $this->resource->typeNotificationText,
             'createdAt' => $this->resource->created,
-            'reward' => RewardResource::make( HelperReward::getAwarded($this->resource->id) ),
-            'buddy' => HelperNotificationBuddy::getBuddyAndShoogle($this->resource->id),
+            'reward' => RewardResource::make( HelperReward::getAwarded( $this->resource->id ) ),
+            'buddy' => HelperNotificationBuddy::getBuddyAndShoogle( $this->resource->id ),
+            'reminder' => HelperNotific::getRemainderScheduler( $this->resource->id ),
         ];
     }
 }

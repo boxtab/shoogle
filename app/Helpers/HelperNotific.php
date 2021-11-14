@@ -2,9 +2,13 @@
 
 namespace App\Helpers;
 
+use App\Constants\NotificationsTypeConstant;
 use App\Models\NotificationToUser;
+use App\Models\Shoogle;
 use App\Models\UserHasShoogleLog;
+use App\Scopes\NotificationToUserScope;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperNotific
@@ -56,5 +60,43 @@ class HelperNotific
 //            ->update([
 //                'viewed' => (int)$mark,
 //            ]);
+    }
+
+    /**
+     * Reminder from the shoogle planner.
+     *
+     * @param int|null $notificationId
+     * @return array|null
+     */
+    public static function getRemainderScheduler(?int $notificationId)
+    {
+        if ( is_null($notificationId) ) {
+            return null;
+        }
+
+        $notification = NotificationToUser::on()
+            ->withoutGlobalScope(NotificationToUserScope::class)
+            ->where('id', '=', $notificationId)
+            ->first();
+
+        if ( is_null( $notification ) ) {
+            return null;
+        }
+
+        if ( $notification->type_id !== NotificationsTypeConstant::SCHEDULER_ID ) {
+            return null;
+        }
+
+        $coverImage = null;
+        $shoogle = Shoogle::on()->where('id', '=', $notification->shoogle_id)->first();
+        if ( ! is_null($shoogle) ) {
+            $coverImage = $shoogle->cover_image;
+        }
+
+        return [
+            'shoogleId'     => $notification->shoogle_id,
+            'coverImage'    => $coverImage,
+            'message'       => 'shoogle reminder',
+        ];
     }
 }

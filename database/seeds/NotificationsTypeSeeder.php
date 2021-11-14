@@ -53,6 +53,12 @@ class NotificationsTypeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'id' => NotificationsTypeConstant::WELLBEING_ID,
+                'name' => NotificationsTypeConstant::WELLBEING_NAME,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
 
 
         ], ['id'], ['name', 'created_at', 'updated_at']);
