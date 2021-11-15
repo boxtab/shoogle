@@ -24,7 +24,7 @@ class WellbeingService
     private function getUsers(): array
     {
         $role = Role::on()
-            ->where('name', '=', RoleConstant::USER)
+            ->where('name', '=', RoleConstant::SUPER_ADMIN)
             ->first();
 
         if ( is_null($role) ) {
@@ -36,7 +36,7 @@ class WellbeingService
         return User::on()
             ->select('users.id as id')
             ->whereHas('manyRole', function ($query) use($userRoleId) {
-                $query->where('model_has_roles.role_id', '=', $userRoleId);
+                $query->where('model_has_roles.role_id', '!=', $userRoleId);
             })
             ->get()
             ->map(function ($item) {
