@@ -111,16 +111,19 @@ class HelperNotific
             return null;
         }
 
+        $shoogleName = null;
         $coverImage = null;
         $shoogle = Shoogle::on()->where('id', '=', $notification->shoogle_id)->first();
         if ( ! is_null($shoogle) ) {
+            $shoogleName = $shoogle->title;
             $coverImage = $shoogle->cover_image;
         }
 
         return [
             'shoogleId'     => $notification->shoogle_id,
             'coverImage'    => $coverImage,
-            'message'       => 'shoogle reminder',
+            'title'         => 'shoogle reminder',
+            'shoogleName'   => $shoogleName,
         ];
     }
 }

@@ -19,7 +19,7 @@ class NotificationsTypeSeeder extends Seeder
 
             [
                 'id' => NotificationsTypeConstant::SHOOGLE_REMIDER_ID,
-                'name' => NotificationsTypeConstant::SCHEDULER_NAME,
+                'name' => NotificationsTypeConstant::SHOOGLE_REMAINDER_NAME,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -55,7 +55,7 @@ class NotificationsTypeSeeder extends Seeder
             ],
             [
                 'id' => NotificationsTypeConstant::WELLBEING_REMIDER_ID,
-                'name' => NotificationsTypeConstant::WELLBEING_NAME,
+                'name' => NotificationsTypeConstant::WELLBEING_REMINDER_NAME,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

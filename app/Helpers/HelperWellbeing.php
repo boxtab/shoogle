@@ -79,10 +79,11 @@ class HelperWellbeing
             return null;
         }
 
+        $message = $notification->notification;
+
         return [
-            'shoogleId' => null,
-            'coverImage' => null,
-            'message' => 'Well-being pulse reminder',
+            'title'     => 'Well-being pulse reminder',
+            'message'   => $message,
         ];
     }
 }

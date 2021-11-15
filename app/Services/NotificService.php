@@ -32,6 +32,7 @@ class NotificService
             });
 
         $sql = $userHasShoogleStatement->toSql();
+        Log::info($sql);
 
         $userHasShoogle = $userHasShoogleStatement->get([
             'id',
