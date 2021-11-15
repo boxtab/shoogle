@@ -268,3 +268,6 @@ Starts sending notifications.
 Checks the shoogle member table. 
 For those who have enabled the mode of sending notifications and sending has not yet occurred, 
 a message will be sent. 
+
+`docker-compose exec app php artisan wellbeing:push`
+Sends out a reminder to set wellbeing scores. Runs on schedule every first day of the month at 10 a.m.
