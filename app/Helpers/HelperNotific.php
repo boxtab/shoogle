@@ -117,6 +117,8 @@ class HelperNotific
         if ( ! is_null($shoogle) ) {
             $shoogleName = $shoogle->title;
             $coverImage = $shoogle->cover_image;
+        } else {
+            return null;
         }
 
         return [
