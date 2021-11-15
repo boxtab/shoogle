@@ -106,7 +106,7 @@ class NotificationToUserController extends BaseApiController
     {
         try {
             $listNotificationIDsRequest = $request->notificationIDs;
-            $this->checkListNotificationIDs( $listNotificationIDsRequest );
+//            $this->checkListNotificationIDs( $listNotificationIDsRequest );
             $this->repository->delete($listNotificationIDsRequest);
 
         } catch (Exception $e) {
