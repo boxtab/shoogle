@@ -60,7 +60,7 @@ class WellbeingService
             $helper = new HelperNotifications();
             $helper->sendNotificationToUser(
                 $userId,
-                NotificationsTypeConstant::WELLBEING_ID,
+                NotificationsTypeConstant::WELLBEING_REMIDER_ID,
                 NotificationTextConstant::WELLBEING
             );
 

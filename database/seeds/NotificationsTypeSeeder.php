@@ -18,7 +18,7 @@ class NotificationsTypeSeeder extends Seeder
         $rows = DB::table('notifications_type')->upsert([
 
             [
-                'id' => NotificationsTypeConstant::SCHEDULER_ID,
+                'id' => NotificationsTypeConstant::SHOOGLE_REMIDER_ID,
                 'name' => NotificationsTypeConstant::SCHEDULER_NAME,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -54,7 +54,7 @@ class NotificationsTypeSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'id' => NotificationsTypeConstant::WELLBEING_ID,
+                'id' => NotificationsTypeConstant::WELLBEING_REMIDER_ID,
                 'name' => NotificationsTypeConstant::WELLBEING_NAME,
                 'created_at' => now(),
                 'updated_at' => now(),

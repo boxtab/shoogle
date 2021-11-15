@@ -74,7 +74,7 @@ class HelperWellbeing
      */
     public static function getNotification(?int $notificationId, ?int $userId): ?array
     {
-        $notification = HelperNotific::checkNotification($notificationId, $userId, NotificationsTypeConstant::WELLBEING_ID);
+        $notification = HelperNotific::checkNotification($notificationId, $userId, NotificationsTypeConstant::WELLBEING_REMIDER_ID);
         if ( is_null($notification) ) {
             return null;
         }

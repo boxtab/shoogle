@@ -106,7 +106,7 @@ class HelperNotific
      */
     public static function getRemainderScheduler(?int $notificationId, ?int $userId)
     {
-        $notification = self::checkNotification($notificationId, $userId, NotificationsTypeConstant::SCHEDULER_ID);
+        $notification = self::checkNotification($notificationId, $userId, NotificationsTypeConstant::SHOOGLE_REMIDER_ID);
         if ( is_null($notification) ) {
             return null;
         }

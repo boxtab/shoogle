@@ -13,5 +13,5 @@ class NotificationTextConstant
     const SCHEDULER     = 'Test notification scheduler';
     const BUDDY_REQUEST = 'You have received a friend request';
     const BUDDY_DISCONNECT = 'Have ceased to be friends with you';
-    const WELLBEING = 'Every pulse halps your company create solutions that are aligned with your needs';
+    const WELLBEING = 'Every pulse helps your company create solutions that are aligned with your needs';
 }

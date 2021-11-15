@@ -55,7 +55,7 @@ class NotificClientService
                 $helper = new HelperNotifications();
                 $helper->sendNotificationToUser(
                     $lineUser['user_id'],
-                    NotificationsTypeConstant::SCHEDULER_ID,
+                    NotificationsTypeConstant::SHOOGLE_REMIDER_ID,
                     $shoogleTitle
                 );
                 $helper->recordNotificationDetail($shoogleId);
