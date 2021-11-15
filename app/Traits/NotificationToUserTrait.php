@@ -30,19 +30,19 @@ trait NotificationToUserTrait
             })
             ->toArray();
 
-//        Log::info('$listNotificationIDsRequest');
-//        Log::info($listNotificationIDsRequest);
-//        Log::info('$listNotificationIDs');
-//        Log::info($listNotificationIDs);
-//        $trust = (array_intersect($listNotificationIDsRequest, $listNotificationIDs) == $listNotificationIDsRequest);
-//        Log::info('$trust');
-//        Log::info($trust);
+        Log::info('$listNotificationIDsRequest');
+        Log::info($listNotificationIDsRequest);
+        Log::info('$listNotificationIDs');
+        Log::info($listNotificationIDs);
+        $trust = (array_intersect($listNotificationIDsRequest, $listNotificationIDs) == $listNotificationIDsRequest);
+        Log::info('$trust');
+        Log::info($trust);
 
         // $array1 is a subset of $array2
         if ( ! (array_intersect($listNotificationIDsRequest, $listNotificationIDs) == $listNotificationIDsRequest) ) {
-            Log::info('test');
-            throw new Exception("Not all elements of the resulting array exist or belong to the current user",
-                Response::HTTP_NOT_FOUND);
+            Log::info('array_intersect entry');
+//            throw new Exception("Not all elements of the resulting array exist or belong to the current user",
+//                Response::HTTP_NOT_FOUND);
         }
     }
 }
