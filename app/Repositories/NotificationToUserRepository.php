@@ -132,6 +132,7 @@ class NotificationToUserRepository extends Repositories
             foreach ( $listNotificationIDs as $listNotificationID ) {
 
                 $notificationToUser = NotificationToUser::on()
+                    ->withoutGlobalScope(NotificationToUserScope::class)
                     ->where('id', '=', $listNotificationID)
                     ->first();
 

@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\NotificationToUser;
+use App\Scopes\NotificationToUserScope;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,7 @@ trait NotificationToUserTrait
     private function checkListNotificationIDs(array $listNotificationIDsRequest)
     {
         $listNotificationIDs = NotificationToUser::on()
+            ->withoutGlobalScope(NotificationToUserScope::class)
             ->where('user_id', '=', Auth::id())
             ->get()
             ->map(function ($item) {
