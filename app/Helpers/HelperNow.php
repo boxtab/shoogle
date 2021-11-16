@@ -47,8 +47,8 @@ class HelperNow
 
     public static function getCarbon(): Carbon
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s', self::$currentDateTime);
-//        return Carbon::now();
+//        return Carbon::createFromFormat('Y-m-d H:i:s', self::$currentDateTime);
+        return Carbon::now();
 //        return Carbon::createFromFormat('Y-m-d H:i:s', self::fetchDateTime());
     }
 
