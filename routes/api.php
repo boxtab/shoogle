@@ -218,6 +218,9 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
 
         // GET /api/front/v1/notification/scheduler
         Route::get('/scheduler', [SchedulerController::class, 'run']);
+
+        // GET /api/front/v1/notification/scheduler/wellbeing
+        Route::get('/scheduler/wellbeing', [SchedulerController::class, 'wellbeing']);
     });
 
 });

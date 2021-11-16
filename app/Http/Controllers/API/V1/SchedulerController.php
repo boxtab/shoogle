@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Services\NotificClientService;
+use App\Services\WellbeingService;
 use App\Support\ApiResponse\ApiResponse;
 use Illuminate\Http\Request;
 use Exception;
@@ -28,6 +29,26 @@ class SchedulerController extends BaseApiController
         try {
             $notificClientService = new NotificClientService();
             $countSendNotific = $notificClientService->run();
+            $log = "$countSendNotific notification(s) sent";
+        } catch (Exception $e) {
+            ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return ApiResponse::returnData(['log' => $log]);
+    }
+
+    /**
+     * Launching the wellbeing.
+     *
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function wellbeing()
+    {
+        $log = 'Wellbeing error!';
+
+        try {
+            $wellbeingService = new WellbeingService();
+            $countSendNotific = $countSendNotific = $wellbeingService->run();
             $log = "$countSendNotific notification(s) sent";
         } catch (Exception $e) {
             ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);

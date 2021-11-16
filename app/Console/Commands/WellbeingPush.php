@@ -43,9 +43,6 @@ class WellbeingPush extends Command
     {
         $this->info( $this->description );
 
-//        $time = Carbon::now()->toDateTimeString();
-//        Log::info($time);
-
         $wellbeingService = new WellbeingService();
         $countSendNotific = $wellbeingService->run();
         $this->info("$countSendNotific notification(s) sent");
