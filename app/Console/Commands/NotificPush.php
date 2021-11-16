@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Helpers\HelperNotific;
 use App\Services\NotificClientService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class NotificPush extends Command
 {

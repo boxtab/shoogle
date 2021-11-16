@@ -21,6 +21,8 @@ class NotificService
      */
     public function getLineUsers(): array
     {
+        Log::info(HelperNow::getCarbon());
+
         $userHasShoogleStatement = UserHasShoogle::on()
             ->where('is_reminder', '=', 1)
             ->whereNotNull('reminder')
@@ -32,7 +34,6 @@ class NotificService
             });
 
         $sql = $userHasShoogleStatement->toSql();
-//        Log::info($sql);
 
         $userHasShoogle = $userHasShoogleStatement->get([
             'id',
@@ -43,6 +44,7 @@ class NotificService
             'last_notification',
             'in_process',
         ])->toArray();
+
 
         return $userHasShoogle;
 

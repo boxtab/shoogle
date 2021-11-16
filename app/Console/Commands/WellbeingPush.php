@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Services\WellbeingService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class WellbeingPush extends Command
 {
@@ -40,6 +42,9 @@ class WellbeingPush extends Command
     public function handle()
     {
         $this->info( $this->description );
+
+//        $time = Carbon::now()->toDateTimeString();
+//        Log::info($time);
 
         $wellbeingService = new WellbeingService();
         $countSendNotific = $wellbeingService->run();
