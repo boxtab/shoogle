@@ -78,12 +78,22 @@ class TestController extends Controller
 
     public function index()
     {
-        $notification = NotificationToUser::on()
-            ->withoutGlobalScope(NotificationToUserScope::class)
-            ->where('id', '=', 97)
-            ->first();
+        $dateStart = '2021-11-16 07:10:00';
+        $rruleString = 'RRULE:FREQ=DAILY;COUNT=5;INTERVAL=1;WKST=MO';
+        $lastNotification = '2021-11-16 00:05:00';
 
-        dd($notification);
+        $rruleService = new RruleService($dateStart, $rruleString, $lastNotification);
+        $rruleService->generateEventsDates();
+
+        $result = $rruleService->eventHasCome();
+        dd($result);
+
+//        $notification = NotificationToUser::on()
+//            ->withoutGlobalScope(NotificationToUserScope::class)
+//            ->where('id', '=', 97)
+//            ->first();
+//
+//        dd($notification);
 
 //        $userRoleId = \App\Models\Role::on()
 //            ->where('name', '=', RoleConstant::USER)

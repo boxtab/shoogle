@@ -41,15 +41,15 @@ class HelperNow
     public static function getTimestamp(): int
     {
 //        return strtotime(self::$currentDateTime);
-//        return Carbon::now()->timestamp;
-        return strtotime( self::fetchDateTime() );
+        return Carbon::now()->timestamp;
+//        return strtotime( self::fetchDateTime() );
     }
 
     public static function getCarbon(): Carbon
     {
-//        return Carbon::createFromFormat('Y-m-d H:i:s', self::$currentDateTime);
+        return Carbon::createFromFormat('Y-m-d H:i:s', self::$currentDateTime);
 //        return Carbon::now();
-        return Carbon::createFromFormat('Y-m-d H:i:s', self::fetchDateTime());
+//        return Carbon::createFromFormat('Y-m-d H:i:s', self::fetchDateTime());
     }
 
     /**
@@ -60,8 +60,8 @@ class HelperNow
     public static function getDate(): string
     {
 //        return date('Y-m-d', strtotime(self::$currentDateTime));
-//        return Carbon::now()->toDateString();
-        return date('Y-m-d', strtotime( self::fetchDateTime() ));
+        return Carbon::now()->toDateString();
+//        return date('Y-m-d', strtotime( self::fetchDateTime() ));
     }
 
     /**
@@ -72,7 +72,7 @@ class HelperNow
     public static function getDateTime(): string
     {
 //        return date('Y-m-d H:i:s', strtotime(self::$currentDateTime));
-//        return Carbon::now()->toDateTimeString();
-        return date('Y-m-d H:i:s', strtotime( self::fetchDateTime()) );
+        return Carbon::now()->toDateTimeString();
+//        return date('Y-m-d H:i:s', strtotime( self::fetchDateTime()) );
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\HelperNow;
 use App\Helpers\HelperRrule;
 use App\Models\UserHasShoogle;
+use App\Scopes\UserHasShoogleScope;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -21,19 +22,20 @@ class NotificService
      */
     public function getLineUsers(): array
     {
-        Log::info(HelperNow::getCarbon());
-
         $userHasShoogleStatement = UserHasShoogle::on()
+            ->withoutGlobalScope(UserHasShoogleScope::class)
+            ->whereNull('left_at')
             ->where('is_reminder', '=', 1)
             ->whereNotNull('reminder')
             ->where(function ($query) {
                 $query->whereNotNull('reminder_interval')
                     ->orWhere(function ($query) {
-                        $query->whereDate('reminder', '<', HelperNow::getCarbon());
+                        $query->whereDate('reminder', '<', HelperNow::getDateTime());
                     });
             });
 
         $sql = $userHasShoogleStatement->toSql();
+
 
         $userHasShoogle = $userHasShoogleStatement->get([
             'id',
@@ -113,7 +115,6 @@ class NotificService
     public function needToSend(string $reminder, ?string $reminderInterval, ?string $lastNotification): bool
     {
         $nowTimestamp = HelperNow::getTimestamp();
-//        $nowTimestamp = Carbon::now()->timestamp;
         $reminderTimestamp = strtotime($reminder);
 
         // if the event is single
@@ -124,6 +125,22 @@ class NotificService
                 }
             }
         } else {
+//            Log::info('$reminder');
+//            Log::info($reminder);
+//
+//            Log::info('$reminderInterval');
+//            Log::info($reminderInterval);
+//
+//            Log::info('$lastNotification');
+//            Log::info($lastNotification);
+//
+//            $tmp = HelperRrule::eventHasCome($reminder, $reminderInterval, $lastNotification);
+//            Log::info('$tmp');
+//            Log::info($tmp);
+
+//            $lastNotification = is_null( $lastNotification ) ? HelperNow::getDateTime() : $lastNotification;
+
+
             return HelperRrule::eventHasCome($reminder, $reminderInterval, $lastNotification);
         }
 
