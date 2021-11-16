@@ -47,7 +47,6 @@ class NotificService
             'in_process',
         ])->toArray();
 
-
         return $userHasShoogle;
 
         // Cut off a single event that has not yet occurred

@@ -36,6 +36,13 @@ class RruleService
         $this->dateStart = $dateStart;
         $this->rruleString = $rruleString;
         $this->lastNotification = $lastNotification;
+
+        Log::info('$dateStart');
+        Log::info($dateStart);
+        Log::info('$rruleString');
+        Log::info($rruleString);
+        Log::info('$lastNotification');
+        Log::info($lastNotification);
     }
 
     /**
@@ -63,6 +70,9 @@ class RruleService
         foreach ($eventsDatesObject as $eventDate) {
             $this->eventsDateTime[] = $eventDate->getStart()->format('Y-m-d H:i:s');
         }
+
+        Log::info('$this->eventsDateTime[]');
+        Log::info($this->eventsDateTime);
     }
 
     /**
@@ -106,10 +116,9 @@ class RruleService
     public function eventHasCome(): bool
     {
         $lastNotificationDate = (new \DateTime($this->lastNotification))->format('Y-m-d');
-        $currentDate = HelperNow::getDate();
-//        $currentDate = Carbon::now()->toDateString();
+        $currentDate = Carbon::now()->toDateString();
 
-        if ( $lastNotificationDate === $currentDate ) {
+        if ( ! is_null($this->lastNotification) && $lastNotificationDate === $currentDate ) {
             return false;
         }
 
@@ -118,8 +127,7 @@ class RruleService
             return false;
         }
 
-        $now = HelperNow::getTimestamp();
-//        $now = Carbon::now()->timestamp;
+        $now = Carbon::now()->timestamp;
 
         $eventDate = $this->getEventsTimestamp()[$key];
 
