@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Log;
  */
 trait WellbeingWeekDataTrait
 {
+    use WellbeingWeekAverageTrait;
+
     /**
      * @var array $averageByWeek
      */
@@ -27,20 +29,21 @@ trait WellbeingWeekDataTrait
     /**
      * Return average data by week.
      *
-     * @param array $usersIDs
+     * @param array $usersIds
      * @param string $dateFrom
      * @param string $dateTo
      * @return array
      * @throws \Exception
      */
-    private function getWellbeingData(array $usersIDs, string $dateFrom, string $dateTo): array
+    private function getWellbeingData(array $usersIds, string $dateFrom, string $dateTo): array
     {
         $beginEndInRange = $this->getBeginEndInRange($dateFrom, $dateTo);
 
         foreach ($beginEndInRange as $range) {
-            $usersIdsOfWeek = $this->getUsersIdsOfWeek($usersIDs, $range[0], $range[1]);
+            $usersIdsOfWeek = $this->getUsersIdsOfWeek($usersIds, $range[0], $range[1]);
             if ( count($usersIdsOfWeek) > 0 ) {
-                null;
+                $weeklyData = $this->getWeekAverage($usersIdsOfWeek, $range[0], $range[1]);
+                $this->fillWeeklyData($weeklyData);
             } else {
                 $this->fillZero();
             }
@@ -69,10 +72,10 @@ trait WellbeingWeekDataTrait
 
         $i = 0;
         while ($dateFrom <= $dateTo) {
-            $dates[$i] = [$dateFrom->format('Y-m-d') . ' 00:00:00'];
-            $dateEnd = new \DateTime($dateFrom->format('Y-m-d') . ' 00:00:00');
+            $dates[$i] = [$dateFrom->format('Y-m-d')];
+            $dateEnd = new \DateTime($dateFrom->format('Y-m-d'));
             $dateEnd->modify('+6 day');
-            $dates[$i][] = ($dateTo < $dateEnd) ? $dateTo->format('Y-m-d') . ' 23:59:59' : $dateEnd->format('Y-m-d') . ' 23:59:59';
+            $dates[$i][] = ($dateTo < $dateEnd) ? $dateTo->format('Y-m-d') : $dateEnd->format('Y-m-d');
             $dateFrom->modify('+1 week');
             $i++;
         }
@@ -111,5 +114,15 @@ trait WellbeingWeekDataTrait
         }
     }
 
-
+    /**
+     * Fills in data by category for a week.
+     *
+     * @param array $weeklyData
+     */
+    private function fillWeeklyData(array $weeklyData)
+    {
+        foreach ($this->averageByWeek as $key => $item) {
+            $this->averageByWeek[$key][] = $weeklyData[$key];
+        }
+    }
 }
