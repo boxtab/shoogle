@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\WellbeingScores;
 use App\Traits\WellbeingWeekAverageTrait;
+use App\Traits\WellbeingWeekDataTrait;
 use App\Traits\WellbeingWeekIntervalTrait;
 use App\Traits\WellbeingWeekLabelTrait;
 use Illuminate\Support\Facades\Log;
@@ -17,6 +18,7 @@ class WellbeingWeekRepository extends Repositories
     use WellbeingWeekAverageTrait;
     use WellbeingWeekIntervalTrait;
     use WellbeingWeekLabelTrait;
+    use WellbeingWeekDataTrait;
 
     /**
      * @var array Wellbeing points by week.
@@ -62,6 +64,7 @@ class WellbeingWeekRepository extends Repositories
      * @param string|null $dateFrom
      * @param string|null $dateTo
      * @return array
+     * @throws \Exception
      */
     public function getDataByWeek(array $usersIDs, ?string $dateFrom, ?string $dateTo): array
     {
@@ -78,6 +81,9 @@ class WellbeingWeekRepository extends Repositories
 
             $label = $this->getLabel($beginDate, $endDate);
             $this->fillTheLabel($label);
+
+            $wellbeingData = $this->getWellbeingData($usersIDs, $beginDate, $endDate);
+            $this->fillTheWellbeingData($wellbeingData);
 
         }
         return $this->wellbeing;
@@ -107,5 +113,17 @@ class WellbeingWeekRepository extends Repositories
     private function fillTheLabel(array $label)
     {
         $this->wellbeing['wellbeingData']['label'] = $label;
+    }
+
+    /**
+     * Fills in weekly averages.
+     *
+     * @param array $wellbeingData
+     */
+    private function fillTheWellbeingData(array $wellbeingData)
+    {
+        foreach ($wellbeingData as $key => $data) {
+            $this->wellbeing['wellbeingData'][$key] = $data;
+        }
     }
 }

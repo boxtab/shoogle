@@ -124,22 +124,6 @@ class NotificService
                 }
             }
         } else {
-//            Log::info('$reminder');
-//            Log::info($reminder);
-//
-//            Log::info('$reminderInterval');
-//            Log::info($reminderInterval);
-//
-//            Log::info('$lastNotification');
-//            Log::info($lastNotification);
-//
-//            $tmp = HelperRrule::eventHasCome($reminder, $reminderInterval, $lastNotification);
-//            Log::info('$tmp');
-//            Log::info($tmp);
-
-//            $lastNotification = is_null( $lastNotification ) ? HelperNow::getDateTime() : $lastNotification;
-
-
             return HelperRrule::eventHasCome($reminder, $reminderInterval, $lastNotification);
         }
 
