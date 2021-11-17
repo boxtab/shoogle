@@ -36,13 +36,6 @@ class RruleService
         $this->dateStart = $dateStart;
         $this->rruleString = $rruleString;
         $this->lastNotification = $lastNotification;
-
-        Log::info('$dateStart');
-        Log::info($dateStart);
-        Log::info('$rruleString');
-        Log::info($rruleString);
-        Log::info('$lastNotification');
-        Log::info($lastNotification);
     }
 
     /**
@@ -70,9 +63,6 @@ class RruleService
         foreach ($eventsDatesObject as $eventDate) {
             $this->eventsDateTime[] = $eventDate->getStart()->format('Y-m-d H:i:s');
         }
-
-        Log::info('$this->eventsDateTime[]');
-        Log::info($this->eventsDateTime);
     }
 
     /**
@@ -117,6 +107,7 @@ class RruleService
     {
         $lastNotificationDate = (new \DateTime($this->lastNotification))->format('Y-m-d');
         $currentDate = Carbon::now()->toDateString();
+//        $currentDate = HelperNow::getDate();
 
         if ( ! is_null($this->lastNotification) && $lastNotificationDate === $currentDate ) {
             return false;
@@ -128,6 +119,7 @@ class RruleService
         }
 
         $now = Carbon::now()->timestamp;
+//        $now = HelperNow::getTimestamp();
 
         $eventDate = $this->getEventsTimestamp()[$key];
 
