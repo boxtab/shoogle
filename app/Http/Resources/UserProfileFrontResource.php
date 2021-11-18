@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Constants\RankConstant;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;

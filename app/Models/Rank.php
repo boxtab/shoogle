@@ -4,10 +4,9 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Reward
+ * Class Rank
  * @package App\Models
  *
  * @property int id
@@ -15,26 +14,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null icon
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
+ *
  */
-
-class Reward extends BaseModel
+class Rank extends BaseModel
 {
     use HasFactory;
 
-    protected $table = 'rewards';
+    protected $table = 'ranks';
 
     protected $fillable = [
         'id',
         'name',
-        'icon',
         'created_at',
         'updated_at',
     ];
 
     protected $casts = [
         'id' => 'integer',
-        'name' => 'string:45',
-        'icon' => 'string:256',
+        'name' => 'string:255',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];

@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Constants\RankConstant;
+use App\Models\Rank;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -14,11 +15,32 @@ class HelperRank
     /**
      * By rank number, returns its text value.
      *
-     * @param int|null $rank
+     * @param int|null $rankId
      * @return string|null
      */
-    public static function getRankByNumber(?int $rank): ?string
+    public static function getRankByNumber(?int $rankId): ?string
     {
-        return ( ( ! is_null($rank) ) && array_key_exists($rank, RankConstant::$rank) ) ? RankConstant::$rank[$rank] : null;
+        $rankName = null;
+
+        if ( is_null($rankId) ) {
+            return null;
+        }
+
+        $rank = Rank::on()
+            ->where('id', '=', $rankId)
+            ->first();
+
+        if ( is_null($rank) ) {
+            return null;
+        }
+
+        $rankName = $rank->name;
+        if ( is_null($rankName) ) {
+            return null;
+        }
+
+        return $rankName;
     }
+
+//    public static function getRankByUserId(?int $)
 }

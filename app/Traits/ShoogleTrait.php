@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\HelperBuddies;
 use App\Helpers\HelperMember;
 use App\Helpers\HelperShoogleList;
 use App\Models\Buddie;
@@ -286,6 +287,32 @@ trait ShoogleTrait
             $shoogle->owner = HelperShoogleList::isOwner(Auth::id(), $shoogle->id);
             $response[] = $shoogle;
         }
+        return $response;
+    }
+
+    /**
+     * Set a chat name with a buddy.
+     *
+     * @param array|null $shoogles
+     * @return array|null
+     */
+    public function setChatNameWithBuddy(?array $shoogles): ?array
+    {
+        if ( is_null( $shoogles ) ) {
+            return $shoogles;
+        }
+
+        $response = [];
+        foreach ($shoogles as $shoogle) {
+            $chatNameWithBuddy = null;
+            $buddy = HelperBuddies::getBuddy($shoogle->id, Auth::id());
+            if ( ! is_null($buddy) ) {
+                $chatNameWithBuddy = $buddy->chat_id;
+            }
+            $shoogle->chatNameWithBuddy = $chatNameWithBuddy;
+            $response[] = $shoogle;
+        }
+
         return $response;
     }
 }

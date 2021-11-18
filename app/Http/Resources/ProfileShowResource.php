@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Constants\RankConstant;
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperRank;
 use App\Helpers\HelperReward;

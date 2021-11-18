@@ -3,6 +3,7 @@
 use Database\Seeders\GuardApiSeeder;
 use Database\Seeders\IconRewardsSeeder;
 use Database\Seeders\NotificationsTypeSeeder;
+use Database\Seeders\RankSeeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\SuperAdminSeeder;
 use Database\Seeders\AdminSeeder;
@@ -18,6 +19,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(RankSeeder::class);
         $this->call(IconRewardsSeeder::class);
         $this->call(TestUserSeeder::class);
         $this->call(RoleSeeder::class);
