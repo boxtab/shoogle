@@ -1,0 +1,34 @@
+// Responsive
+$mobileSmallMax: 339px;
+$mobile: 340px;
+$mobileMax: 679px;
+$mobileBig: 680px;
+
+// Mobile Small
+@media (max-width: $mobileSmallMax) {
+}
+// Mobile
+@media (min-width: $mobile) {
+}
+// Mobile Max
+@media (max-width: $mobileMax) {
+}
+// Mobile Big
+@media (min-width: $mobileBig) {
+}
+
+// Font-size
+$font-size: 14px;
+$font-size-title: 18px;
+$font-size-h1: 48px;
+$font-size-Min: 7px;
+$font-size-title-Min: 9px;
+$font-size-h1-Min: 24px;
+// $font-size-Min: $font-size;
+// $font-size-title-Min: $font-size-title;
+// $font-size-h1-Min: $font-size-h1;
+
+// Color
+$color-theme: #173f5f;
+$color-footer: #515759;
+// $color-button-bg: #437197;
