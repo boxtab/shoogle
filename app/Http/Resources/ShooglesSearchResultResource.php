@@ -49,16 +49,6 @@ class ShooglesSearchResultResource extends JsonResource
      */
     public function getCount()
     {
-//        Order::whereHas('orderItems', function($query) {
-//            $query->where('status', 1);
-//        })->get();
-
-//        select * from `orders` where exists (
-//        select *
-//        from `order_items`
-//    where `orders`.`id` = `order_items`.`order_id` and `status` = 1
-//)
-
         $companyId = HelperCompany::getCompanyId();
         if ( is_null($companyId) ) {
             return 'Unable to determine the company ID of the current user';
@@ -69,8 +59,6 @@ class ShooglesSearchResultResource extends JsonResource
                 })
                 ->count();
         }
-
-//        return (int)Shoogle::on()->count();
     }
 
     /**

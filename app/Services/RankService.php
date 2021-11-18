@@ -48,4 +48,19 @@ class RankService
 
         return true;
     }
+
+    public function fetchCountShoogleViews()
+    {
+        $this->countShoogleViews = 1;
+    }
+
+    public function fetchCountWellbeingScores()
+    {
+        $this->countWellbeingScores = 1;
+    }
+
+    public function fetchCountReward()
+    {
+        $this->countReward = 1;
+    }
 }

@@ -412,7 +412,9 @@ class ShooglesRepository extends Repositories
                 null as solosCount,
                 null as buddyName,
                 null as solo,
-                null as joined
+                null as joined,
+                sh.chat_id as chatNameCommon,
+                null as chatNameWithBuddy
             '))
             ->Join('users as u', 'sh.owner_id', '=', 'u.id')
             ->leftJoin('wellbeing_categories as wc', 'sh.wellbeing_category_id', '=', 'wc.id')
@@ -450,6 +452,8 @@ class ShooglesRepository extends Repositories
         $shoogles = $this->setBuddy($shoogles);
         $shoogles = $this->setSoloMode($shoogles);
         $shoogles = $this->setJoined($shoogles);
+
+        $shoogles = $this->setChatNameWithBuddy($shoogles);
 
         return $shoogles;
     }

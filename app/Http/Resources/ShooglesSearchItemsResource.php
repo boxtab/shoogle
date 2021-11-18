@@ -15,15 +15,17 @@ class ShooglesSearchItemsResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->resource->id,
-            'title' => $this->resource->title,
-            'coverImage' => $this->resource->coverImage,
-            'shooglersCount' => $this->resource->shooglersCount,
-            'buddiesCount' => $this->resource->buddiesCount,
-            'solosCount' => $this->resource->solosCount,
-            'buddyName' => $this->resource->buddyName,
-            'solo' => $this->resource->solo,
-            'joined' => ( $this->resource->joined == 1 ) ? true : false,
+            'id'                => $this->resource->id,
+            'title'             => $this->resource->title,
+            'coverImage'        => $this->resource->coverImage,
+            'shooglersCount'    => $this->resource->shooglersCount,
+            'buddiesCount'      => $this->resource->buddiesCount,
+            'solosCount'        => $this->resource->solosCount,
+            'buddyName'         => $this->resource->buddyName,
+            'solo'              => $this->resource->solo,
+            'joined'            => ( $this->resource->joined == 1 ) ? true : false,
+            'chatNameCommon'    => $this->resource->chatNameCommon,
+            'chatNameWithBudd'  => $this->resource->chatNameWithBuddy,
         ];
     }
 }
