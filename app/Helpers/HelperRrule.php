@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Services\RruleService;
+use Illuminate\Support\Facades\Log;
 use Recurr\Exception\InvalidWeekday;
 use Recurr\Rule;
 use Recurr\Transformer\ArrayTransformer;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
+use App\Helpers\HelperCompany;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserCreateRequest;
@@ -16,6 +17,7 @@ use App\Models\Invite;
 use App\Repositories\DepartmentRepository;
 use App\Repositories\UserRepository;
 use App\Support\ApiResponse\ApiResponse;
+use App\Traits\UserCompanyTrait;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -33,6 +35,8 @@ use Exception;
  */
 class UserController extends BaseApiController
 {
+    use UserCompanyTrait;
+
     /**
      * UserController constructor.
      *
@@ -67,7 +71,7 @@ class UserController extends BaseApiController
             $this->repository->create($credentials);
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
-                return ApiResponse::returnError('Violation of constraint integrity of foreign or unique key!');
+                return ApiResponse::returnError('Unable to create user.');
             } else {
                 return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
             }
@@ -105,6 +109,16 @@ class UserController extends BaseApiController
     {
         try {
             $user = $this->findRecordByID($id);
+
+            $currentUserCompanyId = HelperCompany::getCompanyId();
+            if ( is_null($currentUserCompanyId) ) {
+                throw new Exception('The company ID for the current user was not found.', Response::HTTP_NOT_FOUND);
+            }
+
+            if ( Auth::user()->roles()->first()->name != RoleConstant::SUPER_ADMIN ) {
+                $this->isUsersInCompany(Auth::id(), $id);
+            }
+
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -146,7 +160,7 @@ class UserController extends BaseApiController
             if ( Auth::user()->roles()->first()->name === RoleConstant::COMPANY_ADMIN) {
                 if ( $user->company_id !== Auth::user()->company_id ) {
                     throw new Exception(
-                        "The administrator of a company cannot delete a user who is not a member of this company",
+                        "The administrator of a company cannot delete a user who is not a member of this company.",
                         Response::HTTP_FORBIDDEN
                     );
                 }

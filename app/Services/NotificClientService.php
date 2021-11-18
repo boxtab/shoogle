@@ -50,15 +50,15 @@ class NotificClientService
                     ->where('id', '=', $lineUser['shoogle_id'])
                     ->first();
                 $shoogleTitle = ( ! is_null($shoogle) ) ? $shoogle->title : null;
-
-
+                $shoogleId = ( ! is_null($shoogle) ) ? $shoogle->id : null;
 
                 $helper = new HelperNotifications();
                 $helper->sendNotificationToUser(
                     $lineUser['user_id'],
-                    NotificationsTypeConstant::SCHEDULER_ID,
+                    NotificationsTypeConstant::SHOOGLE_REMIDER_ID,
                     $shoogleTitle
                 );
+                $helper->recordNotificationDetail($shoogleId);
                 $countSendNotific++;
                 /*
                  * Do not delete, temporarily commented out.

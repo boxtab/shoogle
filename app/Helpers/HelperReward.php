@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Constants\RewardConstant;
 use App\Models\UserHasReward;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperReward

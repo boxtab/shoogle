@@ -4,11 +4,13 @@ use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\BuddyRequestController;
 use App\Http\Controllers\API\V1\CommunityLevelController;
 use App\Http\Controllers\API\V1\CompanyController;
+use App\Http\Controllers\API\V1\DateNowController;
 use App\Http\Controllers\API\V1\DepartmentController;
 use App\Http\Controllers\API\V1\InviteController;
 use App\Http\Controllers\API\V1\NotificationToUserController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\RewardController;
+use App\Http\Controllers\API\V1\SchedulerController;
 use App\Http\Controllers\API\V1\ShooglerController;
 use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
@@ -199,15 +201,26 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
      */
     Route::group(['prefix' => 'notification'], function () {
 
-        // GET /api/front/v1/notification/:userId
-        Route::get('/{userId}', [NotificationToUserController::class, 'viewed'])
-            ->where('userId', '[0-9]+');
+        // GET /api/front/v1/notification/:id
+        Route::get('{id}', [NotificationToUserController::class, 'show'])->where('id', '[0-9]+');
+
+        // GET /api/front/v1/notification
+        Route::get('', [NotificationToUserController::class, 'viewed']);
 
         // GET /api/front/v1/notification/list
-        Route::get('list', [NotificationToUserController::class, 'listNotifications']);
+        Route::get('/list', [NotificationToUserController::class, 'listNotifications']);
 
         // DELETE /api/front/v1/notification
         Route::delete('', [NotificationToUserController::class, 'delete']);
+
+        // POST /api/front/v1/notification/date
+        Route::post('/date', [DateNowController::class, 'edit']);
+
+        // GET /api/front/v1/notification/scheduler
+        Route::get('/scheduler', [SchedulerController::class, 'run']);
+
+        // GET /api/front/v1/notification/scheduler/wellbeing
+        Route::get('/scheduler/wellbeing', [SchedulerController::class, 'wellbeing']);
     });
 
 });

@@ -30,7 +30,7 @@ trait WellbeingWeekUsersTrait
                 throw new Exception('The company ID was not found for the current user.', Response::HTTP_NOT_FOUND);
             }
 
-            return $this->getUserIDs((int)$companyId, $dateFrom, $dateTo);
+            return $this->getUserIDsByCompany((int)$companyId, $dateFrom, $dateTo);
 
         } else {
             return $this->getUserIDsByDepartment($departmentId, $dateFrom, $dateTo);

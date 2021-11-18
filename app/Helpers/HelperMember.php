@@ -74,25 +74,6 @@ class HelperMember
     }
 
     /**
-     * Is the user a member of shoogle.
-     *
-     * @param int|null $shoogleID
-     * @param int|null $userID
-     * @return bool
-     */
-    public static function isMember2(?int $shoogleID, ?int $userID): bool
-    {
-        if ( is_null( $shoogleID ) || is_null( $userID ) ) {
-            return false;
-        }
-
-        return UserHasShoogle::on()
-            ->where('shoogle_id', '=', $shoogleID)
-            ->where('user_id', '=', $userID)
-            ->exists();
-    }
-
-    /**
      * Returns a member of the shoogle or generates an error.
      *
      * @param int|null $userId
@@ -101,16 +82,9 @@ class HelperMember
      */
     public static function getMember(?int $userId, ?int $shoogleId)
     {
-        $member = UserHasShoogle::on()
+        return UserHasShoogle::on()
             ->where('user_id', '=', $userId)
             ->where('shoogle_id', '=', $shoogleId)
             ->first();
-
-//        if ( is_null( $member ) ) {
-//            $message = "By userId $userId and shoogleId $shoogleId, the participant was not found or left shoogle or was deleted";
-//            throw new \Exception($message, Response::HTTP_NOT_FOUND);
-//        }
-
-        return $member;
     }
 }

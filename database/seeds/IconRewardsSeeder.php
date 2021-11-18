@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 use App\Constants\RewardConstant;
 use App\Models\Reward;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class IconRewardsSeeder extends Seeder
@@ -46,8 +48,8 @@ class IconRewardsSeeder extends Seeder
                 'id' => $i + 1,
                 'name' => ucfirst( str_replace( '_', ' ', pathinfo($files[$i], PATHINFO_FILENAME) ) ),
                 'icon' => $files[$i],
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ];
             $rewards[] = $reward;
         }
@@ -61,7 +63,8 @@ class IconRewardsSeeder extends Seeder
      */
     public function run()
     {
-        $rows = DB::table('rewards')->upsert( $this->getRewards(), 'id' );
+        $rows = DB::table('rewards')
+            ->upsert( $this->getRewards(), ['id', 'name', 'icon'], ['created_at', 'updated_at'] );
 
         echo "Rows: $rows\n";
     }

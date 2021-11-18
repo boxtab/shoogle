@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Support\ApiRequest\ApiRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CommunityLevelStatisticRequest extends ApiRequest
+class DateNowEditRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +25,7 @@ class CommunityLevelStatisticRequest extends ApiRequest
     public function rules()
     {
         return [
-            'from'          => 'nullable|date_format:Y-m-d',
-            'to'            => 'nullable|date_format:Y-m-d',
-            'departmentId'  => 'nullable|integer|exists:departments,id',
+            'dateTime' => 'required|date_format:Y-m-d H:i:s',
         ];
     }
 }

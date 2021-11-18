@@ -110,21 +110,16 @@ class User extends Authenticatable implements JWTSubject, HasMedia
      */
     protected $guard_name = 'api';
 
-    protected static function booted()
-    {
-        static::deleting(function ($resource) {
-//            Log::info('deleting');
-        });
-
-        static::restoring(function ($resource) {
-
-//            if( $resource->trashed() ) {
-//                Log::info('restoring');
-//            }
-
-
-        });
-    }
+//    protected static function booted()
+//    {
+//        static::deleting(function ($resource) {
+//        });
+//
+//        static::restoring(function ($resource) {
+//
+//
+//        });
+//    }
 
 //    protected static function boot()
 //    {
@@ -168,7 +163,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia
      */
     public function manyRole(): HasMany
     {
-        return $this->hasMany(ModelHasRole::class);
+        return $this->hasMany(ModelHasRole::class, 'model_id', 'id');
     }
 
     /**
@@ -185,6 +180,14 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     public function shoogleViews(): hasMany
     {
         return $this->hasMany(ShoogleViews::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function notificationsUser(): HasMany
+    {
+        return $this->hasMany(NotificationToUser::class, 'user_id', 'id');
     }
 
     /**

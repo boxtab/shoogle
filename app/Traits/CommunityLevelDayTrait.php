@@ -87,11 +87,8 @@ trait CommunityLevelDayTrait
             $dateTo = Carbon::now()->toDateString();
         }
 
-//        $idAllUsersCompany = HelperCompany::getArrayUserIds($companyId);
-        $idAllUsersCompany = $usersIDs;
-
         $wellbeingScores = WellbeingScores::on()
-            ->whereIn('user_id', $idAllUsersCompany)
+            ->whereIn('user_id', $usersIDs)
             ->where('created_at', '<=', $dateTo . ' 23:59:59')
             ->when( ! is_null($dateFrom), function ($query) use ($dateFrom) {
                 $query->where('created_at', '>=', $dateFrom . ' 00:00:00');

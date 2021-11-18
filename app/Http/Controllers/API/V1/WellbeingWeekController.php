@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Http\Response;
 use App\Repositories\WellbeingWeekRepository;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class WellbeingWeekController
@@ -43,6 +44,7 @@ class WellbeingWeekController extends  BaseApiController
         try {
             $dateFrom = $request->get('from');
             $dateTo = $request->get('to');
+
             if ( ! HelperDateTime::checkDateFromLessDateTo($dateFrom, $dateTo) ) {
                 throw new Exception('Date from must be less than date to.', Response::HTTP_UNPROCESSABLE_ENTITY);
             }

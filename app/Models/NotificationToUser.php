@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class NotificationToUser
@@ -24,11 +25,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null from_message
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
+ * @property Carbon|null deleted_at
  *
  */
 class NotificationToUser extends BaseModel
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'notifications_to_user';
 
@@ -45,6 +47,7 @@ class NotificationToUser extends BaseModel
         'buddy_id',
         'created_at',
         'updated_at',
+        'deleted_at',
     ];
 
     protected $casts = [
@@ -60,6 +63,7 @@ class NotificationToUser extends BaseModel
         'buddy_id' => 'integer',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
+        'deleted_at' => 'datetime:Y-m-d h:i:s',
     ];
 
     /**
@@ -136,6 +140,25 @@ class NotificationToUser extends BaseModel
             $this->attributes['viewed'] = 0;
         } else {
             $this->attributes['viewed'] = 1;
+        }
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getTypeNotificationTextAttribute()
+    {
+        if ( is_null( $this->type_id ) ) {
+            return null;
+        } else {
+            $typeNotification = NotificationsType::on()
+                ->where('id', '=', $this->type_id)
+                ->first();
+            if ( is_null($typeNotification) ) {
+                return null;
+            } else {
+                return $typeNotification->name;
+            }
         }
     }
 

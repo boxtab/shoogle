@@ -28,10 +28,13 @@ use App\Models\BuddyRequest;
 use App\Models\Company;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
+use App\Models\NotificationToUser;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
+use App\Repositories\NotificationToUserRepository;
 use App\Repositories\TestRepository;
+use App\Scopes\NotificationToUserScope;
 use App\Services\NotificClientService;
 use App\Services\PasswordRecoveryService;
 use App\Services\RruleService;
@@ -75,10 +78,43 @@ class TestController extends Controller
 
     public function index()
     {
-        $userId = 30;
+        $dateStart = '2021-11-16 07:10:00';
+        $rruleString = 'RRULE:FREQ=DAILY;COUNT=5;INTERVAL=1;WKST=MO';
+        $lastNotification = '2021-11-16 00:05:00';
 
-        $userDeleteService = new UserDeleteService($userId);
-        $userDeleteService->buddyDisconnect();
+        $rruleService = new RruleService($dateStart, $rruleString, $lastNotification);
+        $rruleService->generateEventsDates();
+
+        $result = $rruleService->eventHasCome();
+        dd($result);
+
+//        $notification = NotificationToUser::on()
+//            ->withoutGlobalScope(NotificationToUserScope::class)
+//            ->where('id', '=', 97)
+//            ->first();
+//
+//        dd($notification);
+
+//        $userRoleId = \App\Models\Role::on()
+//            ->where('name', '=', RoleConstant::USER)
+//            ->first();
+//        $tmp = $userRoleId->name1;
+//        dd($tmp);
+
+//        $tmp = HelperNow::getDateTime();
+//        dd($tmp);
+
+//        $notificationToUser = new NotificationToUser();
+//        $notificationToUserRepository = new NotificationToUserRepository($notificationToUser);
+//
+//        $userId = 115;
+//        $tmp = $notificationToUserRepository->getListNotifications($userId);
+//        dd($tmp->toArray());
+
+//        $userId = 30;
+//
+//        $userDeleteService = new UserDeleteService($userId);
+//        $userDeleteService->buddyDisconnect();
 
 //        User::withTrashed()->find(116)->restore();
 

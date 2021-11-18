@@ -54,7 +54,7 @@ class RewardController extends BaseApiController
                 Response::HTTP_BAD_GATEWAY);
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
-                return ApiResponse::returnError('You have given this award to this user already');
+                return ApiResponse::returnError('You have given this award to this user already.');
             } else {
                 return ApiResponse::returnError($e->getMessage());
             }

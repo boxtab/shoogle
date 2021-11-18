@@ -28,6 +28,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('notific:push')
             ->everyMinute();
+
+        $schedule->command('wellbeing:push')
+            ->monthlyOn(1, '10:00');
     }
 
     /**

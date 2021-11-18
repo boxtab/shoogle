@@ -2,26 +2,26 @@
 
 namespace App\Console\Commands;
 
-use App\Helpers\HelperNotific;
-use App\Services\NotificClientService;
+use App\Services\WellbeingService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class NotificPush extends Command
+class WellbeingPush extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'notific:push';
+    protected $signature = 'wellbeing:push';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sending notifications';
+    protected $description = 'Wellbeing points reminders';
 
     /**
      * Create a new command instance.
@@ -37,14 +37,16 @@ class NotificPush extends Command
      * Execute the console command.
      *
      * @return int
-     * @throws \Exception
+     * @throws \GetStream\StreamChat\StreamException
      */
     public function handle()
     {
-        $notificClientService = new NotificClientService();
-        $countSendNotific = $notificClientService->run();
+        $this->info( $this->description );
+
+        $wellbeingService = new WellbeingService();
+        $countSendNotific = $wellbeingService->run();
         $this->info("$countSendNotific notification(s) sent");
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

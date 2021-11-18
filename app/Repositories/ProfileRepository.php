@@ -70,7 +70,7 @@ class ProfileRepository extends Repositories
         $profile = User::on()->where('id', '=', Auth::id() )->first();
 
         if ( is_null($profile) ) {
-            throw new Exception('The authenticated user profile was not found.', Response::HTTP_NOT_FOUND);
+            throw new Exception('Your profile was not found.', Response::HTTP_NOT_FOUND);
         }
 
         $profile->update(

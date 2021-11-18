@@ -8,6 +8,7 @@ use App\Models\BuddyRequest;
 use App\Models\Notification;
 use App\Models\NotificationToUser;
 use App\Models\Shoogle;
+use App\Scopes\NotificationToUserScope;
 use App\User;
 use Illuminate\Support\Facades\Log;
 
@@ -29,6 +30,7 @@ class NotificationBuddyService
     public function __construct( ?int $notificationId )
     {
         $this->notification = NotificationToUser::on()
+            ->withoutGlobalScope(NotificationToUserScope::class)
             ->where('id', '=', $notificationId)
             ->first();
     }

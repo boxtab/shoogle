@@ -152,7 +152,7 @@ class InviteController extends BaseApiController
             $invite = $this->findRecordByID($id);
             $this->checkCreatorInviteAndUserInCompany($id);
             if ($invite->is_used == 1) {
-                throw new Exception('Unable to delete used invite', Response::HTTP_FORBIDDEN);
+                throw new Exception('Unable to delete used invite.', Response::HTTP_FORBIDDEN);
             }
 
             $invite->destroy($id);

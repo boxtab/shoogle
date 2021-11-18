@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Helpers\HelperNow;
 use App\Helpers\HelperRrule;
 use App\Models\UserHasShoogle;
+use App\Scopes\UserHasShoogleScope;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class NotificService
@@ -20,25 +22,33 @@ class NotificService
      */
     public function getLineUsers(): array
     {
-        return UserHasShoogle::on()
-            ->where('is_reminder', '=', true)
+        $userHasShoogleStatement = UserHasShoogle::on()
+            ->withoutGlobalScope(UserHasShoogleScope::class)
+            ->whereNull('left_at')
+            ->where('is_reminder', '=', 1)
             ->whereNotNull('reminder')
             ->where(function ($query) {
                 $query->whereNotNull('reminder_interval')
                     ->orWhere(function ($query) {
-//                        $query->whereDate('reminder', '<', Carbon::now());
-                        $query->whereDate('reminder', '<', HelperNow::getCarbon());
+                        $query->whereDate('reminder', '<', HelperNow::getDateTime());
                     });
-            })
-            ->get([
-                'id',
-                'user_id',
-                'shoogle_id',
-                'reminder',
-                'reminder_interval',
-                'last_notification',
-                'in_process',
-            ])->toArray();
+            });
+
+        $sql = $userHasShoogleStatement->toSql();
+
+
+        $userHasShoogle = $userHasShoogleStatement->get([
+            'id',
+            'user_id',
+            'shoogle_id',
+            'reminder',
+            'reminder_interval',
+            'last_notification',
+            'in_process',
+        ])->toArray();
+
+        return $userHasShoogle;
+
         // Cut off a single event that has not yet occurred
         // last_notification skip if less than a day
     }
@@ -104,7 +114,6 @@ class NotificService
     public function needToSend(string $reminder, ?string $reminderInterval, ?string $lastNotification): bool
     {
         $nowTimestamp = HelperNow::getTimestamp();
-//        $nowTimestamp = Carbon::now()->timestamp;
         $reminderTimestamp = strtotime($reminder);
 
         // if the event is single

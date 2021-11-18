@@ -262,9 +262,18 @@ Password ?
 
 ### Cron task.
 
-`docker-compose exec app php artisan notific:push`
+`docker-compose exec app php artisan schedule:run`
+Run Scheduler Command. This command must be added to the scheduler of the server operating system. It should run once a minute. And will run all below given commands
 
+
+`docker-compose exec app php artisan notific:push`
+The command is designed to run from the command line.
 Starts sending notifications. 
 Checks the shoogle member table. 
 For those who have enabled the mode of sending notifications and sending has not yet occurred, 
 a message will be sent. 
+
+`docker-compose exec app php artisan wellbeing:push`
+The command is designed to run from the command line.
+Sends out a reminder to set wellbeing scores. Runs on schedule every first day of the month at 10 a.m.
+

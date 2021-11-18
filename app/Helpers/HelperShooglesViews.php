@@ -4,8 +4,10 @@ namespace App\Helpers;
 
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
+use App\Scopes\UserHasShoogleScope;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperShooglesViews
@@ -70,10 +72,11 @@ class HelperShooglesViews
             return $response;
         }
 
-        $shooglesViews = ShoogleViews::on()
+        return ShoogleViews::on()
             ->whereHas('user')
             ->whereHas('userHasShoogle', function ($query) {
-                $query->whereNotNull('left_at');
+                $query
+                    ->whereNull('left_at');
             })
             ->where('shoogles_views.shoogle_id', '=', $shoogleID)
             ->orderBy('shoogles_views.last_view', 'DESC')
@@ -85,10 +88,6 @@ class HelperShooglesViews
                 ];
             })
             ->toArray();
-
-        $response = $shooglesViews;
-
-        return $response;
     }
 
 }

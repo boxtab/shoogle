@@ -20,7 +20,7 @@ trait CommunityLevelUserTrait
      * @param string|null $periodEnd
      * @return array|null
      */
-    private function getUserIDs(int $companyId, ?string $periodBegin, ?string $periodEnd): ?array
+    private function getUserIDsByCompany(int $companyId, ?string $periodBegin, ?string $periodEnd): ?array
     {
         $userIDsCompany = HelperCompany::getArrayUserIds($companyId);
         $userIDsPeriod = HelperWellbeing::getUniqueUserIDsPerPeriod($periodBegin, $periodEnd);

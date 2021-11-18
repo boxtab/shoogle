@@ -6,6 +6,7 @@ use App\Constants\NotificationsTypeConstant;
 use App\Enums\BuddyRequestTypeEnum;
 use App\Models\BuddyRequest;
 use App\Models\NotificationToUser;
+use App\Scopes\NotificationToUserScope;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
@@ -65,28 +66,28 @@ class NotificationToUserRepository extends Repositories
     public function checkExistenceUser(?int $userId)
     {
         if ( is_null($userId) ) {
-            throw new \Exception("User ID not specified", Response::HTTP_NOT_FOUND);
+            throw new \Exception("User ID not found!", Response::HTTP_NOT_FOUND);
         }
 
         $user = User::on()->where('id', '=', $userId)->first();
         if ( is_null( $user ) ) {
-            throw new \Exception("User ID: $userId not found", Response::HTTP_NOT_FOUND);
+            throw new \Exception("User not found!", Response::HTTP_NOT_FOUND);
         }
     }
 
     /**
-     * Mark as read.
+     * Returns the number of unread notifications.
      *
      * @param int $userId
+     * @return int
      */
-    public function viewed(int $userId)
+    public function viewed(int $userId): int
     {
-        NotificationToUser::on()
+        return NotificationToUser::on()
             ->where('user_id', '=', $userId)
-            ->where('type_id', '<>', NotificationsTypeConstant::BUDDY_REQUEST_ID)
-            ->update([
-                'viewed' => 1,
-            ]);
+            ->where('viewed', '=', 0)
+            ->get()
+            ->count();
     }
 
     /**
@@ -101,14 +102,22 @@ class NotificationToUserRepository extends Repositories
             return [];
         }
 
-        return $this->model->on()
+        $notificationsToUserSelection = $this->model->on()
             ->leftJoin('notifications_type', 'notifications_type.id', '=', 'notifications_to_user.type_id')
-            ->where('user_id', '=', $userId)
+            ->withoutGlobalScope(NotificationToUserScope::class)
+            ->where('user_id', '=', $userId);
+
+        $notificationsToUserCollection = $notificationsToUserSelection
             ->get([
-                'notifications_to_user.id as id',
-                'notifications_type.name as typeNotificationText',
-                'notifications_to_user.created_at as createdAt',
-            ]);
+                    'notifications_to_user.id as id',
+                    'notifications_type.name as typeNotificationLabel',
+                    'notifications_to_user.created_at as createdAt',
+                ]);
+        $notificationsToUserSelection->update([
+            'viewed' => 1,
+        ]);
+
+        return $notificationsToUserCollection;
     }
 
     /**
@@ -123,12 +132,9 @@ class NotificationToUserRepository extends Repositories
             foreach ( $listNotificationIDs as $listNotificationID ) {
 
                 $notificationToUser = NotificationToUser::on()
+                    ->withoutGlobalScope(NotificationToUserScope::class)
                     ->where('id', '=', $listNotificationID)
                     ->first();
-
-                $notificationToUser->update([
-                    'viewed' => 1,
-                ]);
 
                 if ( $notificationToUser->type_id === NotificationsTypeConstant::BUDDY_REQUEST_ID ) {
 
@@ -151,6 +157,8 @@ class NotificationToUserRepository extends Repositories
                     $buddyRequestRepository = new BuddyRequestRepository($buddyRequestModel);
                     $buddyRequestRepository->buddyReject($buddyRequest);
                 }
+
+                $notificationToUser->delete();
 
             }
         });

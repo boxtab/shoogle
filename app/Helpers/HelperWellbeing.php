@@ -2,7 +2,10 @@
 
 namespace App\Helpers;
 
+use App\Constants\NotificationsTypeConstant;
+use App\Models\NotificationToUser;
 use App\Models\WellbeingScores;
+use App\Scopes\NotificationToUserScope;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -36,5 +39,51 @@ class HelperWellbeing
                 return $item->user_id;
             })
             ->toArray();
+    }
+
+    /**
+     * When was the last time there were well-being points.
+     *
+     * @param int|null $userId
+     * @return string|null
+     */
+    public static function getLastTime(?int $userId): ?string
+    {
+        if ( is_null( $userId ) ) {
+            return null;
+        }
+
+        $wellbeingScores = WellbeingScores::on()
+            ->where('user_id', '=', $userId)
+            ->orderBy('created_at', 'DESC')
+            ->first();
+
+        if ( is_null($wellbeingScores) ) {
+            return null;
+        }
+
+        return $wellbeingScores->created_at;
+    }
+
+    /**
+     * Get notification wellbeing.
+     *
+     * @param int|null $notificationId
+     * @param int|null $userId
+     * @return array|null
+     */
+    public static function getNotification(?int $notificationId, ?int $userId): ?array
+    {
+        $notification = HelperNotific::checkNotification($notificationId, $userId, NotificationsTypeConstant::WELLBEING_REMIDER_ID);
+        if ( is_null($notification) ) {
+            return null;
+        }
+
+        $message = $notification->notification;
+
+        return [
+            'title'     => 'Well-being pulse reminder',
+            'message'   => $message,
+        ];
     }
 }

@@ -106,10 +106,10 @@ class RruleService
     public function eventHasCome(): bool
     {
         $lastNotificationDate = (new \DateTime($this->lastNotification))->format('Y-m-d');
-        $currentDate = HelperNow::getDate();
-//        $currentDate = Carbon::now()->toDateString();
+        $currentDate = Carbon::now()->toDateString();
+//        $currentDate = HelperNow::getDate();
 
-        if ( $lastNotificationDate === $currentDate ) {
+        if ( ! is_null($this->lastNotification) && $lastNotificationDate === $currentDate ) {
             return false;
         }
 
@@ -118,8 +118,8 @@ class RruleService
             return false;
         }
 
-        $now = HelperNow::getTimestamp();
-//        $now = Carbon::now()->timestamp;
+        $now = Carbon::now()->timestamp;
+//        $now = HelperNow::getTimestamp();
 
         $eventDate = $this->getEventsTimestamp()[$key];
 
