@@ -155,7 +155,17 @@ class ShooglesRepository extends Repositories
         $minuteAgo = Carbon::now()->subMinute();
         $timeAgo = $minuteAgo;
 
-        $shoogleViews = ShoogleViews::on()->where('shoogle_id', $shoogleId)->where('user_id', $userId)->first();
+        $shoogleViews = ShoogleViews::on()
+            ->where('shoogle_id', $shoogleId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if ( is_null($shoogleViews) ) {
+            $views = 1;
+        } else {
+            $views = is_null( $shoogleViews->views ) ? 0 : $shoogleViews->views;
+            $views++;
+        }
 
         $lastUpdate = ( ! is_null($shoogleViews) ) ? $shoogleViews->last_view : $timeAgo;
 
@@ -171,7 +181,10 @@ class ShooglesRepository extends Repositories
                 'shoogle_id' =>  $shoogleId,
                 'user_id' => Auth::id(),
             ],
-            ['last_view' => Carbon::now()]
+            [
+                'last_view' => Carbon::now(),
+                'views' => $views,
+            ]
         );
     }
 

@@ -36,31 +36,21 @@ class HelperNotific
     }
 
     /**
-     * Check mark.
+     * Remove friend request notification.
      *
      * @param int|null $requestId
-     * @param int|null $notificationType
-     * @param bool|null $mark
      */
-    public static function checkMark(?int $requestId, ?int $notificationType, ?bool $mark)
+    public static function deleteNotificationBuddyRequest(?int $requestId)
     {
-        if ( is_null($requestId) || is_null($notificationType) || is_null($mark) ) {
+        if ( is_null($requestId) ) {
             return;
         }
 
         NotificationToUser::on()
+            ->withoutGlobalScope(NotificationToUserScope::class)
             ->where('buddy_request_id', '=', $requestId)
-            ->where('type_id', '=', $notificationType)
-            ->update([
-                'deleted_at' => Carbon::now(),
-            ]);
-
-//        NotificationToUser::on()
-//            ->where('buddy_request_id', '=', $requestId)
-//            ->where('type_id', '=', $notificationType)
-//            ->update([
-//                'viewed' => (int)$mark,
-//            ]);
+            ->where('type_id', '=', NotificationsTypeConstant::BUDDY_REQUEST_ID)
+            ->delete();
     }
 
     /**

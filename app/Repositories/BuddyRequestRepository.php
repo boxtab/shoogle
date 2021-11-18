@@ -264,7 +264,7 @@ class BuddyRequestRepository extends Repositories
                     'solo' => 0,
                 ]);
 
-            HelperNotific::checkMark($buddyRequest->id, NotificationsTypeConstant::BUDDY_REQUEST_ID, true);
+            HelperNotific::deleteNotificationBuddyRequest($buddyRequest->id);
         });
     }
 
@@ -301,7 +301,7 @@ class BuddyRequestRepository extends Repositories
                 $buddyRequest->id
             );
 
-            HelperNotific::checkMark($buddyRequest->id, NotificationsTypeConstant::BUDDY_REQUEST_ID, true);
+            HelperNotific::deleteNotificationBuddyRequest($buddyRequest->id);
         });
     }
 

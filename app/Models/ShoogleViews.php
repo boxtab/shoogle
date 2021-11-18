@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int shoogle_id
  * @property int user_id
  * @property Carbon last_view
+ * @property int views
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  */
@@ -30,6 +31,7 @@ class ShoogleViews extends BaseModel
         'shoogle_id',
         'user_id',
         'last_view',
+        'views',
         'created_at',
         'updated_at',
     ];
@@ -39,6 +41,7 @@ class ShoogleViews extends BaseModel
         'shoogle_id'    => 'integer',
         'user_id'       => 'integer',
         'last_view'     => 'datetime:Y-m-d h:i:s',
+        'views'       => 'integer',
         'created_at'    => 'datetime:Y-m-d h:i:s',
         'updated_at'    => 'datetime:Y-m-d h:i:s',
     ];
