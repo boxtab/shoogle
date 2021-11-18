@@ -68,16 +68,16 @@
         </td>
     </tr></table>
     <div class="footer">
-        <div class="f-text">
-            If you prefer not to receive emails like this, you may <a href="#" title="Unsubscribe">unsubscribe</a><br>
-            (c) 2019 ServerSharing. All rights reserved.
+            <div class="f-text">
+                If you prefer not to receive emails like this, you may <a href="#" title="Unsubscribe">unsubscribe</a><br>
+                (c) 2019 ServerSharing. All rights reserved.
+            </div>
+            <div class="f-social">
+                <a class="fb" href="#" title="Facebook"><img src="{{asset('images/common-mail-template/ico-facebook.svg')}}" alt="Facebook"></a>
+                <a class="tw" href="#" title="Twitter"><img src="{{asset('images/common-mail-template/ico-twitter.svg')}}" alt="Twitter"></a>
+                <a class="insta" href="#" title="Instagram"><img src="{{asset('images/common-mail-template/ico-instagram.svg')}}" alt="Instagram"></a>
+            </div>
         </div>
-        <div class="f-social">
-            <a class="fb" href="https://www.facebook.com/shoogleapp" title="Facebook"><img src="images/common-mail-template/ico-facebook.svg" alt="Facebook"></a>
-            <a class="tw" href="http://www.twitter.com/wix" title="Twitter"><img src="images/common-mail-template/ico-twitter.svg" alt="Twitter"></a>
-            <a class="insta" href="https://www.instagram.com/shoogleapp/" title="Instagram"><img src="images/common-mail-template/ico-instagram.svg" alt="Instagram"></a>
-        </div>
-    </div>
 </body>
 </html>
 
