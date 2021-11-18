@@ -29,7 +29,7 @@ class ProfileShowResource extends JsonResource
             'firstName'             => $this->resource->first_name,
             'lastName'              => $this->resource->last_name,
             'about'                 => $this->resource->about,
-            'rank'                  => HelperRank::getRankByNumber( $this->resource->rank ),
+            'rank'                  => HelperRank::getRankByNumber( $this->resource->rank_id ),
             'profileImage'          => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
             'shooglesCount'         => $shooglesCount,
             'activeShooglesCount'   => $activeShooglesCount,

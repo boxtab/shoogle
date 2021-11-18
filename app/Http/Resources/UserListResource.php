@@ -27,8 +27,8 @@ class UserListResource extends JsonResource
                 'department'    => $item->department->name,
                 'email'         => $item->email,
                 'role'          => ( count($item->role) > 0 ) ? $item->role[0]->name : 'Warning: no role',
-                'rank'          => HelperRank::getRankByNumber( $item->rank ),
-                'shoogles'      => Shoogle::where('owner_id', $item->id)->count(),
+                'rank'          => HelperRank::getRankByNumber( $item->rank_id ),
+                'shoogles'      => Shoogle::on()->where('owner_id', $item->id)->count(),
             ];
         });
     }
