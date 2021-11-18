@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="color-scheme" content="light">
     <meta name="supported-color-schemes" content="light">
+    <link rel="stylesheet" type="text/css" href="./css/common-email-template.css">
     <style>
         @media  only screen and (max-width: 600px) {
             .inner-body {
@@ -66,6 +67,17 @@
             </table>
         </td>
     </tr></table>
+    <div class="footer">
+            <div class="f-text">
+                If you prefer not to receive emails like this, you may <a href="#" title="Unsubscribe">unsubscribe</a><br>
+                (c) 2019 ServerSharing. All rights reserved.
+            </div>
+            <div class="f-social">
+                <a class="fb" href="#" title="Facebook"><img src="{{asset('images/common-mail-template/ico-facebook.svg')}}" alt="Facebook"></a>
+                <a class="tw" href="#" title="Twitter"><img src="{{asset('images/common-mail-templatey/ico-twitter.svg')}}" alt="Twitter"></a>
+                <a class="insta" href="#" title="Instagram"><img src="{{asset('images/common-mail-template/ico-instagram.svg')}}" alt="Instagram"></a>
+            </div>
+        </div>
 </body>
 </html>
 
