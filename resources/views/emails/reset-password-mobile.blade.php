@@ -69,8 +69,7 @@
     </tr></table>
     <div class="footer">
             <div class="f-text">
-                If you prefer not to receive emails like this, you may <a href="#" title="Unsubscribe">unsubscribe</a><br>
-                (c) 2019 ServerSharing. All rights reserved.
+                (c) 2021 shoogle. All rights reserved.
             </div>
             <div class="f-social">
                 <a class="fb" href="#" title="Facebook"><img src="{{asset('images/common-mail-template/ico-facebook.svg')}}" alt="Facebook"></a>
