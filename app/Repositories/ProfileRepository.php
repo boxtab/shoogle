@@ -54,7 +54,7 @@ class ProfileRepository extends Repositories
                 'first_name',
                 'last_name',
                 'about',
-                'rank',
+                'rank_id',
                 'profile_image',
             ]);
     }
