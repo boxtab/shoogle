@@ -14,17 +14,9 @@ class RankConstant
     const EXPERIENCED_ID    = 4;
     const EXPERT_ID         = 5;
 
-    const NEWBIE_NAME       = 'NEWBIE';
-    const ROOKIE_NAME       = 'ROOKIE';
-    const INTERMEDIATE_NAME = 'INTERMEDIATE';
-    const EXPERIENCED_NAME  = 'EXPERIENCED';
-    const EXPERT_NAME       = 'EXPERT';
-
-//    public static $rank = [
-//        1 => 'Newbie',
-//        2 => 'Rookie',
-//        3 => 'Intermediate',
-//        4 => 'Experienced',
-//        5 => 'Expert',
-//    ];
+    const NEWBIE_NAME       = 'Newbie';
+    const ROOKIE_NAME       = 'Rookie';
+    const INTERMEDIATE_NAME = 'Intermediate';
+    const EXPERIENCED_NAME  = 'Experienced';
+    const EXPERT_NAME       = 'Expert';
 }

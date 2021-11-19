@@ -14,6 +14,7 @@ use App\Helpers\HelperMember;
 use App\Helpers\HelperMigration;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNow;
+use App\Helpers\HelperRank;
 use App\Helpers\HelperReward;
 use App\Helpers\HelperRole;
 use App\Helpers\HelperShoogle;
@@ -78,15 +79,17 @@ class TestController extends Controller
 
     public function index()
     {
-        $dateStart = '2021-11-16 07:10:00';
-        $rruleString = 'RRULE:FREQ=DAILY;COUNT=5;INTERVAL=1;WKST=MO';
-        $lastNotification = '2021-11-16 00:05:00';
+//        HelperRank::increaseRank(11);
 
-        $rruleService = new RruleService($dateStart, $rruleString, $lastNotification);
-        $rruleService->generateEventsDates();
-
-        $result = $rruleService->eventHasCome();
-        dd($result);
+//        $dateStart = '2021-11-16 07:10:00';
+//        $rruleString = 'RRULE:FREQ=DAILY;COUNT=5;INTERVAL=1;WKST=MO';
+//        $lastNotification = '2021-11-16 00:05:00';
+//
+//        $rruleService = new RruleService($dateStart, $rruleString, $lastNotification);
+//        $rruleService->generateEventsDates();
+//
+//        $result = $rruleService->eventHasCome();
+//        dd($result);
 
 //        $notification = NotificationToUser::on()
 //            ->withoutGlobalScope(NotificationToUserScope::class)

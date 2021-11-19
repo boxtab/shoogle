@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Helpers\Helper;
 use App\Helpers\HelperCompany;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperRankServiceClient;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
 use App\Helpers\HelperStream;
@@ -38,6 +39,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use GetStream\StreamChat\Client as StreamClient;
@@ -148,7 +150,10 @@ class ShooglesController extends BaseApiController
             $shoogle = $this->findRecordByID($id);
             $this->checkCreatorAndUserInCompany($shoogle->id);
 
-            $this->repository->incrementViews($id);
+            DB::transaction(function () use ($id) {
+                $this->repository->incrementViews($id);
+                HelperRankServiceClient::assignRank(Auth::id());
+            });
 
             $shooglesViewsResource = new ShooglesViewsResource($shoogle);
         } catch (Exception $e) {

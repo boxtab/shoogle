@@ -8,6 +8,7 @@ use App\Constants\RewardConstant;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Helpers\HelperNotifications;
+use App\Helpers\HelperRankServiceClient;
 use App\Helpers\HelperReward;
 use App\Models\Reward;
 use App\Models\UserHasReward;
@@ -70,6 +71,8 @@ class RewardRepository extends Repositories
                 NotificationsTypeConstant::REWARD_ASSIGN_ID,
                 "You received an award: $rewardName"
             );
+
+            HelperRankServiceClient::assignRank($userId);
 
             $userHasReward->update([
                 'notification_id' => $helperNotification->getNotificationToUserId(),

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
+use App\Helpers\HelperRankServiceClient;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\Shoogle;
@@ -244,6 +245,7 @@ class WellbeingScoresRepository extends Repositories
      *
      * @param int $userId
      * @param array $scores
+     * @throws \GetStream\StreamChat\StreamException
      */
     public function storeScores(int $userId, array $scores)
     {
@@ -257,6 +259,8 @@ class WellbeingScoresRepository extends Repositories
             'emotional'     => $scores['emotional'],
             'intellectual'  => $scores['intellectual'],
         ]);
+
+        HelperRankServiceClient::assignRank($userId);
     }
 
     /**

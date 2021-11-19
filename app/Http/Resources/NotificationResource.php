@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNotificationBuddy;
+use App\Helpers\HelperRank;
 use App\Helpers\HelperReward;
 use App\Helpers\HelperWellbeing;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -22,13 +23,14 @@ class NotificationResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->resource->id,
-            'typeNotificationText' => $this->resource->typeNotificationText,
-            'createdAt' => $this->resource->created,
-            'reward' => RewardResource::make( HelperReward::getAwarded( $this->resource->id ) ),
-            'buddy' => HelperNotificationBuddy::getBuddyAndShoogle( $this->resource->id ),
-            'reminder' => HelperNotific::getRemainderScheduler( $this->resource->id, Auth::id() ),
-            'wellbeing' => HelperWellbeing::getNotification($this->resource->id, Auth::id()),
+            'id'                    => $this->resource->id,
+            'typeNotificationText'  => $this->resource->typeNotificationText,
+            'createdAt'             => $this->resource->created,
+            'reward'                => RewardResource::make( HelperReward::getAwarded( $this->resource->id ) ),
+            'buddy'                 => HelperNotificationBuddy::getBuddyAndShoogle( $this->resource->id ),
+            'reminder'              => HelperNotific::getRemainderScheduler( $this->resource->id, Auth::id() ),
+            'wellbeing'             => HelperWellbeing::getNotification($this->resource->id, Auth::id()),
+            'rank'                  => HelperRank::getNotification( $this->resource->id ),
         ];
     }
 }

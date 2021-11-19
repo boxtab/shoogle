@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNotificationBuddy;
+use App\Helpers\HelperRank;
 use App\Helpers\HelperReward;
 use App\Helpers\HelperWellbeing;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,6 +30,7 @@ class NotificationListResource extends JsonResource
             'buddy'                 => HelperNotificationBuddy::getBuddyAndShoogle($this->resource->id),
             'reminder'              => HelperNotific::getRemainderScheduler( $this->resource->id, Auth::id() ),
             'wellbeing'             => HelperWellbeing::getNotification($this->resource->id, Auth::id()),
+            'rank'                  => HelperRank::getNotification( $this->resource->id ),
         ];
     }
 }

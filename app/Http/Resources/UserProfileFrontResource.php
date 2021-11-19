@@ -36,7 +36,7 @@ class UserProfileFrontResource extends JsonResource
             'profileImage'          => HelperAvatar::getURLProfileImage( $this->resource->profile_image ),
             'firstName'             => $this->resource->first_name,
             'lastName'              => $this->resource->last_name,
-            'rank'                  => HelperRank::getRankByNumber( $this->resource->rank_id ),
+            'rank'                  => HelperRank::getRankNameByRankId( $this->resource->rank_id ),
             'rewards'               => UserHasRewardCollection::collection( HelperReward::getReward($this->resource->id) ),
             'shooglesCount'         => $shooglesCount,
             'activeShooglesCount'   => $activeShooglesCount,

@@ -15,6 +15,7 @@ class NotificationsTypeConstant
     const BUDDY_DISCONNECT_ID = 5;
     const REWARD_ASSIGN_ID = 6;
     const WELLBEING_REMIDER_ID = 7;
+    const RANK_ASSIGN_ID = 8;
 
     const SHOOGLE_REMAINDER_NAME = 'SHOOGLE_REMAINDER';
     const BUDDY_REQUEST_NAME = 'BUDDY_REQUEST';
@@ -23,4 +24,5 @@ class NotificationsTypeConstant
     const BUDDY_DISCONNECT_NAME = 'BUDDY_DISCONNECT';
     const REWARD_ASSIGN_NAME = 'REWARD_ASSIGN';
     const WELLBEING_REMINDER_NAME = 'WELLBEING_REMINDER';
+    const RANK_ASSIGN_NAME = 'RANK_ASSIGN';
 }

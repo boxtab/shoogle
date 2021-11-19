@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Rank
@@ -35,4 +37,9 @@ class Rank extends BaseModel
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
+
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'rank_id', 'id');
+    }
 }

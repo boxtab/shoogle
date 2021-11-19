@@ -10,6 +10,7 @@ use App\Models\Department;
 use App\Models\Invite;
 use App\Models\ModelHasRole;
 use App\Models\NotificationToUser;
+use App\Models\Rank;
 use App\Models\Role;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
@@ -156,6 +157,23 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     {
         return $this->belongsTo(Department::class, 'department_id', 'id')
             ->withDefault();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function rank(): BelongsTo
+    {
+        return $this->belongsTo(Rank::class, 'rank_id', 'id')
+            ->withDefault();
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function ranks(): HasMany
+    {
+        return $this->hasMany(Rank::class, 'rank_id', 'id');
     }
 
     /**
