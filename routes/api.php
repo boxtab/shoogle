@@ -79,6 +79,9 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
 
         // POST /api/front/v1/user/wellbeing-scores
         Route::post('/wellbeing-scores', [WelbeingScoresController::class, 'averageUserFront']);
+
+        // GET /api/front/v1/user/wellbeing-scores/low
+        Route::get('/wellbeing-scores/low', [WelbeingScoresController::class, 'scoresLow']);
     });
 
     /**

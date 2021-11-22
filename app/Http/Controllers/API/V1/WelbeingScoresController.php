@@ -203,4 +203,19 @@ class WelbeingScoresController extends BaseApiController
         $wellbeingScoresAverageResource = new WelbeingScoresAverageResource($average);
         return ApiResponse::returnData($wellbeingScoresAverageResource);
     }
+
+    /**
+     * Wellbeing points level.
+     *
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function scoresLow()
+    {
+        try {
+            $scoresLow = $this->repository->getScoresLow( Auth::id() );
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return ApiResponse::returnData(['scoresLow' => $scoresLow]);
+    }
 }

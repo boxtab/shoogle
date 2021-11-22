@@ -27,6 +27,11 @@ use phpDocumentor\Reflection\Types\Boolean;
 class WellbeingScoresRepository extends Repositories
 {
     /**
+     * Low well-being scores.
+     */
+    const SCORES_LOW = 2;
+
+    /**
      * @var WellbeingScores
      */
     protected $model;
@@ -307,5 +312,40 @@ class WellbeingScoresRepository extends Repositories
             ->toArray();
 
         return $this->getAverageFromArrayUsers($arrayUserId, $from, $to);
+    }
+
+    /**
+     * Returns the wellbeing point level.
+     *
+     * @param int|null $userId
+     * @return bool
+     */
+    public function getScoresLow(?int $userId): bool
+    {
+        $scoresLow = true;
+
+        if ( is_null($userId) ) {
+            return false;
+        }
+
+        $user = User::on()
+            ->where('id', '=', $userId)
+            ->first();
+
+        if ( is_null($user) ) {
+            return false;
+        }
+
+        $averageUser = (array)$this->getAverageUser($userId, null, null);
+
+        foreach ($averageUser as $average) {
+
+            if ( is_null($average) || $average <= self::SCORES_LOW ) {
+                $scoresLow = false;
+            }
+
+        }
+
+        return $scoresLow;
     }
 }
