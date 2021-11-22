@@ -29,7 +29,7 @@ class UserProfileAdminResource extends JsonResource
             'lastName'          => $this->resource->last_name,
             'departmentId'      => $this->resource->department_id,
             'email'             => $this->resource->email,
-            'rating'            => $this->resource->rank,
+            'rating'            => $this->resource->rank_id,
             'shoogles'          => Shoogle::on()->where('owner_id', $this->resource->id)->count(),
             'isCompanyAdmin'    => (Helper::getRole($this->resource->id) == RoleConstant::COMPANY_ADMIN) ? true : false,
             'shooglesList'      => Shoogle::on()->where('owner_id', $this->resource->id)
