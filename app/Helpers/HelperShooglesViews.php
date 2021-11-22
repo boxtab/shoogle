@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
+use App\Models\UserHasShoogle;
 use App\Scopes\UserHasShoogleScope;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -72,22 +73,38 @@ class HelperShooglesViews
             return $response;
         }
 
-        return ShoogleViews::on()
-            ->whereHas('user')
-            ->whereHas('userHasShoogle', function ($query) {
-                $query
-                    ->whereNull('left_at');
+        $userIds = UserHasShoogle::on()
+            ->where('shoogle_id', '=', $shoogleID)
+            ->get()
+            ->map(function ($item) {
+                return $item->user_id;
             })
+            ->toArray();
+
+        $shoogleViewsModel = ShoogleViews::on()
+            ->whereIn('shoogles_views.user_id', $userIds)
             ->where('shoogles_views.shoogle_id', '=', $shoogleID)
-            ->orderBy('shoogles_views.last_view', 'DESC')
+            ->orderBy('shoogles_views.last_view', 'DESC');
+
+        $shoogleViews = $shoogleViewsModel
             ->get()
             ->map(function($item) {
+
+                $user = User::on()->where('id', '=', $item->user_id)->first();
+                if ( ! is_null($user) ) {
+                    $avatar = HelperAvatar::getURLProfileImage($user->profile_image);
+                } else {
+                    $avatar = null;
+                }
+
                 return [
                     'id' => $item->user_id,
-                    'avatar' => HelperAvatar::getURLProfileImage($item->user->profile_image),
+                    'avatar' => $avatar,
                 ];
             })
             ->toArray();
+
+        return $shoogleViews;
     }
 
 }
