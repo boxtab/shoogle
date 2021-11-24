@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperRank;
+use App\Helpers\HelperWellbeing;
 use App\Models\Shoogle;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Log;
@@ -29,6 +30,7 @@ class UserListResource extends JsonResource
                 'role'          => ( count($item->role) > 0 ) ? $item->role[0]->name : 'Warning: no role',
                 'rank'          => HelperRank::getRankNameByRankId( $item->rank_id ),
                 'shoogles'      => Shoogle::on()->where('owner_id', $item->id)->count(),
+                'wellbeingLow'  => HelperWellbeing::isLow( $item->id ),
             ];
         });
     }

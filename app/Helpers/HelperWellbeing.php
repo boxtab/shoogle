@@ -6,7 +6,9 @@ use App\Constants\NotificationsTypeConstant;
 use App\Models\NotificationToUser;
 use App\Models\WellbeingScores;
 use App\Scopes\NotificationToUserScope;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperWellbeing
@@ -14,6 +16,16 @@ use Illuminate\Support\Facades\DB;
  */
 class HelperWellbeing
 {
+    /**
+     * For the last days.
+     */
+    const LAST_DAYS = 30;
+
+    /**
+     * Low score.
+     */
+    const LOW_SCORE = 3;
+
     /**
      * Get unique user IDs with wellbeing points for a period.
      *
@@ -85,5 +97,36 @@ class HelperWellbeing
             'title'     => 'Well-being pulse reminder',
             'message'   => $message,
         ];
+    }
+
+    /**
+     * Low level of well-being.
+     *
+     * @param int|null $userId
+     * @return bool
+     */
+    public static function isLow(?int $userId): bool
+    {
+        if ( is_null( $userId ) ) {
+            return true;
+        }
+
+        $lastDay = Carbon::now()->subDays(self::LAST_DAYS);
+
+        $isLow = WellbeingScores::on()
+            ->where('user_id', '=', $userId)
+            ->where( 'created_at', '>=', $lastDay)
+            ->where(function($query) {
+                $query->where('social', '<=', self::LOW_SCORE)
+                    ->orWhere('physical', '<=', self::LOW_SCORE)
+                    ->orWhere('mental', '<=', self::LOW_SCORE)
+                    ->orWhere('economical', '<=', self::LOW_SCORE)
+                    ->orWhere('spiritual', '<=', self::LOW_SCORE)
+                    ->orWhere('emotional', '<=', self::LOW_SCORE)
+                    ->orWhere('intellectual', '<=', self::LOW_SCORE);
+            })
+            ->exists();
+
+        return $isLow;
     }
 }
