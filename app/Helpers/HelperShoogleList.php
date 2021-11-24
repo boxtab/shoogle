@@ -63,10 +63,11 @@ class HelperShoogleList
         }
 
         return Shoogle::on()
-            ->whereIn('id', $listShoogleIds)
+            ->whereIn('id', $listShoogleIds )
             ->get()
             ->map(function ($item) {
                 return [
+                    'id' => $item->id,
                     'title' => $item->title,
                     'wellbeingCategory' => $item->wellbeingCategory->name,
                     'shooglersCount' => UserHasShoogle::on()->where('shoogle_id', $item->id)->count(),

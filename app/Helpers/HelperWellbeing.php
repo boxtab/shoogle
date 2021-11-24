@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Constants\NotificationsTypeConstant;
 use App\Models\NotificationToUser;
 use App\Models\WellbeingScores;
+use App\Repositories\WellbeingScoresRepository;
 use App\Scopes\NotificationToUserScope;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -103,30 +104,30 @@ class HelperWellbeing
      * Low level of well-being.
      *
      * @param int|null $userId
-     * @return bool
+     * @return array|bool|null
      */
-    public static function isLow(?int $userId): bool
+    public static function getBadAspects(?int $userId)
     {
         if ( is_null( $userId ) ) {
             return true;
         }
 
-        $lastDay = Carbon::now()->subDays(self::LAST_DAYS);
 
-        $isLow = WellbeingScores::on()
-            ->where('user_id', '=', $userId)
-            ->where( 'created_at', '>=', $lastDay)
-            ->where(function($query) {
-                $query->where('social', '<=', self::LOW_SCORE)
-                    ->orWhere('physical', '<=', self::LOW_SCORE)
-                    ->orWhere('mental', '<=', self::LOW_SCORE)
-                    ->orWhere('economical', '<=', self::LOW_SCORE)
-                    ->orWhere('spiritual', '<=', self::LOW_SCORE)
-                    ->orWhere('emotional', '<=', self::LOW_SCORE)
-                    ->orWhere('intellectual', '<=', self::LOW_SCORE);
-            })
-            ->exists();
+        $wellbeingScores = new WellbeingScores();
+        $wellbeingScoresRepository = new WellbeingScoresRepository($wellbeingScores);
 
-        return $isLow;
+        $dateFrom = Carbon::now()->subDays(self::LAST_DAYS)->toDateString();
+        $dateTo = Carbon::now()->toDateString();
+        $averages = (array)$wellbeingScoresRepository->getAverageUser($userId, $dateFrom, $dateTo);
+
+        $badAspects = [];
+
+        foreach ( $averages as $key => $average ) {
+            if (  ! is_null($average) && $average <= self::LOW_SCORE ) {
+                $badAspects[] = $key;
+            }
+        }
+
+        return ! empty($badAspects) ? $badAspects : null;
     }
 }
