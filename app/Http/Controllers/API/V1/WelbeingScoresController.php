@@ -50,7 +50,7 @@ class WelbeingScoresController extends BaseApiController
                 'social',
                 'physical',
                 'mental',
-                'economical',
+                'financial',
                 'spiritual',
                 'emotional',
                 'intellectual',

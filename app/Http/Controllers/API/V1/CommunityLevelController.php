@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Http\Resources\CommunityLevelStatisticResource;
 use App\Traits\DepartmentCompanyTrait;
 use App\Traits\WellbeingWeekUsersTrait;
 use Illuminate\Support\Facades\Auth;
@@ -62,11 +63,12 @@ class CommunityLevelController extends BaseApiController
             $usersIDs = $this->getUsersIDsFromDepartmentId($departmentId, $dateFrom, $dateTo);
 
             $wellbeingCategory = $this->repository->getWellbeingCategory($usersIDs, $dateFrom, $dateTo);
+            $wellbeingCategoryReource = new CommunityLevelStatisticResource($wellbeingCategory);
 
          } catch (Exception $e) {
              return ApiResponse::returnError($e->getMessage(), $e->getCode());
          }
 
-         return ApiResponse::returnData($wellbeingCategory);
+         return ApiResponse::returnData($wellbeingCategoryReource);
     }
 }

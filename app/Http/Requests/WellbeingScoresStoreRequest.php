@@ -28,7 +28,7 @@ class WellbeingScoresStoreRequest extends ApiRequest
             'social'        => 'required|integer|min:1|max:10',
             'physical'      => 'required|integer|min:1|max:10',
             'mental'        => 'required|integer|min:1|max:10',
-            'economical'    => 'required|integer|min:1|max:10',
+            'financial'     => 'required|integer|min:1|max:10',
             'spiritual'     => 'required|integer|min:1|max:10',
             'emotional'     => 'required|integer|min:1|max:10',
             'intellectual'  => 'required|integer|min:1|max:10',

@@ -261,7 +261,7 @@ class WellbeingScoresRepository extends Repositories
             'mental'        => $scores['mental'],
             'economical'    => $scores['economical'],
             'spiritual'     => $scores['spiritual'],
-            'emotional'     => $scores['emotional'],
+            'emotional'     => $scores['financial'],
             'intellectual'  => $scores['intellectual'],
         ]);
 

@@ -6,6 +6,7 @@ use App\Helpers\HelperDateTime;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WellbeingWeekRequest;
+use App\Http\Resources\WellbeingWeekResource;
 use App\Repositories\CommunityLevelRepository;
 use App\Support\ApiResponse\ApiResponse;
 use App\Traits\DepartmentCompanyTrait;
@@ -57,11 +58,13 @@ class WellbeingWeekController extends  BaseApiController
             $usersIDs = $this->getUsersIDsFromDepartmentId($departmentId, $dateFrom, $dateTo);
 
             $data = $this->repository->getDataByWeek($usersIDs, $dateFrom, $dateTo);
+            $wellbeingWeekResource = new WellbeingWeekResource($data);
 
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage());
         }
 
-        return ApiResponse::returnData($data);
+        return ApiResponse::returnData($wellbeingWeekResource);
+//        return ApiResponse::returnData($data);
     }
 }
