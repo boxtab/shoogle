@@ -3,11 +3,11 @@
 namespace App\Helpers;
 
 use App\Models\NotificationToUser;
+use Exception;
 use GetStream\StreamChat\Client as StreamClient;
 use GetStream\StreamChat\StreamException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 /**
  * Class HelperStream
@@ -39,32 +39,35 @@ class HelperNotifications
      * @param int $userId
      * @param int $typeId
      * @param string $message
-     * @throws StreamException
-     * @throws \Exception
      */
     public function sendNotificationToUser(int $userId, int $typeId, string $message = '')
     {
-        $listDevices = $this->streamClient->getDevices('user' . $userId);
         $notificationId = $this->recordNotification($userId, $typeId, $message);
+        $this->sendNotificationToGetstreamUser('user' . $userId, $message, null, ['notificationId' => (string)$notificationId, 'typeOfChannel' => 'notifications']);
+    }
+
+    public function sendNotificationToGetstreamUser(string $userId, string $message = '', $title = 'Notification', $data = [])
+    {
+        $listDevices = $this->streamClient->getDevices($userId);
         foreach ($listDevices['devices'] as $device) {
             if (isset($device['disabled'])) continue;
-            $this->sendGCM($message, $device['id'], ['notificationId' => (string)$notificationId]);
+            $this->sendGCM($message, $device['id'], $title, $data);
         }
     }
 
     /**
-     * @param string|null $message
-     * @param int|null $id
+     * @param $message
+     * @param $id
+     * @param string $title
      * @param array $data
      * @throws Exception
      */
-    private function sendGCM(?string $message, ?int $id, $data = [])
+    private function sendGCM($message, $id, string $title = 'Notification', array $data = [])
     {
-        $data['typeOfChannel'] = 'notifications';
         $url = 'https://fcm.googleapis.com/fcm/send';
 
         $notificationData = array(
-            'title' => 'Notification',
+            'title' => $title,
             'data' => $data,
             'body' => $message,
 //            'image' => 'https://images.unsplash.com/photo-1633857275114-4effece78b0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyNTg5OTl8MHwxfHJhbmRvbXx8fHx8fHx8fDE2MzM5NDYwMDc&ixlib=rb-1.2.1&q=80&w=400&w=1080&h=720'
@@ -96,8 +99,8 @@ class HelperNotifications
 
             $result = curl_exec($ch);
             curl_close($ch);
-        } catch (\Exception $e) {
-            throw new \Exception('Function RsendGCM error.', Response::HTTP_BAD_GATEWAY);
+        } catch (Exception $e) {
+            throw new Exception('Function RsendGCM error.', Response::HTTP_BAD_GATEWAY);
         }
     }
 

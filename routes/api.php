@@ -14,6 +14,7 @@ use App\Http\Controllers\API\V1\SchedulerController;
 use App\Http\Controllers\API\V1\ShooglerController;
 use App\Http\Controllers\API\V1\ShooglesController;
 use App\Http\Controllers\API\V1\UserController;
+use App\Http\Controllers\API\V1\WebhookController;
 use App\Http\Controllers\API\V1\WelbeingScoresController;
 use App\Http\Controllers\API\V1\WellbeingCategoryController;
 use App\Http\Controllers\API\V1\WellbeingWeekController;
@@ -56,6 +57,8 @@ Route::group(['prefix' => 'shared/v1'], function () {
 
     // POST /api/shared/v1/code-validation/:id
     Route::post('code-validation', [AuthController::class, 'codeValidation']);
+
+    Route::post('webhook', [WebhookController::class, 'index']);
 });
 
 
@@ -434,5 +437,5 @@ Route::group(['prefix' => 'admin/v1', 'middleware' => ['auth:api', 'user_already
         Route::post('', [WellbeingWeekController::class, 'week']);
 
     });
-
 });
+

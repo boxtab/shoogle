@@ -3,6 +3,8 @@
 namespace App\Helpers;
 
 use GetStream\StreamChat\Client as StreamClient;
+use Illuminate\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * Class HelperStream
@@ -17,14 +19,14 @@ class HelperStream
      */
     public static function init()
     {
-        $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
-        $settings = [
-            'firebase_config' => array(
-                'server_key' => config('stream.server_key'),
-                'notification_template' => '{"title": "{{ channel.name }}","body": "{{ message.text }}","image": "{{ channel.imageUrl }}","click_action": "FLUTTER_NOTIFICATION_CLICK"}',
-                'data_template' => '{"typeofChannel": "{{ channel.typeofChannel }}", "shoogleId": "{{ channel.shoogleId }}"}',
-            ),
-        ];
-        $serverClient->updateAppSettings($settings);
+//        $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
+//        $settings = [
+//            'firebase_config' => array(
+//                'server_key' => config('stream.server_key'),
+//                'notification_template' => '{"title": "{{ channel.name }}","body": "{{ message.text }}","image": "{{ channel.imageUrl }}","click_action": "FLUTTER_NOTIFICATION_CLICK"}',
+//                'data_template' => '{"typeofChannel": "{{ channel.typeofChannel }}", "shoogleId": "{{ channel.shoogleId }}", "userImage": "{{ user.image }}", "shoogleImage": "{{ channel.imageUrl }}"}',
+//            ),
+//        ];
+//        $serverClient->updateAppSettings($settings);
     }
 }
