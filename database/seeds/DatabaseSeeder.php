@@ -8,6 +8,7 @@ use Database\Seeders\RoleSeeder;
 use Database\Seeders\SuperAdminSeeder;
 use Database\Seeders\AdminSeeder;
 use Database\Seeders\TestUserSeeder;
+use Database\Seeders\WellbeingCategoriesSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -27,5 +28,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SuperAdminSeeder::class);
         $this->call(AdminSeeder::class);
         $this->call(NotificationsTypeSeeder::class);
+        $this->call(WellbeingCategoriesSeeder::class);
     }
 }
