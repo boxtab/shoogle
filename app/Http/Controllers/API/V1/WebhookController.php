@@ -25,13 +25,13 @@ class WebhookController extends BaseApiController
     {
         $helper = new HelperNotifications();
         $channel = (array)$apiRequest->json()->get('channel');
-        $sender = (array)$apiRequest->json()->get('channel');
+        $sender = (array)$apiRequest->json()->get('user');
         $message = (array)$apiRequest->json()->get('message');
         $users = $message['mentioned_users'];
         foreach ($users as $user) {
             $userId = $user['id'];
             $helper->sendNotificationToGetstreamUser($userId, $message['text'], $channel['name'], [
-                'typeOfChannel' => $channel['typeOfChannel'],
+                'typeOfChannel' => $channel['typeofChannel'],
                 'shoogleId' => $channel['shoogleId'],
                 'userImage' => $sender['image'],
                 'shoogleImage' => $channel['imageUrl']
