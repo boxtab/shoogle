@@ -259,7 +259,7 @@ class WellbeingScoresRepository extends Repositories
             'social'        => $scores['social'],
             'physical'      => $scores['physical'],
             'mental'        => $scores['mental'],
-            'economical'    => $scores['economical'],
+            'economical'    => $scores['financial'],
             'spiritual'     => $scores['spiritual'],
             'emotional'     => $scores['financial'],
             'intellectual'  => $scores['intellectual'],
