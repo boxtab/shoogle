@@ -7,6 +7,7 @@ use GetStream\StreamChat\Client as StreamClient;
 use GetStream\StreamChat\StreamException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 /**
  * Class HelperStream
@@ -39,6 +40,7 @@ class HelperNotifications
      * @param int $typeId
      * @param string $message
      * @throws StreamException
+     * @throws \Exception
      */
     public function sendNotificationToUser(int $userId, int $typeId, string $message = '')
     {
@@ -51,12 +53,12 @@ class HelperNotifications
     }
 
     /**
-     * @param $message
-     * @param $id
+     * @param string|null $message
+     * @param int|null $id
      * @param array $data
-     * @throws \Exception
+     * @throws Exception
      */
-    private function sendGCM($message, $id, $data = [])
+    private function sendGCM(?string $message, ?int $id, $data = [])
     {
         $data['typeOfChannel'] = 'notifications';
         $url = 'https://fcm.googleapis.com/fcm/send';

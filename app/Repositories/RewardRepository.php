@@ -59,11 +59,11 @@ class RewardRepository extends Repositories
                 'given_by_user_id' => Auth::id(),
             ]);
 
-            $rewardName = Reward::on()
+            $reward = Reward::on()
                 ->where('id', '=', $rewardId)
                 ->select('name')
-                ->first()
-                ->name;
+                ->first();
+            $rewardName = ( ! is_null($reward) ) ? $reward->name : '';
 
             $helperNotification = new HelperNotifications();
             $helperNotification->sendNotificationToUser(

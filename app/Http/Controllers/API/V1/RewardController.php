@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Helpers\HelperReward;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RewardAssignRequest;
 use App\Http\Resources\RewardListResource;
@@ -43,9 +44,12 @@ class RewardController extends BaseApiController
     public function assign(RewardAssignRequest $request)
     {
         try {
-            $userId = $request->input('userId');
             $rewardId = $request->input('rewardId');
+            HelperReward::isReward($rewardId);
+
+            $userId = $request->input('userId');
             $this->isUsersInCompany($userId, Auth::id());
+
             $this->repository->assign($userId, $rewardId);
 
         } catch (\GetStream\StreamChat\StreamException $e) {

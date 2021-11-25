@@ -3,7 +3,10 @@
 namespace App\Helpers;
 
 use App\Constants\RewardConstant;
+use App\Models\Reward;
 use App\Models\UserHasReward;
+use Exception;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -62,5 +65,23 @@ class HelperReward
             ])
             ->where('notification_id', '=', $notificationId)
             ->first();
+    }
+
+    /**
+     * The reward exists.
+     *
+     * @param int|null $rewardId
+     * @throws Exception
+     */
+    public static function isReward(?int $rewardId)
+    {
+        if ( is_null($rewardId) ) {
+            throw new Exception('Award ID not shared.', Response::HTTP_NOT_FOUND);
+        }
+
+        $reward = Reward::on()->where('id', '=', $rewardId)->first();
+        if ( is_null($reward) ) {
+            throw new Exception('Reward not found.', Response::HTTP_NOT_FOUND);
+        }
     }
 }
