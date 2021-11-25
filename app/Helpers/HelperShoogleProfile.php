@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
+use App\Traits\ShoogleTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Log;
  */
 class HelperShoogleProfile
 {
+    use ShoogleTrait;
+
     /**
      * @var array shoogles.
      */
@@ -81,7 +84,8 @@ class HelperShoogleProfile
      */
     public function __construct(?int $userID)
     {
-        $shooglesIDs = HelperShoogle::getShooglesIDsByUserID($userID);
+        $shooglesIDs  =$this->getShoogleIDsByUserId( Auth::id() );;
+//        $shooglesIDs = HelperShoogle::getShooglesIDsByUserID($userID);
 
         $this->activeShooglesCount = Shoogle::on()
             ->whereIn('id', $shooglesIDs)
