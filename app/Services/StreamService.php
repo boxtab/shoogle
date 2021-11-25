@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use GetStream\StreamChat\Client as StreamClient;
+use GetStream\StreamChat\StreamException;
 
 /**
  * Class StreamService
@@ -27,7 +28,7 @@ class StreamService
     /**
      * Creating a channel for shoogle.
      *
-     * @throws \GetStream\StreamChat\StreamException
+     * @throws StreamException
      */
     public function createChannelForShoogle(string $shoogleTitle, string $shoogleImageUrl)
     {
@@ -52,7 +53,7 @@ class StreamService
      * @param int $idOfFirstUser
      * @param int $idOfSecondUser
      * @return string|null
-     * @throws \GetStream\StreamChat\StreamException
+     * @throws StreamException
      */
     public function createChannelForBuddy(string $shoogleTitle, int $idOfFirstUser, int $idOfSecondUser, string $shoogleImageUrl)
     {
@@ -74,7 +75,7 @@ class StreamService
     /**
      * Creating a channel for journal.
      *
-     * @throws \GetStream\StreamChat\StreamException
+     * @throws StreamException
      */
     public function createJournalChannel()
     {
@@ -88,7 +89,7 @@ class StreamService
      * Connect user to channel
      *
      * @param String|null $chatId
-     * @throws \GetStream\StreamChat\StreamException
+     * @throws StreamException
      */
     public function connectUserToChannel(?string $chatId, ?string $message)
     {
@@ -107,7 +108,7 @@ class StreamService
      * Connect user to channel
      *
      * @param String|null $chatId
-     * @throws \GetStream\StreamChat\StreamException
+     * @throws StreamException
      */
     public function disconnectUserFromShoogleChannels()
     {
@@ -127,11 +128,21 @@ class StreamService
      * Connect user to channel
      *
      * @param String $chatId
-     * @throws \GetStream\StreamChat\StreamException
+     * @throws StreamException
      */
     public function removeBuddyChat(string $chatId)
     {
         $channel = $this->serverClient->Channel('messaging', $chatId);
         $channel->delete();
+    }
+
+    /**
+     * @throws StreamException
+     */
+    public static function getChannelMembers(string $channelId)
+    {
+        $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));
+        $channel = $serverClient->Channel('messaging', $channelId);
+        return $channel->queryMembers();
     }
 }
