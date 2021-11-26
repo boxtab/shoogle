@@ -43,7 +43,7 @@ class HelperNotifications
     public function sendNotificationToUser(int $userId, int $typeId, ?string $message = '')
     {
         $notificationId = $this->recordNotification($userId, $typeId, $message);
-        $this->sendNotificationToGetstreamUser('user' . $userId, $message, null, ['notificationId' => (string)$notificationId, 'typeOfChannel' => 'notifications']);
+        $this->sendNotificationToGetstreamUser('user' . $userId, $message, 'Notification', ['notificationId' => (string)$notificationId, 'typeOfChannel' => 'notifications']);
     }
 
     public function sendNotificationToGetstreamUser(string $userId, ?string $message = '', $title = 'Notification', $data = [])
@@ -55,14 +55,7 @@ class HelperNotifications
         }
     }
 
-    /**
-     * @param $message
-     * @param $id
-     * @param string|null $title
-     * @param array $data
-     * @throws Exception
-     */
-    private function sendGCM($message, $id, ?string $title = 'Notification', array $data = [])
+    private function sendGCM($message, $id, $title = 'Notification', array $data = [])
     {
         $url = 'https://fcm.googleapis.com/fcm/send';
 
