@@ -79,6 +79,8 @@ class TestController extends Controller
 
     public function index()
     {
+        dd(Carbon::now()->toDateTimeString(), Carbon::now()->subMinute()->toDateTimeString());
+
 //        HelperRank::increaseRank(11);
 
 //        $dateStart = '2021-11-16 07:10:00';

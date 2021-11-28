@@ -8,6 +8,7 @@ use App\Helpers\HelperMember;
 use App\Helpers\HelperRankServiceClient;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
+use App\Helpers\HelperShoogleViews;
 use App\Helpers\HelperStream;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShooglesEntryRequest;
@@ -151,7 +152,8 @@ class ShooglesController extends BaseApiController
             $this->checkCreatorAndUserInCompany($shoogle->id);
 
             DB::transaction(function () use ($id) {
-                $this->repository->incrementViews($id);
+                HelperShoogleViews::increment($id, Auth::id());
+//                $this->repository->incrementViews($id);
                 HelperRankServiceClient::assignRank(Auth::id());
             });
 
@@ -422,7 +424,7 @@ class ShooglesController extends BaseApiController
             $this->checkCreatorAndUserInCompany($id);
 
             $shoogle = $this->findRecordByID($id);
-            $shoogle->destroy($id);
+            $this->repository->destroy($shoogle, $id);
         } catch (Exception $e) {
             if ($e->getCode() == 23000) {
                 return ApiResponse::returnError('The shoogle cannot be deleted there are links to it.');

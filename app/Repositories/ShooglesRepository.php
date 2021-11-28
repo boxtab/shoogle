@@ -15,6 +15,7 @@ use App\Helpers\HelperMember;
 use App\Helpers\HelperNotifications;
 use App\Helpers\HelperRequest;
 use App\Helpers\HelperShoogle;
+use App\Helpers\HelperShoogleViews;
 use App\Http\Resources\ShoogleBuddyNameResource;
 use App\Models\Buddie;
 use App\Models\BuddyRequest;
@@ -94,6 +95,8 @@ class ShooglesRepository extends Repositories
                 'reminder_interval' => $shoogleField['reminder_interval'],
                 'is_reminder'       => $shoogleField['is_reminder'],
             ])->id;
+
+            HelperShoogleViews::increment($shoogleId, $shoogleField['owner_id']);
 
             $streamService = new StreamService($shoogleId);
 
@@ -267,6 +270,9 @@ class ShooglesRepository extends Repositories
             }
 
             if ( $affectedRows > 0 ) {
+
+                HelperShoogleViews::increment($shoogleId, $userId);
+
                 $streamService = new StreamService($shoogleId);
                 $streamService->connectUserToChannel($this->model->chat_id, $note);
                 $channelId = $streamService->createJournalChannel();
@@ -302,6 +308,8 @@ class ShooglesRepository extends Repositories
                 ->where('user_id', Auth::id())
                 ->where('shoogle_id', $shoogle->id)
                 ->update(['left_at' => Carbon::now()]);
+
+            HelperShoogleViews::increment($shoogle->id, Auth::id());
 
             $buddy = HelperBuddies::getBuddy($shoogle->id, Auth::id());
             if ( ! is_null($buddy) ) {
@@ -595,5 +603,18 @@ class ShooglesRepository extends Repositories
             $member->save();
         }
     }
-}
 
+    /**
+     * Destroy shoogle.
+     *
+     * @param Shoogle $shoogle
+     * @param int $id
+     */
+    public function destroy(Shoogle $shoogle, int $id)
+    {
+        DB::transaction(function () use ($shoogle, $id) {
+            HelperShoogleViews::deleteById($id);
+            $shoogle->destroy($id);
+        });
+    }
+}
