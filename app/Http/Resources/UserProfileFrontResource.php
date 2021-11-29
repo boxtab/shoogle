@@ -7,6 +7,7 @@ use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperRank;
 use App\Helpers\HelperReward;
+use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleProfile;
 use App\Models\Shoogle;
 use App\Models\UserHasReward;
@@ -27,7 +28,8 @@ class UserProfileFrontResource extends JsonResource
     {
         $helperShoogleProfile = new HelperShoogleProfile($this->resource->id);
         $shoogles = $helperShoogleProfile->getShoogles();
-        $shooglesCount = $helperShoogleProfile->getShooglesCount();
+        $shooglesCount = HelperShoogle::getShoogleCount($this->resource->id);
+//        $shooglesCount = $helperShoogleProfile->getShooglesCount();
         $activeShooglesCount = $helperShoogleProfile->getActiveShooglesCount();
         $inactiveShooglesCount = $helperShoogleProfile->getInactiveShooglesCount();
 

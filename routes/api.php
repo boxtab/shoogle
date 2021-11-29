@@ -117,7 +117,7 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
     Route::group(['prefix' => 'shoogle'], function () {
 
         // GET /api/front/v1/shoogle/list/:page/:pageSize
-        Route::get('list/{page}/{pageSize}', [ShooglesController::class, 'userList'])
+        Route::get('list/{page}/{pageSize}', [ShooglesController::class, 'listShoogleOfAuthUser'])
             ->where('page', '[0-9]+')
             ->where('pageSize', '[0-9]+');
 

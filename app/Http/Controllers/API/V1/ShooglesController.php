@@ -251,13 +251,13 @@ class ShooglesController extends BaseApiController
     }
 
     /**
-     * List of user shoogles.
+     * List of shoogles for the currently authenticated user.
      *
      * @param int|null $page
      * @param int|null $pageSize
      * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function userList(?int $page, ?int $pageSize)
+    public function listShoogleOfAuthUser(?int $page, ?int $pageSize)
     {
         if ( $page === 0 ) {
             return ApiResponse::returnError(['page' => 'Page number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -267,7 +267,7 @@ class ShooglesController extends BaseApiController
             return ApiResponse::returnError(['pageSize' => 'PageSize number cannot be zero'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $userList = $this->repository->userList($page, $pageSize);
+        $userList = $this->repository->listShoogleOfAuthUser($page, $pageSize);
         $userListResource = ( ! is_null( $userList ) ) ? ShooglesUserListResource::collection($userList) : [];
 
         return ApiResponse::returnData($userListResource);

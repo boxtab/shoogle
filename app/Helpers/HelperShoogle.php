@@ -116,7 +116,28 @@ class HelperShoogle
             return 0;
         }
 
-        return UserHasShoogle::on()->where('shoogle_id', '=', $shoogleId)->count();
+        return UserHasShoogle::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->groupBy('user_id')
+            ->count('user_id');
+    }
+
+    /**
+     * The count of shoogles per user.
+     *
+     * @param int|null $userId
+     * @return int
+     */
+    public static function getShoogleCount(?int $userId): int
+    {
+        if ( is_null($userId) ) {
+            return 0;
+        }
+
+        return UserHasShoogle::on()
+            ->where('user_id', '=', $userId)
+            ->groupBy('shoogle_id')
+            ->count('shoogle_id');
     }
 
     /**

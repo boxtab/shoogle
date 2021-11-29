@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
+use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperWellbeing;
 use App\Models\Shoogle;
@@ -31,7 +32,8 @@ class UserProfileAdminResource extends JsonResource
             'departmentId'      => $this->resource->department_id,
             'email'             => $this->resource->email,
             'rating'            => $this->resource->rank_id,
-            'shoogles'          => Shoogle::on()->where('owner_id', $this->resource->id)->count(),
+            'shoogles'          => HelperShoogle::getShoogleCount($this->resource->id),
+//            'shoogles'          => Shoogle::on()->where('owner_id', $this->resource->id)->count(),
             'isCompanyAdmin'    => (Helper::getRole($this->resource->id) == RoleConstant::COMPANY_ADMIN) ? true : false,
             'shooglesList'      => HelperShoogleList::getList($this->resource->id),
             'wellbeingLastTime' => HelperWellbeing::getLastTime( $this->resource->id ),

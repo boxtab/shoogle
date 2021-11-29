@@ -309,7 +309,7 @@ class ShooglesRepository extends Repositories
                 ->where('shoogle_id', $shoogle->id)
                 ->update(['left_at' => Carbon::now()]);
 
-            HelperShoogleViews::increment($shoogle->id, Auth::id());
+            HelperShoogleViews::delete($shoogle->id, Auth::id());
 
             $buddy = HelperBuddies::getBuddy($shoogle->id, Auth::id());
             if ( ! is_null($buddy) ) {
@@ -345,13 +345,13 @@ class ShooglesRepository extends Repositories
     }
 
     /**
-     * List of user shoogles.
+     * List of shoogles for the currently authenticated user.
      *
      * @param int $page
      * @param int $pageSize
      * @return array
      */
-    public function userList(int $page, int $pageSize)
+    public function listShoogleOfAuthUser(int $page, int $pageSize)
     {
         $shoogleIDs = $this->getShoogleIDsByUserId( Auth::id() );
 

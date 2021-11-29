@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleList;
 use App\Models\Buddie;
 use App\Models\Shoogle;
@@ -137,12 +138,13 @@ trait ShoogleTrait
             return $shoogles;
         }
 
+        /*
         $authenticatedUserID = Auth::id();
 
         $shooglersCount = UserHasShoogle::on()
             ->select('shoogle_id', DB::raw('count(user_id) as total'))
             ->where('user_id', '<>', $authenticatedUserID)
-            ->whereIn('shoogle_id', $this->getShoogleIDsByUserId($authenticatedUserID))
+//            ->whereIn('shoogle_id', $this->getShoogleIDsByUserId($authenticatedUserID))
             ->groupBy('shoogle_id')
             ->get(['shoogle_id', 'total'])
             ->map(function ($shoogle) {
@@ -158,6 +160,15 @@ trait ShoogleTrait
             } else {
                 $shoogle->shooglersCount = 1;
             }
+            $response[] = $shoogle;
+        }
+
+        return $response;
+        */
+
+        $response = [];
+        foreach ($shoogles as $shoogle) {
+            $shoogle->shooglersCount = HelperShoogle::getShooglersCount($shoogle->id);
             $response[] = $shoogle;
         }
 

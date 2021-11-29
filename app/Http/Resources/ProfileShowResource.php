@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperRank;
 use App\Helpers\HelperReward;
+use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleProfile;
 use App\Models\UserHasReward;
 use App\User;
@@ -21,7 +22,8 @@ class ProfileShowResource extends JsonResource
     public function toArray($request)
     {
         $helperShoogleProfile = new HelperShoogleProfile($this->resource->id);
-        $shooglesCount = $helperShoogleProfile->getShooglesCount();
+        $shooglesCount = HelperShoogle::getShoogleCount($this->resource->id);
+//        $shooglesCount = $helperShoogleProfile->getShooglesCount();
         $activeShooglesCount = $helperShoogleProfile->getActiveShooglesCount();
         $inactiveShooglesCount = $helperShoogleProfile->getInactiveShooglesCount();
 

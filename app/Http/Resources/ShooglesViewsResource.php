@@ -6,6 +6,7 @@ use App\Helpers\HelperAvatar;
 use App\Helpers\HelperChat;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
+use App\Helpers\HelperShoogle;
 use App\Helpers\HelperShoogleStatistic;
 use App\Helpers\HelperShooglesViews;
 use App\Models\UserHasShoogle;
@@ -49,7 +50,8 @@ class ShooglesViewsResource extends JsonResource
             'journalChatId' => HelperChat::getJournalChatId( $this->resource->id, Auth::id() ),
             'buddyChatId' => HelperChat::getBuddyChatId( $this->resource->id, Auth::id() ),
 
-            'shooglersCount' => HelperMember::getMemberCount($this->resource->id),
+            'shooglersCount' => HelperShoogle::getShooglersCount($this->resource->id),
+//            'shooglersCount' => HelperMember::getMemberCount($this->resource->id),
             'buddiesCount' => HelperShoogleStatistic::getBuddiesCount($this->resource->id),
             'solosCount' => HelperShoogleStatistic::getSolosCount($this->resource->id),
 
