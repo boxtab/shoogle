@@ -16,6 +16,7 @@ class NotificationsTypeConstant
     const REWARD_ASSIGN_ID = 6;
     const WELLBEING_REMIDER_ID = 7;
     const RANK_ASSIGN_ID = 8;
+    const ACCESS_DENIED_ID = 9;
 
     const SHOOGLE_REMAINDER_NAME = 'SHOOGLE_REMAINDER';
     const BUDDY_REQUEST_NAME = 'BUDDY_REQUEST';
@@ -25,4 +26,5 @@ class NotificationsTypeConstant
     const REWARD_ASSIGN_NAME = 'REWARD_ASSIGN';
     const WELLBEING_REMINDER_NAME = 'WELLBEING_REMINDER';
     const RANK_ASSIGN_NAME = 'RANK_ASSIGN';
+    const ACCESS_DENIED_NAME = 'ACCESS DENIED';
 }

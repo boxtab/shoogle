@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Helpers\HelperAccessDenied;
 use App\Helpers\HelperCompany;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
@@ -163,5 +164,23 @@ class NotificationToUserController extends BaseApiController
         }
 
         return ApiResponse::returnData($notificationResource);
+    }
+
+    /**
+     * Send notification that access is denied.
+     *
+     * @param $userId
+     * @return \Illuminate\Http\JsonResponse|Response
+     */
+    public function pushAccessDenied($userId)
+    {
+        try {
+
+            HelperAccessDenied::pushNotification($userId);
+
+        } catch (Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return ApiResponse::returnData([]);
     }
 }

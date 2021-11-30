@@ -67,6 +67,13 @@ class NotificationsTypeSeeder extends Seeder
                 'updated_at' => now(),
             ],
 
+            [
+                'id' => NotificationsTypeConstant::ACCESS_DENIED_ID,
+                'name' => NotificationsTypeConstant::ACCESS_DENIED_NAME,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
 
         ], ['id'], ['name', 'created_at', 'updated_at']);
 

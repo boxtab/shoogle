@@ -422,6 +422,10 @@ Route::group(['prefix' => 'admin/v1', 'middleware' => ['auth:api', 'user_already
         // GET /api/admin/v1/notification
         Route::get('', [NotificationToUserController::class, 'index']);
 
+        // GET /api/admin/v1/notification/access-denied/:userId
+        Route::get('access-denied/{userId}', [NotificationToUserController::class, 'pushAccessDenied'])
+            ->where('userId', '[0-9]+');
+
     });
 
     /**

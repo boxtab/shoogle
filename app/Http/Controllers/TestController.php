@@ -36,6 +36,7 @@ use App\Models\WellbeingScores;
 use App\Repositories\NotificationToUserRepository;
 use App\Repositories\TestRepository;
 use App\Scopes\NotificationToUserScope;
+use App\Services\AccessDeniedService;
 use App\Services\NotificClientService;
 use App\Services\PasswordRecoveryService;
 use App\Services\RruleService;
@@ -79,7 +80,14 @@ class TestController extends Controller
 
     public function index()
     {
-        dd(Carbon::now()->toDateTimeString(), Carbon::now()->subMinute()->toDateTimeString());
+        dd(123);
+
+//        $userId = 45;
+//        $accessDeniedService = new AccessDeniedService($userId);
+//        $find = $accessDeniedService->conditionsPerformance();
+//        dd($find);
+
+//        dd(Carbon::now()->toDateTimeString(), Carbon::now()->subMinute()->toDateTimeString());
 
 //        HelperRank::increaseRank(11);
 

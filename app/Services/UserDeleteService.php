@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\BuddyRequestTypeEnum;
+use App\Helpers\HelperAccessDenied;
 use App\Models\Buddie;
 use App\Models\BuddyRequest;
 use App\Models\Invite;
@@ -31,6 +32,14 @@ class UserDeleteService
     public function __construct(int $userId)
     {
         $this->userId = $userId;
+    }
+
+    /**
+     * Send notification that access is denied.
+     */
+    public function pushAccessDenied()
+    {
+        HelperAccessDenied::pushNotification($this->userId);
     }
 
     /**

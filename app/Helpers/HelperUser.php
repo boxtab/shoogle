@@ -49,6 +49,7 @@ class HelperUser
 
         DB::transaction(function () use ($userId) {
             $userDeleteService = new UserDeleteService($userId);
+            $userDeleteService->pushAccessDenied();
             $userDeleteService->buddyReject();
             $userDeleteService->buddyDisconnect();
             $userDeleteService->deleteUserHasShoogle();
