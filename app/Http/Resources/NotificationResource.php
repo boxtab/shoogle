@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\HelperAccessDenied;
 use App\Helpers\HelperBuddyRequest;
 use App\Helpers\HelperNotific;
 use App\Helpers\HelperNotificationBuddy;
@@ -31,6 +32,7 @@ class NotificationResource extends JsonResource
             'reminder'              => HelperNotific::getRemainderScheduler( $this->resource->id, Auth::id() ),
             'wellbeing'             => HelperWellbeing::getNotification($this->resource->id, Auth::id()),
             'rank'                  => HelperRank::getNotification( $this->resource->id ),
+            'denied'                => HelperAccessDenied::getNotification($this->resource->id),
         ];
     }
 }
