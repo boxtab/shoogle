@@ -117,7 +117,7 @@ class HelperShoogleProfile
                 )), true, false) as solo
             "))
             ->whereIn('id', $shooglesIDs)
-            ->where('')
+            ->where('active', '=', 1)
             ->get()
             ->map(function ($item) {
                 $item['baddies'] = (bool)$item['baddies'];
