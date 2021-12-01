@@ -246,7 +246,7 @@ Route::group(['prefix' => 'admin/v1', 'middleware' => ['auth:api', 'user_already
         // POST /api/admin/v1/shoogle/list
         Route::post('list', [ShooglesController::class, 'index']);
 
-        // POST /api/front/v1/shoogle/:id
+        // POST /api/admin/v1/shoogle/:id
         Route::post('{id}', [ShooglesController::class, 'turnOnOff'])->where('id', '[0-9]+');
 
         // POST /api/admin/v1/shoogle/:id/wellbeing-scores

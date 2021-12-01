@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -136,7 +137,6 @@ class HelperShoogle
 
         return UserHasShoogle::on()
             ->where('user_id', '=', $userId)
-            ->groupBy('shoogle_id')
             ->count('shoogle_id');
     }
 
@@ -161,5 +161,38 @@ class HelperShoogle
         }
 
         return $shoogle->title;
+    }
+
+    /**
+     * Returns true if shoogle is active.
+     *
+     * @param int|null $shoogleId
+     * @return bool
+     */
+    public static function isActive(?int $shoogleId): bool
+    {
+        if ( is_null( $shoogleId ) ) {
+            return false;
+        }
+
+        $shoogle = Shoogle::on()
+            ->where('id', '=', $shoogleId)
+            ->where('active', '=', 1)
+            ->first();
+
+        return ! is_null( $shoogle ) ? true : false;
+    }
+
+    /**
+     * Check if shoogle is active.
+     *
+     * @param int|null $shoogleId
+     * @throws Exception
+     */
+    public static function checkActive(?int $shoogleId)
+    {
+        if ( ! self::isActive($shoogleId) ) {
+            throw new Exception('Shoogle is not active!', Response::HTTP_NOT_FOUND);
+        }
     }
 }

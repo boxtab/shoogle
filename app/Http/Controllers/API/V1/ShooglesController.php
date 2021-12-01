@@ -210,6 +210,7 @@ class ShooglesController extends BaseApiController
 
         try {
             $this->checkCreatorAndUserInCompany($request->get('shoogleId'));
+            HelperShoogle::checkActive($request->get('shoogleId'));
 
             $this->repository->entry(
                 Auth::id(),
