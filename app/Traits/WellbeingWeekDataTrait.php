@@ -95,7 +95,7 @@ trait WellbeingWeekDataTrait
     {
         return WellbeingScores::on()
             ->whereIn('user_id', $usersIds)
-            ->whereBetween('created_at', [$dateFrom, $dateTo])
+            ->whereBetween('created_at', [$dateFrom . ' 00:00:00', $dateTo . ' 23:59:59'])
             ->groupBy('user_id')
             ->get()
             ->map(function ($query) {
