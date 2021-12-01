@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Enums\BuddyRequestTypeEnum;
+use App\Helpers\HelperShoogle;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BuddyConfirmRequest;
 use App\Http\Requests\BuddyDisconnectRequest;
@@ -49,6 +50,7 @@ class BuddyRequestController extends BaseApiController
             $user2id = $request->input('buddyId');
             $message = $request->input('message');
             $this->isUsersInCompany($user2id, Auth::id());
+            HelperShoogle::checkActive($shoogleId);
 
             $this->repository->buddyRequest($shoogleId, $user2id, $message);
         } catch (\Exception $e) {

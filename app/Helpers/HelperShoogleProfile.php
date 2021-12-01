@@ -84,7 +84,7 @@ class HelperShoogleProfile
      */
     public function __construct(?int $userID)
     {
-        $shooglesIDs  =$this->getShoogleIDsByUserId( Auth::id() );;
+        $shooglesIDs  =$this->getShoogleIDsByUserId( $userID );
 //        $shooglesIDs = HelperShoogle::getShooglesIDsByUserID($userID);
 
         $this->activeShooglesCount = Shoogle::on()
@@ -117,6 +117,7 @@ class HelperShoogleProfile
                 )), true, false) as solo
             "))
             ->whereIn('id', $shooglesIDs)
+            ->where('')
             ->get()
             ->map(function ($item) {
                 $item['baddies'] = (bool)$item['baddies'];

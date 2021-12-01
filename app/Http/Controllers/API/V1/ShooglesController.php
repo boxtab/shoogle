@@ -149,6 +149,7 @@ class ShooglesController extends BaseApiController
     {
         try {
             $shoogle = $this->findRecordByID($id);
+            HelperShoogle::checkActive($id);
             $this->checkCreatorAndUserInCompany($shoogle->id);
 
             DB::transaction(function () use ($id) {
@@ -242,6 +243,7 @@ class ShooglesController extends BaseApiController
     public function leave(?int $shoogleId)
     {
         try {
+            HelperShoogle::checkActive($shoogleId);
             $this->checkCreatorAndUserInCompany($shoogleId);
             $this->repository->leave($shoogleId);
         } catch (Exception $e) {
@@ -381,6 +383,7 @@ class ShooglesController extends BaseApiController
             $shoogle = HelperShoogle::getShoogle($id);
             $member = HelperMember::getMember(Auth::id(), $id);
 
+            HelperShoogle::checkActive($id);
             $this->checkCreatorAndUserInCompany($id);
 
             $calendar = $this->repository->getCalendar($shoogle, $member);
@@ -403,8 +406,11 @@ class ShooglesController extends BaseApiController
         try {
             $this->checkCreatorAndUserInCompany($id);
             HelperShoogle::getShoogle($id);
+            HelperShoogle::checkActive($id);
+
             $member = HelperMember::getMember(Auth::id(), $id);
             $setting = $request->only(['reminder', 'reminderInterval', 'buddy', 'isReminder']);
+
             $this->repository->setSetting($member, $setting);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -422,6 +428,7 @@ class ShooglesController extends BaseApiController
     public function destroy($id)
     {
         try {
+            HelperShoogle::checkActive($id);
             $this->checkCreatorAndUserInCompany($id);
 
             $shoogle = $this->findRecordByID($id);
