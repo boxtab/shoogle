@@ -119,7 +119,6 @@ class HelperShoogle
 
         return UserHasShoogle::on()
             ->where('shoogle_id', '=', $shoogleId)
-            ->groupBy('user_id')
             ->count('user_id');
     }
 

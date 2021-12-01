@@ -370,6 +370,7 @@ class ShooglesRepository extends Repositories
                 null as chatNameWithBuddy
             '))
             ->whereIn('sh.id', $shoogleIDs)
+            ->where('sh.active', '=', 1)
             ->offset($page * $pageSize - $pageSize)
             ->limit($pageSize)
             ->get()
@@ -427,6 +428,7 @@ class ShooglesRepository extends Repositories
             ->Join('users as u', 'sh.owner_id', '=', 'u.id')
             ->leftJoin('wellbeing_categories as wc', 'sh.wellbeing_category_id', '=', 'wc.id')
             ->whereNull('sh.deleted_at')
+            ->where('sh.active', '=', 1)
             ->where('u.company_id', '=', $companyId)
             ->when( ! is_null($search), function($query) use ($search) {
                 return $query->where(function ($query) use ($search) {

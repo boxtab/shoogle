@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\HelperCompany;
+use App\Helpers\HelperShoogle;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShooglerIndexRequest;
 use App\Http\Resources\ShooglerListResource;
@@ -62,6 +63,7 @@ class ShooglerController extends BaseApiController
             }
 
             $this->checkCreatorAndUserInCompany($shoogle->id);
+            HelperShoogle::checkActive($shoogle->id);
 
             $shoogler = $this->repository->getShooglerList(
                 $id,
