@@ -24,6 +24,12 @@ class HelperAccessDenied
         $accessDeniedService->sendNotification();
     }
 
+    /**
+     * Get a list of notifications.
+     *
+     * @param int|null $notificationId
+     * @return array|null
+     */
     public static function getNotification(?int $notificationId):  ?array
     {
         if ( is_null( $notificationId ) ) {
