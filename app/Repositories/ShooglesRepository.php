@@ -132,13 +132,13 @@ class ShooglesRepository extends Repositories
                 'users.first_name as users_first_name, ' .
                 'users.last_name as users_last_name, ' .
                 'users.profile_image as users_profile_image, ' .
-                '(select count(uhs.user_id) from user_has_shoogle as uhs where uhs.shoogle_id = shoogles.id) as shooglers, ' .
+                'null as shooglers, ' .
                 'departments.name as departments_name '
             ))
             ->join('users', 'users.id', '=', 'shoogles.owner_id')
             ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
             ->when( ! $this->noCompany(), function($query) {
-                return $query->where('users.company_id', $this->companyId);
+                return $query->where('users.company_id', '=', $this->companyId);
             })
             ->when( ! is_null( $search ) , function ($query) use ($search) {
                 return $query->where('title', 'like', '%' . $search .'%');

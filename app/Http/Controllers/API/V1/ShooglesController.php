@@ -69,7 +69,7 @@ class ShooglesController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function list(Request $request)
     {
         $search = $request->has('search') ? $request->search : null;
 

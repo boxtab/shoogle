@@ -244,7 +244,7 @@ Route::group(['prefix' => 'admin/v1', 'middleware' => ['auth:api', 'user_already
      */
     Route::group(['prefix' => 'shoogle', 'middleware' => ['admin.superadmin']], function () {
         // POST /api/admin/v1/shoogle/list
-        Route::post('list', [ShooglesController::class, 'index']);
+        Route::post('list', [ShooglesController::class, 'list']);
 
         // POST /api/admin/v1/shoogle/:id
         Route::post('{id}', [ShooglesController::class, 'turnOnOff'])->where('id', '[0-9]+');
