@@ -52,14 +52,14 @@ trait WellbeingWeekLabelTrait
             $todayText = date('Y-m-d');
             $todayTimestamp = strtotime($todayText);
 
-            $weekBeginFormat = date('M d', $mondayTimestamp);
+            $weekStartFormat = date('M d', $mondayTimestamp);
             if ( $todayTimestamp < $sundayTimestamp ) {
                 $weekEndFormat = date('M d', $todayTimestamp);
             } else {
                 $weekEndFormat = date('M d', $sundayTimestamp);
             }
 
-            $dates[] = ['weekBegin' => $weekBeginFormat, 'weekEnd' => $weekEndFormat];
+            $dates[] = ['weekStart' => $weekStartFormat, 'weekEnd' => $weekEndFormat];
             $dateFrom->modify('+1 week');
         }
 
