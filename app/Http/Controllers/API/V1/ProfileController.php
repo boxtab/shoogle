@@ -43,8 +43,16 @@ class ProfileController extends BaseApiController
     public function store(ProfileStoreRequest $request)
     {
         try {
-            $this->repository->updateProfile($request);
-            $profile = $this->repository->getProfile( Auth::id() );
+            $userId = Auth::id();
+            $profileImageTransmitted = $request->exists('profileImage');
+            $firstName = $request->input('firstName');
+            $lastName = $request->input('lastName');
+            $about = $request->input('about');
+            $profileImage = $request->input('profileImage');
+
+            $this->repository->updateProfile($userId, $profileImageTransmitted, $firstName, $lastName, $about, $profileImage);
+            $profile = $this->repository->getProfile( $userId );
+
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }

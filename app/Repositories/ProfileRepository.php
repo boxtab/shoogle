@@ -62,30 +62,34 @@ class ProfileRepository extends Repositories
     /**
      * Update profile.
      *
-     * @param Request $request
-     * @throws \Exception
+     * @param int $userId
+     * @param bool $profileImageTransmitted
+     * @param string|null $firstName
+     * @param string|null $lastName
+     * @param string|null $about
+     * @param string|null $profileImage
+     * @throws Exception
      */
-    public function updateProfile(Request $request)
+    public function updateProfile(int $userId, bool $profileImageTransmitted, ?string $firstName, ?string $lastName, ?string $about, ?string $profileImage)
     {
-        $profile = User::on()->where('id', '=', Auth::id() )->first();
+        $user = User::on()
+            ->where('id', '=', $userId )
+            ->first();
 
-        if ( is_null($profile) ) {
+        if ( is_null($user) ) {
             throw new Exception('Your profile was not found.', Response::HTTP_NOT_FOUND);
         }
 
-        $profile->update(
-            Helper::formatSnakeCase(
-                $request->except(['profileImage'])
-            )
-        );
+        $user->first_name = $firstName;
+        $user->last_name = $lastName;
+        $user->about = $about;
+        $user->save();
 
-        if ( $request->exists('profileImage') ) {
-            $profileImage = $request->input('profileImage');
-
-            if ( empty( $profileImage ) ) {
-                HelperAvatar::deleteAvatar($profile);
+        if ( $profileImageTransmitted ) {
+            if ( is_null( $profileImage ) ) {
+                HelperAvatar::deleteAvatar($user);
             } else {
-                HelperAvatar::saveAvatar($profileImage, $profile);
+                HelperAvatar::saveAvatar($profileImage, $user);
             }
         }
     }
