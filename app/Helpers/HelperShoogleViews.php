@@ -8,6 +8,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperShoogleViews
@@ -15,6 +16,11 @@ use Illuminate\Support\Facades\DB;
  */
 class HelperShoogleViews
 {
+    /**
+     * Delayed browsing shoogle.
+     */
+    const SUB_MINUTES = 5;
+
     /**
      * Get shoogle by id.
      *
@@ -119,10 +125,14 @@ class HelperShoogleViews
             $userViews = 1;
         } else {
             $userViews = is_null( $shoogleViews->views ) ? 0 : $shoogleViews->views;
-            $userViews++;
-        }
+            $timeAgo = Carbon::now()->subMinutes(self::SUB_MINUTES);
+            $lastUpdate = ( ! is_null($shoogleViews) ) ? $shoogleViews->last_view : Carbon::now()->toDateTimeString();
 
-        $generalViews = $shoogle->views++;;
+            if ( $lastUpdate->getTimestamp() <= $timeAgo->getTimestamp() ) {
+                $userViews++;
+            }
+        }
+        $generalViews = ++$shoogle->views;
 
         DB::transaction(function() use($shoogleId, $userId, $userViews, $generalViews) {
 

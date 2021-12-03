@@ -142,19 +142,19 @@ class ShooglesController extends BaseApiController
     /**
      * Shoogle view.
      *
-     * @param null $id
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     * @param int|null $shoogleId
+     * @return \Illuminate\Http\JsonResponse|Response
      */
-    public function views($id = null)
+    public function views(?int $shoogleId)
     {
         try {
-            $shoogle = $this->findRecordByID($id);
-            HelperShoogle::checkActive($id);
+            $shoogle = $this->findRecordByID($shoogleId);
+            HelperShoogle::checkActive($shoogleId);
             $this->checkCreatorAndUserInCompany($shoogle->id);
 
-            DB::transaction(function () use ($id) {
-                HelperShoogleViews::increment($id, Auth::id());
-//                $this->repository->incrementViews($id);
+            DB::transaction(function () use ($shoogleId) {
+                HelperShoogleViews::increment($shoogleId, Auth::id());
+//                $this->repository->incrementViews($shoogleId);
                 HelperRankServiceClient::assignRank(Auth::id());
             });
 

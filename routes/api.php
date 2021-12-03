@@ -136,7 +136,7 @@ Route::group(['prefix' => 'front/v1', 'middleware' => ['auth:api', 'user_already
         Route::post('', [ShooglesController::class, 'create']);
 
         // GET /api/front/v1/shoogle/:id/views
-        Route::get('{id}/views', [ShooglesController::class, 'views'])->where('id', '[0-9]+');
+        Route::get('{shoogleId}/views', [ShooglesController::class, 'views'])->where('shoogleId', '[0-9]+');
 
         // POST /api/front/v1/shoogle/:id/solo/1
         Route::post('{id}/solo/1', [ShooglesController::class, 'soloYes'])->where('id', '[0-9]+');
