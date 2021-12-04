@@ -44,6 +44,7 @@ class DepartmentRepository extends Repositories
                 departments.name as department_name,
                 count(users.id) as shooglers'))
             ->leftJoin('users', 'users.department_id', '=', 'departments.id')
+            ->whereNull('users.deleted_at')
             ->when( ! $this->noCompany(), function($query) {
                 return $query->where('departments.company_id', '=', $this->companyId);
             })

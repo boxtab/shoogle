@@ -4,6 +4,8 @@ namespace App\Helpers;
 
 use App\Services\UserDeleteService;
 use App\User;
+use Exception;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -34,6 +36,39 @@ class HelperUser
         }
 
         return $user->first_name . ' ' . $user->last_name;
+    }
+
+    /**
+     * Is the user deleted.
+     *
+     * @param string|null $email
+     * @return bool
+     */
+    private static function isUserDeleted(?string $email): bool
+    {
+        if ( is_null($email) ) {
+            return true;
+        }
+
+        $user = User::withTrashed()->where('email', '=', $email)->first();
+        if ( is_null($user) ) {
+            return true;
+        }
+
+        return ( is_null($user->deleted_at) ) ? false : true;
+    }
+
+    /**
+     * Checking if the user has been deleted.
+     *
+     * @param string|null $email
+     * @throws Exception
+     */
+    public static function checkUserDeleted(?string $email)
+    {
+        if ( self::isUserDeleted($email) ) {
+            throw new Exception('Your account has been deleted.', Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**

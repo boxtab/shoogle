@@ -17,37 +17,6 @@ use NunoMaduro\Collision\Exceptions\ShouldNotHappen;
 class HelperShoogle
 {
     /**
-     * Get all id shoogles by user id.
-     *
-     * @param int|null $userID
-     * @return array
-     */
-    public static function getShooglesIDsByUserID(?int $userID): array
-    {
-        if ( is_null( $userID ) ) {
-            return [];
-        }
-
-        $shoogleIDsFromOwner = Shoogle::on()
-            ->where('owner_id', '=', $userID)
-            ->get('id')
-            ->map(function ($item) {
-                return $item['id'];
-            })
-            ->toArray();
-
-        $shooglesIDsFromMembers = UserHasShoogle::on()
-            ->where('user_id', '=', $userID)
-            ->get('shoogle_id')
-            ->map(function ($item) {
-                return $item['shoogle_id'];
-            })
-            ->toArray();
-
-        return array_unique( array_merge($shoogleIDsFromOwner, $shooglesIDsFromMembers) );
-    }
-
-    /**
      * Is a user a member of shoogle.
      *
      * @param int|null $userID
@@ -118,8 +87,11 @@ class HelperShoogle
         }
 
         return UserHasShoogle::on()
-            ->where('shoogle_id', '=', $shoogleId)
-            ->count('user_id');
+            ->leftJoin('shoogles', 'user_has_shoogle.shoogle_id', '=', 'shoogles.id')
+            ->where('user_has_shoogle.shoogle_id', '=', $shoogleId)
+            ->whereNull('shoogles.deleted_at')
+            ->where('shoogles.active', '=', 1)
+            ->count('user_has_shoogle.user_id');
     }
 
     /**
@@ -135,8 +107,11 @@ class HelperShoogle
         }
 
         return UserHasShoogle::on()
-            ->where('user_id', '=', $userId)
-            ->count('shoogle_id');
+            ->leftJoin('shoogles', 'user_has_shoogle.shoogle_id', '=', 'shoogles.id')
+            ->where('user_has_shoogle.user_id', '=', $userId)
+            ->whereNull('shoogles.deleted_at')
+            ->where('shoogles.active', '=', 1)
+            ->count('user_has_shoogle.shoogle_id');
     }
 
     /**

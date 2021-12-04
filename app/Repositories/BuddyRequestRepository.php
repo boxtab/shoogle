@@ -131,18 +131,20 @@ class BuddyRequestRepository extends Repositories
      * @param int $pageSize
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function buddyReceived(int $page, int $pageSize)
+    public function buddyReceived(int $userId, int $page, int $pageSize)
     {
         return BuddyRequest::on()
             ->select(DB::raw('
-                id as id,
-                user1_id as buddy,
-                shoogle_id as shoogle_id,
-                created_at as created_at,
-                message as message
+                buddy_request.id as id,
+                buddy_request.user1_id as buddy,
+                buddy_request.shoogle_id as shoogle_id,
+                buddy_request.created_at as created_at,
+                buddy_request.message as message
             '))
-            ->where('user2_id', Auth::id())
-            ->where('type', BuddyRequestTypeEnum::INVITE)
+            ->leftJoin('shoogles', 'shoogles.id', '=', 'buddy_request.shoogle_id')
+            ->where('shoogles.active', '=', 1)
+            ->where('buddy_request.user2_id', $userId)
+            ->where('buddy_request.type', BuddyRequestTypeEnum::INVITE)
             ->offset($page * $pageSize - $pageSize)
             ->limit($pageSize)
             ->get();
@@ -159,17 +161,19 @@ class BuddyRequestRepository extends Repositories
     {
         return BuddyRequest::on()
             ->select(DB::raw('
-                id as id,
-                user2_id as buddy,
-                shoogle_id as shoogle_id,
-                created_at as created_at,
-                message as message
+                buddy_request.id as id,
+                buddy_request.user2_id as buddy,
+                buddy_request.shoogle_id as shoogle_id,
+                buddy_request.created_at as created_at,
+                buddy_request.message as message
             '))
-            ->where('user1_id', Auth::id())
+            ->leftJoin('shoogles', 'shoogles.id', '=', 'buddy_request.shoogle_id')
+            ->where('shoogles.active', '=', 1)
+            ->where('buddy_request.user1_id', Auth::id())
             ->offset($page * $pageSize - $pageSize)
             ->limit($pageSize)
-            ->orderBy('type', 'ASC')
-            ->orderBy('created_at', 'DESC')
+            ->orderBy('buddy_request.type', 'ASC')
+            ->orderBy('buddy_request.created_at', 'DESC')
             ->get();
     }
 
@@ -185,6 +189,13 @@ class BuddyRequestRepository extends Repositories
             throw new \Exception("The invitation is $buddyRequestId no longer relevant",
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
+        $shoogleId = BuddyRequest::on()
+            ->where('id', '=', $buddyRequestId)
+            ->first()
+            ->shoogle_id;
+
+        HelperShoogle::checkActive($shoogleId);
 
         DB::transaction( function () use ($buddyRequestId) {
             $buddyRequest = BuddyRequest::on()
