@@ -43,13 +43,14 @@ class HelperShooglesViews
             return $response;
         }
 
-        $userID = $shooglesViews->user_id;
-        $profileImage = User::on()
-            ->where('id', '=', $userID)
-            ->first('profile_image')
-            ->profile_image;
+        $userId = $shooglesViews->user_id;
+        $user = User::on()
+            ->where('id', '=', $userId)
+            ->first('profile_image');
 
-        $response['id'] = $userID;
+        $profileImage = is_null($user) ? null : $user->profile_image;
+
+        $response['id'] = $userId;
         $response['avatar'] = HelperAvatar::getURLProfileImage($profileImage);
 
         return $response;
@@ -107,4 +108,20 @@ class HelperShooglesViews
         return $shoogleViews;
     }
 
+    /**
+     * Number of views in shoogle from all users.
+     *
+     * @param int|null $shoogleId
+     * @return int
+     */
+    public static function getQuantityViews(?int $shoogleId): int
+    {
+        if ( is_null($shoogleId) ) {
+            return 0;
+        }
+
+        return ShoogleViews::on()
+            ->where('shoogle_id', '=', $shoogleId)
+            ->sum('views');
+    }
 }
