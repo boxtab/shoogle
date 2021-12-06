@@ -98,9 +98,10 @@ class HelperShoogle
      * The count of shoogles per user.
      *
      * @param int|null $userId
+     * @param bool $blocked
      * @return int
      */
-    public static function getShoogleCount(?int $userId): int
+    public static function getShoogleCount(?int $userId, bool $blocked = false): int
     {
         if ( is_null($userId) ) {
             return 0;
@@ -110,7 +111,9 @@ class HelperShoogle
             ->leftJoin('shoogles', 'user_has_shoogle.shoogle_id', '=', 'shoogles.id')
             ->where('user_has_shoogle.user_id', '=', $userId)
             ->whereNull('shoogles.deleted_at')
-            ->where('shoogles.active', '=', 1)
+            ->when( $blocked === false, function ($query) {
+                $query->where('shoogles.active', '=', 1);
+            })
             ->count('user_has_shoogle.shoogle_id');
     }
 
