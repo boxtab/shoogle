@@ -45,12 +45,6 @@ class WellbeingService
             ->toArray();
     }
 
-
-//    private function isConditionSending(int $userId): bool
-//    {
-//        null;
-//    }
-
     /**
      * Launching a notification mailing request to set wellbeing.
      *
