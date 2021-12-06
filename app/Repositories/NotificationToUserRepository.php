@@ -47,7 +47,10 @@ class NotificationToUserRepository extends Repositories
             ->join('notifications_type', 'notifications_type.id', '=', 'notifications_to_user.type_id')
             ->leftJoin('shoogles', 'notifications_to_user.shoogle_id', '=', 'shoogles.id')
             ->whereNull('shoogles.deleted_at')
-//            ->where('shoogles.active', '=', 1)
+            ->where(function ($query) {
+                $query->whereNull('notifications_to_user.shoogle_id')
+                    ->orWhere('shoogles.active', '=', 1);
+            })
             ->where('users.company_id', '=', $companyId)
             ->get([
                 'notifications_to_user.id as id',
