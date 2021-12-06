@@ -80,6 +80,7 @@ class AuthController extends BaseApiController
         $expirationTime = ['exp' => Carbon::now()->addDays(self::EXPIRATION_TIME)->timestamp];
 
         try {
+            HelperUser::checkUserExists($credentials['email']);
             HelperUser::checkUserDeleted($credentials['email']);
 
             $token = JWTAuth::attempt($credentials, $expirationTime);

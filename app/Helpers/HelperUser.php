@@ -39,6 +39,39 @@ class HelperUser
     }
 
     /**
+     * Returns true if the user exists.
+     *
+     * @param string|null $email
+     * @return bool
+     */
+    private static function isUserExists(?string $email)
+    {
+        if ( is_null($email) ) {
+            return false;
+        }
+
+        $user = User::withTrashed()
+            ->where('email', '=', $email)
+            ->get();
+
+        return ( is_null($user) ) ? false : true;
+    }
+
+    /**
+     * Checks if the user exists.
+     *
+     * @param string|null $email
+     * @throws Exception
+     */
+    public static function checkUserExists(?string $email)
+    {
+        if ( ! self::isUserExists($email) ) {
+            throw new Exception('User does not exist.', Response::HTTP_NOT_FOUND);
+        }
+    }
+
+
+    /**
      * Is the user deleted.
      *
      * @param string|null $email
@@ -50,12 +83,19 @@ class HelperUser
             return true;
         }
 
-        $user = User::withTrashed()->where('email', '=', $email)->first();
-        if ( is_null($user) ) {
-            return true;
-        }
+        $userDeleted = User::withTrashed()
+            ->where('email', '=', $email)
+            ->whereNotNull('deleted_at')
+            ->count();
 
-        return ( is_null($user->deleted_at) ) ? false : true;
+        $userNotDeleted = User::withTrashed()
+            ->where('email', '=', $email)
+            ->whereNull('deleted_at')
+            ->count();
+
+        return (
+            ( $userDeleted > 0 ) && ( $userNotDeleted === 0 )
+        ) ? true : false;
     }
 
     /**
