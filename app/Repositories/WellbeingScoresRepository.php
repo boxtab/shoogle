@@ -10,6 +10,7 @@ use App\Models\Department;
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
 use App\Models\WellbeingScores;
+use App\Scopes\ShoogleScope;
 use App\User;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -69,6 +70,23 @@ class WellbeingScoresRepository extends Repositories
     public function existsShoogle(int $id): void
     {
         $shoogle = Shoogle::on()->find($id);
+
+        if ( is_null( $shoogle ) ) {
+            throw new Exception('Shoogle not found!', Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Is there a shoogle among the blocked.
+     *
+     * @param int $shoogleId
+     * @throws Exception
+     */
+    public function existsShoogleAmongBlocked(int $shoogleId): void
+    {
+        $shoogle = Shoogle::on()
+            ->withoutGlobalScope(ShoogleScope::class)
+            ->find($shoogleId);
 
         if ( is_null( $shoogle ) ) {
             throw new Exception('Shoogle not found!', Response::HTTP_NOT_FOUND);
