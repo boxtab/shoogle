@@ -408,7 +408,7 @@ class ShooglesRepository extends Repositories
                 $filter = 'desc';
                 break;
             default:
-                $filter = null;
+                $filter = 'popular';
         }
 
         $shooglesQuery = DB::table('shoogles as sh')
@@ -423,7 +423,8 @@ class ShooglesRepository extends Repositories
                 null as solo,
                 null as joined,
                 sh.chat_id as chatNameCommon,
-                null as chatNameWithBuddy
+                null as chatNameWithBuddy,
+                (select count(*) from shoogles_views where shoogles_views.shoogle_id = sh.id ) as countView
             '))
             ->Join('users as u', 'sh.owner_id', '=', 'u.id')
             ->leftJoin('wellbeing_categories as wc', 'sh.wellbeing_category_id', '=', 'wc.id')
@@ -437,8 +438,11 @@ class ShooglesRepository extends Repositories
                         ->orWhere('wc.name', 'LIKE', '%' . $search . '%');
                 });
             })
-            ->when( ! is_null($filter), function($query) use ($filter) {
+            ->when( $filter !== 'popular', function($query) use ($filter) {
                 return $query->orderBy('sh.created_at', $filter);
+            })
+            ->when( $filter === 'popular', function($query) use ($filter) {
+                return $query->orderBy('countView', 'desc');
             });
 
         $this->shooglesAll = $shooglesQuery
