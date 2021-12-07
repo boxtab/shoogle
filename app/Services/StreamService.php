@@ -145,4 +145,11 @@ class StreamService
         $channel = $serverClient->Channel('messaging', $channelId);
         return $channel->queryMembers();
     }
+
+    public function getChannelLastMessageDateAtString(string $channelId)
+    {
+        $url = "channels/messaging/" . $channelId;
+        $res = $this->serverClient->post($url . "/query", ['state' => true]);
+        return $res['channel']['last_message_at'];
+    }
 }
