@@ -18,6 +18,7 @@ use App\Helpers\HelperRank;
 use App\Helpers\HelperReward;
 use App\Helpers\HelperRole;
 use App\Helpers\HelperShoogle;
+use App\Helpers\HelperShoogleActive;
 use App\Helpers\HelperShoogleList;
 use App\Helpers\HelperShoogleProfile;
 use App\Helpers\HelperShoogleStatistic;
@@ -80,7 +81,15 @@ class TestController extends Controller
 
     public function index()
     {
-        dd(123);
+//        $carbonNow = Carbon::now()->subDays(30);
+//        $carbonNowTimestamp = $carbonNow->getTimestamp();
+//        $carbonNowDateTime = $carbonNow->toDateTimeString();
+//        dd($carbonNowTimestamp, $carbonNowDateTime);
+
+
+//        $lastDate = HelperShoogleActive::getLatDateTime(42);
+        $lastDate = HelperShoogleActive::isActive(42);
+        dd($lastDate);
 
 //        $userId = 45;
 //        $accessDeniedService = new AccessDeniedService($userId);

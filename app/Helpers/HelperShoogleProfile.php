@@ -85,17 +85,18 @@ class HelperShoogleProfile
     public function __construct(?int $userID)
     {
         $shooglesIDs  =$this->getShoogleIDsByUserId( $userID );
-//        $shooglesIDs = HelperShoogle::getShooglesIDsByUserID($userID);
 
-        $this->activeShooglesCount = Shoogle::on()
-            ->whereIn('id', $shooglesIDs)
-            ->where('active', '=', 1)
-            ->count();
+        $this->activeShooglesCount = HelperShoogleActive::countActive($shooglesIDs);
+//        $this->activeShooglesCount = Shoogle::on()
+//            ->whereIn('id', $shooglesIDs)
+//            ->where('active', '=', 1)
+//            ->count();
 
-        $this->inactiveShooglesCount = Shoogle::on()
-            ->whereIn('id', $shooglesIDs)
-            ->where('active', '=', 0)
-            ->count();;
+        $this->inactiveShooglesCount = HelperShoogleActive::countInactive($shooglesIDs);
+//        $this->inactiveShooglesCount = Shoogle::on()
+//            ->whereIn('id', $shooglesIDs)
+//            ->where('active', '=', 0)
+//            ->count();
 
         $shoogles = Shoogle::on()
             ->select(DB::raw("

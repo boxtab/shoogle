@@ -150,6 +150,6 @@ class StreamService
     {
         $url = "channels/messaging/" . $channelId;
         $res = $this->serverClient->post($url . "/query", ['state' => true]);
-        return $res['channel']['last_message_at'];
+        return $res['channel']['last_message_at'] ?? null;
     }
 }
