@@ -18,6 +18,7 @@ use App\Traits\UserCompanyTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseApiController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -70,7 +71,7 @@ class BuddyRequestController extends BaseApiController
     public function buddyReceived(int $page, int $pageSize)
     {
         try {
-            $buddyReceived = $this->repository->buddyReceived($page, $pageSize);
+            $buddyReceived = $this->repository->buddyReceived(Auth::id(), $page, $pageSize);
             $buddyReceivedResource = BuddyBidResource::collection($buddyReceived);
         } catch (\Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -145,6 +146,8 @@ class BuddyRequestController extends BaseApiController
                     Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
+            HelperShoogle::checkActive($buddyRequest->shoogle_id);
+
             $this->repository->buddyReject($buddyRequest);
         } catch (\Exception $e) {
             return ApiResponse::returnError($e->getMessage());
@@ -166,6 +169,7 @@ class BuddyRequestController extends BaseApiController
             $shoogleId = $request->input('shoogleId');
             $message = $request->input('message');
             $callerUserId = Auth::id();
+            HelperShoogle::checkActive($shoogleId);
             $this->repository->buddyDisconnect($buddyId, $shoogleId, $callerUserId, $message);
         } catch (\Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);

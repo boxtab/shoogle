@@ -132,13 +132,13 @@ class ShooglesRepository extends Repositories
                 'users.first_name as users_first_name, ' .
                 'users.last_name as users_last_name, ' .
                 'users.profile_image as users_profile_image, ' .
-                '(select count(uhs.user_id) from user_has_shoogle as uhs where uhs.shoogle_id = shoogles.id) as shooglers, ' .
+                'null as shooglers, ' .
                 'departments.name as departments_name '
             ))
             ->join('users', 'users.id', '=', 'shoogles.owner_id')
             ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
             ->when( ! $this->noCompany(), function($query) {
-                return $query->where('users.company_id', $this->companyId);
+                return $query->where('users.company_id', '=', $this->companyId);
             })
             ->when( ! is_null( $search ) , function ($query) use ($search) {
                 return $query->where('title', 'like', '%' . $search .'%');
@@ -408,7 +408,7 @@ class ShooglesRepository extends Repositories
                 $filter = 'desc';
                 break;
             default:
-                $filter = null;
+                $filter = 'popular';
         }
 
         $shooglesQuery = DB::table('shoogles as sh')
@@ -423,7 +423,8 @@ class ShooglesRepository extends Repositories
                 null as solo,
                 null as joined,
                 sh.chat_id as chatNameCommon,
-                null as chatNameWithBuddy
+                null as chatNameWithBuddy,
+                (select count(*) from shoogles_views where shoogles_views.shoogle_id = sh.id ) as countView
             '))
             ->Join('users as u', 'sh.owner_id', '=', 'u.id')
             ->leftJoin('wellbeing_categories as wc', 'sh.wellbeing_category_id', '=', 'wc.id')
@@ -437,8 +438,11 @@ class ShooglesRepository extends Repositories
                         ->orWhere('wc.name', 'LIKE', '%' . $search . '%');
                 });
             })
-            ->when( ! is_null($filter), function($query) use ($filter) {
+            ->when( $filter !== 'popular', function($query) use ($filter) {
                 return $query->orderBy('sh.created_at', $filter);
+            })
+            ->when( $filter === 'popular', function($query) use ($filter) {
+                return $query->orderBy('countView', 'desc');
             });
 
         $this->shooglesAll = $shooglesQuery

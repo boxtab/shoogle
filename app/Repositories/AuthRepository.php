@@ -41,6 +41,19 @@ class AuthRepository extends Repositories
     {
         return DB::transaction( function () use ( $credentials, $invite ) {
 
+            $user = User::on()->create([
+                'company_id'    => $invite->companies_id,
+                'department_id' => $invite->department_id,
+                'password'      => bcrypt($credentials['password']),
+                'email'         => $credentials['email'],
+                'first_name'    => isset($credentials['firstName']) ? $credentials['firstName'] : null,
+                'last_name'     => isset($credentials['lastName']) ? $credentials['lastName'] : null,
+                'about'         => isset($credentials['about']) ? $credentials['about'] : null,
+                'rank'          => 1,
+            ]);
+            $user->assignRole(RoleConstant::USER);
+
+            /*
             $user = User::withTrashed()
                 ->where('email', '=', $credentials['email'])
                 ->first();
@@ -74,6 +87,7 @@ class AuthRepository extends Repositories
                 ]);
                 $user->assignRole(RoleConstant::USER);
             }
+            */
 
             HelperInvite::useInvite($invite->id, $user->id);
 

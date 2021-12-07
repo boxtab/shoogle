@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\ShoogleScope;
 use App\User;
 use Carbon\Carbon;
 use DateTime;
@@ -123,5 +124,15 @@ class Shoogle extends BaseModel
     public function notificationsShoogle(): HasMany
     {
         return $this->hasMany(NotificationToUser::class, 'shoogle_id', 'id');
+    }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::addGlobalScope(new ShoogleScope);
     }
 }

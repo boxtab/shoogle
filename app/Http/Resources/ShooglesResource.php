@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Helpers\HelperAvatar;
+use App\Helpers\HelperShoogle;
 use App\Models\Buddie;
 use App\Models\BuddyRequest;
 use App\Models\Shoogle;
@@ -33,7 +34,7 @@ class ShooglesResource extends JsonResource
             'lastActivity' => $this->resource->updated,
             'wellbeingCategory' => $this->resource->wellbeingCategory->name,
 
-            'shooglersCount' => UserHasShoogle::on()->where('shoogle_id', $this->resource->id)->count(),
+            'shooglersCount' => HelperShoogle::getShooglersCount($this->resource->id),
             'shooglersList' => UserHasShoogle::on()->where('shoogle_id', $this->resource->id)
                 ->get()
                 ->map(function ($item) {

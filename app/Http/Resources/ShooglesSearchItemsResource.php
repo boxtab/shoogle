@@ -26,6 +26,7 @@ class ShooglesSearchItemsResource extends JsonResource
             'joined'            => ( $this->resource->joined == 1 ) ? true : false,
             'chatNameCommon'    => $this->resource->chatNameCommon,
             'chatNameWithBuddy' => $this->resource->chatNameWithBuddy,
+//            'countView'         => $this->resource->countView,
         ];
     }
 }

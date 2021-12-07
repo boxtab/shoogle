@@ -23,19 +23,27 @@ class NotificService
     public function getLineUsers(): array
     {
         $userHasShoogleStatement = UserHasShoogle::on()
+            ->select([
+                'user_has_shoogle.id',
+                'user_has_shoogle.user_id',
+                'user_has_shoogle.shoogle_id',
+                'user_has_shoogle.reminder',
+                'user_has_shoogle.reminder_interval',
+                'user_has_shoogle.last_notification',
+                'user_has_shoogle.in_process'
+            ])
             ->withoutGlobalScope(UserHasShoogleScope::class)
-            ->whereNull('left_at')
-            ->where('is_reminder', '=', 1)
-            ->whereNotNull('reminder')
+            ->leftJoin('shoogles', 'user_has_shoogle.shoogle_id', '=', 'shoogles.id')
+            ->where('shoogles.active', '=', 1)
+            ->whereNull('user_has_shoogle.left_at')
+            ->where('user_has_shoogle.is_reminder', '=', 1)
+            ->whereNotNull('user_has_shoogle.reminder')
             ->where(function ($query) {
-                $query->whereNotNull('reminder_interval')
+                $query->whereNotNull('user_has_shoogle.reminder_interval')
                     ->orWhere(function ($query) {
-                        $query->whereDate('reminder', '<', HelperNow::getDateTime());
+                        $query->whereDate('user_has_shoogle.reminder', '<', HelperNow::getDateTime());
                     });
             });
-
-        $sql = $userHasShoogleStatement->toSql();
-
 
         $userHasShoogle = $userHasShoogleStatement->get([
             'id',
@@ -48,9 +56,6 @@ class NotificService
         ])->toArray();
 
         return $userHasShoogle;
-
-        // Cut off a single event that has not yet occurred
-        // last_notification skip if less than a day
     }
 
     /**

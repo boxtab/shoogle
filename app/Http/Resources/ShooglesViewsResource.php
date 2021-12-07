@@ -44,14 +44,13 @@ class ShooglesViewsResource extends JsonResource
             'mostActiveShooglers' => HelperShooglesViews::getMostActiveShooglers($this->resource->id),
             'mostActiveShooglersCount' => count( HelperShooglesViews::getMostActiveShooglers($this->resource->id) ),
 
-            'views' => $this->resource->views,
+            'views' => HelperShooglesViews::getQuantityViews($this->resource->id),
 
             'shoogleChatId' => HelperChat::getShoogleChatId( $this->resource->id ),
             'journalChatId' => HelperChat::getJournalChatId( $this->resource->id, Auth::id() ),
             'buddyChatId' => HelperChat::getBuddyChatId( $this->resource->id, Auth::id() ),
 
             'shooglersCount' => HelperShoogle::getShooglersCount($this->resource->id),
-//            'shooglersCount' => HelperMember::getMemberCount($this->resource->id),
             'buddiesCount' => HelperShoogleStatistic::getBuddiesCount($this->resource->id),
             'solosCount' => HelperShoogleStatistic::getSolosCount($this->resource->id),
 

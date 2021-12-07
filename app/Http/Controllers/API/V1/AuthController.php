@@ -6,6 +6,7 @@ use App\Constants\RoleConstant;
 use App\Helpers\Helper;
 use App\Helpers\HelperAvatar;
 use App\Helpers\HelperRole;
+use App\Helpers\HelperUser;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Requests\AuthCodeRequest;
 use App\Http\Requests\AuthLoginRequest;
@@ -79,6 +80,9 @@ class AuthController extends BaseApiController
         $expirationTime = ['exp' => Carbon::now()->addDays(self::EXPIRATION_TIME)->timestamp];
 
         try {
+            HelperUser::checkUserExists($credentials['email']);
+            HelperUser::checkUserDeleted($credentials['email']);
+
             $token = JWTAuth::attempt($credentials, $expirationTime);
             if ( ! $token ) {
                 return ApiResponse::returnError(
@@ -88,6 +92,8 @@ class AuthController extends BaseApiController
             }
         } catch (JWTException $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Exception $e) {
+            return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $serverClient = new StreamClient(config('stream.stream_api_key'), config('stream.stream_api_secret'));

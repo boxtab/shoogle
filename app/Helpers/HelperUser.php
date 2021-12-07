@@ -4,6 +4,8 @@ namespace App\Helpers;
 
 use App\Services\UserDeleteService;
 use App\User;
+use Exception;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -34,6 +36,79 @@ class HelperUser
         }
 
         return $user->first_name . ' ' . $user->last_name;
+    }
+
+    /**
+     * Returns true if the user exists.
+     *
+     * @param string|null $email
+     * @return bool
+     */
+    private static function isUserExists(?string $email)
+    {
+        if ( is_null($email) ) {
+            return false;
+        }
+
+        $user = User::withTrashed()
+            ->where('email', '=', $email)
+            ->get();
+
+        return ( is_null($user) ) ? false : true;
+    }
+
+    /**
+     * Checks if the user exists.
+     *
+     * @param string|null $email
+     * @throws Exception
+     */
+    public static function checkUserExists(?string $email)
+    {
+        if ( ! self::isUserExists($email) ) {
+            throw new Exception('User does not exist.', Response::HTTP_NOT_FOUND);
+        }
+    }
+
+
+    /**
+     * Is the user deleted.
+     *
+     * @param string|null $email
+     * @return bool
+     */
+    private static function isUserDeleted(?string $email): bool
+    {
+        if ( is_null($email) ) {
+            return true;
+        }
+
+        $userDeleted = User::withTrashed()
+            ->where('email', '=', $email)
+            ->whereNotNull('deleted_at')
+            ->count();
+
+        $userNotDeleted = User::withTrashed()
+            ->where('email', '=', $email)
+            ->whereNull('deleted_at')
+            ->count();
+
+        return (
+            ( $userDeleted > 0 ) && ( $userNotDeleted === 0 )
+        ) ? true : false;
+    }
+
+    /**
+     * Checking if the user has been deleted.
+     *
+     * @param string|null $email
+     * @throws Exception
+     */
+    public static function checkUserDeleted(?string $email)
+    {
+        if ( self::isUserDeleted($email) ) {
+            throw new Exception('Your account has been deleted.', Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**

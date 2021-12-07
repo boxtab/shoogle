@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Helpers\HelperCompany;
 use App\Models\Company;
 use App\Models\Shoogle;
+use App\Scopes\ShoogleScope;
 use App\User;
 use Illuminate\Http\Response;
 use Exception;
@@ -19,9 +20,10 @@ trait ShoogleCompanyTrait
      * Check creator and user in the same company.
      *
      * @param int|null $shoogleId
+     * @param bool $blocked
      * @throws Exception
      */
-    private function checkCreatorAndUserInCompany(?int $shoogleId)
+    private function checkCreatorAndUserInCompany(?int $shoogleId, bool $blocked = false)
     {
         $currentUserCompanyId = HelperCompany::getCompanyId();
         if (is_null($currentUserCompanyId)) {
@@ -32,7 +34,14 @@ trait ShoogleCompanyTrait
             throw new Exception('Shoogle ID not found.', Response::HTTP_NOT_FOUND);
         }
 
-        $shoogle = Shoogle::on()->find($shoogleId);
+        if ( $blocked === false ) {
+            $shoogle = Shoogle::on()->find($shoogleId);
+        } else {
+            $shoogle = Shoogle::on()
+                ->withoutGlobalScope(ShoogleScope::class)
+                ->find($shoogleId);
+        }
+
         if ( is_null( $shoogle ) ) {
             throw new \Exception('Shoogle not found for this ID.', Response::HTTP_NOT_FOUND);
         }

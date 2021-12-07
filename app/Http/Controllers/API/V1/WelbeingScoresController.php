@@ -130,8 +130,8 @@ class WelbeingScoresController extends BaseApiController
     public function averageShoogle(WellbeingScoresAverageRequest $request, $id)
     {
         try {
-            $this->repository->existsShoogle($id);
-            $this->checkCreatorAndUserInCompany($id);
+            $this->repository->existsShoogleAmongBlocked($id);
+            $this->checkCreatorAndUserInCompany($id, true);
 
             $average = $this->repository->getAverageShoogle( $id, $request->input('from'), $request->input('to') );
         } catch (Exception $e) {

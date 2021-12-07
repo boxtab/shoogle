@@ -65,6 +65,5 @@ class WellbeingWeekController extends  BaseApiController
         }
 
         return ApiResponse::returnData($wellbeingWeekResource);
-//        return ApiResponse::returnData($data);
     }
 }
