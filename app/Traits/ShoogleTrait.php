@@ -35,8 +35,10 @@ trait ShoogleTrait
         }
 
         $listIDsUserHasShoogle = UserHasShoogle::on()
-            ->where('user_id', '=', $userID)
-            ->get('shoogle_id')
+            ->leftJoin('shoogles', 'user_has_shoogle.shoogle_id', '=', 'shoogles.id')
+            ->where('shoogles.active', '=', 1)
+            ->where('user_has_shoogle.user_id', '=', $userID)
+            ->get('user_has_shoogle.shoogle_id')
             ->map(function ($item) {
                 return $item->shoogle_id;
             })

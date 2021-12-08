@@ -79,52 +79,68 @@ class HelperShoogleActive
     }
 
     /**
-     * Counts active / inactive shoogles.
+     * Returns a list of shoogles with the active / inactive flag.
      *
      * @param array|null $shoogleIds
-     * @param bool $isActive
+     * @return array|null
+     */
+    public static function getList(?array $shoogleIds): ?array
+    {
+        if ( empty($shoogleIds) ) {
+            return null;
+        }
+
+        $listShoogleIDsActive = [];
+        foreach ($shoogleIds as $shoogleId) {
+            $listShoogleIDsActive[$shoogleId] = (int)self::isActive($shoogleId);
+        }
+
+        return $listShoogleIDsActive;
+    }
+
+    /**
+     * Counting the number of active shoogle.
+     *
+     * @param array|null $listShooglesActiveInactive
      * @return int
      */
-    private static function countActiveInActive(?array $shoogleIds, bool $isActive = true): int
+    public static function getCountActive(?array $listShooglesActiveInactive): int
     {
-        if ( is_null($shoogleIds) ) {
+        if ( is_null($listShooglesActiveInactive) ) {
             return 0;
         }
 
-        $counter = 0;
-        foreach ($shoogleIds as $shoogleId) {
-            $active = self::isActive($shoogleId);
-            if ($active && $isActive) {
-                $counter++;
-            }
+        $counterActive = 0;
 
-            if ( ( ! $active ) && ( ! $isActive ) ) {
-                $counter++;
+        foreach ($listShooglesActiveInactive as $shooglesActiveInactive) {
+            if ( $shooglesActiveInactive === 1 ) {
+                $counterActive++;
             }
         }
 
-        return $counter;
+        return $counterActive;
     }
 
     /**
-     * Counts only active shoogles.
+     * Counting the number of inactive shoogle.
      *
-     * @param array|null $shoogleIds
+     * @param array|null $listShooglesActiveInactive
      * @return int
      */
-    public static function countActive(?array $shoogleIds): int
+    public static function getCountInactive(?array $listShooglesActiveInactive): int
     {
-        return self::countActiveInActive($shoogleIds, true);
-    }
+        if ( is_null($listShooglesActiveInactive) ) {
+            return 0;
+        }
 
-    /**
-     * Counts only inactive shoogles.
-     *
-     * @param array|null $shoogleIds
-     * @return int
-     */
-    public static function countInactive(?array $shoogleIds): int
-    {
-        return self::countActiveInActive($shoogleIds, false);
+        $counterInactive = 0;
+
+        foreach ($listShooglesActiveInactive as $shooglesActiveInactive) {
+            if ( $shooglesActiveInactive === 0 ) {
+                $counterInactive++;
+            }
+        }
+
+        return $counterInactive;
     }
 }

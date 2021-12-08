@@ -84,15 +84,19 @@ class HelperShoogleProfile
      */
     public function __construct(?int $userID)
     {
-        $shooglesIDs  =$this->getShoogleIDsByUserId( $userID );
+        $shooglesIDs = $this->getShoogleIDsByUserId( $userID );
 
-        $this->activeShooglesCount = HelperShoogleActive::countActive($shooglesIDs);
+        $listShooglesActiveInactive = HelperShoogleActive::getList($shooglesIDs);
+
+        $this->activeShooglesCount = HelperShoogleActive::getCountActive($listShooglesActiveInactive);
+//        $this->activeShooglesCount = HelperShoogleActive::countActive($shooglesIDs);
 //        $this->activeShooglesCount = Shoogle::on()
 //            ->whereIn('id', $shooglesIDs)
 //            ->where('active', '=', 1)
 //            ->count();
 
-        $this->inactiveShooglesCount = HelperShoogleActive::countInactive($shooglesIDs);
+        $this->inactiveShooglesCount = HelperShoogleActive::getCountInactive($listShooglesActiveInactive);
+//        $this->inactiveShooglesCount = HelperShoogleActive::countInactive($shooglesIDs);
 //        $this->inactiveShooglesCount = Shoogle::on()
 //            ->whereIn('id', $shooglesIDs)
 //            ->where('active', '=', 0)
@@ -118,7 +122,7 @@ class HelperShoogleProfile
                 )), true, false) as solo
             "))
             ->whereIn('id', $shooglesIDs)
-            ->where('active', '=', 1)
+//            ->where('active', '=', 1)
             ->get()
             ->map(function ($item) {
                 $item['baddies'] = (bool)$item['baddies'];
@@ -128,6 +132,7 @@ class HelperShoogleProfile
             })
             ->toArray();
 
+        Log::info($shoogles);
         $this->shoogles = $shoogles;
         $this->shooglesCount = count($shoogles);
     }
