@@ -32,10 +32,9 @@ class UserProfileAdminResource extends JsonResource
             'departmentId'      => $this->resource->department_id,
             'email'             => $this->resource->email,
             'rating'            => $this->resource->rank_id,
-            'shoogles'          => HelperShoogle::getShoogleCount($this->resource->id),
-//            'shoogles'          => Shoogle::on()->where('owner_id', $this->resource->id)->count(),
+            'shoogles'          => HelperShoogle::getShoogleCount($this->resource->id, true),
             'isCompanyAdmin'    => (Helper::getRole($this->resource->id) == RoleConstant::COMPANY_ADMIN) ? true : false,
-            'shooglesList'      => HelperShoogleList::getList($this->resource->id),
+            'shooglesList'      => HelperShoogleList::getList($this->resource->id, false),
             'wellbeingLastTime' => HelperWellbeing::getLastTime( $this->resource->id ),
         ];
     }

@@ -29,6 +29,7 @@ use App\Models\Company;
 use App\Models\ModelHasRole;
 use App\Models\Shoogle;
 use App\Repositories\ShooglesRepository;
+use App\Scopes\ShoogleScope;
 use App\Support\ApiRequest\ApiRequest;
 use App\Support\ApiResponse\ApiResponse;
 use App\Traits\ShoogleCompanyTrait;
@@ -128,8 +129,8 @@ class ShooglesController extends BaseApiController
     public function show($id = null)
     {
         try {
-            $shoogle = $this->findRecordByID($id);
-            $this->checkCreatorAndUserInCompany($id);
+            $shoogle = HelperShoogle::getShoogleByIdWithCheck($id, true);
+            $this->checkCreatorAndUserInCompany($id, true);
 
             $shooglesResource = new ShooglesResource($shoogle);
         } catch (Exception $e) {
@@ -335,8 +336,8 @@ class ShooglesController extends BaseApiController
     public function update(ShoogleUpdateRequest $request, $id)
     {
         try {
-            $shoogle = $this->findRecordByID($id);
-            $this->checkCreatorAndUserInCompany($id);
+            $shoogle = HelperShoogle::getShoogleByIdWithCheck($id, true);
+            $this->checkCreatorAndUserInCompany($id, false);
 
             $shoogle->update(
                 Helper::formatSnakeCase($request->all())

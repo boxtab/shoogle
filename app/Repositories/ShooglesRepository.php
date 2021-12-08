@@ -22,6 +22,7 @@ use App\Models\BuddyRequest;
 use App\Models\Shoogle;
 use App\Models\ShoogleViews;
 use App\Models\UserHasShoogle;
+use App\Scopes\ShoogleScope;
 use App\Scopes\UserHasShoogleScope;
 use App\Services\StreamService;
 use App\Support\ApiResponse\ApiResponse;
@@ -124,7 +125,9 @@ class ShooglesRepository extends Repositories
      */
     public function getList(string $search = null)
     {
-        return Shoogle::on()->select(DB::raw(
+        return Shoogle::on()
+            ->withoutGlobalScope(ShoogleScope::class)
+            ->select(DB::raw(
                 'shoogles.id as shoogle_id, ' .
                 'shoogles.title as shoogle_title, ' .
                 'shoogles.active as shoogle_active, ' .

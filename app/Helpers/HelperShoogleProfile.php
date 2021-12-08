@@ -132,7 +132,6 @@ class HelperShoogleProfile
             })
             ->toArray();
 
-        Log::info($shoogles);
         $this->shoogles = $shoogles;
         $this->shooglesCount = count($shoogles);
     }

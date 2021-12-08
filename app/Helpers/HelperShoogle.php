@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Shoogle;
 use App\Models\UserHasShoogle;
+use App\Scopes\ShoogleScope;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
@@ -171,5 +172,41 @@ class HelperShoogle
         if ( ! self::isActive($shoogleId) ) {
             throw new Exception('Shoogle is not active!', Response::HTTP_NOT_FOUND);
         }
+    }
+
+    /**
+     * Returns a shoogle by its ID. Searches among active/inactive.
+     *
+     * @param int|null $shoogleId
+     * @param bool $isActive
+     * @return \Illuminate\Database\Eloquent\Builder|Model|mixed|object|null
+     */
+    public static function getShoogleById(?int $shoogleId, bool $isActive = false)
+    {
+        return Shoogle::on()
+            ->when($isActive, function ($query) {
+                $query->withoutGlobalScope(ShoogleScope::class);
+            })
+            ->where('id', '=', $shoogleId)
+            ->first();
+    }
+
+    /**
+     * Get shuggle and check for existence.
+     *
+     * @param int|null $shoogleId
+     * @param bool $isActive
+     * @return \Illuminate\Database\Eloquent\Builder|Model|mixed|object|null
+     * @throws Exception
+     */
+    public static function getShoogleByIdWithCheck(?int $shoogleId, bool $isActive = false)
+    {
+        $shoogle = self::getShoogleById($shoogleId, $isActive);
+
+        if ( is_null($shoogle) ) {
+            throw new \Exception('Shoogle not found for this ID!', Response::HTTP_NOT_FOUND);
+        }
+
+        return $shoogle;
     }
 }
