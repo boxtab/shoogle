@@ -31,9 +31,9 @@ class UserDeleteForeignKeyInviteId extends Migration
                 $table->dropIndex('users_department_id_foreign');
             }
 
-            if ( Schema::hasColumn('users', 'invite_id') ) {
-                $table->dropColumn('invite_id');
-            }
+//            if ( Schema::hasColumn('users', 'invite_id') ) {
+//                $table->dropColumn('invite_id');
+//            }
         });
     }
 

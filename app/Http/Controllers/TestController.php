@@ -8,6 +8,7 @@ use App\Helpers\Helper;
 use App\Helpers\HelperBuddies;
 use App\Helpers\HelperChat;
 use App\Helpers\HelperCompany;
+use App\Helpers\HelperConfigCron;
 use App\Helpers\HelperDateTime;
 use App\Helpers\HelperFriend;
 use App\Helpers\HelperMember;
@@ -81,6 +82,13 @@ class TestController extends Controller
 
     public function index()
     {
+        HelperConfigCron::setLastFlagProcessed('asd');
+
+        $tmp = HelperConfigCron::getLastFlagProcessed();
+        dd($tmp);
+
+//        HelperConfigCron::query()->update(['confirmed' => 1]);
+
 //        $carbonNow = Carbon::now()->subDays(30);
 //        $carbonNowTimestamp = $carbonNow->getTimestamp();
 //        $carbonNowDateTime = $carbonNow->toDateTimeString();
@@ -88,8 +96,8 @@ class TestController extends Controller
 
 
 //        $lastDate = HelperShoogleActive::getLatDateTime(42);
-        $lastDate = HelperShoogleActive::isActive(42);
-        dd($lastDate);
+//        $lastDate = HelperShoogleActive::isActive(42);
+//        dd($lastDate);
 
 //        $userId = 45;
 //        $accessDeniedService = new AccessDeniedService($userId);
