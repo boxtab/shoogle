@@ -152,4 +152,17 @@ class StreamService
         $res = $this->serverClient->post($url . "/query", ['state' => true]);
         return $res['channel']['last_message_at'] ?? null;
     }
+
+    public function getFlagList(int $page = 1) {
+        return $this->serverClient->get(
+            "moderation/flags/message",
+            [
+                "payload" => json_encode([
+                        "channel_cid" => "messaging:xyz",
+                        "limit" => 10,
+                        "offset" => 10 * ($page - 1)
+                ])
+            ]
+        )['flags'];
+    }
 }
