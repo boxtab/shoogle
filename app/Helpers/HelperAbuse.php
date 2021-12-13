@@ -19,6 +19,7 @@ class HelperAbuse
     {
         $abuseService = new AbuseService();
         $abuseService->fetchListComplaints();
+        $abuseService->handlingAbuses();
         $abuseService->sendComplaint();
     }
 }

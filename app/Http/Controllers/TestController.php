@@ -38,6 +38,7 @@ use App\Models\WellbeingScores;
 use App\Repositories\NotificationToUserRepository;
 use App\Repositories\TestRepository;
 use App\Scopes\NotificationToUserScope;
+use App\Services\AbuseService;
 use App\Services\AccessDeniedService;
 use App\Services\NotificClientService;
 use App\Services\PasswordRecoveryService;
@@ -82,10 +83,17 @@ class TestController extends Controller
 
     public function index()
     {
-        HelperConfigCron::setLastFlagProcessed('asd');
 
-        $tmp = HelperConfigCron::getLastFlagProcessed();
-        dd($tmp);
+
+//        $abuseService = new AbuseService();
+//        $tmp = $abuseService->getUserId('user33');
+//        dd($tmp);
+
+//        dd(substr('systemuser', strlen('user')));
+
+//        HelperConfigCron::setLastFlagProcessed('asd');
+//        $tmp = HelperConfigCron::getLastFlagProcessed();
+//        dd($tmp);
 
 //        HelperConfigCron::query()->update(['confirmed' => 1]);
 

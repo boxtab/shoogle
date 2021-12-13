@@ -41,7 +41,14 @@ class AbusePush extends Command
     public function handle()
     {
         $this->info( $this->description );
-        HelperAbuse::send();
+
+        try {
+            HelperAbuse::send();
+        } catch (Exception $e) {
+            $this->error($e->getMessage());
+            return Command::INVALID;
+        }
+
         return Command::SUCCESS;
     }
 }

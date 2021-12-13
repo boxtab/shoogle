@@ -4,10 +4,12 @@ namespace App\Helpers;
 
 use App\Models\ConfigCronLastFlagProcessedAt;
 use App\Services\StreamService;
+use Carbon\Carbon;
 use DateTime;
 use DateTimeInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class HelperConfigCron
@@ -40,7 +42,12 @@ class HelperConfigCron
     {
         DB::transaction(function () use($value) {
             ConfigCronLastFlagProcessedAt::on()->delete();
-            ConfigCronLastFlagProcessedAt::on()->insert(['value' => $value]);
+//            ConfigCronLastFlagProcessedAt::on()->truncate();
+            ConfigCronLastFlagProcessedAt::on()->insert([
+                'value' => $value,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
         });
     }
 
@@ -89,7 +96,6 @@ class HelperConfigCron
                 array_push($resList, $flag);
             }
         }
-
         self::setLastFlagProcessed($latestDate);
 
         return $resList;
