@@ -31,6 +31,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('wellbeing:push')
             ->monthlyOn(1, '10:00');
+
+        $schedule->command('abuse:push')
+            ->dailyAt('13:00');
     }
 
     /**
