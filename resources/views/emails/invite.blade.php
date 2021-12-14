@@ -8,10 +8,10 @@
     <title>Email Shoogle Front</title>
     <link rel="stylesheet" type="text/css" href="./css/fonts-gilroy.css">
     <link rel="stylesheet" type="text/css" href="./css/invite.css">
-{{--    <link rel="stylesheet" href="css/style.css">--}}
+    {{-- <link rel="stylesheet" href="css/style.css">--}}
 
     <style>
-/*
+        /*
         @font-face {
             font-family: 'Gilroy';
             src: url( {{asset('fonts/Gilroy-egular.eot')}} );
@@ -72,95 +72,94 @@
             font-style: normal;
         }
 */
-
     </style>
 </head>
 
 <body>
-<div class="container">
-    <div class="header">
-        <!-- <div class="section"> -->
-        <div class="logo">
-            <a href="#" title="Shoogle"><img src="{{asset('images/invite/logo.svg')}}" alt="Linkedin"></a>
+    <div class="container">
+        <div class="header">
+            <!-- <div class="section"> -->
+            <div class="logo">
+                <a href="https://shoogle.io" title="Shoogle"><img src="{{asset('images/invite/logo.svg')}}" alt="Shoogle"></a>
+            </div>
+            <div class="social">
+                <a class="in" href="https://www.linkedin.com/company/shoogleapp/" title="Linkedin"><img src="{{asset('images/invite/linkedin.svg')}}" alt="Linkedin"></a>
+                <a class="insta" href="https://www.instagram.com/shoogleapp/" title="Instagram"><img src="{{asset('images/invite/instagram.svg')}}" alt="Instagram"></a>
+            </div>
+            <!-- </div> -->
         </div>
-        <div class="social">
-            <a class="in" href="#" title="Linkedin"><img src="{{asset('images/invite/linkedin.svg')}}" alt="Linkedin"></a>
-            <a class="insta" href="#" title="Instagram"><img src="{{asset('images/invite/instagram.svg')}}" alt="Instagram"></a>
-        </div>
-        <!-- </div> -->
-    </div>
-    <div class="hero" style="background-image: url( {{asset('images/invite/sky.png')}} )">
-        <div class="section">
-            <div class="text">
-                <div class="title">
-                    Super <br>
-                    awesome
-                </div>
-                <div class="description">
-                    Welcome to shoogle. <br>
-                    Communities for the <br>
-                    likeminded.
-                </div>
+        <div class="hero" style="background-image: url( {{asset('images/invite/sky.png')}} )">
+            <div class="section">
+                <div class="text">
+                    <div class="title">
+                        Super <br>
+                        awesome
+                    </div>
+                    <div class="description">
+                        Welcome to shoogle. <br>
+                        Communities for the <br>
+                        likeminded.
+                    </div>
 
-            </div>
-            <div class="image">
-                <img src="{{asset('images/invite/phone.png')}}" alt="Mobile App">
-            </div>
-        </div>
-    </div>
-    <div class="list">
-        <div class="section">
-            <h2>Make the most of your experience</h2>
-            <div class="columns">
-                <div class="item">
-                    <div class="ico plus">
-                        <img src="{{asset('images/invite/ico-plus.svg')}}" alt="Create">
-                    </div>
-                    <div class="text">
-                        Create and join <br>
-                        shoogles that <br>
-                        contribute to your <br>
-                        wellbeing.
-                    </div>
                 </div>
-                <div class="item">
-                    <div class="ico list">
-                        <img src="{{asset('images/invite/ico-list.svg')}}" alt="Share Progress">
-                    </div>
-                    <div class="text">
-                        Share progress, <br>
-                        buddy up and <br>
-                        support each <br>
-                        other.
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="ico envelop">
-                        <img src="{{asset('images/invite/ico-envelop.svg')}}" alt="Rewards">
-                    </div>
-                    <div class="text">
-                        Give and receive <br>
-                        rewards for positive <br>
-                        interactions.
-                    </div>
+                <div class="image">
+                    <img src="{{asset('images/invite/phone.png')}}" alt="Mobile App">
                 </div>
             </div>
         </div>
-    </div>
-    <div class="footer">
-        <div class="section">
-            <h2>Download shoogle</h2>
-            <div class="app-row">
-                <div class="app-store">
-                    <a href="#" title="App Store"><img src="{{asset('images/invite/app-store.svg')}}" alt="App Store"></a>
+        <div class="list">
+            <div class="section">
+                <h2>Make the most of your experience</h2>
+                <div class="columns">
+                    <div class="item">
+                        <div class="ico plus">
+                            <img src="{{asset('images/invite/ico-plus.svg')}}" alt="Create">
+                        </div>
+                        <div class="text">
+                            Create and join <br>
+                            shoogles that <br>
+                            contribute to your <br>
+                            wellbeing.
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="ico list">
+                            <img src="{{asset('images/invite/ico-list.svg')}}" alt="Share Progress">
+                        </div>
+                        <div class="text">
+                            Share progress, <br>
+                            buddy up and <br>
+                            support each <br>
+                            other.
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="ico envelop">
+                            <img src="{{asset('images/invite/ico-envelop.svg')}}" alt="Rewards">
+                        </div>
+                        <div class="text">
+                            Give and receive <br>
+                            rewards for positive <br>
+                            interactions.
+                        </div>
+                    </div>
                 </div>
-                <div class="google-play">
-                    <a href="#" title="Google play"><img src="{{asset('images/invite/google-play.svg')}}" alt="Google play"></a>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="section">
+                <h2>Download shoogle</h2>
+                <div class="app-row">
+                    <div class="app-store">
+                        <a href="https://apps.apple.com/gb/app/shoogle/id1587699258#?platform=ipad" title="App Store"><img src="{{asset('images/invite/app-store.svg')}}" alt="App Store"></a>
+                    </div>
+                    <div class="google-play">
+                        <a href="https://play.google.com/store/apps/details?id=com.shoogle.shoogleapp.shoogleapp&hl=en&gl=US" title="Google play"><img src="{{asset('images/invite/google-play.svg')}}" alt="Google play"></a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 
 </html>
