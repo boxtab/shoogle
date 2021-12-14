@@ -5,11 +5,15 @@ namespace App\Services;
 use App\Helpers\HelperCompany;
 use App\Helpers\HelperConfigCron;
 use App\Helpers\HelperUser;
+use App\Mail\API\V1\AbuseCompanyMail;
+use App\Mail\API\V1\InviteMail;
 use App\Models\Abuse;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Class AbuseService
@@ -202,7 +206,9 @@ class AbuseService
             return;
         }
 
-
+        $abuseCompanyMail = new AbuseCompanyMail($dateAbuseTextFormat, $fromUserName, $toUserName, $companyAdminName);
+        $abuseCompanyMail->to( $companyAdminEmail );
+        Mail::send( $abuseCompanyMail );
     }
 
     /**

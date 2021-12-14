@@ -165,4 +165,15 @@ return [
         'subject' => env('NEW_COMPANY_SUBJECT', "Your company's account has been created."),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Send a complaint to the company administrator.
+    |--------------------------------------------------------------------------
+    | Please edit these parameters in the environment file.
+    |
+    */
+    'abuse_company' => [
+        'email_from' => env('MAIL_FROM_ADDRESS', 'info@shoogle.com'),
+        'subject' => env('ABUSE_COMPANY_SUBJECT', 'Complaint received!'),
+    ],
 ];
