@@ -13,7 +13,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @package App\Models
  *
  * @property int id
- * @property int user_id
+ * @property string date_abuse
+ * @property int from_user_id
+ * @property int to_user_id
+ * @property int company_admin_id
+ * @property string|null message_id
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
  */
@@ -26,14 +30,22 @@ class Abuse extends BaseModel
 
     protected $fillable = [
         'id',
-        'user_id',
+        'date_abuse',
+        'from_user_id',
+        'to_user_id',
+        'company_admin_id',
+        'message_id',
         'created_at',
         'updated_at',
     ];
 
     protected $casts = [
         'id' => 'integer',
-        'user_id' => 'integer',
+        'date_abuse' => 'string:255',
+        'from_user_id' => 'integer',
+        'to_user_id' => 'integer',
+        'company_admin_id' => 'integer',
+        'message_id' => 'string:255',
         'created_at' => 'datetime:Y-m-d h:i:s',
         'updated_at' => 'datetime:Y-m-d h:i:s',
     ];
@@ -41,8 +53,24 @@ class Abuse extends BaseModel
     /**
      * @return BelongsTo
      */
-    public function user(): BelongsTo
+    public function fromUser(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id')->withDefault();
+        return $this->belongsTo(User::class, 'from_user_id', 'id')->withDefault();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function toUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'to_user_id', 'id')->withDefault();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function companyAdmin(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'company_admin_id', 'id')->withDefault();
     }
 }
