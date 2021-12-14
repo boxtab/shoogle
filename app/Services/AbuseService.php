@@ -109,7 +109,7 @@ class AbuseService
                 'from_user_id'      => $this->getUserId( $complaint['user']['id'] ),
                 'to_user_id'        => $this->getUserId( $complaint['message']['user']['id'] ),
                 'company_admin_id'  => $this->getAdminId( $complaint['message']['user']['id'] ),
-                'message_id'        => $complaint['message']['id'],
+                'message_id'        => $complaint['message']['text'],
             ];
         }
     }
@@ -193,8 +193,9 @@ class AbuseService
      * @param int $fromUserId
      * @param int $toUserId
      * @param int $companyAdminId
+     * @param string|null $message
      */
-    private function sendComplaintMessage(string $dateAbuse, int $fromUserId, int $toUserId, int $companyAdminId)
+    private function sendComplaintMessage(string $dateAbuse, int $fromUserId, int $toUserId, int $companyAdminId, ?string $message)
     {
         $dateAbuseTextFormat    = Carbon::parse( $dateAbuse )->toDateTimeString();
         $fromUserName           = HelperUser::getFullName( $fromUserId );
@@ -206,7 +207,7 @@ class AbuseService
             return;
         }
 
-        $abuseCompanyMail = new AbuseCompanyMail($dateAbuseTextFormat, $fromUserName, $toUserName, $companyAdminName);
+        $abuseCompanyMail = new AbuseCompanyMail($dateAbuseTextFormat, $fromUserName, $toUserName, $companyAdminName, $message);
         $abuseCompanyMail->to( $companyAdminEmail );
         Mail::send( $abuseCompanyMail );
     }
@@ -230,7 +231,8 @@ class AbuseService
                 $abuse['date_abuse'],
                 $abuse['from_user_id'],
                 $abuse['to_user_id'],
-                $abuse['company_admin_id']
+                $abuse['company_admin_id'],
+                $abuse['message_id']
             );
 
         }

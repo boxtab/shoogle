@@ -40,19 +40,28 @@ class AbuseCompanyMail extends Mailable
     private $companyAdminName;
 
     /**
+     * The text of the message complained about.
+     *
+     * @var string
+     */
+    private $message;
+
+    /**
      * AbuseCompanyMail constructor.
      *
      * @param string $dateAbuseTextFormat
      * @param string $fromUserName
      * @param string $toUserName
      * @param string $companyAdminName
+     * @param string $message
      */
-    public function __construct($dateAbuseTextFormat, $fromUserName, $toUserName, $companyAdminName)
+    public function __construct($dateAbuseTextFormat, $fromUserName, $toUserName, $companyAdminName, $message)
     {
         $this->dateAbuseTextFormat = $dateAbuseTextFormat;
         $this->fromUserName = $fromUserName;
         $this->toUserName = $toUserName;
         $this->companyAdminName = $companyAdminName;
+        $this->message = $message;
     }
 
     /**
@@ -70,6 +79,7 @@ class AbuseCompanyMail extends Mailable
                 'fromUserName' => $this->fromUserName,
                 'toUserName' => $this->toUserName,
                 'companyAdminName' => $this->companyAdminName,
+                'message' => $this->message,
             ]);
     }
 }
