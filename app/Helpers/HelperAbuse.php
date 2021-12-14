@@ -20,6 +20,8 @@ class HelperAbuse
         $abuseService = new AbuseService();
         $abuseService->fetchListComplaints();
         $abuseService->handlingAbuses();
+        $abuseService->addAbuseTest();
+        $abuseService->checkFillingFields();
         $abuseService->sendComplaint();
     }
 }

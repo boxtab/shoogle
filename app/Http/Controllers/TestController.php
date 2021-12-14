@@ -49,6 +49,7 @@ use Carbon\Carbon;
 use Database\Seeders\IconRewardsSeeder;
 use DateInterval;
 use DateTime;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\User;
 use App\Constants\RoleConstant;
@@ -83,7 +84,27 @@ class TestController extends Controller
 
     public function index()
     {
+        $companyId = 39;
+        $adminId = HelperCompany::getAdminIdByCompanyId($companyId);
+        dd($adminId);
 
+
+//        try {
+//            $companyAdminRoleId = Role::on()->where('name', '=', 3232)->firstOrFail()->id;
+//        } catch (ModelNotFoundException $e) {
+//            $companyAdminRoleId = 'fail';
+//        }
+//
+//        dd($companyAdminRoleId);
+
+//        $userIDs = User::on()
+//            ->where('company_id', '=', 39)
+//            ->get()
+//            ->map(function ($item) {
+//                return $item->id;
+//            })
+//            ->toArray();
+//        dd($userIDs);
 
 //        $abuseService = new AbuseService();
 //        $tmp = $abuseService->getUserId('user33');

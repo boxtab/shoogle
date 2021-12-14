@@ -57,23 +57,6 @@ class HelperMember
     }
 
     /**
-     * Get the number of participants in shoogle.
-     *
-     * @param int|null $shoogleId
-     * @return int
-     */
-    public static function getMemberCount(?int $shoogleId): int
-    {
-        if ( is_null($shoogleId) ) {
-            return 0;
-        }
-
-        return UserHasShoogle::on()
-            ->where('shoogle_id', '=', $shoogleId)
-            ->count();
-    }
-
-    /**
      * Returns a member of the shoogle or generates an error.
      *
      * @param int|null $userId

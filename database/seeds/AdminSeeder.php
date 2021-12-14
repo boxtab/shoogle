@@ -51,7 +51,7 @@ class AdminSeeder extends Seeder
         if ( $countCredentials === self::QUANTITY_ADMIN_CREDENTIALS ) {
 
             DB::transaction( function () {
-                $user = User::updateOrCreate(['email' => config('app.ADMIN_EMAIL')],
+                $user = User::on()->updateOrCreate(['email' => config('app.ADMIN_EMAIL')],
                     [
                         'first_name' => config('app.ADMIN_NAME'),
                         'email' => config('app.ADMIN_EMAIL'),
