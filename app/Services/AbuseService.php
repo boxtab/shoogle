@@ -4,7 +4,10 @@ namespace App\Services;
 
 use App\Helpers\HelperCompany;
 use App\Helpers\HelperConfigCron;
+use App\Helpers\HelperUser;
+use App\Models\Abuse;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
@@ -143,11 +146,87 @@ class AbuseService
     }
 
     /**
+     * Filtering already sent complaints.
+     */
+    public function checkAlreadySent()
+    {
+        $listAbusesVerified = [];
+
+        foreach ($this->listAbuses as $abuse) {
+            $abuseModel = Abuse::on()->where('date_abuse', '=', $abuse['date_abuse'])->first();
+            if ( is_null($abuseModel) ) {
+                $listAbusesVerified[] = $abuse;
+            }
+        }
+
+        $this->listAbuses = $listAbusesVerified;
+    }
+
+    /**
+     * Write down a complaint.
+     *
+     * @param string $dateAbuse
+     * @param int $fromUserId
+     * @param int $toUserId
+     * @param int $companyAdminId
+     * @param string|null $messageId
+     */
+    private function writeComplaint(string $dateAbuse, int $fromUserId, int $toUserId, int $companyAdminId, ?string $messageId)
+    {
+        $abuse = new Abuse();
+        $abuse->date_abuse = $dateAbuse;
+        $abuse->from_user_id = $fromUserId;
+        $abuse->to_user_id = $toUserId;
+        $abuse->company_admin_id = $companyAdminId;
+        $abuse->message_id = $messageId;
+        $abuse->save();
+    }
+
+    /**
+     * Send a complaint to the administrator.
+     *
+     * @param string $dateAbuse
+     * @param int $fromUserId
+     * @param int $toUserId
+     * @param int $companyAdminId
+     */
+    private function sendComplaintMessage(string $dateAbuse, int $fromUserId, int $toUserId, int $companyAdminId)
+    {
+        $dateAbuseTextFormat    = Carbon::parse( $dateAbuse )->toDateTimeString();
+        $fromUserName           = HelperUser::getFullName( $fromUserId );
+        $toUserName             = HelperUser::getFullName( $toUserId );
+        $companyAdminName       = HelperUser::getFullName( $companyAdminId );
+        $companyAdminEmail      = HelperUser::getEmail( $companyAdminId );
+
+        if ( is_null($companyAdminEmail) ) {
+            return;
+        }
+
+
+    }
+
+    /**
      * Send a complaint.
      */
     public function sendComplaint()
     {
-        Log::info('sendComplaint');
-        Log::info($this->listAbuses);
+        foreach ($this->listAbuses as $abuse) {
+
+            $this->writeComplaint(
+                $abuse['date_abuse'],
+                $abuse['from_user_id'],
+                $abuse['to_user_id'],
+                $abuse['company_admin_id'],
+                $abuse['message_id']
+            );
+
+            $this->sendComplaintMessage(
+                $abuse['date_abuse'],
+                $abuse['from_user_id'],
+                $abuse['to_user_id'],
+                $abuse['company_admin_id']
+            );
+
+        }
     }
 }

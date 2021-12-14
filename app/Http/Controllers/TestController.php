@@ -84,9 +84,14 @@ class TestController extends Controller
 
     public function index()
     {
-        $companyId = 39;
-        $adminId = HelperCompany::getAdminIdByCompanyId($companyId);
-        dd($adminId);
+        $dateAbuse = '2021-10-18T14:31:03.859809Z';
+        $tmp = Carbon::parse($dateAbuse)->toDateTimeString();
+
+        dd($tmp);
+
+//        $companyId = 39;
+//        $adminId = HelperCompany::getAdminIdByCompanyId($companyId);
+//        dd($adminId);
 
 
 //        try {

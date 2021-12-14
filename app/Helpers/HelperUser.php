@@ -39,6 +39,29 @@ class HelperUser
     }
 
     /**
+     * Returns an email by user ID.
+     *
+     * @param int|null $userId
+     * @return string|null
+     */
+    public static function getEmail(?int $userId): ?string
+    {
+        if ( is_null($userId) ) {
+            return null;
+        }
+
+        $user = User::on()
+            ->where('id', '=', $userId)
+            ->first();
+
+        if ( is_null( $user ) ) {
+            return null;
+        }
+
+        return $user->email;
+    }
+
+    /**
      * Returns true if the user exists.
      *
      * @param string|null $email

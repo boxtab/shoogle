@@ -22,6 +22,7 @@ class HelperAbuse
         $abuseService->handlingAbuses();
         $abuseService->addAbuseTest();
         $abuseService->checkFillingFields();
+        $abuseService->checkAlreadySent();
         $abuseService->sendComplaint();
     }
 }
