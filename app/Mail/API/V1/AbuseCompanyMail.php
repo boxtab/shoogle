@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class AbuseCompanyMail extends Mailable
 {
@@ -44,7 +45,7 @@ class AbuseCompanyMail extends Mailable
      *
      * @var string
      */
-    private $message;
+    private $messageText;
 
     /**
      * AbuseCompanyMail constructor.
@@ -61,7 +62,7 @@ class AbuseCompanyMail extends Mailable
         $this->fromUserName = $fromUserName;
         $this->toUserName = $toUserName;
         $this->companyAdminName = $companyAdminName;
-        $this->message = $message;
+        $this->messageText = $message;
     }
 
     /**
@@ -79,7 +80,7 @@ class AbuseCompanyMail extends Mailable
                 'fromUserName' => $this->fromUserName,
                 'toUserName' => $this->toUserName,
                 'companyAdminName' => $this->companyAdminName,
-                'message' => $this->message,
+                'messageText' => $this->messageText,
             ]);
     }
 }

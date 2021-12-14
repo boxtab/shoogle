@@ -44,7 +44,7 @@
                 <div class="text">
                     <div class="title"><strong>The text of the message complained about</strong></div>
                     <div class="description">
-                        {{$message}}
+                        {{$messageText}}
                     </div>
                 </div>
             </li>

@@ -206,7 +206,6 @@ class AbuseService
         if ( is_null($companyAdminEmail) ) {
             return;
         }
-
         $abuseCompanyMail = new AbuseCompanyMail($dateAbuseTextFormat, $fromUserName, $toUserName, $companyAdminName, $message);
         $abuseCompanyMail->to( $companyAdminEmail );
         Mail::send( $abuseCompanyMail );
