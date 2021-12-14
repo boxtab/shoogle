@@ -33,7 +33,13 @@ class Kernel extends ConsoleKernel
             ->monthlyOn(1, '10:00');
 
         $schedule->command('abuse:push')
-            ->dailyAt('13:00');
+            ->dailyAt('10:00');
+
+        $schedule->command('abuse:push')
+            ->dailyAt('14:00');
+
+        $schedule->command('abuse:push')
+            ->dailyAt('18:00');
     }
 
     /**

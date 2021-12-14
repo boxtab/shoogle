@@ -277,3 +277,6 @@ a message will be sent.
 The command is designed to run from the command line.
 Sends out a reminder to set wellbeing scores. Runs on schedule every first day of the month at 10 a.m.
 
+Sending letters with complaints to company administrators.
+`docker-compose exec app php artisan abuse:push`
+
