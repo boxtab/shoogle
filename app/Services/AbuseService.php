@@ -195,7 +195,7 @@ class AbuseService
      * @param int $companyAdminId
      * @param string|null $message
      */
-    private function sendComplaintMessage(string $dateAbuse, int $fromUserId, int $toUserId, int $companyAdminId, ?string $message)
+    public function sendComplaintMessage(string $dateAbuse, int $fromUserId, int $toUserId, int $companyAdminId, ?string $message)
     {
         $dateAbuseTextFormat    = Carbon::parse( $dateAbuse )->toDateTimeString();
         $fromUserName           = HelperUser::getFullName( $fromUserId );

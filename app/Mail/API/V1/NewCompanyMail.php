@@ -7,6 +7,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Class NewCompanyMail
+ * @package App\Mail\API\V1
+ */
 class NewCompanyMail extends Mailable
 {
     use Queueable, SerializesModels;

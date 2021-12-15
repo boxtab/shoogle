@@ -93,7 +93,7 @@
             <div class="divider"></div>
             <div class="footer">
                 <div class="f-text">
-                    (c) 2021 shoogle. All rights reserved.
+                    (c) {{ now()->year }} shoogle. All rights reserved.
                 </div>
                 <div class="f-social">
                     <a class="fb" href="https://www.facebook.com/shoogleapp" title="Facebook"><img src="{{asset('images/new-company/ico-facebook.svg')}}" alt="Facebook"></a>

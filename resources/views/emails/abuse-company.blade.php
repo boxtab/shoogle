@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+{{--    <link rel="stylesheet" type="text/css"  href="{{asset('css/new-company.css')}}">--}}
 {{--    <link rel="stylesheet" type="text/css" href="./css/new-company.css">--}}
 </head>
 
@@ -51,12 +52,12 @@
         </ul>
         <div class="footer">
             <div class="f-text">
-                (c) <?php echo date("Y"); ?> shoogle. All rights reserved.
+                (c) {{ now()->year }} shoogle. All rights reserved.
             </div>
             <div class="f-social">
-                <a class="fb" href="#" title="Facebook"><img src="{{asset('images/new-company/ico-facebook.svg')}}" alt="Facebook"></a>
-                <a class="tw" href="#" title="Twitter"><img src="{{asset('images/new-company/ico-twitter.svg')}}" alt="Twitter"></a>
-                <a class="insta" href="#" title="Instagram"><img src="{{asset('images/new-company/ico-instagram.svg')}}" alt="Instagram"></a>
+                <a class="fb" href="https://www.facebook.com/shoogleapp" title="Facebook"><img src="{{asset('images/new-company/ico-facebook.svg')}}" alt="Facebook"></a>
+                <a class="tw" href="https://twitter.com/search?q=%23shoogleapp&src=typed_query&f=top" title="Twitter"><img src="{{asset('images/new-company/ico-twitter.svg')}}" alt="Twitter"></a>
+                <a class="insta" href="https://www.instagram.com/shoogleapp/" title="Instagram"><img src="{{asset('images/new-company/ico-instagram.svg')}}" alt="Instagram"></a>
             </div>
         </div>
     </div>
