@@ -98,6 +98,15 @@ class CompanyController extends BaseApiController
         try {
             $credentials = $request->only(['companyName', 'firstName','lastName', 'email', 'password']);
 
+            $user = User::on()
+                ->where('email', '=', $credentials['email'])
+                ->first();
+
+            if ( ! is_null($user) ) {
+                throw new Exception('This email is reserved by another user!', Response::HTTP_FORBIDDEN);
+            }
+
+            /*
             $user = User::withTrashed()
                 ->where('email', '=', $credentials['email'])
                 ->first();
@@ -113,7 +122,7 @@ class CompanyController extends BaseApiController
                     }
                 }
             }
-
+            */
             $this->repository->create($credentials);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
