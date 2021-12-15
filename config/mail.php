@@ -174,6 +174,6 @@ return [
     */
     'abuse_company' => [
         'email_from' => env('MAIL_FROM_ADDRESS', 'info@shoogle.com'),
-        'subject' => env('ABUSE_COMPANY_SUBJECT', 'Complaint received!'),
+        'subject' => env('ABUSE_COMPANY_SUBJECT', 'You have received an abuse report!'),
     ],
 ];

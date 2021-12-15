@@ -84,13 +84,15 @@ class TestController extends Controller
 
     public function index()
     {
-        $dateAbuse = '2021-12-15 12:55:01';
-        $fromUserId = 125;
-        $toUserId = 126;
-        $companyAdminId = 124;
-        $message = 'Test message for abuse!';
-        $abuseService = new AbuseService();
-        $abuseService->sendComplaintMessage($dateAbuse, $fromUserId, $toUserId, $companyAdminId, $message);
+
+
+//        $dateAbuse = '2021-12-15 12:55:01';
+//        $fromUserId = 125;
+//        $toUserId = 126;
+//        $companyAdminId = 124;
+//        $message = 'Test message for abuse!';
+//        $abuseService = new AbuseService();
+//        $abuseService->sendComplaintMessage($dateAbuse, $fromUserId, $toUserId, $companyAdminId, $message);
 
 
 //        $dateAbuse = '2021-10-18T14:31:03.859809Z';

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Helper;
+use App\Helpers\HelperCompany;
 use App\Http\Controllers\API\BaseApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompanyCreateRequest;
@@ -10,6 +11,8 @@ use App\Http\Requests\CompanyIndexRequest;
 use App\Http\Requests\CompanyUpdateRequest;
 use App\Http\Resources\CompanyShowResource;
 use App\Models\Company;
+use App\Models\ModelHasRole;
+use App\Models\Role;
 use App\Repositories\CompanyRepository;
 use App\Repositories\DepartmentRepository;
 use App\Support\ApiResponse\ApiResponse;
@@ -66,7 +69,13 @@ class CompanyController extends BaseApiController
     {
         try {
             $company = $this->findRecordByID($id);
-            $adminCompany = $this->repository->getAdminByCompanyId($id);
+//            $adminCompany = $this->repository->getAdminByCompanyId($id);
+            $adminCompanyId = HelperCompany::getAdminIdByCompanyId($id);
+            if ( ! is_null($adminCompanyId) ) {
+                $adminCompany = User::on()->where('id', '=', $adminCompanyId)->first();
+            } else {
+                $adminCompany = null;
+            }
 
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -88,6 +97,32 @@ class CompanyController extends BaseApiController
     {
         try {
             $credentials = $request->only(['companyName', 'firstName','lastName', 'email', 'password']);
+
+            $user = User::on()
+                ->where('email', '=', $credentials['email'])
+                ->first();
+
+            if ( ! is_null($user) ) {
+                throw new Exception('This email is reserved by another user!', Response::HTTP_FORBIDDEN);
+            }
+
+            /*
+            $user = User::withTrashed()
+                ->where('email', '=', $credentials['email'])
+                ->first();
+
+            if ( ! is_null($user) ) {
+                $modelHasRoles = ModelHasRole::on()
+                    ->where('model_id', '=', $user->id)
+                    ->first();
+                if ( ! is_null($modelHasRoles) ) {
+                    $roleAdminCompanyId = Role::on()->where('name', '=', RoleConstant::SUPER_ADMIN)->first()->id;
+                    if ( $modelHasRoles->role_id == $roleAdminCompanyId ) {
+                        throw new Exception('This email is reserved by another user!', Response::HTTP_FORBIDDEN);
+                    }
+                }
+            }
+            */
             $this->repository->create($credentials);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
