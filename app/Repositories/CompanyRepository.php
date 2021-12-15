@@ -100,7 +100,7 @@ class CompanyRepository extends Repositories
                 $join->on('roles.id', '=', 'model_has_roles.role_id');
             })
             ->where('users.company_id', $companyId)
-            ->where('roles.name', RoleConstant::COMPANY_ADMIN)
+            ->where('roles.name', '=', RoleConstant::COMPANY_ADMIN)
             ->firstOrFail();
     }
 
@@ -124,7 +124,6 @@ class CompanyRepository extends Repositories
                     'name' => $credentials['companyName'],
                 ]);
             }
-
 
             $user = User::withTrashed()
                 ->where('email', '=', $credentials['email'])

@@ -12,10 +12,7 @@ class CompanyShowResource extends JsonResource
      */
     private $adminCompany;
 
-    /**
-     * @param User $adminCompany
-     */
-    public function setAdminCompany(User $adminCompany)
+    public function setAdminCompany($adminCompany)
     {
         $this->adminCompany = $adminCompany;
     }
@@ -29,10 +26,10 @@ class CompanyShowResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'companyName' => $this->resource->name,
-            'firstName' => $this->adminCompany->first_name,
-            'lastName' => $this->adminCompany->last_name,
-            'email' => $this->adminCompany->email,
+            'companyName'   => $this->resource->name,
+            'firstName'     => ( ! is_null($this->adminCompany) ) ? $this->adminCompany->first_name : null,
+            'lastName'      => ( ! is_null($this->adminCompany) ) ? $this->adminCompany->last_name : null,
+            'email'         => ( ! is_null($this->adminCompany) ) ? $this->adminCompany->email : null,
         ];
     }
 }
