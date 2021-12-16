@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Constants\EnvConstant;
+use App\Helpers\HelperCompany;
 use App\Http\Requests\InviteCSVRequest;
 use App\Mail\API\V1\InviteMail;
 use App\Models\Department;
@@ -101,7 +102,7 @@ class InviteRepository extends Repositories
     {
         $fileCSV = array_map('str_getcsv', file($pathFile));
         $listEmail = [];
-
+        $companyId = HelperCompany::getCompanyId();
 
         foreach ($fileCSV as $inviteRow) {
 
@@ -121,7 +122,12 @@ class InviteRepository extends Repositories
                 continue;
             }
 
-            if (Department::on()->where('id', $inviteRow[1])->count() != 1) {
+            if (
+                Department::on()
+                    ->where('company_id', '=', $companyId)
+                    ->where('id', '=', $inviteRow[1])
+                    ->count() != 1
+            ) {
                 continue;
             }
 
