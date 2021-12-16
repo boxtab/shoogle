@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <a href="https://shoogle.io" class="ico" title="Create goals">
-                        <img src="{{asset('images/new-company/arrow.svg')}}" alt="Shoogle Arrow">
+                        <img src="{{asset('images/new-company/arrow.png')}}" alt="Shoogle Arrow">
                     </a>
                 </li>
                 <li>
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                     <a href="https://shoogle.io" class="ico" title="Join communities">
-                        <img src="{{asset('images/new-company/arrow.svg')}}" alt="Shoogle Arrow">
+                        <img src="{{asset('images/new-company/arrow.png')}}" alt="Shoogle Arrow">
                     </a>
                 </li>
                 <li>
@@ -63,7 +63,7 @@
                         </div>
                     </div>
                     <a href="https://shoogle.io" class="ico" title="Buddy up">
-                        <img src="{{asset('images/new-company/arrow.svg')}}" alt="Shoogle Arrow">
+                        <img src="{{asset('images/new-company/arrow.png')}}" alt="Shoogle Arrow">
                     </a>
                 </li>
                 <li>
@@ -77,16 +77,16 @@
                         </div>
                     </div>
                     <a href="https://shoogle.io" class="ico" title="Get to work">
-                        <img src="{{asset('images/new-company/arrow.svg')}}" alt="Shoogle Arrow">
+                        <img src="{{asset('images/new-company/arrow.png')}}" alt="Shoogle Arrow">
                     </a>
                 </li>
             </ul>
             <div class="app-row">
                 <div class="app-store">
-                    <a href="https://apps.apple.com/gb/app/shoogle/id1587699258#?platform=ipad" title="App Store"><img src="{{asset('images/new-company/app-store.svg')}}" alt="App Store"></a>
+                    <a href="https://apps.apple.com/gb/app/shoogle/id1587699258#?platform=ipad" title="App Store"><img src="{{asset('images/new-company/app-store.png')}}" alt="App Store"></a>
                 </div>
                 <div class="google-play">
-                    <a href="https://play.google.com/store/apps/details?id=com.shoogle.shoogleapp.shoogleapp&hl=en&gl=US" title="Google play"><img src="{{asset('images/new-company/google-play.svg')}}" alt="Google play"></a>
+                    <a href="https://play.google.com/store/apps/details?id=com.shoogle.shoogleapp.shoogleapp&hl=en&gl=US" title="Google play"><img src="{{asset('images/new-company/google-play.png')}}" alt="Google play"></a>
                 </div>
             </div>
             <div class="divider"></div>
@@ -95,9 +95,9 @@
                     (c) {{ now()->year }} shoogle. All rights reserved.
                 </div>
                 <div class="f-social">
-                    <a class="fb" href="https://www.facebook.com/shoogleapp" title="Facebook"><img src="{{asset('images/new-company/ico-facebook.svg')}}" alt="Facebook"></a>
-                    <a class="tw" href="https://twitter.com/search?q=%23shoogleapp&src=typed_query&f=top" title="Twitter"><img src="{{asset('images/new-company/ico-twitter.svg')}}" alt="Twitter"></a>
-                    <a class="insta" href="https://www.instagram.com/shoogleapp/" title="Instagram"><img src="{{asset('images/new-company/ico-instagram.svg')}}" alt="Instagram"></a>
+                    <a class="fb" href="https://www.facebook.com/shoogleapp" title="Facebook"><img src="{{asset('images/new-company/ico-facebook.png')}}" alt="Facebook"></a>
+                    <a class="tw" href="https://twitter.com/search?q=%23shoogleapp&src=typed_query&f=top" title="Twitter"><img src="{{asset('images/new-company/ico-twitter.png')}}" alt="Twitter"></a>
+                    <a class="insta" href="https://www.instagram.com/shoogleapp/" title="Instagram"><img src="{{asset('images/new-company/ico-instagram.png')}}" alt="Instagram"></a>
                 </div>
             </div>
         </div>

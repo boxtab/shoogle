@@ -80,11 +80,11 @@
         <div class="header">
             <!-- <div class="section"> -->
             <div class="logo">
-                <a href="https://shoogle.io" title="Shoogle"><img src="{{asset('images/invite/logo.svg')}}" alt="Shoogle"></a>
+                <a href="https://shoogle.io" title="Shoogle"><img src="{{asset('images/invite/logo.png')}}" alt="Shoogle"></a>
             </div>
             <div class="social">
-                <a class="in" href="https://www.linkedin.com/company/shoogleapp/" title="Linkedin"><img src="{{asset('images/invite/linkedin.svg')}}" alt="Linkedin"></a>
-                <a class="insta" href="https://www.instagram.com/shoogleapp/" title="Instagram"><img src="{{asset('images/invite/instagram.svg')}}" alt="Instagram"></a>
+                <a class="in" href="https://www.linkedin.com/company/shoogleapp/" title="Linkedin"><img src="{{asset('images/invite/linkedin.png')}}" alt="Linkedin"></a>
+                <a class="insta" href="https://www.instagram.com/shoogleapp/" title="Instagram"><img src="{{asset('images/invite/instagram.png')}}" alt="Instagram"></a>
             </div>
             <!-- </div> -->
         </div>
@@ -113,7 +113,7 @@
                 <div class="columns">
                     <div class="item">
                         <div class="ico plus">
-                            <img src="{{asset('images/invite/ico-plus.svg')}}" alt="Create">
+                            <img src="{{asset('images/invite/ico-plus.png')}}" alt="Create">
                         </div>
                         <div class="text">
                             Create and join <br>
@@ -124,7 +124,7 @@
                     </div>
                     <div class="item">
                         <div class="ico list">
-                            <img src="{{asset('images/invite/ico-list.svg')}}" alt="Share Progress">
+                            <img src="{{asset('images/invite/ico-list.png')}}" alt="Share Progress">
                         </div>
                         <div class="text">
                             Share progress, <br>
@@ -135,7 +135,7 @@
                     </div>
                     <div class="item">
                         <div class="ico envelop">
-                            <img src="{{asset('images/invite/ico-envelop.svg')}}" alt="Rewards">
+                            <img src="{{asset('images/invite/ico-envelop.png')}}" alt="Rewards">
                         </div>
                         <div class="text">
                             Give and receive <br>
@@ -151,10 +151,10 @@
                 <h2>Download shoogle</h2>
                 <div class="app-row">
                     <div class="app-store">
-                        <a href="https://apps.apple.com/gb/app/shoogle/id1587699258#?platform=ipad" title="App Store"><img src="{{asset('images/invite/app-store.svg')}}" alt="App Store"></a>
+                        <a href="https://apps.apple.com/gb/app/shoogle/id1587699258#?platform=ipad" title="App Store"><img src="{{asset('images/invite/app-store.png')}}" alt="App Store"></a>
                     </div>
                     <div class="google-play">
-                        <a href="https://play.google.com/store/apps/details?id=com.shoogle.shoogleapp.shoogleapp&hl=en&gl=US" title="Google play"><img src="{{asset('images/invite/google-play.svg')}}" alt="Google play"></a>
+                        <a href="https://play.google.com/store/apps/details?id=com.shoogle.shoogleapp.shoogleapp&hl=en&gl=US" title="Google play"><img src="{{asset('images/invite/google-play.png')}}" alt="Google play"></a>
                     </div>
                 </div>
             </div>
