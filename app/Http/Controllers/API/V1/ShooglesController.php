@@ -362,9 +362,9 @@ class ShooglesController extends BaseApiController
             $shoogle = $this->findRecordByID($id);
             $this->checkCreatorAndUserInCompany($id, true);
 
-            $active = (int)$request->get('active');
+            $active = (int)($request->get('active'));
             $shoogle->update([
-                'active' => $active,
+                'active' => (int)$active,
             ]);
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
