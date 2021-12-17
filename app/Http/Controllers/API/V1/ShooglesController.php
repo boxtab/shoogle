@@ -360,7 +360,7 @@ class ShooglesController extends BaseApiController
     {
         try {
             $shoogle = $this->findRecordByID($id);
-            $this->checkCreatorAndUserInCompany($id);
+            $this->checkCreatorAndUserInCompany($id, true);
 
             $active = $request->get('active');
             $shoogle->update([
