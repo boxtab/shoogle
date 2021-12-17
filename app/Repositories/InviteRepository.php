@@ -102,7 +102,8 @@ class InviteRepository extends Repositories
     {
         $fileCSV = array_map('str_getcsv', file($pathFile));
         $listEmail = [];
-        $companyId = HelperCompany::getCompanyId();
+        $companyId = $this->companyId;
+//        $companyId = HelperCompany::getCompanyId();
 
         foreach ($fileCSV as $inviteRow) {
 
@@ -122,30 +123,45 @@ class InviteRepository extends Repositories
                 continue;
             }
 
-            if (
-                Department::on()
-                    ->where('company_id', '=', $companyId)
-                    ->where('id', '=', $inviteRow[1])
-                    ->count() != 1
-            ) {
-                continue;
+            $department = Department::on()
+                ->where('company_id', '=', $companyId)
+                ->where('name', '=', $inviteRow[1])
+                ->first();
+
+            if ( ! is_null($department) ) {
+                $departmentId = $department->id;
+            } else {
+                $newDepartment = new Department();
+                $newDepartment->company_id = $companyId;
+                $newDepartment->name = $inviteRow[1];
+                $newDepartment->save();
+                $departmentId = $newDepartment->id;
             }
+
+//            if (
+//                Department::on()
+//                    ->where('company_id', '=', $companyId)
+//                    ->where('id', '=', $inviteRow[1])
+//                    ->count() != 1
+//            ) {
+//                continue;
+//            }
 
             $invite = Invite::on()->where('email', $inviteRow[0])->first();
             if ($invite !== null) {
                 $invite->update([
                     'is_used' => 0,
                     'created_by' => Auth::id(),
-                    'companies_id' => $this->companyId,
-                    'department_id' => $inviteRow[1],
+                    'companies_id' => $companyId,
+                    'department_id' => $departmentId,
                 ]);
             } else {
                 $invite = new Invite();
                 $invite->email = $inviteRow[0];
                 $invite->is_used = 0;
                 $invite->created_by = Auth::id();
-                $invite->companies_id = $this->companyId;
-                $invite->department_id = $inviteRow[1];
+                $invite->companies_id = $companyId;
+                $invite->department_id = $departmentId;
                 $invite->save();
             }
 
