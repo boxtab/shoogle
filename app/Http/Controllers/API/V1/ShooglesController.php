@@ -362,7 +362,7 @@ class ShooglesController extends BaseApiController
             $shoogle = $this->findRecordByID($id);
             $this->checkCreatorAndUserInCompany($id, true);
 
-            $active = $request->get('active');
+            $active = (int)$request->get('active');
             $shoogle->update([
                 'active' => $active,
             ]);
