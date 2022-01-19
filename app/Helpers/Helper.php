@@ -130,7 +130,7 @@ class Helper
     public static function getLinkResetPassword(string $token, string $email): string
     {
         $host = request()->getSchemeAndHttpHost();
-        return "$host/reset-password/:$token/:$email";
+        return "$host/reset-password/$token/$email";
     }
 
     /**
