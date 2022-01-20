@@ -259,11 +259,13 @@ class AuthController extends BaseApiController
                 }
             );
 
-            if ( $status === Password::RESET_LINK_SENT ) {
-                return ApiResponse::returnData(['status' => __($status)]);
-            } else {
-                return ApiResponse::returnError(__($status));
-            }
+            return ApiResponse::returnData(['status' => __($status)]);
+
+//            if ( $status === Password::RESET_LINK_SENT ) {
+//                return ApiResponse::returnData(['status' => __($status)]);
+//            } else {
+//                return ApiResponse::returnError(__($status));
+//            }
         }
 
         if ( $passwordResets->token != $request->input('token')) {
