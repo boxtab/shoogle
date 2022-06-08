@@ -11,6 +11,7 @@ const {series} = require('gulp');
 var pathsInvite = {
     styles: {
         src: 'resources/scss/invite-email/invite.scss',
+        watch: 'resources/scss/invite-email/**/*.scss',
         dest: 'public/css',
     },
 };
@@ -84,6 +85,11 @@ exports.buildStylesInvite = buildStylesInvite;
 exports.buildStylesNewCompany = buildStylesNewCompany;
 exports.buildStylesCommon = buildStylesCommon;
 
+function watch() {
+    gulp.watch(pathsInvite.styles.watch, buildStylesInvite);
+}
+
+exports.watch = watch;
 exports.default = series(
     buildStylesInvite,
     buildStylesNewCompany,
