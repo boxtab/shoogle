@@ -12,21 +12,32 @@ body * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-size: $font-size;
+  // font-size: $font-size;
+  font-size: $font-size-Min;
 
-  @media (max-width: $mobileMax) {
-    font-size: $font-size-Min;
+  // @media (max-width: $mobileMax) {
+  //   font-size: $font-size-Min;
+  // }
+  @media (min-width: $mobileBig) {
+    font-size: $font-size;
   }
 }
 .container {
   margin: auto;
+  // width: 600px;
+  // min-width: 600px;
 
-  width: 600px;
-  min-width: 600px;
+  width: 300px;
+  min-width: 300px;
 
-  @media (max-width: $mobileMax) {
-    width: 300px;
-    min-width: 300px;
+  // @media (max-width: $mobileMax) {
+  //   width: 300px;
+  //   min-width: 300px;
+  // }
+
+  @media (min-width: $mobileBig) {
+    width: 600px;
+    min-width: 600px;
   }
 }
 
@@ -37,10 +48,15 @@ a {
 h1 {
   text-align: left;
   font-weight: 800;
-  font-size: $font-size-h1;
+  // font-size: $font-size-h1;
+  font-size: $font-size-h1-Min;
 
-  @media (max-width: $mobileMax) {
-    font-size: $font-size-h1-Min;
+  // @media (max-width: $mobileMax) {
+  //   font-size: $font-size-h1-Min;
+  // }
+
+  @media (min-width: $mobileBig) {
+    font-size: $font-size-h1;
   }
 }
 
@@ -49,10 +65,15 @@ h2 {
   font-weight: 400;
   color: $color-theme;
 
-  font-size: $font-size-title;
+  // font-size: $font-size-title;
+  font-size: $font-size-title-Min;
 
-  @media (max-width: $mobileMax) {
-    font-size: $font-size-title-Min;
+  // @media (max-width: $mobileMax) {
+  //   font-size: $font-size-title-Min;
+  // }
+
+  @media (min-width: $mobileBig) {
+    font-size: $font-size-title;
   }
 }
 
@@ -60,24 +81,38 @@ h2 {
   overflow: hidden;
   background-color: #fff;
 
-  height: 88px;
-  padding-right: 20px;
+  // height: 88px;
+  // padding-right: 20px;
+  height: 44px;
+  padding-right: 10px;
 
-  @media (max-width: $mobileMax) {
-    height: 44px;
-    padding-right: 10px;
+  // @media (max-width: $mobileMax) {
+  //   height: 44px;
+  //   padding-right: 10px;
+  // }
+
+  @media (min-width: $mobileBig) {
+    height: 88px;
+    padding-right: 20px;
   }
 
   .logo {
     float: left;
     text-align: left;
 
-    width: 76px;
-    margin-top: 10px;
+    // width: 76px;
+    // margin-top: 10px;
+    margin-top: 5px;
+    width: 38px;
 
-    @media (max-width: $mobileMax) {
-      margin-top: 5px;
-      width: 38px;
+    // @media (max-width: $mobileMax) {
+    //   margin-top: 5px;
+    //   width: 38px;
+    // }
+
+    @media (min-width: $mobileBig) {
+      width: 76px;
+      margin-top: 10px;
     }
 
     a {
@@ -92,21 +127,33 @@ h2 {
     float: right;
     text-align: right;
 
-    padding-top: 36px;
+    // padding-top: 36px;
+    padding-top: 18px;
 
-    @media (max-width: $mobileMax) {
-      padding-top: 18px;
+    // @media (max-width: $mobileMax) {
+    //   padding-top: 18px;
+    // }
+
+    @media (min-width: $mobileBig) {
+      padding-top: 36px;
     }
 
     a {
       display: inline-block;
 
-      width: 48px;
-      margin-left: 26px;
+      // width: 48px;
+      // margin-left: 26px;
+      width: 24px;
+      margin-left: 13px;
 
-      @media (max-width: $mobileMax) {
-        width: 24px;
-        margin-left: 13px;
+      // @media (max-width: $mobileMax) {
+      //   width: 24px;
+      //   margin-left: 13px;
+      // }
+
+      @media (min-width: $mobileBig) {
+        width: 48px;
+        margin-left: 26px;
       }
 
       img {
@@ -121,66 +168,104 @@ h2 {
   background-size: cover;
 
   overflow: hidden;
-  height: 520px;
-  background-position: 50% 80%;
+  // height: 520px;
+  // background-position: 50% 80%;
+  height: 260px;
+  background-position: 50% 100%;
 
-  @media (max-width: $mobileMax) {
-    height: 260px;
-    background-position: 50% 100%;
+  // @media (max-width: $mobileMax) {
+  //   height: 260px;
+  //   background-position: 50% 100%;
+  // }
+
+  @media (min-width: $mobileBig) {
+    height: 520px;
+    background-position: 50% 80%;
   }
 
   .text {
     float: left;
-    width: 336px;
-    padding-left: 36px;
-    padding-top: 48px;
+    // width: 336px;
+    // padding-left: 36px;
+    // padding-top: 48px;
+    padding-left: 18px;
+    width: 168px;
+    padding-top: 24px;
 
-    @media (max-width: $mobileMax) {
-      padding-left: 18px;
-      width: 168px;
-      padding-top: 24px;
+    // @media (max-width: $mobileMax) {
+    //   padding-left: 18px;
+    //   width: 168px;
+    //   padding-top: 24px;
+    // }
+
+    @media (min-width: $mobileBig) {
+      width: 336px;
+      padding-left: 36px;
+      padding-top: 48px;
     }
 
     .title {
       font-weight: 800;
       color: #fff;
-      font-size: $font-size-h1;
-      margin-bottom: 10px;
+      // font-size: $font-size-h1;
+      // margin-bottom: 10px;
+      font-size: $font-size-h1-Min;
+      margin-bottom: 5px;
 
-      @media (max-width: $mobileMax) {
-        font-size: $font-size-h1-Min;
-        margin-bottom: 5px;
+      // @media (max-width: $mobileMax) {
+      //   font-size: $font-size-h1-Min;
+      //   margin-bottom: 5px;
+      // }
+
+      @media (min-width: $mobileBig) {
+        font-size: $font-size-h1;
+        margin-bottom: 10px;
       }
     }
 
     .description {
       color: #fff;
-      font-size: $font-size-description;
       font-weight: 300;
+      // font-size: $font-size-description;
+      font-size: $font-size-description-Min;
 
-      @media (max-width: $mobileMax) {
-        font-size: $font-size-description-Min;
+      // @media (max-width: $mobileMax) {
+      //   font-size: $font-size-description-Min;
+      // }
+
+      @media (min-width: $mobileBig) {
+        font-size: $font-size-description;
       }
     }
   }
 
   .image {
     float: right;
-    // width: 260px;
-    width: 234px;
-    padding-top: 88px;
+    // width: 234px;
+    // padding-top: 88px;
+    width: 117px;
+    padding-top: 44px;
 
-    @media (max-width: $mobileMax) {
-      // width: 130px;
-      width: 117px;
-      padding-top: 44px;
+    // @media (max-width: $mobileMax) {
+    //   width: 117px;
+    //   padding-top: 44px;
+    // }
+
+    @media (min-width: $mobileBig) {
+      width: 234px;
+      padding-top: 88px;
     }
 
     img {
-      width: 234px;
+      // width: 234px;
+      width: 117px;
 
-      @media (max-width: $mobileMax) {
-        width: 117px;
+      // @media (max-width: $mobileMax) {
+      //   width: 117px;
+      // }
+
+      @media (min-width: $mobileBig) {
+        width: 234px;
       }
     }
   }
@@ -190,23 +275,40 @@ h2 {
   background-color: $color-theme-bg-color;
   overflow: hidden;
 
-  padding-top: 24px;
-  padding-left: 36px;
-  height: 324px;
+  // padding-top: 24px;
+  // padding-left: 36px;
+  // height: 324px;
 
-  @media (max-width: $mobileMax) {
-    padding-top: 12px;
-    padding-left: 18px;
-    height: auto;
+  padding-top: 12px;
+  padding-left: 18px;
+  height: auto;
+
+  // @media (max-width: $mobileMax) {
+  //   padding-top: 12px;
+  //   padding-left: 18px;
+  //   height: auto;
+  // }
+
+  @media (min-width: $mobileBig) {
+    padding-top: 24px;
+    padding-left: 36px;
+    height: 324px;
   }
 
   h2 {
     color: $color-theme;
-    margin-bottom: 44px;
+    // margin-bottom: 44px;
+    margin-bottom: 22px;
+    padding-left: 6px;
 
-    @media (max-width: $mobileMax) {
-      margin-bottom: 22px;
-      padding-left: 6px;
+    // @media (max-width: $mobileMax) {
+    //   margin-bottom: 22px;
+    //   padding-left: 6px;
+    // }
+
+    @media (min-width: $mobileBig) {
+      margin-bottom: 44px;
+      padding-left: 0;
     }
   }
   .columns {
@@ -215,28 +317,47 @@ h2 {
     .item {
       float: left;
       width: 30%;
-      margin: 1%;
-      @media (max-width: $mobileMax) {
-        margin-bottom: 20px;
+      // margin: 1%;
+      margin-bottom: 20px;
+
+      // @media (max-width: $mobileMax) {
+      //   margin-bottom: 20px;
+      // }
+
+      @media (min-width: $mobileBig) {
+        margin: 1%;
       }
 
       .ico {
         text-align: center;
-        height: 52px;
-        margin-bottom: 26px;
+        // height: 52px;
+        // margin-bottom: 26px;
+        height: 26px;
+        min-height: 32px; // fix for list issue
+        margin-bottom: 13px;
 
-        @media (max-width: $mobileMax) {
-          height: 26px;
-          min-height: 32px; // fix for list issue
-          margin-bottom: 13px;
+        // @media (max-width: $mobileMax) {
+        //   height: 26px;
+        //   min-height: 32px; // fix for list issue
+        //   margin-bottom: 13px;
+        // }
+
+        @media (min-width: $mobileBig) {
+          height: 52px;
+          margin-bottom: 26px;
         }
 
         &.plus {
           img {
-            width: 52px;
+            // width: 52px;
+            width: 26px;
 
-            @media (max-width: $mobileMax) {
-              width: 26px;
+            // @media (max-width: $mobileMax) {
+            //   width: 26px;
+            // }
+
+            @media (min-width: $mobileBig) {
+              width: 52px;
             }
           }
         }
@@ -244,28 +365,44 @@ h2 {
           padding-bottom: 0; // fix for list issue
           padding-left: 0; // fix for list issue
           padding-right: 0; // fix for list issue
-          padding-top: 6px;
+          // padding-top: 6px;
 
-          @media (max-width: $mobileMax) {
-            padding: 0;
-            padding-top: 3px;
+          padding-top: 3px;
+
+          // @media (max-width: $mobileMax) {
+          //   padding: 0;
+          //   padding-top: 3px;
+          // }
+
+          @media (min-width: $mobileBig) {
+            padding-top: 6px;
           }
 
           img {
-            width: 40px;
+            // width: 40px;
+            width: 20px;
 
-            @media (max-width: $mobileMax) {
-              width: 20px;
+            // @media (max-width: $mobileMax) {
+            //   width: 20px;
+            // }
+
+            @media (min-width: $mobileBig) {
+              width: 40px;
             }
           }
         }
 
         &.envelop {
           img {
-            width: 42px;
+            // width: 42px;
+            width: 21px;
 
-            @media (max-width: $mobileMax) {
-              width: 21px;
+            // @media (max-width: $mobileMax) {
+            //   width: 21px;
+            // }
+
+            @media (min-width: $mobileBig) {
+              width: 42px;
             }
           }
         }
@@ -282,12 +419,19 @@ h2 {
   background-color: $color-footer-bg-color;
   overflow: hidden;
 
-  height: 250px;
-  padding-top: 48px;
+  // height: 250px;
+  // padding-top: 48px;
+  height: 125px;
+  padding-top: 24px;
 
-  @media (max-width: $mobileMax) {
-    height: 125px;
-    padding-top: 24px;
+  // @media (max-width: $mobileMax) {
+  //   height: 125px;
+  //   padding-top: 24px;
+  // }
+
+  @media (min-width: $mobileBig) {
+    height: 250px;
+    padding-top: 48px;
   }
 
   h2 {
@@ -295,10 +439,15 @@ h2 {
     font-weight: 700;
     text-align: center;
 
-    margin-bottom: 30px;
+    // margin-bottom: 30px;
+    margin-bottom: 15px;
 
-    @media (max-width: $mobileMax) {
-      margin-bottom: 15px;
+    // @media (max-width: $mobileMax) {
+    //   margin-bottom: 15px;
+    // }
+
+    @media (min-width: $mobileBig) {
+      margin-bottom: 30px;
     }
   }
   .app-row {
@@ -306,19 +455,29 @@ h2 {
     text-align: center;
     margin: auto;
 
-    width: 430px;
+    // width: 430px;
+    width: 215px;
 
-    @media (max-width: $mobileMax) {
-      width: 215px;
+    // @media (max-width: $mobileMax) {
+    //   width: 215px;
+    // }
+
+    @media (min-width: $mobileBig) {
+      width: 430px;
     }
 
     .app-store {
       float: left;
 
-      width: 200px;
+      // width: 200px;
+      width: 100px;
 
-      @media (max-width: $mobileMax) {
-        width: 100px;
+      // @media (max-width: $mobileMax) {
+      //   width: 100px;
+      // }
+
+      @media (min-width: $mobileBig) {
+        width: 200px;
       }
 
       img {
@@ -328,11 +487,17 @@ h2 {
 
     .google-play {
       float: right;
-      width: 200px;
+      // width: 200px;
+      width: 100px;
 
-      @media (max-width: $mobileMax) {
-        width: 100px;
+      // @media (max-width: $mobileMax) {
+      //   width: 100px;
+      // }
+
+      @media (min-width: $mobileBig) {
+        width: 200px;
       }
+
       img {
         width: 100%;
       }
