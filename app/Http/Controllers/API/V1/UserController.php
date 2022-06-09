@@ -157,6 +157,14 @@ class UserController extends BaseApiController
         try {
             $user = $this->findRecordByID($id);
 
+            if ($user->roles()->first()->name === RoleConstant::SUPER_ADMIN ||
+                $user->roles()->first()->name === RoleConstant::COMPANY_ADMIN) {
+                throw new Exception(
+                    "It is not possible to remove the administrator.",
+                    Response::HTTP_FORBIDDEN
+                );
+            }
+
             if ( Auth::user()->roles()->first()->name === RoleConstant::COMPANY_ADMIN) {
                 if ( $user->company_id !== Auth::user()->company_id ) {
                     throw new Exception(
@@ -166,7 +174,7 @@ class UserController extends BaseApiController
                 }
             }
 
-            $this->repository->delete( $user->id );
+//            $this->repository->delete( $user->id );
         } catch (Exception $e) {
             return ApiResponse::returnError($e->getMessage(), $e->getCode() ?? Response::HTTP_INTERNAL_SERVER_ERROR);
         }
